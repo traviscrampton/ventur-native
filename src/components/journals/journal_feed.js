@@ -16,19 +16,28 @@ const mapDispatchToProps = dispatch => ({
 	}
 })
 
+const mapStateToProps = state => ({
+	journals: state.journals
+})
+
 class JournalFeed extends Component {
 	componentWillMount() {
 		request
 			.post("http://localhost:3000/graphql")
 			.use(ql(allJournalsQuery))
 			.end((err, res) => {
-				this.props.onLoad(res.body.data.allJournals)
+				let { allJournals } = res.body.data
+				this.props.onLoad(allJournals)
 			})
 	}
 
 	render() {
-		return <Text>Hello World</Text>
+		console.log(this.props.journals)
+		// return this.props.journals.map((journal, index) => {
+		// 	return <Text>{journal.title}</Text>	
+		// })
+		
 	}
 }
 
-export default JournalFeed
+export default connect(mapStateToProps, mapDispatchToProps)(JournalFeed)

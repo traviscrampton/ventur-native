@@ -11,7 +11,7 @@ export default (state = defaultJournalData, action) => {
 		case JOURNAL_FEED_LOADED:
 			return {
 				...state,
-				journals: action.journals
+				journals: action.payload
 			}
 		default:
 			return state	
