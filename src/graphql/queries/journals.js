@@ -10,8 +10,7 @@ export const allJournalsQuery = `
 		distance
 		user {
 			id
-			firstName
-			lastName
+			fullName
 			avatarImageUrl
 		}
 	}

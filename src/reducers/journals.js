@@ -3,7 +3,7 @@ import {
 } from "actions/action_types"
 
 const defaultJournalData = {
-	journals: []
+	allJournals: []
 }
 
 export default (state = defaultJournalData, action) => {
@@ -11,7 +11,7 @@ export default (state = defaultJournalData, action) => {
 		case JOURNAL_FEED_LOADED:
 			return {
 				...state,
-				journals: action.payload
+				allJournals: action.payload
 			}
 		default:
 			return state	
