@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Stylesheet, FlatList, View, Text, List } from "react-native"
+import { StyleSheet, FlatList, View, Text, List } from "react-native"
 import { connect } from "react-redux"
 import request from "superagent"
 import ql from "superagent-graphql"
@@ -34,20 +34,27 @@ class JournalFeed extends Component {
 			})
 	}
 
+
 	render() {
 		return (
 			<FlatList
-				contentContainerStyle={{
-					flex: 1,
-					alignItems: "center"
-				}}
+				scrollEnabled={true}
+				contentContainerStyle={styles.container}
 				data={this.props.journals}
 				keyExtractor={item => item.id}
-				renderItem={({ item }) => <JournalCard {...item} />}
+				renderItem={({ item }) => <JournalCard {...item} navigation={this.props.navigation} />}
 			/>
 		)
 	}
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		backgroundColor: "white"
+	}
+})
 
 export default connect(
 	mapStateToProps,

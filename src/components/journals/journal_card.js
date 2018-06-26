@@ -1,22 +1,82 @@
 import React from "react"
-import { Stylesheet, FlatList, View, Text, ImageBackground, Image } from "react-native"
+import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback } from "react-native"
 
 const JournalCard = props => {
 	return (
-		<View style={{marginTop: 20}}>
-			<ImageBackground style={{ width: 350, height: 210 }} source={{ uri: props.cardImageUrl }}>
-				<Text>{props.user.fullName}</Text>
+		<TouchableWithoutFeedback
+			onPress={() => props.navigation.navigate("Journal")}>
+			<View style={styles.card}>
+			<ImageBackground style={styles.journalImage} source={{ uri: props.cardImageUrl }}>
+				<View style={styles.userInfo}>
+					<Image style={styles.userImage} source={{ uri: props.user.avatarImageUrl }} />
+					<Text style={styles.userName}>{props.user.fullName}</Text>
+				</View>
 			</ImageBackground>
-			<View>
-				<Text style={{ fontSize: 24 }}>{props.title}</Text>
-				<Text style={{ fontSize: 16 }}>{props.description}</Text>
+			<View style={styles.metaData}>
+				<View>
+					<Text style={styles.title}>{props.title}</Text>
+					<Text style={styles.subTitle}>{props.description}</Text>
+				</View>
+				<View style={styles.wideFlex}>
+					<Text style={styles.stats}>{`Status:`.toUpperCase()}</Text>
+					<Text style={styles.stats}>{`${props.status}`.toUpperCase()}</Text>
+				</View>
+				<View style={styles.wideFlex}>
+					<Text style={styles.stats}>{`Stats:`.toUpperCase()}</Text>
+					<Text style={styles.stats}>{`${props.distance}`.toUpperCase()}</Text>
+				</View>
 			</View>
-			<View>
-				<Text>Status: {props.status}</Text>
-				<Text>Stats: {props.distance}</Text>
 			</View>
-		</View>
+		</TouchableWithoutFeedback>
 	)
 }
+
+const styles = StyleSheet.create({
+	card: {
+		marginTop: 20
+	},
+	journalImage: {
+		width: 350,
+		height: 210,
+		position: "relative"
+	},
+	userInfo: {
+		position: "absolute",
+		bottom: 10,
+		left: 10,
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center"
+	},
+	userImage: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		marginRight: 10
+	},
+	userName: {
+		color: "white"
+	},
+	metaData: {
+		backgroundColor: "rgb(245,245,245)",
+		padding: 8
+	},
+	title: {
+		fontSize: 24,
+		marginBottom: 10
+	},
+	wideFlex: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between"
+	},
+	subTitle: {
+		fontSize: 16,
+		marginBottom: 10
+	},
+	stats: {
+		letterSpacing: 1
+	}
+})
 
 export default JournalCard
