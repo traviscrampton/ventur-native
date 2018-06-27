@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Text, List } from "react-native"
+import { StyleSheet, FlatList, View, Text, List, ScrollView } from "react-native"
 import { connect } from "react-redux"
 import request from "superagent"
 import ql from "superagent-graphql"
@@ -22,6 +22,8 @@ const mapStateToProps = state => ({
 class JournalFeed extends Component {
 	constructor(props) {
 		super(props)
+
+		this.handle_press = this.handle_press.bind(this)
 	}
 
 	componentWillMount() {
@@ -34,16 +36,21 @@ class JournalFeed extends Component {
 			})
 	}
 
+	handle_press(journalId) {
+		this.props.navigation.navigate("Journal", {journalId})
+	}
 
 	render() {
 		return (
-			<FlatList
-				scrollEnabled={true}
-				contentContainerStyle={styles.container}
-				data={this.props.journals}
-				keyExtractor={item => item.id}
-				renderItem={({ item }) => <JournalCard {...item} navigation={this.props.navigation} />}
-			/>
+			<ScrollView>
+				<FlatList
+					scrollEnabled={true}
+					contentContainerStyle={styles.container}
+					data={this.props.journals}
+					keyExtractor={item => item.id}
+					renderItem={({ item }) => <JournalCard {...item} handle_press={this.handle_press} />}
+				/>
+			</ScrollView>
 		)
 	}
 }

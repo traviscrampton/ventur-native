@@ -1,10 +1,12 @@
 import React from "react"
-import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
 
+const imageWidth = Dimensions.get("window").width
+const imageHeight = Math.round(imageWidth * (210/350))
 const JournalCard = props => {
 	return (
 		<TouchableWithoutFeedback
-			onPress={() => props.navigation.navigate("Journal")}>
+			onPress={() => props.handle_press(props.id)}>
 			<View style={styles.card}>
 			<ImageBackground style={styles.journalImage} source={{ uri: props.cardImageUrl }}>
 				<View style={styles.userInfo}>
@@ -36,8 +38,8 @@ const styles = StyleSheet.create({
 		marginTop: 20
 	},
 	journalImage: {
-		width: 350,
-		height: 210,
+		width: imageWidth,
+		height: imageHeight,
 		position: "relative"
 	},
 	userInfo: {
@@ -59,7 +61,8 @@ const styles = StyleSheet.create({
 	},
 	metaData: {
 		backgroundColor: "rgb(245,245,245)",
-		padding: 8
+		padding: 8,
+		paddingBottom: 16
 	},
 	title: {
 		fontSize: 24,
