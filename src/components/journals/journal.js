@@ -3,9 +3,9 @@ import { singleJournalQuery } from "graphql/queries/journals"
 import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from "react-native"
 import ql from "superagent-graphql"
 import request from "superagent"
-// import JournalTabs  from "components/shared/journal_tab"
 import { connect } from "react-redux"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import Tabs from "components/shared/tabs"
 
 const mapStateToProps = state => ({
 	journal: state.journals.journal,
@@ -22,17 +22,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const bannerImageWidth = Dimensions.get("window").width
-const bannerImageHeight = Math.round(bannerImageWidth * (240 / 300))
-
-const JournalTabs = props => {
-	return (
-		<View>
-			<Text>CHAPTERS</Text>
-			<Text>GEAR LIST</Text>
-			<Text>MAP</Text>
-		</View>
-	)
-}
+const bannerImageHeight = Math.round(bannerImageWidth * (150 / 300))
 
 class Journal extends Component {
 	constructor(props) {
@@ -79,7 +69,7 @@ class Journal extends Component {
 	}
 
 	renderTabs() {
-		return <JournalTabs tabs={this.props.tabs} selectedTabKey={this.props.selectedTabKey} />
+		return <Tabs tabs={this.props.tabs} />
 	}
 
 	renderDynamicContainer() {}

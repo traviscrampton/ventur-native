@@ -8,7 +8,7 @@ const defaultJournalData = {
 	selectedTabKey: "chapters",
 	tabs: [
 		{ key: "chapters", title: "Chapters" },
-		{ key: "gear_list", title: "Gear List" },
+		{ key: "gear", title: "Gear" },
 		{ key: "map", title: "Map" }
 	]
 }
