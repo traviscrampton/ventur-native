@@ -16,23 +16,28 @@ const Tabs = props => {
 	return (
 		<View style={styles.flatList}>
 			{props.tabs.map((tab, index) => {
-				return <Tab key={index} title={tab.title} />
+				return (
+					<Tab
+						{...tab}
+						key={index}
+						handleTabPress={props.handleTabPress}
+						isSelectedTab={props.selectedTabFlag === tab.flag}
+					/>
+				)
 			})}
 		</View>
 	)
-	// console.log("PROPS PROPS", props)
-	// return (
-	// 	<View>
-	// 		<FlatList data={props.tabs} style={styles.flatList} renderItem={({ item }) => <Tab title={item.title} />} />
-	// 	</View>
-	// )
 }
 
 const Tab = props => {
+	const { flag, isSelectedTab, title, handleTabPress } = props
 	return (
-		<TouchableWithoutFeedback>
-			<View style={styles.tab}>
-				<Text style={styles.tabFont}>{`${props.title}`.toUpperCase()}</Text>
+		<TouchableWithoutFeedback
+			onPress={() => {
+				handleTabPress(flag)
+			}}>
+			<View style={[styles.tab, isSelectedTab ? styles.selectedTab : {}]}>
+				<Text style={styles.tabFont}>{`${title}`.toUpperCase()}</Text>
 			</View>
 		</TouchableWithoutFeedback>
 	)
@@ -42,15 +47,20 @@ const styles = StyleSheet.create({
 	flatList: {
 		display: "flex",
 		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "#E5E5E5"
+		alignItems: "center"
 	},
 	tab: {
 		width: width / 3,
-		borderRightColor: "black",
-		borderRightWidth: 1,
 		paddingTop: 10,
-		paddingBottom: 10
+		paddingBottom: 10,
+		backgroundColor: "#E5E5E5",
+	},
+	selectedTab: {
+		backgroundColor: "rgb(245,245,245)",
+		shadowColor: "#000",
+		shadowOffset: { width: 3, height: 2 },
+		shadowOpacity: 0.6,
+		elevation: 1
 	},
 	tabFont: {
 		textAlign: "center",

@@ -1,23 +1,30 @@
 import React, { Component } from "react"
-import { singleJournalQuery } from "graphql/queries/journals"
+import { journalQuery, journalChaptersQuery, journalGearItems } from "graphql/queries/journals"
 import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from "react-native"
 import ql from "superagent-graphql"
 import request from "superagent"
 import { connect } from "react-redux"
-import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { SINGLE_JOURNAL_LOADED, SWITCH_JOURNAL_TAB } from "actions/action_types"
 import Tabs from "components/shared/tabs"
+import ChapterList from "components/chapters/chapter_list"
+import GearList from "components/gear/gear_list"
 
 const mapStateToProps = state => ({
-	journal: state.journals.journal,
-	user: state.journals.journal.user,
-	chapters: state.journals.journal.chapter,
-	tabs: state.journals.tabs,
-	selectedTabKey: state.journals.selectedTabKey
+	journal: state.journal.journal,
+	user: state.journal.journal.user,
+	chapters: state.journal.chapters,
+	gearItems: state.journal.gearItems,
+	tabs: state.journal.tabs,
+	selectedTabFlag: state.journal.selectedTabFlag
 })
 
 const mapDispatchToProps = dispatch => ({
 	onLoad: payload => {
 		dispatch({ type: SINGLE_JOURNAL_LOADED, payload })
+	},
+
+	onTabSwitch: payload => {
+		dispatch({ type: SWITCH_JOURNAL_TAB, payload })
 	}
 })
 
@@ -27,14 +34,21 @@ const bannerImageHeight = Math.round(bannerImageWidth * (150 / 300))
 class Journal extends Component {
 	constructor(props) {
 		super(props)
+
+		this.handleTabPress = this.handleTabPress.bind(this)
 	}
 
 	componentWillMount() {
+		this.requestForJournal()
+		this.handleTabPress(this.props.selectedTabFlag)
+	}
+
+	requestForJournal() {
 		let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
 		request
 			.post("http://localhost:3000/graphql")
-			.use(ql(singleJournalQuery(journalId)))
+			.use(ql(journalQuery, { id: journalId }))
 			.end((err, res) => {
 				let { journal } = res.body.data
 				this.props.onLoad(journal)
@@ -68,18 +82,81 @@ class Journal extends Component {
 		)
 	}
 
-	renderTabs() {
-		return <Tabs tabs={this.props.tabs} />
+	handleTabPress(pressedTabKey) {
+		const query = this.setQuery(pressedTabKey)
+		this.requestTabData(pressedTabKey, query)
 	}
 
-	renderDynamicContainer() {}
+	setQuery(pressedTabKey) {
+		switch (pressedTabKey) {
+			case "chapters":
+				return journalChaptersQuery
+			case "gearItems":
+				return journalGearItems
+			case "map":
+				return null
+			default:
+				return null
+		}
+	}
+
+	requestTabData(pressedTabKey, queryString) {
+		if (queryString === null) return
+		let journalId = this.props.navigation.getParam("journalId", "NO-ID")
+
+		request
+			.post("http://localhost:3000/graphql")
+			.use(ql(queryString, { id: journalId }))
+			.end((err, res) => {
+				let payload = {
+					[pressedTabKey]: res.body.data.journal[pressedTabKey],
+					selectedTabFlag: pressedTabKey
+				}
+				this.props.onTabSwitch(payload)
+			})
+	}
+
+	renderTabs() {
+		return (
+			<Tabs tabs={this.props.tabs} handleTabPress={this.handleTabPress} selectedTabFlag={this.props.selectedTabFlag} />
+		)
+	}
+
+	renderChapters() {
+		return <ChapterList chapters={this.props.chapters} />
+	}
+
+	renderGear() {
+		return <GearList gearItems={this.props.gearItems} />
+	}
+
+	renderMap() {
+		return <Text>Here is map tab</Text>
+	}
+
+	renderActiveTab() {
+		return <View style={styles.activeTabContainer}>{this.renderActiveTabContent()}</View>
+	}
+
+	renderActiveTabContent() {
+		switch (this.props.selectedTabFlag) {
+			case "chapters":
+				return this.renderChapters()
+			case "gearItems":
+				return this.renderGear()
+			case "map":
+				return this.renderMap()
+			default:
+				return this.renderChapters()
+		}
+	}
 
 	render() {
 		return (
 			<ScrollView>
 				{this.renderHeader()}
 				{this.renderTabs()}
-				{this.renderDynamicContainer()}
+				{this.renderActiveTab()}
 			</ScrollView>
 		)
 	}
@@ -91,7 +168,8 @@ const styles = StyleSheet.create({
 		height: bannerImageHeight
 	},
 	metaDataContainer: {
-		padding: 16
+		padding: 16,
+		backgroundColor: "white"
 	},
 	journalHeader: {
 		fontSize: 32
@@ -103,8 +181,9 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		alignItems: "center",
-		marginTop: 40,
-		marginBottom: 40
+		justifyContent: "center",
+		marginTop: 20,
+		marginBottom: 20
 	},
 	userImage: {
 		width: 60,
@@ -115,11 +194,6 @@ const styles = StyleSheet.create({
 	userName: {
 		fontSize: 18
 	},
-	metaData: {
-		backgroundColor: "rgb(245,245,245)",
-		padding: 8,
-		paddingBottom: 16
-	},
 	wideFlex: {
 		display: "flex",
 		flexDirection: "row",
@@ -128,6 +202,10 @@ const styles = StyleSheet.create({
 	},
 	stats: {
 		letterSpacing: 1
+	},
+	activeTabContainer: {
+		padding: 16,
+		backgroundColor: "rgb(245,245,245)"
 	}
 })
 

@@ -1,24 +1,25 @@
 export const allJournalsQuery = `
-    query {
-    	allJournals {
-		id
-		slug
-		title
-		description
-		cardImageUrl
-		status
-		distance
-		user {
+  query {
+  	allJournals {
 			id
-			fullName
-			avatarImageUrl
+			slug
+			title
+			description
+			cardImageUrl
+			status
+			distance
+			user {
+				id
+				fullName
+				avatarImageUrl
+			}
 		}
 	}
-}`
+`
 
-export const singleJournalQuery = (id) => { return `
-	query {
-  		journal(id: ${id}) {
+export const journalQuery = `
+    query journal($id: ID) {
+      journal(id: $id) {
     		id
 		    title
 		    description
@@ -38,7 +39,34 @@ export const singleJournalQuery = (id) => { return `
 		      imageUrl
 		      distance
 		    }
-		  }
-	}	
+      }
+    }
 `
-}
+
+export const journalChaptersQuery = `
+	query journal($id: ID) {
+		journal(id: $id) {
+			chapters {
+				id
+				title
+				dateCreated
+				description
+				imageUrl
+				distance
+			}
+		}
+	}
+`
+
+export const journalGearItems = `
+	query journal($id: ID) {
+		journal(id: $id) {
+	    gearItems {
+	      id
+	      productImageUrl
+	      title
+	    }
+	  }
+	}
+`
+

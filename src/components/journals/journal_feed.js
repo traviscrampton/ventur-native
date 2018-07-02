@@ -7,8 +7,6 @@ import { JOURNAL_FEED_LOADED } from "actions/action_types"
 import { allJournalsQuery } from "graphql/queries/journals"
 import JournalCard from "components/journals/journal_card"
 
-const Promise = global.Promise
-
 const mapDispatchToProps = dispatch => ({
 	onLoad: payload => {
 		dispatch({ type: JOURNAL_FEED_LOADED, payload })
@@ -16,7 +14,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = state => ({
-	journals: state.journals.allJournals
+	journals: state.journalFeed.allJournals
 })
 
 class JournalFeed extends Component {

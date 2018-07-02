@@ -1,7 +1,8 @@
 import { combineReducers } from "redux"
-
-import journals from "reducers/journals"
+import journalFeed from "reducers/journal_feed"
+import journal from "reducers/journal"
 
 export default combineReducers({
-	journals
+	journalFeed,
+	journal
 })
