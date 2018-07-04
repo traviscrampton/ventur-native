@@ -1,13 +1,13 @@
 import React, { Component } from "react"
 import { journalQuery, journalChaptersQuery, journalGearItems } from "graphql/queries/journals"
 import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from "react-native"
-import ql from "superagent-graphql"
-import request from "superagent"
-import { connect } from "react-redux"
-import { SINGLE_JOURNAL_LOADED, SWITCH_JOURNAL_TAB } from "actions/action_types"
-import Tabs from "components/shared/tabs"
 import ChapterList from "components/chapters/chapter_list"
 import GearList from "components/gear/gear_list"
+import Tabs from "components/shared/tabs"
+import ql from "superagent-graphql"
+import request from "superagent"
+import { SINGLE_JOURNAL_LOADED, SWITCH_JOURNAL_TAB } from "actions/action_types"
+import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
 	journal: state.journal.journal,
