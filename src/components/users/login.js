@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import request from "superagent"
 import { UPDATE_LOGIN_FORM } from "actions/action_types"
 import { loginMutation } from "graphql/mutations/auth"
-import { gql } from "agent"
+import { gql, storeJWT, retrieveJWT } from "agent"
 
 const mapStateToProps = state => ({
   email: state.login.email,
@@ -30,7 +30,8 @@ class Login extends Component {
   submitForm() {
     const { email, password } = this.props
     gql(loginMutation, {email: email, password: password}).then(res => {
-      // some callback to make it happen
+      const {token, user} = res.signIn
+      storeJWT(token, user)
     })
   }
 

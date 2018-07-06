@@ -13,7 +13,8 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = state => ({
-  journals: state.journalFeed.allJournals
+  journals: state.journalFeed.allJournals,
+  currentUser: state.common.currentUser
 })
 
 class JournalFeed extends Component {
