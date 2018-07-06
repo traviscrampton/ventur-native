@@ -2,9 +2,10 @@ import React, { Component } from "react"
 import { StyleSheet, Button, View, Text, List, Form, TextInput } from "react-native"
 import { connect } from "react-redux"
 import request from "superagent"
-import { UPDATE_LOGIN_FORM } from "actions/action_types"
+import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
 import { loginMutation } from "graphql/mutations/auth"
-import { gql, storeJWT, retrieveJWT } from "agent"
+import { gql } from "agent"
+import { storeJWT, retrieveJWT } from "auth"
 
 const mapStateToProps = state => ({
   email: state.login.email,
@@ -18,6 +19,10 @@ const mapDispatchToProps = dispatch => ({
 
   passwordEntry: text => {
     dispatch({ type: UPDATE_LOGIN_FORM, key: "password", value: text })
+  },
+
+  setCurrentUser: payload => {
+    dispatch({ type: SET_CURRENT_USER, payload: payload })
   }
 })
 
@@ -29,9 +34,11 @@ class Login extends Component {
 
   submitForm() {
     const { email, password } = this.props
-    gql(loginMutation, {email: email, password: password}).then(res => {
-      const {token, user} = res.signIn
-      storeJWT(token, user)
+    gql(loginMutation, { email: email, password: password }).then(res => {
+      const { token, user } = res.signIn
+      let obj = Object.assign({}, { token: token, user: user })
+      storeJWT(obj)
+      this.props.setCurrentUser(user)
     })
   }
 

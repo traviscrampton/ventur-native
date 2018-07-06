@@ -1,14 +1,26 @@
 import { AsyncStorage } from "react-native"
+import { SET_CURRENT_USER } from "actions/action_types"
 
-export const USER_KEY = "auth-demo-key"
+export const storeJWT = async obj => {
+  try {
+    AsyncStorage.setItem("JWT", obj.token)
+    AsyncStorage.setItem("currentUser", JSON.stringify(obj.user))
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-export const onSignIn = () => AsyncStorage.setItem(USER_KEY, "true")
-
-export const onSignOut = () => AsyncStorage.removeItem(USER_KEY)
+export const getCurrentUser = async () => {
+  try {
+    await AsyncStorage.getItem("currentUser")
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export const isSignedIn = () => {
   return new Promise((resolve, reject) => {
-    AsyncStorage.getItem("USER_KEY")
+    AsyncStorage.getItem("JWT")
       .then(res => {
         if (res !== null) {
           resolve(true)
