@@ -6,7 +6,7 @@ const imageHeight = Math.round(imageWidth * (210/350))
 const JournalCard = props => {
 	return (
 		<TouchableWithoutFeedback
-			onPress={() => props.handle_press(props.id)}>
+			onPress={() => props.handlePress(props.id)}>
 			<View style={styles.card}>
 			<ImageBackground style={styles.journalImage} source={{ uri: props.cardImageUrl }}>
 				<View style={styles.userInfo}>

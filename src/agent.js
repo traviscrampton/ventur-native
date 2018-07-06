@@ -1,17 +1,17 @@
 import _superagent from "superagent"
 import superagentPromise from "superagent-promise"
+import request from "superagent"
 const ql = require("superagent-graphql")
-const superagent = superagentPromise(_superagent, global.Promise)
-
 const API_ROOT = "http://localhost:3000"
+const responseBody = res => res.body.data
 
-const agent = {}
+// still need abstract out sign in and sign out functions
+// add token here, add check for token here 
+// figure out how to handle errors
 
-const graphQL = (queryString, queryVariables) => {
-	superagent
-		.post(`${API_ROOT}/graphql`)
-		.use(ql(queryString, queryVariables))
-		.then()
+export const gql = (queryString, queryVariables = {}) => {
+  return request
+    .post(`${API_ROOT}/graphql`)
+    .use(ql(queryString, queryVariables))
+    .then(responseBody)
 }
-
-export default { agent }
