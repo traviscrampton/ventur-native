@@ -10,6 +10,8 @@ const JournalNavigator = createStackNavigator({
   Journal: Journal
 })
 
+const signedIn = isSignedIn()
+
 const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
@@ -21,4 +23,4 @@ const RootNavigator = (signedIn = false) =>
     }
   )
 
-export const Ventur = RootNavigator(isSignedIn())
+export const Ventur = RootNavigator(signedIn)
