@@ -10,14 +10,13 @@ import {
   Dimensions,
   TouchableWithoutFeedback
 } from "react-native"
-import Markdown from "react-native-markdown-renderer"
 import { connect } from "react-redux"
-import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY } from "actions/action_types"
+import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY } from "actions/action_types"
+import { MarkdownRender } from "components/shared/markdown_render"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
-  textObj: state.editor.textObj,
-  markdownBlob: state.editor.markdownBlob,
+  blob: state.editor.blob,
   activeAttributes: state.editor.activeAttributes
 })
 
@@ -32,6 +31,10 @@ const mapDispatchToProps = dispatch => ({
 
   createNewEntry: payload => {
     dispatch({ type: CREATE_NEW_ENTRY, payload })
+  },
+
+  deleteEntry: payload => {
+    dispatch({ type: DELETE_ENTRY, payload })
   }
 })
 
@@ -40,18 +43,20 @@ class Editor extends Component {
     super(props)
 
     this.addAttribute = this.addAttribute.bind(this)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleReturnKey = this.handleReturnKey.bind(this)
   }
 
-  addText(text, index) {
+  handleTextChange(content, index) {
+    let payload
     const entry = {
       markdown: this.props.activeAttributes,
-      text: text
+      content: content
     }
+    const blob = this.compileMarkdownBlob()
 
-    const entries = [...this.props.entries]
-    entries[index] = entry
-    this.props.editText(entries)
+    payload = Object.assign({}, { entry, index, blob })
+    this.props.editText(payload)
   }
 
   handleReturnKey(index) {
@@ -65,8 +70,34 @@ class Editor extends Component {
     this.props.createNewEntry(payload)
   }
 
-  updateMarkdownBlob(textObj) {
-    return `${textObj.markdown} ${textObj.text}`
+  handleKeyPress(
+    {
+      nativeEvent: { key: keyValue }
+    },
+    index
+  ) {
+    if (index === 0) {
+      return
+    }
+
+    const activeText = this.props.entries[index].content
+
+    if (keyValue === "Backspace" && activeText.length === 0) {
+      const keyName = `textInput${index - 1}`
+      this.refs[keyName].focus()
+      this.props.deleteEntry(index)
+    }
+  }
+
+  compileMarkdownBlob() {
+    let markdownBlob = ``
+    if (!this.props.entries) {
+      return " "
+    }
+    for (let entry of this.props.entries) {
+      markdownBlob += `${entry.markdown} ${entry.content} \n`
+    }
+    return markdownBlob
   }
 
   addAttribute(attribute) {
@@ -81,27 +112,30 @@ class Editor extends Component {
             return (
               <TextInput
                 key={index}
-                style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 5 }}
-                onChangeText={text => this.addText(text, index)}
+                autoFocus={true}
+                ref={`textInput${index}`}
+                style={{ height: 40, marginBottom: 5, paddingLeft: 5, paddingRight: 5, fontSize: 20 }}
+                onKeyPress={e => this.handleKeyPress(e, index)}
+                onChangeText={text => this.handleTextChange(text, index)}
                 value={entry.content}
                 onSubmitEditing={() => this.handleReturnKey(index)}
               />
             )
           })}
-          <Markdown>{this.props.markdownBlob}</Markdown>
+          <MarkdownRender content={this.props.blob} />
           <View style={{ marginTop: 100 }}>
             <Text style={{ marginBottom: 20 }}>Editor Styles</Text>
-            <TouchableWithoutFeedback onPress={() => this.addAttribute("#")}>
+            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar("#")}>
               <View style={{ marginLeft: 10, marginBottom: 10 }}>
                 <Text style={{ fontSize: 20 }}>H1</Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => this.addAttribute("##")}>
+            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar("##")}>
               <View style={{ marginLeft: 10, marginBottom: 10 }}>
                 <Text style={{ fontSize: 20 }}>H2</Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => this.addAttribute(">")}>
+            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar(">")}>
               <View style={{ marginLeft: 10, marginBottom: 10 }}>
                 <Text style={{ fontSize: 20 }}>BQ</Text>
               </View>
