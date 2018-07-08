@@ -4,9 +4,7 @@ import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from 
 import ChapterList from "components/chapters/chapter_list"
 import GearList from "components/gear/gear_list"
 import Tabs from "components/shared/tabs"
-import ql from "superagent-graphql"
 import { gql } from "agent"
-import request from "superagent"
 import { SINGLE_JOURNAL_LOADED, SWITCH_JOURNAL_TAB } from "actions/action_types"
 import { connect } from "react-redux"
 

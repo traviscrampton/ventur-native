@@ -3,6 +3,7 @@ import { createStackNavigator, createSwitchNavigator } from "react-navigation"
 import JournalFeed from "components/journals/journal_feed"
 import Journal from "components/journals/journal"
 import Login from "components/users/login"
+import Editor from "components/shared/editor"
 import { isSignedIn } from "auth"
 
 const JournalNavigator = createStackNavigator({
@@ -16,10 +17,11 @@ const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
-      JournalFeed: JournalNavigator
+      JournalFeed: JournalNavigator,
+      Editor: Editor
     },
     {
-      initialRouteName: signedIn ? "JournalFeed" : "Login"
+      initialRouteName: signedIn ? "Editor" : "Editor"
     }
   )
 
