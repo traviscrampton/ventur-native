@@ -4,11 +4,16 @@ const defaultTextData = {
   entries: [
     {
       markdown: "",
-      content: ""
+      content: "hello word",
+      styles: { fontSize: 30, fontWeight: "700" }
+    },
+    {
+      markdown: "",
+      content: "I'm a big doggy",
+      styles: {}
     }
   ],
-  blob: "",
-  activeAttributes: ""
+  activeAttributes: {}
 }
 
 export default (state = defaultTextData, action) => {
@@ -19,11 +24,10 @@ export default (state = defaultTextData, action) => {
         activeAttributes: action.payload
       }
     case EDIT_TEXT:
-      const { index, entry, blob } = action.payload
+      const { index, entry } = action.payload
       return {
         ...state,
-        entries: [...state.entries.slice(0, index), entry, ...state.entries.slice(index + 1)],
-        blob: blob
+        entries: [...state.entries.slice(0, index), entry, ...state.entries.slice(index + 1)]
       }
     case CREATE_NEW_ENTRY:
       const { newIndex, newEntry } = action.payload
