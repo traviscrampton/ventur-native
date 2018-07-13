@@ -46,9 +46,10 @@ const mapDispatchToProps = dispatch => ({
 class Editor extends Component {
   constructor(props) {
     super(props)
-
+    this.cursorPosition = 0
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleReturnKey = this.handleReturnKey.bind(this)
+    this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
   }
 
   handleTextChange(content, index) {
@@ -91,17 +92,6 @@ class Editor extends Component {
     }
   }
 
-  compileMarkdownBlob() {
-    let markdownBlob = ``
-    if (!this.props.entries) {
-      return " "
-    }
-    for (let entry of this.props.entries) {
-      markdownBlob += `${entry.markdown} ${entry.content} \n`
-    }
-    return markdownBlob
-  }
-
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
@@ -117,15 +107,8 @@ class Editor extends Component {
     nativeEvent: {
       selection: { start, end }
     }
-  }) {}
-
-  handleContentSize({
-    nativeEvent: {
-      contentSize: { width, height }
-    }
   }) {
-    console.log("WIDTH", width)
-    console.log("HEIGHT", height)
+    this.cursorPosition = end
   }
 
   handleInputFocus(index) {
