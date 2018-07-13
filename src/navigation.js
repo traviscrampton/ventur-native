@@ -3,7 +3,7 @@ import { createStackNavigator, createSwitchNavigator } from "react-navigation"
 import JournalFeed from "components/journals/journal_feed"
 import Journal from "components/journals/journal"
 import Login from "components/users/login"
-import Editor from "components/shared/editor"
+import Editor from "components/editor/editor"
 import { isSignedIn } from "auth"
 
 const JournalNavigator = createStackNavigator({

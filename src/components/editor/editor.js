@@ -11,13 +11,14 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import { connect } from "react-redux"
-import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY } from "actions/action_types"
+import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
 import Markdown from "react-native-markdown-renderer"
+import EditorToolbar from "components/editor/editor_toolbar"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
   blob: state.editor.blob,
-  activeAttributes: state.editor.activeAttributes
+  activeAttribute: state.editor.activeAttribute
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -35,6 +36,10 @@ const mapDispatchToProps = dispatch => ({
 
   deleteEntry: payload => {
     dispatch({ type: DELETE_ENTRY, payload })
+  },
+
+  updateEntryFocus: payload => {
+    dispatch({ type: UPDATE_ENTRY_FOCUS, payload })
   }
 })
 
@@ -42,7 +47,6 @@ class Editor extends Component {
   constructor(props) {
     super(props)
 
-    this.addAttribute = this.addAttribute.bind(this)
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleReturnKey = this.handleReturnKey.bind(this)
   }
@@ -53,17 +57,15 @@ class Editor extends Component {
     let editableEntry = this.props.entries[index]
 
     const entry = { ...editableEntry, content: content }
-    const blob = this.compileMarkdownBlob()
 
-    payload = Object.assign({}, { entry, index, blob })
+    payload = Object.assign({}, { entry, index })
     this.props.editText(payload)
   }
 
   handleReturnKey(e, index) {
-    e.preventDefault()
     const newEntry = {
       content: "",
-      styles: { ...this.props.activeAttributes }
+      styles: this.props.activeAttribute
     }
 
     let payload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
@@ -82,7 +84,6 @@ class Editor extends Component {
     }
 
     const activeText = this.props.entries[index].content
-
     if (keyValue === "Backspace" && activeText.length === 0) {
       const keyName = `textInput${index - 1}`
       this.refs[keyName].focus()
@@ -101,35 +102,22 @@ class Editor extends Component {
     return markdownBlob
   }
 
-  addAttribute(attribute) {
-    this.props.updateFormatBar(attribute)
-  }
-
-  getStyling() {
-    return {
-      fontWeight: "600"
+  getInputStyling(entry) {
+    switch (entry.styles) {
+      case "H1":
+        return { fontWeight: "700", fontSize: 32 }
+      case "H2":
+        return { fontWeight: "700", fontSize: 28 }
+      default:
+        return {}
     }
   }
 
-  renderTextStuff() {
-    return (
-      <Text>
-        Hello good <Text style={this.getStyling()}>world</Text>
-      </Text>
-    )
-  }
   handleOnSelectionChange({
     nativeEvent: {
       selection: { start, end }
     }
-  }) {
-    console.log("START", start)
-    console.log("end", end)
-  }
-
-  entryStuff(entry, index) {
-    return <Text>{entry.content}</Text>
-  }
+  }) {}
 
   handleContentSize({
     nativeEvent: {
@@ -140,9 +128,15 @@ class Editor extends Component {
     console.log("HEIGHT", height)
   }
 
+  handleInputFocus(index) {
+    let style = this.props.entries[index].styles
+    this.props.updateEntryFocus(index)
+    this.props.updateFormatBar(style)
+  }
+
   render() {
     return (
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={"always"}>
         <View style={{ marginTop: 50 }}>
           <View>
             {this.props.entries.map((entry, index) => {
@@ -158,35 +152,22 @@ class Editor extends Component {
                       paddingRight: 5,
                       fontSize: 20
                     },
-                    entry.styles
+                    this.getInputStyling(entry)
                   ]}
                   onKeyPress={e => this.handleKeyPress(e, index)}
                   onChangeText={text => this.handleTextChange(text, index)}
-                  // onSubmitEditing={e => this.handleReturnKey(e, index)}
+                  onSubmitEditing={e => this.handleReturnKey(e, index)}
+                  onFocus={() => this.handleInputFocus(index)}
                   multiline
+                  blurOnSubmit={true}
                   value={entry.content}
                   onSelectionChange={this.handleOnSelectionChange}
                 />
               )
             })}
           </View>
-          <View style={{ marginTop: 100 }}>
-            <Text style={{ marginBottom: 20 }}>Editor Styles</Text>
-            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar({ fontWeight: "700", fontSize: 35 })}>
-              <View style={{ marginLeft: 10, marginBottom: 10 }}>
-                <Text style={{ fontSize: 20 }}>BOLD</Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar("##")}>
-              <View style={{ marginLeft: 10, marginBottom: 10 }}>
-                <Text style={{ fontSize: 20 }}>H2</Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => this.props.updateFormatBar(">")}>
-              <View style={{ marginLeft: 10, marginBottom: 10 }}>
-                <Text style={{ fontSize: 20 }}>BQ</Text>
-              </View>
-            </TouchableWithoutFeedback>
+          <View style={{ marginTop: 20 }}>
+            <EditorToolbar />
           </View>
         </View>
       </ScrollView>
