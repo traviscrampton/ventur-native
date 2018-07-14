@@ -65,9 +65,6 @@ class Editor extends Component {
   handleReturnKey(e, index) {
     const nextContent = e.nativeEvent.text.substr(this.cursorPosition)
     const previousContent = e.nativeEvent.text.substring(0, this.cursorPosition)
-    console.log("CURSORPOSTION", this.cursorPosition)
-    console.log("nextContent", nextContent)
-    console.log("previousContent", previousContent)
     const newEntry = {
       content: nextContent,
       styles: this.props.activeAttribute
@@ -168,7 +165,7 @@ class Editor extends Component {
   render() {
     return (
       <ScrollView keyboardShouldPersistTaps={"always"}>
-        <View style={{ marginTop: 50 }}>
+        <View style={{ marginTop: 50, height: Dimensions.get("window").height - 100 }}>
           <View>
             {this.props.entries.map((entry, index) => {
               return (
