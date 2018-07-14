@@ -17,7 +17,6 @@ import EditorToolbar from "components/editor/editor_toolbar"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
-  blob: state.editor.blob,
   activeAttribute: state.editor.activeAttribute
 })
 
@@ -64,14 +63,27 @@ class Editor extends Component {
   }
 
   handleReturnKey(e, index) {
+    const nextContent = e.nativeEvent.text.substr(this.cursorPosition)
+    const previousContent = e.nativeEvent.text.substring(0, this.cursorPosition)
+    console.log("CURSORPOSTION", this.cursorPosition)
+    console.log("nextContent", nextContent)
+    console.log("previousContent", previousContent)
     const newEntry = {
-      content: "",
+      content: nextContent,
       styles: this.props.activeAttribute
     }
 
-    let payload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
+    const entry = {
+      content: previousContent,
+      styles: this.props.activeAttribute
+    }
 
-    this.props.createNewEntry(payload)
+    let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
+    let oldPayload = Object.assign({}, { entry, index })
+
+    this.props.editText(oldPayload)
+    this.props.createNewEntry(newPayload)
+    // this.refs[`textInput${index + 1}`].focus()
   }
 
   handleKeyPress(
@@ -80,16 +92,35 @@ class Editor extends Component {
     },
     index
   ) {
-    if (index === 0) {
-      return
+    if (this.cursorPosition === 0 && keyValue === "Backspace" && index > 0) {
+      this.handleDeleteEntry(keyValue, index)
+    }
+  }
+
+  handleDeleteEntry(keyValue, index) {
+    const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
+      index
+    )
+    const entry = {
+      content: updatedContent,
+      styles: previousStyles
     }
 
+    let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
+    const keyName = `textInput${index - 1}`
+    this.props.editText(oldPayload)
+    this.props.deleteEntry(index)
+    this.refs[keyName].focus()
+    this.refs[keyName].setNativeProps({ selection: { start: pointerPosition, end: pointerPosition } })
+  }
+
+  getDeleteFormConsts(index) {
     const activeText = this.props.entries[index].content
-    if (keyValue === "Backspace" && activeText.length === 0) {
-      const keyName = `textInput${index - 1}`
-      this.refs[keyName].focus()
-      this.props.deleteEntry(index)
-    }
+    const previousText = this.props.entries[index - 1].content
+    const previousStyles = this.props.entries[index - 1].styles
+    const updatedContent = previousText.concat(activeText)
+    const pointerPosition = previousText.length - activeText.length
+    return { activeText, previousText, previousStyles, updatedContent, pointerPosition }
   }
 
   getInputStyling(entry) {
@@ -103,16 +134,21 @@ class Editor extends Component {
     }
   }
 
-  handleOnSelectionChange({
-    nativeEvent: {
-      selection: { start, end }
-    }
-  }) {
-    this.cursorPosition = end
+  handleOnSelectionChange(
+    {
+      nativeEvent: {
+        selection: { start, end }
+      }
+    },
+    index
+  ) {
+    console.log("HANDLE ON SELECTION CHANGE!", start)
+    this.cursorPosition = start
   }
 
-  handleInputFocus(index) {
+  handleInputFocus(e, index) {
     let style = this.props.entries[index].styles
+    this.cursorPosition = this.props.entries[index].content.length
     this.props.updateEntryFocus(index)
     this.props.updateFormatBar(style)
   }
@@ -126,7 +162,6 @@ class Editor extends Component {
               return (
                 <TextInput
                   key={index}
-                  autoFocus={true}
                   ref={`textInput${index}`}
                   style={[
                     {
@@ -140,11 +175,11 @@ class Editor extends Component {
                   onKeyPress={e => this.handleKeyPress(e, index)}
                   onChangeText={text => this.handleTextChange(text, index)}
                   onSubmitEditing={e => this.handleReturnKey(e, index)}
-                  onFocus={() => this.handleInputFocus(index)}
+                  onFocus={e => this.handleInputFocus(e, index)}
+                  value={entry.content}
                   multiline
                   blurOnSubmit={true}
-                  value={entry.content}
-                  onSelectionChange={this.handleOnSelectionChange}
+                  onSelectionChange={e => this.handleOnSelectionChange(e, index)}
                 />
               )
             })}
