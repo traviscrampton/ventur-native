@@ -13,7 +13,7 @@ const defaultTextData = {
     }
   ],
   focusedEntryIndex: 0,
-  toolbarOptions: ["H1", "H2"]
+  toolbarOptions: ["H1", "H2", "QUOTE", "QUOTE-2"]
 }
 
 export default (state = defaultTextData, action) => {

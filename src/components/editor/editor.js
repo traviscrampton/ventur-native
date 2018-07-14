@@ -108,8 +108,8 @@ class Editor extends Component {
 
     let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
     const keyName = `textInput${index - 1}`
-    this.props.editText(oldPayload)
     this.props.deleteEntry(index)
+    this.props.editText(oldPayload)
     this.refs[keyName].focus()
     this.refs[keyName].setNativeProps({ selection: { start: pointerPosition, end: pointerPosition } })
   }
@@ -129,6 +129,19 @@ class Editor extends Component {
         return { fontWeight: "700", fontSize: 32 }
       case "H2":
         return { fontWeight: "700", fontSize: 28 }
+      case "QUOTE":
+        return {
+          fontStyle: "italic",
+          borderLeftWidth: 5,
+          paddingTop: 10,
+          paddingBottom: 10
+        }
+      case "QUOTE-2":
+        return {
+          fontStyle: "italic",
+          paddingRight: 40,
+          paddingLeft: 40
+        }
       default:
         return {}
     }
@@ -142,7 +155,6 @@ class Editor extends Component {
     },
     index
   ) {
-    console.log("HANDLE ON SELECTION CHANGE!", start)
     this.cursorPosition = start
   }
 
@@ -166,8 +178,8 @@ class Editor extends Component {
                   style={[
                     {
                       marginBottom: 5,
-                      paddingLeft: 5,
-                      paddingRight: 5,
+                      paddingLeft: 10,
+                      paddingRight: 10,
                       fontSize: 20
                     },
                     this.getInputStyling(entry)
