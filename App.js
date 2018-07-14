@@ -7,9 +7,10 @@ import { createStackNavigator, createSwitchNavigator } from "react-navigation"
 import { Ventur } from "navigation"
 import { getCurrentUser } from "auth"
 import { SET_CURRENT_USER } from "actions/action_types"
+import thunk from "redux-thunk"
 import { AsyncStorage } from "react-native"
 
-const store = createStore(allReducers, applyMiddleware(logger))
+const store = createStore(allReducers, applyMiddleware(logger), applyMiddleware(thunk))
 
 export default class App extends Component {
   componentWillMount() {

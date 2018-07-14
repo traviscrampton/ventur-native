@@ -11,7 +11,8 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import { connect } from "react-redux"
-import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
+import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
+import { editText, updateEntryFocus, updateFormatBar, updateFocusAndFormat } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import EditorToolbar from "components/editor/editor_toolbar"
 
@@ -21,13 +22,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateFormatBar: payload => {
-    dispatch({ type: UPDATE_FORMAT_BAR, payload })
-  },
+  updateFormatBar: payload => dispatch(updateFormatBar(payload)),
+  updateFocusAndFormat: payload => dispatch(updateFocusAndFormat(payload)),
 
-  editText: payload => {
-    dispatch({ type: EDIT_TEXT, payload })
-  },
+  editEntry: payload => dispatch(editText(payload)),
 
   createNewEntry: payload => {
     dispatch({ type: CREATE_NEW_ENTRY, payload })
@@ -37,9 +35,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: DELETE_ENTRY, payload })
   },
 
-  updateEntryFocus: payload => {
-    dispatch({ type: UPDATE_ENTRY_FOCUS, payload })
-  }
+  updateEntryFocus: payload => updateEntryFocus(payload)
 })
 
 class Editor extends Component {
@@ -59,7 +55,7 @@ class Editor extends Component {
     const entry = { ...editableEntry, content: content }
 
     payload = Object.assign({}, { entry, index })
-    this.props.editText(payload)
+    this.props.editEntry(payload)
   }
 
   handleReturnKey(e, index) {
@@ -78,7 +74,7 @@ class Editor extends Component {
     let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
     let oldPayload = Object.assign({}, { entry, index })
 
-    this.props.editText(oldPayload)
+    this.props.editEntry(oldPayload)
     this.props.createNewEntry(newPayload)
     // this.refs[`textInput${index + 1}`].focus()
   }
@@ -106,7 +102,7 @@ class Editor extends Component {
     let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
     const keyName = `textInput${index - 1}`
     this.props.deleteEntry(index)
-    this.props.editText(oldPayload)
+    this.props.editEntry(oldPayload)
     this.refs[keyName].focus()
     this.refs[keyName].setNativeProps({ selection: { start: pointerPosition, end: pointerPosition } })
   }
@@ -158,14 +154,16 @@ class Editor extends Component {
   handleInputFocus(e, index) {
     let style = this.props.entries[index].styles
     this.cursorPosition = this.props.entries[index].content.length
-    this.props.updateEntryFocus(index)
-    this.props.updateFormatBar(style)
+    let payload = Object.assign({}, { index: index, style: style })
+    this.props.updateFocusAndFormat(payload)
+    // this.props.updateEntryFocus(index)
+    // this.props.updateFormatBar(style)
   }
 
   render() {
     return (
       <ScrollView keyboardShouldPersistTaps={"always"}>
-        <View style={{ marginTop: 50, height: Dimensions.get("window").height - 100 }}>
+        <View style={{ marginTop: 50 }}>
           <View>
             {this.props.entries.map((entry, index) => {
               return (
