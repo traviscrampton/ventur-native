@@ -12,7 +12,14 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
-import { editText, updateEntryFocus, updateFormatBar, updateFocusAndFormat } from "actions/editor"
+import {
+  editText,
+  updateEntryFocus,
+  updateFormatBar,
+  updateFocusAndFormat,
+  handleReturnKey,
+  deleteWithEdit
+} from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import EditorToolbar from "components/editor/editor_toolbar"
 
@@ -23,17 +30,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
+
   updateFocusAndFormat: payload => dispatch(updateFocusAndFormat(payload)),
 
   editEntry: payload => dispatch(editText(payload)),
 
-  createNewEntry: payload => {
-    dispatch({ type: CREATE_NEW_ENTRY, payload })
-  },
+  handleReturnKey: payload => dispatch(handleReturnKey(payload)),
 
-  deleteEntry: payload => {
-    dispatch({ type: DELETE_ENTRY, payload })
-  },
+  deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
 
   updateEntryFocus: payload => updateEntryFocus(payload)
 })
@@ -41,7 +45,8 @@ const mapDispatchToProps = dispatch => ({
 class Editor extends Component {
   constructor(props) {
     super(props)
-    this.cursorPosition = 0
+    this.cursorPointer = 0
+    this.lastClickedKey = null
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleReturnKey = this.handleReturnKey.bind(this)
     this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
@@ -49,9 +54,7 @@ class Editor extends Component {
 
   handleTextChange(content, index) {
     let payload
-
     let editableEntry = this.props.entries[index]
-
     const entry = { ...editableEntry, content: content }
 
     payload = Object.assign({}, { entry, index })
@@ -59,8 +62,8 @@ class Editor extends Component {
   }
 
   handleReturnKey(e, index) {
-    const nextContent = e.nativeEvent.text.substr(this.cursorPosition)
-    const previousContent = e.nativeEvent.text.substring(0, this.cursorPosition)
+    const nextContent = e.nativeEvent.text.substr(this.cursorPointer)
+    const previousContent = e.nativeEvent.text.substring(0, this.cursorPointer)
     const newEntry = {
       content: nextContent,
       styles: this.props.activeAttribute
@@ -74,8 +77,8 @@ class Editor extends Component {
     let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
     let oldPayload = Object.assign({}, { entry, index })
 
-    this.props.editEntry(oldPayload)
-    this.props.createNewEntry(newPayload)
+    let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
+    this.props.handleReturnKey(payload)
     // this.refs[`textInput${index + 1}`].focus()
   }
 
@@ -85,12 +88,13 @@ class Editor extends Component {
     },
     index
   ) {
-    if (this.cursorPosition === 0 && keyValue === "Backspace" && index > 0) {
-      this.handleDeleteEntry(keyValue, index)
+    if (this.cursorPointer === 0 && keyValue === "Backspace" && this.lastClickedKey === "Backspace" && index > 0) {
+      this.handleDeleteEntry(index)
     }
+    this.lastClickedKey = keyValue
   }
 
-  handleDeleteEntry(keyValue, index) {
+  handleDeleteEntry(index) {
     const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
       index
     )
@@ -101,8 +105,8 @@ class Editor extends Component {
 
     let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
     const keyName = `textInput${index - 1}`
-    this.props.deleteEntry(index)
-    this.props.editEntry(oldPayload)
+    let payload = Object.assign({}, { index: index, oldPayload: oldPayload })
+    this.props.deleteWithEdit(payload)
     this.refs[keyName].focus()
     this.refs[keyName].setNativeProps({ selection: { start: pointerPosition, end: pointerPosition } })
   }
@@ -148,16 +152,15 @@ class Editor extends Component {
     },
     index
   ) {
-    this.cursorPosition = start
+    this.cursorPointer = start
+    this.lastClickedKey = null
   }
 
   handleInputFocus(e, index) {
     let style = this.props.entries[index].styles
-    this.cursorPosition = this.props.entries[index].content.length
+    this.cursorPointer = this.props.entries[index].content.length
     let payload = Object.assign({}, { index: index, style: style })
     this.props.updateFocusAndFormat(payload)
-    // this.props.updateEntryFocus(index)
-    // this.props.updateFormatBar(style)
   }
 
   render() {
