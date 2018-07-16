@@ -18,14 +18,19 @@ import {
   updateFormatBar,
   updateFocusAndFormat,
   handleReturnKey,
-  deleteWithEdit
+  deleteWithEdit,
+  turnTextToTextInput,
+  updateCursorPosition
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import EditorToolbar from "components/editor/editor_toolbar"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
-  activeAttribute: state.editor.activeAttribute
+  activeAttribute: state.editor.activeAttribute,
+  focusedEntryIndex: state.editor.focusedEntryIndex,
+  activeIndex: state.editor.activeIndex,
+  cursorPosition: state.editor.cursorPosition
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -39,17 +44,24 @@ const mapDispatchToProps = dispatch => ({
 
   deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
 
-  updateEntryFocus: payload => updateEntryFocus(payload)
+  updateEntryFocus: payload => updateEntryFocus(payload),
+
+  turnTextToTextInput: payload => dispatch(turnTextToTextInput(payload)),
+
+  updateCursorPosition: payload => dispatch(updateCursorPosition(payload))
 })
 
 class Editor extends Component {
   constructor(props) {
     super(props)
-    this.cursorPointer = 0
     this.lastClickedKey = null
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleReturnKey = this.handleReturnKey.bind(this)
     this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    this.refs[`textInput${this.props.activeIndex}`].focus()
   }
 
   handleTextChange(content, index) {
@@ -62,8 +74,8 @@ class Editor extends Component {
   }
 
   handleReturnKey(e, index) {
-    const nextContent = e.nativeEvent.text.substr(this.cursorPointer)
-    const previousContent = e.nativeEvent.text.substring(0, this.cursorPointer)
+    const nextContent = e.nativeEvent.text.substr(this.props.cursorPosition)
+    const previousContent = e.nativeEvent.text.substring(0, this.props.cursorPosition)
     const newEntry = {
       content: nextContent,
       styles: this.props.activeAttribute
@@ -79,7 +91,6 @@ class Editor extends Component {
 
     let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
     this.props.handleReturnKey(payload)
-    // this.refs[`textInput${index + 1}`].focus()
   }
 
   handleKeyPress(
@@ -88,13 +99,19 @@ class Editor extends Component {
     },
     index
   ) {
-    if (this.cursorPointer === 0 && keyValue === "Backspace" && this.lastClickedKey === "Backspace" && index > 0) {
+    if (
+      this.props.cursorPosition === 0 &&
+      keyValue === "Backspace" &&
+      this.lastClickedKey === "Backspace" &&
+      index > 0
+    ) {
       this.handleDeleteEntry(index)
     }
     this.lastClickedKey = keyValue
   }
 
   handleDeleteEntry(index) {
+    const keyName = `textInput${index - 1}`
     const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
       index
     )
@@ -104,19 +121,16 @@ class Editor extends Component {
     }
 
     let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
-    const keyName = `textInput${index - 1}`
-    let payload = Object.assign({}, { index: index, oldPayload: oldPayload })
+    let payload = Object.assign({}, { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition })
     this.props.deleteWithEdit(payload)
-    this.refs[keyName].focus()
-    this.refs[keyName].setNativeProps({ selection: { start: pointerPosition, end: pointerPosition } })
   }
 
   getDeleteFormConsts(index) {
     const activeText = this.props.entries[index].content
     const previousText = this.props.entries[index - 1].content
+    const pointerPosition = previousText.length
     const previousStyles = this.props.entries[index - 1].styles
     const updatedContent = previousText.concat(activeText)
-    const pointerPosition = previousText.length - activeText.length
     return { activeText, previousText, previousStyles, updatedContent, pointerPosition }
   }
 
@@ -152,15 +166,78 @@ class Editor extends Component {
     },
     index
   ) {
-    this.cursorPointer = start
+    this.props.updateCursorPosition(start)
     this.lastClickedKey = null
   }
 
   handleInputFocus(e, index) {
     let style = this.props.entries[index].styles
-    this.cursorPointer = this.props.entries[index].content.length
+    this.props.cursorPosition = this.props.entries[index].content.length
     let payload = Object.assign({}, { index: index, style: style })
-    this.props.updateFocusAndFormat(payload)
+  }
+
+  handleTextPress(index) {
+    this.props.turnTextToTextInput(index)
+  }
+
+  renderTextOrTextInput(entry, index) {
+    if (this.props.activeIndex === index) {
+      return this.renderAsTextInput(entry, index)
+    } else {
+      return this.renderAsText(entry, index)
+    }
+  }
+
+  renderAsText(entry, index) {
+    return (
+      <TouchableWithoutFeedback onPress={() => this.handleTextPress(index)} key={index}>
+        <View
+          style={{
+            marginBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10,
+            paddingTop: 5,
+            paddingBottom: 5
+          }}>
+          <Text style={[{ fontSize: 20 }, this.getInputStyling(entry)]}>{entry.content}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  setSelection(index) {
+    this.refs[`textInput${index}`].setNativeProps({
+      selection: {
+        start: this.props.cursorPosition,
+        end: this.props.cursorPosition
+      }
+    })
+  }
+
+  renderAsTextInput(entry, index) {
+    return (
+      <TextInput
+        key={index}
+        ref={`textInput${index}`}
+        style={[
+          {
+            marginBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10,
+            fontSize: 20
+          },
+          this.getInputStyling(entry)
+        ]}
+        onKeyPress={e => this.handleKeyPress(e, index)}
+        onChangeText={text => this.handleTextChange(text, index)}
+        onSubmitEditing={e => this.handleReturnKey(e, index)}
+        value={entry.content}
+        onFocus={() => this.setSelection(index)}
+        multiline
+        blurOnSubmit={true}
+        onSelectionChange={e => this.handleOnSelectionChange(e, index)}
+      />
+    )
   }
 
   render() {
@@ -169,29 +246,7 @@ class Editor extends Component {
         <View style={{ marginTop: 50 }}>
           <View>
             {this.props.entries.map((entry, index) => {
-              return (
-                <TextInput
-                  key={index}
-                  ref={`textInput${index}`}
-                  style={[
-                    {
-                      marginBottom: 5,
-                      paddingLeft: 10,
-                      paddingRight: 10,
-                      fontSize: 20
-                    },
-                    this.getInputStyling(entry)
-                  ]}
-                  onKeyPress={e => this.handleKeyPress(e, index)}
-                  onChangeText={text => this.handleTextChange(text, index)}
-                  onSubmitEditing={e => this.handleReturnKey(e, index)}
-                  onFocus={e => this.handleInputFocus(e, index)}
-                  value={entry.content}
-                  multiline
-                  blurOnSubmit={true}
-                  onSelectionChange={e => this.handleOnSelectionChange(e, index)}
-                />
-              )
+              return this.renderTextOrTextInput(entry, index)
             })}
           </View>
           <View style={{ marginTop: 20 }}>

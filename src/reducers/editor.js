@@ -1,29 +1,45 @@
-import { EDIT_TEXT, UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
+import {
+  EDIT_TEXT,
+  UPDATE_FORMAT_BAR,
+  CREATE_NEW_ENTRY,
+  DELETE_ENTRY,
+  UPDATE_ENTRY_FOCUS,
+  TEXT_TO_INPUT,
+  UPDATE_CURSOR_POSITION
+} from "actions/action_types"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [
     {
-      content: "hello word",
+      content: "Another one it is",
       styles: "H1"
     },
     {
-      content: "I'm a big doggy",
+      content: "Somethign i can do ",
       styles: "H2"
+    },
+    {
+      content: "big deal what ican i se",
+      styles: "QUOTE"
+    },
+    {
+      content: "ruby tuesdays for everyone",
+      styles: ""
+    },
+    {
+      content: "sure what the hell is the deal",
+      styles: ""
     }
   ],
-  focusedEntryIndex: 0,
-  toolbarOptions: ["H1", "H2", "QUOTE", "QUOTE-2"]
+  activeIndex: 4,
+  isDeleting: false,
+  toolbarOptions: ["H1", "H2", "QUOTE", "QUOTE-2"],
+  cursorPosition: 0
 }
 
 export default (state = defaultTextData, action) => {
   switch (action.type) {
-    case UPDATE_ENTRY_FOCUS:
-      return {
-        ...state,
-        focusedEntryIndex: action.payload
-      }
-
     case UPDATE_FORMAT_BAR:
       return {
         ...state,
@@ -31,10 +47,16 @@ export default (state = defaultTextData, action) => {
       }
 
     case EDIT_TEXT:
-      const { index, entry } = action.payload
+      let { index, entry } = action.payload
       return {
         ...state,
         entries: [...state.entries.slice(0, index), entry, ...state.entries.slice(index + 1)]
+      }
+
+    case TEXT_TO_INPUT:
+      return {
+        ...state,
+        activeIndex: action.payload
       }
 
     case CREATE_NEW_ENTRY:
@@ -43,11 +65,16 @@ export default (state = defaultTextData, action) => {
         ...state,
         entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)]
       }
-
     case DELETE_ENTRY:
       return {
         ...state,
         entries: [...state.entries.slice(0, action.payload), ...state.entries.slice(action.payload + 1)]
+      }
+
+    case UPDATE_CURSOR_POSITION:
+      return {
+        ...state,
+        cursorPosition: action.payload
       }
 
     default:

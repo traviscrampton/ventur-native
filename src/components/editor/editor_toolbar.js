@@ -6,7 +6,7 @@ import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View } from "reac
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
   activeAttribute: state.editor.activeAttribute,
-  focusedEntryIndex: state.editor.focusedEntryIndex,
+  activeIndex: state.editor.activeIndex,
   entries: state.editor.entries
 })
 
@@ -22,8 +22,8 @@ const mapDispatchToProps = dispatch => ({
 
 class EditorToolbar extends Component {
   handleOnPress(option) {
-    let entry = { ...this.props.entries[this.props.focusedEntryIndex], styles: option }
-    let payload = { entry: entry, index: this.props.focusedEntryIndex }
+    let entry = { ...this.props.entries[this.props.activeIndex], styles: option }
+    let payload = { entry: entry, index: this.props.activeIndex }
     this.props.updateFormatBar(option)
     this.props.editText(payload)
   }

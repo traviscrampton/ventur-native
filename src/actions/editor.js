@@ -5,20 +5,6 @@ export function editText(payload) {
   }
 }
 
-export function updateFocusAndFormat(payload) {
-  return function(dispatch) {
-    dispatch(updateEntryFocus(payload.index))
-    dispatch(updateFormatBar(payload.style))
-  }
-}
-
-export function updateEntryFocus(payload) {
-  return {
-    type: "UPDATE_ENTRY_FOCUS",
-    payload: payload
-  }
-}
-
 export function updateFormatBar(payload) {
   return {
     type: "UPDATE_FORMAT_BAR",
@@ -41,10 +27,26 @@ export function deleteEntry(payload) {
 }
 
 export function deleteWithEdit(payload) {
-  const { oldPayload, index } = payload
-  return function(dispatch) {
+  const { oldPayload, index, cursorPosition } = payload
+  return function(dispatch, getState) {
     dispatch(editText(oldPayload))
     dispatch(deleteEntry(index))
+    dispatch(turnTextToTextInput(index - 1))
+    dispatch(updateCursorPosition(cursorPosition))
+  }
+}
+
+export function turnTextToTextInput(payload) {
+  return function(dispatch, getState) {
+    dispatch(updateTextInput(payload))
+    dispatch(updateFormatBar(getState().editor.entries[payload].styles))
+  }
+}
+
+export function updateTextInput(payload) {
+  return {
+    type: "TEXT_TO_INPUT",
+    payload: payload
   }
 }
 
@@ -53,5 +55,11 @@ export function handleReturnKey(payload) {
   return function(dispatch) {
     dispatch(editText(oldPayload))
     dispatch(createNewEntry(newPayload))
+    dispatch(turnTextToTextInput(newPayload.newIndex))
+    dispatch(updateCursorPosition(0))
   }
+}
+
+export function updateCursorPosition(payload) {
+  return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }
