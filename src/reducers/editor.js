@@ -5,7 +5,8 @@ import {
   DELETE_ENTRY,
   UPDATE_ENTRY_FOCUS,
   TEXT_TO_INPUT,
-  UPDATE_CURSOR_POSITION
+  UPDATE_CURSOR_POSITION,
+  UPDATE_ACTIVE_INDEX
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -44,6 +45,12 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         activeAttribute: action.payload
+      }
+
+    case UPDATE_ACTIVE_INDEX:
+      return {
+        ...state,
+        activeIndex: action.payload
       }
 
     case EDIT_TEXT:

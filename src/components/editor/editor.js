@@ -8,7 +8,8 @@ import {
   ScrollView,
   Image,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView
 } from "react-native"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
@@ -20,6 +21,7 @@ import {
   handleReturnKey,
   deleteWithEdit,
   turnTextToTextInput,
+  updateActiveIndex,
   updateCursorPosition
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
@@ -35,20 +37,13 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
-
   updateFocusAndFormat: payload => dispatch(updateFocusAndFormat(payload)),
-
   editEntry: payload => dispatch(editText(payload)),
-
   handleReturnKey: payload => dispatch(handleReturnKey(payload)),
-
   deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
-
   updateEntryFocus: payload => updateEntryFocus(payload),
-
-  turnTextToTextInput: payload => dispatch(turnTextToTextInput(payload)),
-
-  updateCursorPosition: payload => dispatch(updateCursorPosition(payload))
+  updateCursorPosition: payload => dispatch(updateCursorPosition(payload)),
+  updateActiveIndex: payload => dispatch(updateActiveIndex(payload))
 })
 
 class Editor extends Component {
@@ -61,7 +56,8 @@ class Editor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.refs[`textInput${this.props.activeIndex}`].focus()
+    let activeRef = this.refs[`textInput${this.props.activeIndex}`]
+    activeRef.focus()
   }
 
   handleTextChange(content, index) {
@@ -78,15 +74,16 @@ class Editor extends Component {
     const previousContent = e.nativeEvent.text.substring(0, this.props.cursorPosition)
     const newEntry = {
       content: nextContent,
-      styles: this.props.activeAttribute
+      styles: this.props.entries[index].styles
     }
 
     const entry = {
       content: previousContent,
-      styles: this.props.activeAttribute
+      styles: this.props.entries[index].styles
     }
 
     let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
+
     let oldPayload = Object.assign({}, { entry, index })
 
     let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
@@ -137,9 +134,9 @@ class Editor extends Component {
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return { fontWeight: "700", fontSize: 32 }
-      case "H2":
         return { fontWeight: "700", fontSize: 28 }
+      case "H2":
+        return { fontWeight: "700", fontSize: 24 }
       case "QUOTE":
         return {
           fontStyle: "italic",
@@ -176,47 +173,20 @@ class Editor extends Component {
     let payload = Object.assign({}, { index: index, style: style })
   }
 
-  handleTextPress(index) {
-    this.props.turnTextToTextInput(index)
-  }
-
-  renderTextOrTextInput(entry, index) {
-    if (this.props.activeIndex === index) {
-      return this.renderAsTextInput(entry, index)
-    } else {
-      return this.renderAsText(entry, index)
+  handleContentSizeChange(event) {
+    if (event && event.nativeEvent && event.nativeEvent.contentSize) {
+      // debugger
     }
   }
 
-  renderAsText(entry, index) {
-    return (
-      <TouchableWithoutFeedback onPress={() => this.handleTextPress(index)} key={index}>
-        <View
-          style={{
-            marginBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 5,
-            paddingBottom: 5
-          }}>
-          <Text style={[{ fontSize: 20 }, this.getInputStyling(entry)]}>{entry.content}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
-  setSelection(index) {
-    this.refs[`textInput${index}`].setNativeProps({
-      selection: {
-        start: this.props.cursorPosition,
-        end: this.props.cursorPosition
-      }
-    })
+  updateActiveIndex(e, index) {
+    this.props.updateActiveIndex(index)
   }
 
   renderAsTextInput(entry, index) {
     return (
       <TextInput
+        multiline
         key={index}
         ref={`textInput${index}`}
         style={[
@@ -229,13 +199,14 @@ class Editor extends Component {
           this.getInputStyling(entry)
         ]}
         onKeyPress={e => this.handleKeyPress(e, index)}
+        blur={true}
         onChangeText={text => this.handleTextChange(text, index)}
         onSubmitEditing={e => this.handleReturnKey(e, index)}
         value={entry.content}
-        onFocus={() => this.setSelection(index)}
-        multiline
+        onFocus={e => this.updateActiveIndex(e, index)}
         blurOnSubmit={true}
         onSelectionChange={e => this.handleOnSelectionChange(e, index)}
+        onContentSizeChange={event => this.handleContentSizeChange(event)}
       />
     )
   }
@@ -246,10 +217,10 @@ class Editor extends Component {
         <View style={{ marginTop: 50 }}>
           <View>
             {this.props.entries.map((entry, index) => {
-              return this.renderTextOrTextInput(entry, index)
+              return this.renderAsTextInput(entry, index)
             })}
           </View>
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20, flex: 1 }}>
             <EditorToolbar />
           </View>
         </View>

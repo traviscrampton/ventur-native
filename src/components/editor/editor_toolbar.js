@@ -22,10 +22,19 @@ const mapDispatchToProps = dispatch => ({
 
 class EditorToolbar extends Component {
   handleOnPress(option) {
-    let entry = { ...this.props.entries[this.props.activeIndex], styles: option }
+    let styling = this.getProperStyling(option)
+    let entry = { ...this.props.entries[this.props.activeIndex], styles: styling }
     let payload = { entry: entry, index: this.props.activeIndex }
-    this.props.updateFormatBar(option)
+    this.props.updateFormatBar(styling)
     this.props.editText(payload)
+  }
+
+  getProperStyling(option) {
+    if (this.props.entries[this.props.activeIndex].styles === option) {
+      return ""
+    } else {
+      return option
+    }
   }
 
   renderToolbarOption(option) {
@@ -45,14 +54,18 @@ class EditorToolbar extends Component {
     }
   }
 
-  render() {
+  renderToolbar() {
     return this.props.toolbarOptions.map((option, index) => {
       return (
-        <TouchableWithoutFeedback key={index} onPress={() => this.handleOnPress(option)}>
+        <TouchableWithoutFeedback key={index} style={styles.option} onPress={() => this.handleOnPress(option)}>
           {this.renderToolbarOption(option)}
         </TouchableWithoutFeedback>
       )
     })
+  }
+
+  render() {
+    return <View style={styles.toolbarContainer}>{this.renderToolbar()}</View>
   }
 }
 
@@ -61,26 +74,16 @@ export default connect(
   mapDispatchToProps
 )(EditorToolbar)
 
-// <View>
-//   <TouchableWithoutFeedback onPress={() => this.handleOnPress("H1")}>
-//     <View>
-//       <Text style={[styles.option, this.isSelectedStyle("H1")]}>{"H1"}</Text>
-//     </View>
-//   </TouchableWithoutFeedback>
-//   <TouchableWithoutFeedback onPress={() => this.handleOnPress("H2")}>
-//     <View>
-//       <Text style={[styles.option, this.isSelectedStyle("H2")]}>{"H2"}</Text>
-//     </View>
-//   </TouchableWithoutFeedback>
-// </View>
 const styles = StyleSheet.create({
   toolbarContainer: {
-    marginTop: 20
+    marginTop: 20,
+    display: "flex",
+    flexDirection: "row"
   },
   option: {
     borderWidth: 1,
     borderColor: "green",
     fontSize: 20,
-    marginRight: 5
+    minWidth: 80
   }
 })

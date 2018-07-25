@@ -30,9 +30,9 @@ export function deleteWithEdit(payload) {
   const { oldPayload, index, cursorPosition } = payload
   return function(dispatch, getState) {
     dispatch(editText(oldPayload))
-    dispatch(deleteEntry(index))
-    dispatch(turnTextToTextInput(index - 1))
+    dispatch(updateActiveIndex(index - 1))
     dispatch(updateCursorPosition(cursorPosition))
+    dispatch(deleteEntry(index))
   }
 }
 
@@ -50,12 +50,19 @@ export function updateTextInput(payload) {
   }
 }
 
+export function updateActiveIndex(payload) {
+  return {
+    type: "UPDATE_ACTIVE_INDEX",
+    payload: payload
+  }
+}
+
 export function handleReturnKey(payload) {
   const { oldPayload, newPayload } = payload
   return function(dispatch) {
     dispatch(editText(oldPayload))
     dispatch(createNewEntry(newPayload))
-    dispatch(turnTextToTextInput(newPayload.newIndex))
+    dispatch(updateActiveIndex(newPayload.newIndex))
     dispatch(updateCursorPosition(0))
   }
 }
