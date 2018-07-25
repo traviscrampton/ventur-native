@@ -27,12 +27,13 @@ export function deleteEntry(payload) {
 }
 
 export function deleteWithEdit(payload) {
-  const { oldPayload, index, cursorPosition } = payload
+  const { oldPayload, index, cursorPosition, instance } = payload
   return function(dispatch, getState) {
     dispatch(editText(oldPayload))
-    dispatch(updateActiveIndex(index - 1))
-    dispatch(updateCursorPosition(cursorPosition))
     dispatch(deleteEntry(index))
+    dispatch(updateActiveIndex(index))
+    dispatch(updateCursorPosition(cursorPosition))
+    // instance.refs[`textInput${index - 1}`].focus()
   }
 }
 
@@ -58,7 +59,7 @@ export function updateActiveIndex(payload) {
 }
 
 export function handleReturnKey(payload) {
-  const { oldPayload, newPayload } = payload
+  const { oldPayload, newPayload, instance } = payload
   return function(dispatch) {
     dispatch(editText(oldPayload))
     dispatch(createNewEntry(newPayload))

@@ -13,23 +13,23 @@ const defaultTextData = {
   activeAttribute: "",
   entries: [
     {
-      content: "Another one it is",
+      content: "A",
       styles: "H1"
     },
     {
-      content: "Somethign i can do ",
+      content: "B",
       styles: "H2"
     },
     {
-      content: "big deal what ican i se",
+      content: "C",
       styles: "QUOTE"
     },
     {
-      content: "ruby tuesdays for everyone",
+      content: "D",
       styles: ""
     },
     {
-      content: "sure what the hell is the deal",
+      content: "E",
       styles: ""
     }
   ],

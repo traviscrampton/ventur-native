@@ -17,7 +17,6 @@ import {
   editText,
   updateEntryFocus,
   updateFormatBar,
-  updateFocusAndFormat,
   handleReturnKey,
   deleteWithEdit,
   turnTextToTextInput,
@@ -37,7 +36,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
-  updateFocusAndFormat: payload => dispatch(updateFocusAndFormat(payload)),
   editEntry: payload => dispatch(editText(payload)),
   handleReturnKey: payload => dispatch(handleReturnKey(payload)),
   deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
@@ -57,7 +55,9 @@ class Editor extends Component {
 
   componentDidUpdate(prevProps) {
     let activeRef = this.refs[`textInput${this.props.activeIndex}`]
-    activeRef.focus()
+    if (activeRef) {
+      activeRef.focus()
+    }
   }
 
   handleTextChange(content, index) {
@@ -116,9 +116,12 @@ class Editor extends Component {
       content: updatedContent,
       styles: previousStyles
     }
-
+    let instance = this
     let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
-    let payload = Object.assign({}, { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition })
+    let payload = Object.assign(
+      {},
+      { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition, instance: instance }
+    )
     this.props.deleteWithEdit(payload)
   }
 
@@ -167,12 +170,6 @@ class Editor extends Component {
     this.lastClickedKey = null
   }
 
-  handleInputFocus(e, index) {
-    let style = this.props.entries[index].styles
-    this.props.cursorPosition = this.props.entries[index].content.length
-    let payload = Object.assign({}, { index: index, style: style })
-  }
-
   handleContentSizeChange(event) {
     if (event && event.nativeEvent && event.nativeEvent.contentSize) {
       // debugger
@@ -181,6 +178,9 @@ class Editor extends Component {
 
   updateActiveIndex(e, index) {
     this.props.updateActiveIndex(index)
+    this.refs[`textInput${index}`].setNativeProps({
+      selection: { start: this.props.cursorPosition, end: this.props.cursorPosition }
+    })
   }
 
   renderAsTextInput(entry, index) {
@@ -199,7 +199,6 @@ class Editor extends Component {
           this.getInputStyling(entry)
         ]}
         onKeyPress={e => this.handleKeyPress(e, index)}
-        blur={true}
         onChangeText={text => this.handleTextChange(text, index)}
         onSubmitEditing={e => this.handleReturnKey(e, index)}
         value={entry.content}
