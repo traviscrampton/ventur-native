@@ -6,31 +6,37 @@ import {
   UPDATE_ENTRY_FOCUS,
   TEXT_TO_INPUT,
   UPDATE_CURSOR_POSITION,
-  UPDATE_ACTIVE_INDEX
+  UPDATE_ACTIVE_INDEX,
+  UPDATE_TEXT_HEIGHT
 } from "actions/action_types"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [
     {
-      content: "A",
-      styles: "H1"
+      content: "The Argentine side of patagonia",
+      styles: "H1",
+      height: 50
     },
     {
-      content: "B",
-      styles: "H2"
+      content: "Do not ask what you have done for your country",
+      styles: "QUOTE-2",
+      height: 50
     },
     {
-      content: "C",
-      styles: "QUOTE"
+      content: "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      styles: "",
+      height: 50
     },
     {
       content: "D",
-      styles: ""
+      styles: "",
+      height: 50
     },
     {
       content: "E",
-      styles: ""
+      styles: "",
+      height: 50
     }
   ],
   activeIndex: 4,

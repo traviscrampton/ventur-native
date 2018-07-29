@@ -183,6 +183,15 @@ class Editor extends Component {
     })
   }
 
+  handleLayoutChange(e, index) {
+    let editableEntry = this.props.entries[index]
+    const entry = { ...editableEntry, height: e.nativeEvent.layout.height }
+    if (editableEntry.height !== entry.height) {
+      payload = Object.assign({}, { entry, index })
+      this.props.editEntry(payload)
+    }
+  }
+
   renderAsTextInput(entry, index) {
     return (
       <TextInput
@@ -194,7 +203,8 @@ class Editor extends Component {
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
-            fontSize: 20
+            fontSize: 20,
+            minHeight: entry.height
           },
           this.getInputStyling(entry)
         ]}
@@ -204,8 +214,8 @@ class Editor extends Component {
         value={entry.content}
         onFocus={e => this.updateActiveIndex(e, index)}
         blurOnSubmit={true}
+        onLayout={e => this.handleLayoutChange(e, index)}
         onSelectionChange={e => this.handleOnSelectionChange(e, index)}
-        onContentSizeChange={event => this.handleContentSizeChange(event)}
       />
     )
   }
