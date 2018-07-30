@@ -76,7 +76,6 @@ export default connect(
 
 const styles = StyleSheet.create({
   toolbarContainer: {
-    marginTop: 20,
     display: "flex",
     flexDirection: "row"
   },

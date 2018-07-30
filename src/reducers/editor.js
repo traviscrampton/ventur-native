@@ -7,7 +7,8 @@ import {
   TEXT_TO_INPUT,
   UPDATE_CURSOR_POSITION,
   UPDATE_ACTIVE_INDEX,
-  UPDATE_TEXT_HEIGHT
+  UPDATE_CONTAINER_HEIGHT,
+  SET_NEXT_INDEX_NULL
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -24,10 +25,36 @@ const defaultTextData = {
       height: 50
     },
     {
-      content: "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      content:
+        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
       styles: "",
       height: 50
     },
+    {
+      content:
+        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      styles: "",
+      height: 50
+    },
+    {
+      content:
+        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      styles: "",
+      height: 50
+    },
+    {
+      content:
+        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      styles: "",
+      height: 50
+    },
+    {
+      content:
+        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
+      styles: "",
+      height: 50
+    },
+
     {
       content: "D",
       styles: "",
@@ -37,12 +64,18 @@ const defaultTextData = {
       content: "E",
       styles: "",
       height: 50
+    },
+    {
+      content: "",
+      styles: "",
+      height: 50
     }
   ],
   activeIndex: 4,
   isDeleting: false,
-  toolbarOptions: ["H1", "H2", "QUOTE", "QUOTE-2"],
-  cursorPosition: 0
+  toolbarOptions: ["H1", "QUOTE"],
+  cursorPosition: 0,
+  nextIndex: null
 }
 
 export default (state = defaultTextData, action) => {
@@ -53,10 +86,22 @@ export default (state = defaultTextData, action) => {
         activeAttribute: action.payload
       }
 
+    case SET_NEXT_INDEX_NULL:
+      return {
+        ...state,
+        nextIndex: null
+      }
+
     case UPDATE_ACTIVE_INDEX:
       return {
         ...state,
         activeIndex: action.payload
+      }
+
+    case UPDATE_CONTAINER_HEIGHT:
+      return {
+        ...state,
+        containerHeight: action.payload
       }
 
     case EDIT_TEXT:
@@ -76,11 +121,13 @@ export default (state = defaultTextData, action) => {
       const { newIndex, newEntry } = action.payload
       return {
         ...state,
+        nextIndex: newIndex,
         entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)]
       }
     case DELETE_ENTRY:
       return {
         ...state,
+        nextIndex: action.payload - 1,
         entries: [...state.entries.slice(0, action.payload), ...state.entries.slice(action.payload + 1)]
       }
 

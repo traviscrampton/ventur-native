@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   TouchableWithoutFeedback,
+  Keyboard,
   KeyboardAvoidingView
 } from "react-native"
 import { connect } from "react-redux"
@@ -21,17 +22,22 @@ import {
   deleteWithEdit,
   turnTextToTextInput,
   updateActiveIndex,
-  updateCursorPosition
+  updateCursorPosition,
+  updateContainerHeight,
+  setNextIndexNull
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import EditorToolbar from "components/editor/editor_toolbar"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
   activeAttribute: state.editor.activeAttribute,
   focusedEntryIndex: state.editor.focusedEntryIndex,
   activeIndex: state.editor.activeIndex,
-  cursorPosition: state.editor.cursorPosition
+  cursorPosition: state.editor.cursorPosition,
+  containerHeight: state.editor.containerHeight,
+  nextIndex: state.editor.nextIndex
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -41,7 +47,9 @@ const mapDispatchToProps = dispatch => ({
   deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
   updateEntryFocus: payload => updateEntryFocus(payload),
   updateCursorPosition: payload => dispatch(updateCursorPosition(payload)),
-  updateActiveIndex: payload => dispatch(updateActiveIndex(payload))
+  updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
+  updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
+  setNextIndexNull: payload => dispatch(setNextIndexNull(payload))
 })
 
 class Editor extends Component {
@@ -53,11 +61,30 @@ class Editor extends Component {
     this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
   }
 
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardDidShow.bind(this))
+    this.keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide.bind(this))
+  }
+
   componentDidUpdate(prevProps) {
-    let activeRef = this.refs[`textInput${this.props.activeIndex}`]
-    if (activeRef) {
-      activeRef.focus()
+    let nextIndex = this.refs[`textInput${this.props.nextIndex}`]
+    if (nextIndex) {
+      nextIndex.focus()
+      nextIndex.setNativeProps({
+        selection: { start: this.props.cursorPosition, end: this.props.cursorPosition }
+      })
+      this.props.setNextIndexNull()
     }
+  }
+
+  keyboardDidShow(e) {
+    let newSize = Dimensions.get("window").height - e.endCoordinates.height - 80
+    this.props.updateContainerHeight(newSize)
+  }
+
+  keyboardDidHide() {
+    let newSize = Dimensions.get("window").height - 80
+    this.props.updateContainerHeight(newSize)
   }
 
   handleTextChange(content, index) {
@@ -137,8 +164,6 @@ class Editor extends Component {
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return { fontWeight: "700", fontSize: 28 }
-      case "H2":
         return { fontWeight: "700", fontSize: 24 }
       case "QUOTE":
         return {
@@ -146,12 +171,6 @@ class Editor extends Component {
           borderLeftWidth: 5,
           paddingTop: 10,
           paddingBottom: 10
-        }
-      case "QUOTE-2":
-        return {
-          fontStyle: "italic",
-          paddingRight: 40,
-          paddingLeft: 40
         }
       default:
         return {}
@@ -170,17 +189,13 @@ class Editor extends Component {
     this.lastClickedKey = null
   }
 
-  handleContentSizeChange(event) {
-    if (event && event.nativeEvent && event.nativeEvent.contentSize) {
-      // debugger
-    }
-  }
-
   updateActiveIndex(e, index) {
     this.props.updateActiveIndex(index)
-    this.refs[`textInput${index}`].setNativeProps({
-      selection: { start: this.props.cursorPosition, end: this.props.cursorPosition }
-    })
+    this.refs[`textInput${index}`].measure(this.findScrollHeight.bind(this))
+  }
+
+  findScrollHeight(ox, oy, width, height, px, py) {
+    this.refs.scrollContainer.scrollTo({ x: 0, y: py, animated: false })
   }
 
   handleLayoutChange(e, index) {
@@ -203,7 +218,10 @@ class Editor extends Component {
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
-            fontSize: 20,
+            paddingTop: 0,
+            paddingBottom: 0,
+            fontSize: 22,
+            lineHeight: 30,
             minHeight: entry.height
           },
           this.getInputStyling(entry)
@@ -211,6 +229,7 @@ class Editor extends Component {
         onKeyPress={e => this.handleKeyPress(e, index)}
         onChangeText={text => this.handleTextChange(text, index)}
         onSubmitEditing={e => this.handleReturnKey(e, index)}
+        placeholder={"empty text input here"}
         value={entry.content}
         onFocus={e => this.updateActiveIndex(e, index)}
         blurOnSubmit={true}
@@ -222,18 +241,20 @@ class Editor extends Component {
 
   render() {
     return (
-      <ScrollView keyboardShouldPersistTaps={"always"}>
-        <View style={{ marginTop: 50 }}>
-          <View>
-            {this.props.entries.map((entry, index) => {
-              return this.renderAsTextInput(entry, index)
-            })}
-          </View>
-          <View style={{ marginTop: 20, flex: 1 }}>
-            <EditorToolbar />
-          </View>
+      <View style={{ marginTop: 50 }}>
+        <ScrollView
+          keyboardShouldPersistTaps={"always"}
+          keyboardDismissMode="on-drag"
+          ref={"scrollContainer"}
+          style={{ height: this.props.containerHeight, backgroundColor: "#FFFFE0" }}>
+          {this.props.entries.map((entry, index) => {
+            return this.renderAsTextInput(entry, index)
+          })}>
+        </ScrollView>
+        <View>
+          <EditorToolbar />
         </View>
-      </ScrollView>
+      </View>
     )
   }
 }

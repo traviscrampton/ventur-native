@@ -4,6 +4,19 @@ export function editText(payload) {
     payload: payload
   }
 }
+export function setNextIndexNull() {
+  return {
+    type: "SET_NEXT_INDEX_NULL",
+    payload: null
+  }
+}
+
+export function updateContainerHeight(payload) {
+  return {
+    type: "UPDATE_CONTAINER_HEIGHT",
+    payload: payload
+  }
+}
 
 export function updateFormatBar(payload) {
   return {
