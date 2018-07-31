@@ -25,6 +25,14 @@ export function updateFormatBar(payload) {
   }
 }
 
+export function createNewTextEntry(payload) {
+  let {newEntry, newIndex} = payload
+  return function(dispatch, getState) {
+    dispatch(createNewEntry(payload))
+    dispatch(updateActiveIndex(newIndex))
+  }
+}
+
 export function createNewEntry(payload) {
   return {
     type: "CREATE_NEW_ENTRY",

@@ -23,59 +23,12 @@ const defaultTextData = {
       content: "Do not ask what you have done for your country",
       styles: "QUOTE-2",
       height: 50
-    },
-    {
-      content:
-        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
-      styles: "",
-      height: 50
-    },
-    {
-      content:
-        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
-      styles: "",
-      height: 50
-    },
-    {
-      content:
-        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
-      styles: "",
-      height: 50
-    },
-    {
-      content:
-        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
-      styles: "",
-      height: 50
-    },
-    {
-      content:
-        "The adventures of ahab have really shown us what we are working with on one of the heaviest expeditions that we could have embarked on",
-      styles: "",
-      height: 50
-    },
-
-    {
-      content: "D",
-      styles: "",
-      height: 50
-    },
-    {
-      content: "E",
-      styles: "",
-      height: 50
-    },
-    {
-      content: "",
-      styles: "",
-      height: 50
     }
   ],
-  activeIndex: 4,
+  activeIndex: null,
   isDeleting: false,
   toolbarOptions: ["H1", "QUOTE"],
-  cursorPosition: 0,
-  nextIndex: null
+  cursorPosition: 0
 }
 
 export default (state = defaultTextData, action) => {
@@ -121,13 +74,11 @@ export default (state = defaultTextData, action) => {
       const { newIndex, newEntry } = action.payload
       return {
         ...state,
-        nextIndex: newIndex,
         entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)]
       }
     case DELETE_ENTRY:
       return {
         ...state,
-        nextIndex: action.payload - 1,
         entries: [...state.entries.slice(0, action.payload), ...state.entries.slice(action.payload + 1)]
       }
 

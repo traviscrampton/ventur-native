@@ -24,7 +24,9 @@ import {
   updateActiveIndex,
   updateCursorPosition,
   updateContainerHeight,
-  setNextIndexNull
+  deleteEntry,
+  setNextIndexNull,
+  createNewTextEntry
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import EditorToolbar from "components/editor/editor_toolbar"
@@ -49,7 +51,9 @@ const mapDispatchToProps = dispatch => ({
   updateCursorPosition: payload => dispatch(updateCursorPosition(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
-  setNextIndexNull: payload => dispatch(setNextIndexNull(payload))
+  deleteEntry: payload => dispatch(deleteEntry(payload)),
+  setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
+  createNewTextEntry: payload => dispatch(createNewTextEntry(payload))
 })
 
 class Editor extends Component {
@@ -57,8 +61,8 @@ class Editor extends Component {
     super(props)
     this.lastClickedKey = null
     this.handleKeyPress = this.handleKeyPress.bind(this)
-    this.handleReturnKey = this.handleReturnKey.bind(this)
-    this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
+    // this.handleReturnKey = this.handleReturnKey.bind(this)
+    // this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
   }
 
   componentWillMount() {
@@ -67,13 +71,9 @@ class Editor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let nextIndex = this.refs[`textInput${this.props.nextIndex}`]
-    if (nextIndex) {
-      nextIndex.focus()
-      nextIndex.setNativeProps({
-        selection: { start: this.props.cursorPosition, end: this.props.cursorPosition }
-      })
-      this.props.setNextIndexNull()
+    let activeIndex = this.refs[`textInput${this.props.activeIndex}`]
+    if (activeIndex) {
+      activeIndex.focus()
     }
   }
 
@@ -96,26 +96,26 @@ class Editor extends Component {
     this.props.editEntry(payload)
   }
 
-  handleReturnKey(e, index) {
-    const nextContent = e.nativeEvent.text.substr(this.props.cursorPosition)
-    const previousContent = e.nativeEvent.text.substring(0, this.props.cursorPosition)
-    const newEntry = {
-      content: nextContent,
-      styles: this.props.entries[index].styles
-    }
+  // handleReturnKey(e, index) {
+  //   const nextContent = e.nativeEvent.text.substr(this.props.cursorPosition)
+  //   const previousContent = e.nativeEvent.text.substring(0, this.props.cursorPosition)
+  //   const newEntry = {
+  //     content: nextContent,
+  //     styles: this.props.entries[index].styles
+  //   }
 
-    const entry = {
-      content: previousContent,
-      styles: this.props.entries[index].styles
-    }
+  //   const entry = {
+  //     content: previousContent,
+  //     styles: this.props.entries[index].styles
+  //   }
 
-    let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
+  //   let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
 
-    let oldPayload = Object.assign({}, { entry, index })
+  //   let oldPayload = Object.assign({}, { entry, index })
 
-    let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
-    this.props.handleReturnKey(payload)
-  }
+  //   let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
+  //   this.props.handleReturnKey(payload)
+  // }
 
   handleKeyPress(
     {
@@ -177,25 +177,20 @@ class Editor extends Component {
     }
   }
 
-  handleOnSelectionChange(
-    {
-      nativeEvent: {
-        selection: { start, end }
-      }
-    },
-    index
-  ) {
-    this.props.updateCursorPosition(start)
-    this.lastClickedKey = null
-  }
+  // handleOnSelectionChange(
+  //   {
+  //     nativeEvent: {
+  //       selection: { start, end }
+  //     }
+  //   },
+  //   index
+  // ) {
+  //   this.props.updateCursorPosition(start)
+  //   this.lastClickedKey = null
+  // }
 
   updateActiveIndex(e, index) {
     this.props.updateActiveIndex(index)
-    this.refs[`textInput${index}`].measure(this.findScrollHeight.bind(this))
-  }
-
-  findScrollHeight(ox, oy, width, height, px, py) {
-    this.refs.scrollContainer.scrollTo({ x: 0, y: py, animated: false })
   }
 
   handleLayoutChange(e, index) {
@@ -207,6 +202,47 @@ class Editor extends Component {
     }
   }
 
+  deleteIfEmpty(index) {
+    const entry = this.props.entries[index]
+    if (entry.content.length === 0) {
+      this.props.deleteEntry(index)
+    }
+  }
+
+  renderAsTheText(entry, index) {
+    return (
+      <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, index)} key={index}>
+        <View
+          style={{
+            marginBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10,
+            paddingTop: 0,
+            paddingBottom: 0
+          }}>
+          <Text
+            style={[
+              {
+                fontSize: 22,
+                lineHeight: 30
+              },
+              this.getInputStyling(entry)
+            ]}>
+            {entry.content}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderEntry(entry, index) {
+    if (this.props.activeIndex === index) {
+      return this.renderAsTextInput(entry, index)
+    } else {
+      return this.renderAsTheText(entry, index)
+    }
+  }
+
   renderAsTextInput(entry, index) {
     return (
       <TextInput
@@ -215,27 +251,43 @@ class Editor extends Component {
         ref={`textInput${index}`}
         style={[
           {
+            backgroundColor: "#FFFFE0",
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
             paddingTop: 0,
             paddingBottom: 0,
             fontSize: 22,
-            lineHeight: 30,
-            minHeight: entry.height
+            lineHeight: 30
           },
           this.getInputStyling(entry)
         ]}
-        onKeyPress={e => this.handleKeyPress(e, index)}
         onChangeText={text => this.handleTextChange(text, index)}
-        onSubmitEditing={e => this.handleReturnKey(e, index)}
-        placeholder={"empty text input here"}
+        onBlur={() => this.deleteIfEmpty(index)}
+        placeholder={"DIS IS"}
         value={entry.content}
-        onFocus={e => this.updateActiveIndex(e, index)}
-        blurOnSubmit={true}
-        onLayout={e => this.handleLayoutChange(e, index)}
-        onSelectionChange={e => this.handleOnSelectionChange(e, index)}
+        blurOnSubmit={false}
       />
+    )
+  }
+
+  createNewEntry(index) {
+    let entry = {
+      content: "",
+      styles: ""
+    }
+
+    let payload = { newEntry: entry, newIndex: index }
+    this.props.createNewTextEntry(payload)
+  }
+
+  renderCreateCta(index) {
+    return (
+      <TouchableWithoutFeedback key={`index${index}`} onPress={() => this.createNewEntry(index + 1)}>
+        <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
+          <Text style={{ color: "white" }}>+ ADD CONTENT</Text>
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 
@@ -246,9 +298,9 @@ class Editor extends Component {
           keyboardShouldPersistTaps={"always"}
           keyboardDismissMode="on-drag"
           ref={"scrollContainer"}
-          style={{ height: this.props.containerHeight, backgroundColor: "#FFFFE0" }}>
+          style={{ height: this.props.containerHeight }}>
           {this.props.entries.map((entry, index) => {
-            return this.renderAsTextInput(entry, index)
+            return [this.renderEntry(entry, index), this.renderCreateCta(index)]
           })}>
         </ScrollView>
         <View>
