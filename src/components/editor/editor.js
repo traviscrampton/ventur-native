@@ -29,6 +29,7 @@ import {
   createNewTextEntry
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
+import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
@@ -60,7 +61,7 @@ class Editor extends Component {
   constructor(props) {
     super(props)
     this.lastClickedKey = null
-    this.handleKeyPress = this.handleKeyPress.bind(this)
+    // this.handleKeyPress = this.handleKeyPress.bind(this)
     // this.handleReturnKey = this.handleReturnKey.bind(this)
     // this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
   }
@@ -71,10 +72,10 @@ class Editor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let activeIndex = this.refs[`textInput${this.props.activeIndex}`]
-    if (activeIndex) {
-      activeIndex.focus()
-    }
+    // let activeIndex = this.refs[`textInput${this.props.activeIndex}`]
+    // if (activeIndex) {
+    //   activeIndex.focus()
+    // }
   }
 
   keyboardDidShow(e) {
@@ -96,61 +97,40 @@ class Editor extends Component {
     this.props.editEntry(payload)
   }
 
-  // handleReturnKey(e, index) {
-  //   const nextContent = e.nativeEvent.text.substr(this.props.cursorPosition)
-  //   const previousContent = e.nativeEvent.text.substring(0, this.props.cursorPosition)
-  //   const newEntry = {
-  //     content: nextContent,
-  //     styles: this.props.entries[index].styles
+  // handleKeyPress(
+  //   {
+  //     nativeEvent: { key: keyValue }
+  //   },
+  //   index
+  // ) {
+  //   if (
+  //     this.props.cursorPosition === 0 &&
+  //     keyValue === "Backspace" &&
+  //     this.lastClickedKey === "Backspace" &&
+  //     index > 0
+  //   ) {
+  //     this.handleDeleteEntry(index)
   //   }
-
-  //   const entry = {
-  //     content: previousContent,
-  //     styles: this.props.entries[index].styles
-  //   }
-
-  //   let newPayload = Object.assign({}, { newEntry: newEntry, newIndex: index + 1 })
-
-  //   let oldPayload = Object.assign({}, { entry, index })
-
-  //   let payload = Object.assign({}, { newPayload: newPayload, oldPayload: oldPayload })
-  //   this.props.handleReturnKey(payload)
+  //   this.lastClickedKey = keyValue
   // }
 
-  handleKeyPress(
-    {
-      nativeEvent: { key: keyValue }
-    },
-    index
-  ) {
-    if (
-      this.props.cursorPosition === 0 &&
-      keyValue === "Backspace" &&
-      this.lastClickedKey === "Backspace" &&
-      index > 0
-    ) {
-      this.handleDeleteEntry(index)
-    }
-    this.lastClickedKey = keyValue
-  }
-
-  handleDeleteEntry(index) {
-    const keyName = `textInput${index - 1}`
-    const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
-      index
-    )
-    const entry = {
-      content: updatedContent,
-      styles: previousStyles
-    }
-    let instance = this
-    let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
-    let payload = Object.assign(
-      {},
-      { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition, instance: instance }
-    )
-    this.props.deleteWithEdit(payload)
-  }
+  // handleDeleteEntry(index) {
+  //   const keyName = `textInput${index - 1}`
+  //   const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
+  //     index
+  //   )
+  //   const entry = {
+  //     content: updatedContent,
+  //     styles: previousStyles
+  //   }
+  //   let instance = this
+  //   let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
+  //   let payload = Object.assign(
+  //     {},
+  //     { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition, instance: instance }
+  //   )
+  //   this.props.deleteWithEdit(payload)
+  // }
 
   getDeleteFormConsts(index) {
     const activeText = this.props.entries[index].content
@@ -176,18 +156,6 @@ class Editor extends Component {
         return {}
     }
   }
-
-  // handleOnSelectionChange(
-  //   {
-  //     nativeEvent: {
-  //       selection: { start, end }
-  //     }
-  //   },
-  //   index
-  // ) {
-  //   this.props.updateCursorPosition(start)
-  //   this.lastClickedKey = null
-  // }
 
   updateActiveIndex(e, index) {
     this.props.updateActiveIndex(index)
@@ -236,11 +204,11 @@ class Editor extends Component {
   }
 
   renderEntry(entry, index) {
-    if (this.props.activeIndex === index) {
+    // if (this.props.activeIndex === index) {
       return this.renderAsTextInput(entry, index)
-    } else {
-      return this.renderAsTheText(entry, index)
-    }
+    // } else {
+      // return this.renderAsTheText(entry, index)
+    // }
   }
 
   renderAsTextInput(entry, index) {
@@ -283,11 +251,7 @@ class Editor extends Component {
 
   renderCreateCta(index) {
     return (
-      <TouchableWithoutFeedback key={`index${index}`} onPress={() => this.createNewEntry(index + 1)}>
-        <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
-          <Text style={{ color: "white" }}>+ ADD CONTENT</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      <ContentCreator index={index} key={`contentCreator${index}`}/> 
     )
   }
 

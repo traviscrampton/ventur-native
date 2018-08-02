@@ -8,7 +8,8 @@ import {
   UPDATE_CURSOR_POSITION,
   UPDATE_ACTIVE_INDEX,
   UPDATE_CONTAINER_HEIGHT,
-  SET_NEXT_INDEX_NULL
+  SET_NEXT_INDEX_NULL,
+  UPDATE_ACTIVE_CREATOR
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -28,7 +29,8 @@ const defaultTextData = {
   activeIndex: null,
   isDeleting: false,
   toolbarOptions: ["H1", "QUOTE"],
-  cursorPosition: 0
+  cursorPosition: 0,
+  activeContentCreator: null
 }
 
 export default (state = defaultTextData, action) => {
@@ -49,6 +51,12 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         activeIndex: action.payload
+      }
+
+    case UPDATE_ACTIVE_CREATOR:
+      return {
+        ...state,
+        activeContentCreator: action.payload
       }
 
     case UPDATE_CONTAINER_HEIGHT:

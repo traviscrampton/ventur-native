@@ -4,6 +4,14 @@ export function editText(payload) {
     payload: payload
   }
 }
+
+export function updateActiveCreator(payload) {
+  return {
+    type: "UPDATE_ACTIVE_CREATOR",
+    payload: payload
+  }
+}
+
 export function setNextIndexNull() {
   return {
     type: "SET_NEXT_INDEX_NULL",
