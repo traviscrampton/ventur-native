@@ -233,7 +233,7 @@ class Editor extends Component {
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
-            paddingTop: 0,
+            paddingTop: 15,
             paddingBottom: 0,
             fontSize: 22,
             lineHeight: 27,
