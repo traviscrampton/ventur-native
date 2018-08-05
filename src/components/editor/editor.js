@@ -9,29 +9,21 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
-  CameraRoll
+  KeyboardAvoidingView
 } from "react-native"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
 import {
   editEntry,
-  updateEntryFocus,
   updateFormatBar,
-  handleReturnKey,
-  deleteWithEdit,
   turnTextToTextInput,
   updateActiveIndex,
-  updateCursorPosition,
   removeEntryAndFocus,
-  getCameraRollPhotos,
   updateActiveImageCaption,
   updateContainerHeight
 } from "actions/editor"
-import Markdown from "react-native-markdown-renderer"
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -47,15 +39,9 @@ const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
   updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
   editEntry: payload => dispatch(editEntry(payload)),
-  handleReturnKey: payload => dispatch(handleReturnKey(payload)),
-  deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
-  updateEntryFocus: payload => updateEntryFocus(payload),
-  updateCursorPosition: payload => dispatch(updateCursorPosition(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
-  removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
-  setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
-  getCameraRollPhotos: payload => dispatch(getCameraRollPhotos(payload))
+  removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload))
 })
 
 class Editor extends Component {
@@ -220,11 +206,19 @@ class Editor extends Component {
         <TouchableWithoutFeedback style={{ position: "relative" }} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
             <Image style={{ width: Dimensions.get("window").width, height: 250 }} source={{ uri: entry.uri }} />
-            <Text>{entry.caption}</Text>
+            {this.renderImageCaption(entry)}
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
+  }
+
+  renderImageCaption(entry) {
+    if (entry.caption.length === 0) {
+      return
+    }
+
+    return <Text>{entry.caption}</Text>
   }
 
   renderAsTextInput(entry, index) {
@@ -235,7 +229,6 @@ class Editor extends Component {
         ref={`textInput${index}`}
         style={[
           {
-            backgroundColor: "#FFFFE0",
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,

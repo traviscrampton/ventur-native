@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { updateActiveImageCaption, updateImageCaption } from "actions/editor"
+import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "actions/editor"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
 
 const mapStateToProps = state => ({
@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateImageCaption: payload => dispatch(updateImageCaption(payload)),
+  updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload))
 })
 
@@ -17,12 +18,19 @@ class ImageCaptionForm extends Component {
   constructor(props) {
     super(props)
     this.index = this.props.navigation.getParam("index", "NO-ID")
+    this.handleGoBack = this.handleGoBack.bind(this)
   }
 
   saveCaption() {
     const entry = { ...this.props.entries[this.index], caption: this.props.activeCaption }
     const payload = { entry: entry, index: this.index }
     this.props.updateImageCaption(payload)
+    this.props.navigation.goBack()
+  }
+
+  handleGoBack() {
+    this.props.updateActiveImageCaption("")
+    this.props.updateActiveIndex(null)
     this.props.navigation.goBack()
   }
 
@@ -40,7 +48,7 @@ class ImageCaptionForm extends Component {
           paddingLeft: 10,
           paddingRight: 10
         }}>
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
+        <TouchableWithoutFeedback onPress={this.handleGoBack}>
           <View>
             <Text>Cancel</Text>
           </View>
