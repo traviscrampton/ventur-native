@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { setSelectedImages, addImagesToEntries } from "actions/editor"
 import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, ScrollView, View, Image, Button } from "react-native"
 import CameraRollPicker from "react-native-camera-roll-picker"
-import Header from "components/editor/header"
+import { Header } from "components/editor/header"
 
 const mapStateToProps = state => ({
   selectedImages: state.editor.selectedImages
