@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { createNewTextEntry, updateActiveCreator } from "actions/editor"
-import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
+import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View, CameraRoll } from "react-native"
 
 const mapStateToProps = state => ({
   activeContentCreator: state.editor.activeContentCreator
@@ -18,7 +18,8 @@ class ContentCreator extends Component {
   createNewEntry(index) {
     let entry = {
       content: "",
-      styles: ""
+      styles: "",
+      type: "text"
     }
 
     let payload = { newEntry: entry, newIndex: index }
@@ -34,7 +35,7 @@ class ContentCreator extends Component {
             <Text style={{ color: "white" }}>Add Text</Text>
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
           <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
             <Text style={{ color: "white" }}>Add Image</Text>
           </View>

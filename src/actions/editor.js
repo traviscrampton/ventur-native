@@ -1,6 +1,42 @@
-export function editText(payload) {
+export function editEntry(payload) {
   return {
-    type: "EDIT_TEXT",
+    type: "EDIT_ENTRY",
+    payload: payload
+  }
+}
+
+export function updateImageCaption(payload) {
+  return function(dispatch, getState) {
+    dispatch(editEntry(payload))
+    dispatch(updateActiveImageCaption(""))
+    dispatch(updateActiveIndex(null))
+  }
+}
+
+export function addImagesToEntries(payload) {
+  return {
+    type: "ADD_IMAGES_TO_ENTRIES",
+    payload: payload
+  }
+}
+
+export function updateActiveImageCaption(payload) {
+  return {
+    type: "UPDATE_ACTIVE_IMAGE_CAPTION",
+    payload: payload
+  }
+}
+
+export function setSelectedImages(payload) {
+  return {
+    type: "SET_SELECTED_IMAGES",
+    payload: payload
+  }
+}
+
+export function getCameraRollPhotos(payload) {
+  return {
+    type: "GET_CAMERA_ROLL_PHOTOS",
     payload: payload
   }
 }
@@ -34,7 +70,8 @@ export function updateFormatBar(payload) {
 }
 
 export function createNewTextEntry(payload) {
-  let {newEntry, newIndex} = payload
+  let { newEntry, newIndex } = payload
+
   return function(dispatch, getState) {
     dispatch(createNewEntry(payload))
     dispatch(updateActiveIndex(newIndex))
@@ -45,6 +82,13 @@ export function createNewEntry(payload) {
   return {
     type: "CREATE_NEW_ENTRY",
     payload: payload
+  }
+}
+
+export function removeEntryAndFocus(payload) {
+  return function(dispatch, getState) {
+    dispatch(deleteEntry(payload))
+    dispatch(updateActiveIndex(null))
   }
 }
 

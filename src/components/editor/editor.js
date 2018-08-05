@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import {
   StyleSheet,
-  FlatList,
   View,
   Text,
   TextInput,
@@ -10,12 +9,13 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  CameraRoll
 } from "react-native"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
 import {
-  editText,
+  editEntry,
   updateEntryFocus,
   updateFormatBar,
   handleReturnKey,
@@ -23,10 +23,10 @@ import {
   turnTextToTextInput,
   updateActiveIndex,
   updateCursorPosition,
-  updateContainerHeight,
-  deleteEntry,
-  setNextIndexNull,
-  createNewTextEntry
+  removeEntryAndFocus,
+  getCameraRollPhotos,
+  updateActiveImageCaption,
+  updateContainerHeight
 } from "actions/editor"
 import Markdown from "react-native-markdown-renderer"
 import ContentCreator from "components/editor/content_creator"
@@ -45,25 +45,23 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
-  editEntry: payload => dispatch(editText(payload)),
+  updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
+  editEntry: payload => dispatch(editEntry(payload)),
   handleReturnKey: payload => dispatch(handleReturnKey(payload)),
   deleteWithEdit: payload => dispatch(deleteWithEdit(payload)),
   updateEntryFocus: payload => updateEntryFocus(payload),
   updateCursorPosition: payload => dispatch(updateCursorPosition(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
-  deleteEntry: payload => dispatch(deleteEntry(payload)),
+  removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
-  createNewTextEntry: payload => dispatch(createNewTextEntry(payload))
+  getCameraRollPhotos: payload => dispatch(getCameraRollPhotos(payload))
 })
 
 class Editor extends Component {
   constructor(props) {
     super(props)
-    this.lastClickedKey = null
-    // this.handleKeyPress = this.handleKeyPress.bind(this)
-    // this.handleReturnKey = this.handleReturnKey.bind(this)
-    // this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
+    this.openCameraRoll = this.openCameraRoll.bind(this)
   }
 
   componentWillMount() {
@@ -95,50 +93,6 @@ class Editor extends Component {
 
     payload = Object.assign({}, { entry, index })
     this.props.editEntry(payload)
-  }
-
-  // handleKeyPress(
-  //   {
-  //     nativeEvent: { key: keyValue }
-  //   },
-  //   index
-  // ) {
-  //   if (
-  //     this.props.cursorPosition === 0 &&
-  //     keyValue === "Backspace" &&
-  //     this.lastClickedKey === "Backspace" &&
-  //     index > 0
-  //   ) {
-  //     this.handleDeleteEntry(index)
-  //   }
-  //   this.lastClickedKey = keyValue
-  // }
-
-  // handleDeleteEntry(index) {
-  //   const keyName = `textInput${index - 1}`
-  //   const { activeText, previousText, previousStyles, updatedContent, pointerPosition } = this.getDeleteFormConsts(
-  //     index
-  //   )
-  //   const entry = {
-  //     content: updatedContent,
-  //     styles: previousStyles
-  //   }
-  //   let instance = this
-  //   let oldPayload = Object.assign({}, { entry: entry, index: index - 1 })
-  //   let payload = Object.assign(
-  //     {},
-  //     { oldPayload: oldPayload, index: index, cursorPosition: pointerPosition, instance: instance }
-  //   )
-  //   this.props.deleteWithEdit(payload)
-  // }
-
-  getDeleteFormConsts(index) {
-    const activeText = this.props.entries[index].content
-    const previousText = this.props.entries[index - 1].content
-    const pointerPosition = previousText.length
-    const previousStyles = this.props.entries[index - 1].styles
-    const updatedContent = previousText.concat(activeText)
-    return { activeText, previousText, previousStyles, updatedContent, pointerPosition }
   }
 
   getInputStyling(entry) {
@@ -173,7 +127,7 @@ class Editor extends Component {
   deleteIfEmpty(index) {
     const entry = this.props.entries[index]
     if (entry.content.length === 0) {
-      this.props.deleteEntry(index)
+      this.props.removeEntryAndFocus(index)
     }
   }
 
@@ -203,12 +157,74 @@ class Editor extends Component {
     )
   }
 
-  renderEntry(entry, index) {
-    // if (this.props.activeIndex === index) {
+  TextOrTextInput(entry, index) {
+    if (this.props.activeIndex === index) {
       return this.renderAsTextInput(entry, index)
-    // } else {
-      // return this.renderAsTheText(entry, index)
-    // }
+    } else {
+      return this.renderAsTheText(entry, index)
+    }
+  }
+
+  renderEntry(entry, index) {
+    switch (entry.type) {
+      case "text":
+        return this.renderAsTextInput(entry, index)
+      case "image":
+        return this.renderAsImage(entry, index)
+      default:
+        console.log("WHAT IS IT?!", entry)
+    }
+  }
+
+  renderOpacCover(index) {
+    // todo => make functional component
+    if (index !== this.props.activeIndex) {
+      return
+    }
+
+    return (
+      <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
+        <View
+          style={{
+            width: Dimensions.get("window").width,
+            height: 250,
+            padding: 10,
+            zIndex: 1,
+            opacity: 0.6,
+            display: "flex",
+            backgroundColor: "black",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            position: "absolute"
+          }}>
+          <TouchableWithoutFeedback onPress={() => this.props.removeEntryAndFocus(index)}>
+            <View>
+              <Text style={{ color: "white", opacity: 1, fontSize: 20 }}>Delete</Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={e => this.openImageCaptionForm(e, index)}>
+            <View>
+              <Text style={{ color: "white", opacity: 1, fontSize: 20 }}>Caption</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderAsImage(entry, index) {
+    // todo => make functional component
+    return (
+      <View key={`image${index}`} style={{ position: "relative" }}>
+        {this.renderOpacCover(index)}
+        <TouchableWithoutFeedback style={{ position: "relative" }} onPress={e => this.updateActiveIndex(e, index)}>
+          <View>
+            <Image style={{ width: Dimensions.get("window").width, height: 250 }} source={{ uri: entry.uri }} />
+            <Text>{entry.caption}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
   }
 
   renderAsTextInput(entry, index) {
@@ -226,41 +242,47 @@ class Editor extends Component {
             paddingTop: 0,
             paddingBottom: 0,
             fontSize: 22,
-            lineHeight: 30
+            lineHeight: 27
           },
           this.getInputStyling(entry)
         ]}
         onChangeText={text => this.handleTextChange(text, index)}
         onBlur={() => this.deleteIfEmpty(index)}
-        placeholder={"DIS IS"}
+        placeholder={"Start Tying..."}
         value={entry.content}
         blurOnSubmit={false}
       />
     )
   }
 
-  createNewEntry(index) {
-    let entry = {
-      content: "",
-      styles: ""
-    }
+  openCameraRoll(e, index) {
+    this.props.navigation.navigate("CameraRollContainer", { index: index })
+  }
 
-    let payload = { newEntry: entry, newIndex: index }
-    this.props.createNewTextEntry(payload)
+  openImageCaptionForm(e, index) {
+    const entryCaption = this.props.entries[index].caption
+    this.props.updateActiveImageCaption(entryCaption)
+    this.props.navigation.navigate("ImageCaptionForm", { index: index })
   }
 
   renderCreateCta(index) {
     return (
-      <ContentCreator index={index} key={`contentCreator${index}`}/> 
+      <ContentCreator
+        index={index}
+        key={`contentCreator${index}`}
+        openCameraRoll={e => this.openCameraRoll(e, index)}
+      />
     )
   }
 
   render() {
     return (
-      <View style={{ marginTop: 50 }}>
+      <View>
+        <View style={{ height: 60 }} />
         <ScrollView
           keyboardShouldPersistTaps={"always"}
           keyboardDismissMode="on-drag"
+          bounces={false}
           ref={"scrollContainer"}
           style={{ height: this.props.containerHeight }}>
           {this.props.entries.map((entry, index) => {
