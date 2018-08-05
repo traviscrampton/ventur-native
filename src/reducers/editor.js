@@ -17,12 +17,14 @@ const defaultTextData = {
     {
       type: "text",
       content: "The Argentine side of patagonia",
-      styles: "H1"
+      styles: "H1",
+      height: ""
     },
     {
       type: "text",
       content: "Do not ask what you have done for your country",
-      styles: "QUOTE-2"
+      styles: "QUOTE-2",
+      height: ""
     }
   ],
   activeIndex: null,
