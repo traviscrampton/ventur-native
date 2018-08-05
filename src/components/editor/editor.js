@@ -48,6 +48,7 @@ class Editor extends Component {
   constructor(props) {
     super(props)
     this.openCameraRoll = this.openCameraRoll.bind(this)
+    this.handleLayoutChange = this.handleLayoutChange.bind(this)
   }
 
   componentWillMount() {
@@ -103,7 +104,7 @@ class Editor extends Component {
 
   handleLayoutChange(e, index) {
     let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, height: e.nativeEvent.layout.height }
+    const entry = { ...editableEntry, height: e.nativeEvent.layout.height}
     if (editableEntry.height !== entry.height) {
       payload = Object.assign({}, { entry, index })
       this.props.editEntry(payload)
@@ -232,10 +233,11 @@ class Editor extends Component {
             marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
-            paddingTop: 0,
+            paddingTop: 15,
             paddingBottom: 0,
             fontSize: 22,
-            lineHeight: 27
+            lineHeight: 27,
+            minHeight: Math.max(60, entry.height)
           },
           this.getInputStyling(entry)
         ]}
@@ -243,6 +245,7 @@ class Editor extends Component {
         onBlur={() => this.deleteIfEmpty(index)}
         placeholder={"Start Tying..."}
         value={entry.content}
+        onLayout={e => this.handleLayoutChange(e, index)}
         blurOnSubmit={false}
       />
     )

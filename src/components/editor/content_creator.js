@@ -47,7 +47,7 @@ class ContentCreator extends Component {
   renderInitialState() {
     return (
       <TouchableWithoutFeedback onPress={() => this.props.updateActiveCreator(this.props.index)}>
-        <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
+        <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue"}}>
           <Text style={{ color: "white" }}>+ ADD CONTENT</Text>
         </View>
       </TouchableWithoutFeedback>
