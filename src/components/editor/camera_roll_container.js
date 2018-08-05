@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import { setSelectedImages, addImagesToEntries } from "actions/editor"
 import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, ScrollView, View, Image, Button } from "react-native"
 import CameraRollPicker from "react-native-camera-roll-picker"
+import Header from "components/editor/header"
 
 const mapStateToProps = state => ({
   selectedImages: state.editor.selectedImages
@@ -18,6 +19,7 @@ class CameraRollContainer extends Component {
     this.compileSelectedImages = this.compileSelectedImages.bind(this)
     this.index = this.props.navigation.getParam("index", "NO-ID")
     this.addImagesToEntries = this.addImagesToEntries.bind(this)
+    this.handleGoBack = this.handleGoBack.bind(this)
   }
 
   addImagesToEntries() {
@@ -36,39 +38,33 @@ class CameraRollContainer extends Component {
     this.props.setSelectedImages(selectedImages)
   }
 
+  handleGoBack() {
+    this.props.navigation.goBack()
+  }
+
   renderHeader() {
+    const headerProps = {
+      goBackCta: "Cancel",
+      handleGoBack: this.handleGoBack,
+      centerCta: `${this.props.selectedImages.length} selected`,
+      handleConfirm: this.addImagesToEntries,
+      confirmCta: "Add"
+    }
+    return <Header key="header" {...headerProps} />
+  }
+
+  renderCameraRollPicker() {
     return (
-      <View
-        key="header"
-        style={{
-          display: "flex",
-          height: 60,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingTop: 10,
-          paddingLeft: 10,
-          paddingRight: 10
-        }}>
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
-          <View>
-            <Text>Cancel</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <View>
-          <Text>{`${this.props.selectedImages.length} selected`}</Text>
-        </View>
-        <TouchableWithoutFeedback onPress={() => this.addImagesToEntries()}>
-          <View>
-            <Text>Add</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+      <CameraRollPicker
+        key="cameraRollPicker"
+        selected={this.props.selectedImages}
+        callback={this.compileSelectedImages}
+      />
     )
   }
 
   render() {
-    return [this.renderHeader(), <CameraRollPicker key="cameraRollPicker" selected={this.props.selectedImages} callback={this.compileSelectedImages} />]
+    return [this.renderHeader(), this.renderCameraRollPicker()]
   }
 }
 

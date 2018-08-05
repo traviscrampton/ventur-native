@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import Header from "components/editor/header"
 import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "actions/editor"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
 
@@ -19,6 +20,7 @@ class ImageCaptionForm extends Component {
     super(props)
     this.index = this.props.navigation.getParam("index", "NO-ID")
     this.handleGoBack = this.handleGoBack.bind(this)
+    this.saveCaption = this.saveCaption.bind(this)
   }
 
   saveCaption() {
@@ -35,34 +37,14 @@ class ImageCaptionForm extends Component {
   }
 
   renderHeader() {
-    return (
-      <View
-        key="header"
-        style={{
-          display: "flex",
-          height: 60,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingTop: 10,
-          paddingLeft: 10,
-          paddingRight: 10
-        }}>
-        <TouchableWithoutFeedback onPress={this.handleGoBack}>
-          <View>
-            <Text>Cancel</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <View>
-          <Text>Add Caption</Text>
-        </View>
-        <TouchableWithoutFeedback onPress={() => this.saveCaption()}>
-          <View>
-            <Text>Add</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
+    const headerProps = {
+      goBackCta: "Cancel",
+      handleGoBack: this.handleGoBack,
+      centerCta: "Add Caption",
+      handleConfirm: this.saveCaption,
+      confirmCta: "Add"
+    }
+    return <Header key="header" {...headerProps} />
   }
 
   renderImage() {
