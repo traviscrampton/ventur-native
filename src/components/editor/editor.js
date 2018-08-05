@@ -104,8 +104,8 @@ class Editor extends Component {
 
   handleLayoutChange(e, index) {
     let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, height: e.nativeEvent.layout.height + 10 }
-    if (editableEntry.height + 10 !== entry.height) {
+    const entry = { ...editableEntry, height: e.nativeEvent.layout.height}
+    if (editableEntry.height !== entry.height) {
       payload = Object.assign({}, { entry, index })
       this.props.editEntry(payload)
     }
@@ -237,7 +237,7 @@ class Editor extends Component {
             paddingBottom: 0,
             fontSize: 22,
             lineHeight: 27,
-            minHeight: Math.max(100, entry.height)
+            minHeight: Math.max(60, entry.height)
           },
           this.getInputStyling(entry)
         ]}
