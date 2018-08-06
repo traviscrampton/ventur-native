@@ -16,27 +16,13 @@ const defaultTextData = {
   entries: [
     {
       type: "text",
-      content: "The Argentine side of patagonia",
+      content: "Mexico",
       styles: "H1",
-      height: ""
-    },
-    {
-      type: "text",
-      content: "Do not ask what you have done for your country",
-      styles: "QUOTE-2",
-      height: ""
-    },
-    {
-      type: "text",
-      content: "Do not ask what you have done for your country",
-      styles: "QUOTE-2",
       height: ""
     }
   ],
   activeIndex: null,
-  isDeleting: false,
   toolbarOptions: ["H1", "QUOTE"],
-  cursorPosition: 0,
   activeContentCreator: null,
   selectedImages: [],
   activeCaption: ""

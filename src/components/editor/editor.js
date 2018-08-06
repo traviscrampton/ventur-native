@@ -26,7 +26,7 @@ import {
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import InputScrollView from 'react-native-input-scroll-view';
+import InputScrollView from "react-native-input-scroll-view"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -107,7 +107,7 @@ class Editor extends Component {
 
   handleLayoutChange(e, index) {
     let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, height: e.nativeEvent.contentSize.height + 10 }
+    const entry = { ...editableEntry, height: e.nativeEvent.contentSize.height + 5 }
     payload = Object.assign({}, { entry, index })
     this.props.editEntry(payload)
   }
@@ -156,7 +156,7 @@ class Editor extends Component {
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
-        return this.TextOrTextInput(entry, index)
+        return this.renderAsTextInput(entry, index)
       case "image":
         return this.renderAsImage(entry, index)
       default:
@@ -175,7 +175,7 @@ class Editor extends Component {
         <View
           style={{
             width: Dimensions.get("window").width,
-            height: 250,
+            height: 350,
             padding: 10,
             zIndex: 1,
             opacity: 0.6,
@@ -207,7 +207,7 @@ class Editor extends Component {
         {this.renderOpacCover(index)}
         <TouchableWithoutFeedback style={{ position: "relative" }} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
-            <Image style={{ width: Dimensions.get("window").width, height: 250 }} source={{ uri: entry.uri }} />
+            <Image style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }} />
             {this.renderImageCaption(entry)}
           </View>
         </TouchableWithoutFeedback>
@@ -220,14 +220,17 @@ class Editor extends Component {
       return
     }
 
-    return <Text>{entry.caption}</Text>
+    return (
+      <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+        <Text style={{ textAlign: "center" }}>{entry.caption}</Text>
+      </View>
+    )
   }
 
   renderAsTextInput(entry, index) {
     return (
       <TextInput
         multiline
-        autoFocus
         key={index}
         ref={`textInput${index}`}
         style={[
@@ -238,7 +241,7 @@ class Editor extends Component {
             paddingBottom: 0,
             fontSize: 18,
             lineHeight: 25,
-            minHeight: Math.max(60, entry.height)
+            minHeight: Math.max(30, entry.height)
           },
           this.getInputStyling(entry)
         ]}
@@ -274,10 +277,9 @@ class Editor extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{ backgroundColor: "white" }}>
         <View style={{ height: 60 }} />
-        <InputScrollView
-          keyboardShouldPersistTaps={"always"}>
+        <InputScrollView bounces={false} keyboardOffset={100} multilineInputStyle={{ lineHeight: 30 }}>
           {this.props.entries.map((entry, index) => {
             return [this.renderEntry(entry, index), this.renderCreateCta(index)]
           })}>

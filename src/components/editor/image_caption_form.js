@@ -67,6 +67,7 @@ class ImageCaptionForm extends Component {
         <TextInput
           autoFocus
           multiline
+          style={{ textAlign: "center" }}
           value={this.props.activeCaption}
           maxLength={200}
           onChangeText={text => this.updateActiveImageCaption(text)}
