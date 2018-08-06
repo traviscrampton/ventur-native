@@ -26,6 +26,7 @@ import {
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import InputScrollView from 'react-native-input-scroll-view';
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -275,14 +276,12 @@ class Editor extends Component {
     return (
       <View>
         <View style={{ height: 60 }} />
-        <KeyboardAwareScrollView
-          extraHeight={100}
-          innerRef={ref => (this.scroll = ref)}
+        <InputScrollView
           keyboardShouldPersistTaps={"always"}>
           {this.props.entries.map((entry, index) => {
             return [this.renderEntry(entry, index), this.renderCreateCta(index)]
           })}>
-        </KeyboardAwareScrollView>
+        </InputScrollView>
         <View>
           <EditorToolbar />
         </View>
