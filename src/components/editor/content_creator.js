@@ -29,15 +29,23 @@ class ContentCreator extends Component {
 
   renderOptionState() {
     return (
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingLeft: 50,
+          paddingRight: 50,
+          height: 50
+        }}>
         <TouchableWithoutFeedback onPress={() => this.createNewEntry(this.props.index + 1)}>
-          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
-            <Text style={{ color: "white" }}>Add Text</Text>
+          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "white" }}>
+            <Text style={{ color: "gray" }}>Add Text</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
-          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue" }}>
-            <Text style={{ color: "white" }}>Add Image</Text>
+          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "white" }}>
+            <Text style={{ color: "gray" }}>Add Image</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -47,8 +55,8 @@ class ContentCreator extends Component {
   renderInitialState() {
     return (
       <TouchableWithoutFeedback onPress={() => this.props.updateActiveCreator(this.props.index)}>
-        <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "blue"}}>
-          <Text style={{ color: "white" }}>+ ADD CONTENT</Text>
+        <View
+          style={{ paddingTop: 10, paddingLeft: 20, paddingRight: 20, paddingBottom: 10, backgroundColor: "white", height: 50 }}>
         </View>
       </TouchableWithoutFeedback>
     )
