@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  findNodeHandle,
   KeyboardAvoidingView
 } from "react-native"
 import { connect } from "react-redux"
@@ -24,6 +25,7 @@ import {
 } from "actions/editor"
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -104,11 +106,9 @@ class Editor extends Component {
 
   handleLayoutChange(e, index) {
     let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, height: e.nativeEvent.layout.height}
-    if (editableEntry.height !== entry.height) {
-      payload = Object.assign({}, { entry, index })
-      this.props.editEntry(payload)
-    }
+    const entry = { ...editableEntry, height: e.nativeEvent.contentSize.height + 10 }
+    payload = Object.assign({}, { entry, index })
+    this.props.editEntry(payload)
   }
 
   deleteIfEmpty(index) {
@@ -123,17 +123,17 @@ class Editor extends Component {
       <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, index)} key={index}>
         <View
           style={{
-            marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
             paddingTop: 0,
-            paddingBottom: 0
+            paddingBottom: 10,
+            minHeight: Math.max(60, entry.height)
           }}>
           <Text
             style={[
               {
-                fontSize: 22,
-                lineHeight: 30
+                fontSize: 18,
+                lineHeight: 25
               },
               this.getInputStyling(entry)
             ]}>
@@ -155,7 +155,7 @@ class Editor extends Component {
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
-        return this.renderAsTextInput(entry, index)
+        return this.TextOrTextInput(entry, index)
       case "image":
         return this.renderAsImage(entry, index)
       default:
@@ -226,26 +226,26 @@ class Editor extends Component {
     return (
       <TextInput
         multiline
+        autoFocus
         key={index}
         ref={`textInput${index}`}
         style={[
           {
-            marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
-            paddingTop: 15,
+            paddingTop: 0,
             paddingBottom: 0,
-            fontSize: 22,
-            lineHeight: 27,
+            fontSize: 18,
+            lineHeight: 25,
             minHeight: Math.max(60, entry.height)
           },
           this.getInputStyling(entry)
         ]}
         onChangeText={text => this.handleTextChange(text, index)}
         onBlur={() => this.deleteIfEmpty(index)}
-        placeholder={"Start Tying..."}
+        placeholder={"Enter Entry..."}
         value={entry.content}
-        onLayout={e => this.handleLayoutChange(e, index)}
+        onContentSizeChange={e => this.handleLayoutChange(e, index)}
         blurOnSubmit={false}
       />
     )
@@ -275,16 +275,14 @@ class Editor extends Component {
     return (
       <View>
         <View style={{ height: 60 }} />
-        <ScrollView
-          keyboardShouldPersistTaps={"always"}
-          keyboardDismissMode="on-drag"
-          bounces={false}
-          ref={"scrollContainer"}
-          style={{ height: this.props.containerHeight }}>
+        <KeyboardAwareScrollView
+          extraHeight={100}
+          innerRef={ref => (this.scroll = ref)}
+          keyboardShouldPersistTaps={"always"}>
           {this.props.entries.map((entry, index) => {
             return [this.renderEntry(entry, index), this.renderCreateCta(index)]
           })}>
-        </ScrollView>
+        </KeyboardAwareScrollView>
         <View>
           <EditorToolbar />
         </View>
