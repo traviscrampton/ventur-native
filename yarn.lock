@@ -585,6 +585,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/markdown-it@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-0.0.4.tgz#c5f67365916044b342dae8d702724788ba0b5b74"
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
@@ -596,6 +600,18 @@
 "@types/node@^8.0.24":
   version "8.10.21"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.21.tgz#12b3f2359b27aa05a45d886c8ba1eb8d1a77e285"
+
+"@types/react-native@>=0.50.0":
+  version "0.56.5"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.56.5.tgz#5caa134895cf275406a71f649f6c6f53f6d7a3ed"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*":
+  version "16.4.7"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.7.tgz#f33f6d759a7e1833befa15224d68942d178a5a3f"
+  dependencies:
+    csstype "^2.2.0"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -2258,6 +2274,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   dependencies:
     cssom "0.3.x"
 
+csstype@^2.2.0:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
+
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"
@@ -2491,6 +2511,10 @@ encoding@^0.1.11:
   resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
   dependencies:
     iconv-lite "~0.4.13"
+
+entities@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
 
 envinfo@^3.0.0:
   version "3.11.1"
@@ -4440,6 +4464,12 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linkify-it@^2.0.0:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-2.0.3.tgz#d94a4648f9b1c179d64fa97291268bdb6ce9434f"
+  dependencies:
+    uc.micro "^1.0.1"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -4627,6 +4657,16 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+markdown-it@^8.4.0:
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-8.4.2.tgz#386f98998dc15a37722aa7722084f4020bdd9b54"
+  dependencies:
+    argparse "^1.0.7"
+    entities "~1.1.1"
+    linkify-it "^2.0.0"
+    mdurl "^1.0.1"
+    uc.micro "^1.0.5"
+
 marker-clusterer-plus@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/marker-clusterer-plus/-/marker-clusterer-plus-2.1.4.tgz#f8eff74d599dab3b7d0e3fed5264ea0e704f5d67"
@@ -4658,6 +4698,10 @@ md5@^2.2.1:
 md5hex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/md5hex/-/md5hex-1.0.0.tgz#ed74b477a2ee9369f75efee2f08d5915e52a42e8"
+
+mdurl@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -5695,6 +5739,13 @@ qs@6.5.2, qs@^6.4.0, qs@^6.5.0, qs@^6.5.1, qs@~6.5.1:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
+query-string@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.1.0.tgz#01e7d69f6a0940dac67a937d6c6325647aa4532a"
+  dependencies:
+    decode-uri-component "^0.2.0"
+    strict-uri-encode "^2.0.0"
+
 querystring@0.2.0, querystring@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
@@ -5818,6 +5869,10 @@ react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
+react-native-camera-roll-picker@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-camera-roll-picker/-/react-native-camera-roll-picker-1.2.3.tgz#b117fd3a2b9012dcccee1261a9bc427226b8d6d2"
+
 react-native-debugger-open@^0.3.17:
   version "0.3.17"
   resolved "https://registry.yarnpkg.com/react-native-debugger-open/-/react-native-debugger-open-0.3.17.tgz#85b1b0dd76b0025d6f7c16a7c161b9d30a9bae93"
@@ -5843,6 +5898,12 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
+react-native-fit-image@^1.5.2:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/react-native-fit-image/-/react-native-fit-image-1.5.4.tgz#73d2fccc7ad902cf2ffcd008a2a74749ad50134a"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-gesture-handler@1.0.0-alpha.41:
   version "1.0.0-alpha.41"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.41.tgz#5667a1977ab148339ec2e7b0a94ad4b959cf09e5"
@@ -5851,12 +5912,33 @@ react-native-gesture-handler@1.0.0-alpha.41:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-iphone-x-helper@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.0.3.tgz#7a2f1e0574e899a0f1d426e6167fd98990083214"
+
+react-native-keyboard-aware-scroll-view@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.6.0.tgz#0f15bd7d09c0cb48a4ab9ba0d83897fc84b1a1e1"
+  dependencies:
+    prop-types "^15.6.0"
+    react-native-iphone-x-helper "^1.0.1"
+
 react-native-maps@0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.21.0.tgz#005f58e93d7623ad59667e8002101970ddf235c2"
   dependencies:
     babel-plugin-module-resolver "^2.3.0"
     babel-preset-react-native "1.9.0"
+
+react-native-markdown-renderer@^3.2.8:
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/react-native-markdown-renderer/-/react-native-markdown-renderer-3.2.8.tgz#217046cf198eca632a65f93cdf7dd7766f718070"
+  dependencies:
+    "@types/markdown-it" "^0.0.4"
+    "@types/react-native" ">=0.50.0"
+    markdown-it "^8.4.0"
+    prop-types "^15.5.10"
+    react-native-fit-image "^1.5.2"
 
 react-native-safe-area-view@^0.7.0:
   version "0.7.0"
@@ -6006,15 +6088,15 @@ react-navigation-deprecated-tab-navigator@1.3.0:
   dependencies:
     react-native-tab-view "^0.0.77"
 
-react-navigation-drawer@0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/react-navigation-drawer/-/react-navigation-drawer-0.4.2.tgz#49aa1bc6684923294a9c112dce75d8ec4184c64f"
+react-navigation-drawer@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-navigation-drawer/-/react-navigation-drawer-0.5.0.tgz#d91b6a6ec65c34ba78c00f814b1e6508922cc9ec"
   dependencies:
     react-native-drawer-layout-polyfill "^1.3.2"
 
-react-navigation-tabs@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/react-navigation-tabs/-/react-navigation-tabs-0.5.1.tgz#ed33bce3a3e21b92646700de25bd94b8fc570371"
+react-navigation-tabs@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-navigation-tabs/-/react-navigation-tabs-0.6.0.tgz#2f526194f4360e56c2702e736887449acc2080dc"
   dependencies:
     hoist-non-react-statics "^2.5.0"
     prop-types "^15.6.1"
@@ -6022,19 +6104,20 @@ react-navigation-tabs@0.5.1:
     react-native-safe-area-view "^0.7.0"
     react-native-tab-view "^1.0.0"
 
-react-navigation@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-2.5.2.tgz#b1ab2d1931eecda71ec0e0684c7ff484844e2d10"
+react-navigation@^2.6.1:
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-2.11.2.tgz#cd099f6d7d09efe48ef8463614a3abb113d45c01"
   dependencies:
     clamp "^1.0.1"
     create-react-context "^0.2.1"
     hoist-non-react-statics "^2.2.0"
     path-to-regexp "^1.7.0"
+    query-string "^6.1.0"
     react-lifecycles-compat "^3"
     react-native-safe-area-view "^0.8.0"
     react-navigation-deprecated-tab-navigator "1.3.0"
-    react-navigation-drawer "0.4.2"
-    react-navigation-tabs "0.5.1"
+    react-navigation-drawer "0.5.0"
+    react-navigation-tabs "0.6.0"
 
 react-prop-types-element-of-type@2.2.0:
   version "2.2.0"
@@ -6865,6 +6948,10 @@ stream-parser@~0.3.1:
   dependencies:
     debug "2"
 
+strict-uri-encode@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
+
 string-length@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/string-length/-/string-length-2.0.0.tgz#d40dbb686a3ace960c1cffca562bf2c45f8363ed"
@@ -7222,6 +7309,10 @@ typedarray@^0.0.6:
 ua-parser-js@^0.7.18:
   version "0.7.18"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.18.tgz#a7bfd92f56edfb117083b69e31d2aa8882d4b1ed"
+
+uc.micro@^1.0.1, uc.micro@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.5.tgz#0c65f15f815aa08b560a61ce8b4db7ffc3f45376"
 
 uglify-es@^3.1.9:
   version "3.3.9"
