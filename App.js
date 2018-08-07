@@ -10,7 +10,7 @@ import { SET_CURRENT_USER } from "actions/action_types"
 import thunk from "redux-thunk"
 import { AsyncStorage } from "react-native"
 
-const store = createStore(allReducers, applyMiddleware(logger), applyMiddleware(thunk))
+const store = createStore(allReducers, applyMiddleware(thunk))
 
 export default class App extends Component {
   componentWillMount() {

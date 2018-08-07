@@ -8,7 +8,8 @@ import {
   UPDATE_ACTIVE_CREATOR,
   SET_SELECTED_IMAGES,
   ADD_IMAGES_TO_ENTRIES,
-  UPDATE_ACTIVE_IMAGE_CAPTION
+  UPDATE_ACTIVE_IMAGE_CAPTION,
+  SET_NEXT_INDEX_NULL
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -19,13 +20,50 @@ const defaultTextData = {
       content: "Mexico",
       styles: "H1",
       height: ""
+    },
+    {
+      type: "text",
+      content: "There was nothing to see here ther was nothing to see there ",
+      styles: "",
+      height: ""
+    },
+    {
+      type: "text",
+      content: "Spinach broccoli was not the ideal dinner",
+      styles: "",
+      height: ""
+    },
+    {
+      type: "text",
+      content: "If anybody crosses me i'm going to fuck everyone once",
+      styles: "",
+      height: ""
+    },
+    {
+      type: "text",
+      content: "If anybody crosses me i'm going to fuck everyone once",
+      styles: "",
+      height: ""
+    },
+    {
+      type: "text",
+      content: "If anybody crosses me i'm going to fuck everyone once",
+      styles: "",
+      height: ""
+    },
+    {
+      type: "text",
+      content: "If anybody crosses me i'm going to fuck everyone once",
+      styles: "",
+      height: ""
     }
   ],
-  activeIndex: null,
+  activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
   selectedImages: [],
-  activeCaption: ""
+  activeCaption: "",
+  newIndex: null
 }
 
 export default (state = defaultTextData, action) => {
@@ -64,6 +102,7 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         selectedImages: [],
+        activeIndex: null,
         activeContentCreator: null,
         entries: [
           ...state.entries.slice(0, action.payload),
@@ -77,10 +116,14 @@ export default (state = defaultTextData, action) => {
         ...state,
         containerHeight: action.payload
       }
+    case SET_NEXT_INDEX_NULL:
+      return {
+        ...state,
+        newIndex: null
+      }
 
     case EDIT_ENTRY:
       let { index, entry } = action.payload
-      console.log(" EDIT ENTRY HAS BEEN HIT", entry)
       return {
         ...state,
         entries: [...state.entries.slice(0, index), entry, ...state.entries.slice(index + 1)]
@@ -90,7 +133,8 @@ export default (state = defaultTextData, action) => {
       const { newIndex, newEntry } = action.payload
       return {
         ...state,
-        entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)]
+        entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)],
+        newIndex: newIndex
       }
     case DELETE_ENTRY:
       return {

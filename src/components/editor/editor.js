@@ -21,6 +21,7 @@ import {
   updateActiveIndex,
   removeEntryAndFocus,
   updateActiveImageCaption,
+  setNextIndexNull,
   updateContainerHeight
 } from "actions/editor"
 import ContentCreator from "components/editor/content_creator"
@@ -35,7 +36,7 @@ const mapStateToProps = state => ({
   activeIndex: state.editor.activeIndex,
   cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
-  nextIndex: state.editor.nextIndex
+  newIndex: state.editor.newIndex
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -44,7 +45,8 @@ const mapDispatchToProps = dispatch => ({
   editEntry: payload => dispatch(editEntry(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
-  removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload))
+  removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
+  setNextIndexNull: payload => dispatch(setNextIndexNull(payload))
 })
 
 class Editor extends Component {
@@ -55,26 +57,27 @@ class Editor extends Component {
   }
 
   componentWillMount() {
-    this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardDidShow.bind(this))
-    this.keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide.bind(this))
+    // this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardDidShow.bind(this))
+    // this.keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide.bind(this))
   }
 
   componentDidUpdate(prevProps) {
-    // let activeIndex = this.refs[`textInput${this.props.activeIndex}`]
-    // if (activeIndex) {
-    //   activeIndex.focus()
-    // }
+    let nextIndex = this.refs[`textInput${this.props.newIndex}`]
+    if (nextIndex) {
+      nextIndex.focus()
+      this.props.setNextIndexNull()
+    }
   }
 
-  keyboardDidShow(e) {
-    let newSize = Dimensions.get("window").height - e.endCoordinates.height - 80
-    this.props.updateContainerHeight(newSize)
-  }
+  // keyboardDidShow(e) {
+  //   let newSize = Dimensions.get("window").height - e.endCoordinates.height - 80
+  //   this.props.updateContainerHeight(true)
+  // }
 
-  keyboardDidHide() {
-    let newSize = Dimensions.get("window").height - 80
-    this.props.updateContainerHeight(newSize)
-  }
+  // keyboardDidHide() {
+  //   let newSize = Dimensions.get("window").height - 80
+  //   this.props.updateContainerHeight(false)
+  // }
 
   handleTextChange(content, index) {
     let payload
@@ -88,7 +91,7 @@ class Editor extends Component {
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return { fontWeight: "700", fontSize: 24 }
+        return { fontWeight: "600", fontSize: 22 }
       case "QUOTE":
         return {
           fontStyle: "italic",
@@ -227,6 +230,12 @@ class Editor extends Component {
     )
   }
 
+  handleOnFocus(index) {
+    const styles = this.props.entries[index].styles
+    this.props.updateActiveIndex(index)
+    this.props.updateFormatBar(styles)
+  }
+
   renderAsTextInput(entry, index) {
     return (
       <TextInput
@@ -249,6 +258,7 @@ class Editor extends Component {
         onBlur={() => this.deleteIfEmpty(index)}
         placeholder={"Enter Entry..."}
         value={entry.content}
+        onFocus={() => this.handleOnFocus(index)}
         onContentSizeChange={e => this.handleLayoutChange(e, index)}
         blurOnSubmit={false}
       />
@@ -265,6 +275,18 @@ class Editor extends Component {
     this.props.navigation.navigate("ImageCaptionForm", { index: index })
   }
 
+  renderEditorToolbar() {
+    if (this.props.activeIndex && this.props.entries[this.props.activeIndex].type !== "text") {
+      return
+    }
+
+    return (
+      <KeyboardAvoidingView behavior={"position"}>
+        <EditorToolbar />
+      </KeyboardAvoidingView>
+    )
+  }
+
   renderCreateCta(index) {
     return (
       <ContentCreator
@@ -277,17 +299,21 @@ class Editor extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <KeyboardAvoidingView style={{ backgroundColor: "white" }}>
         <View style={{ height: 60 }} />
-        <InputScrollView bounces={false} keyboardOffset={100} multilineInputStyle={{ lineHeight: 30 }}>
+        <InputScrollView
+          useAnimatedScrollView={true}
+          bounces={false}
+          keyboardDismissMode="on-drag"
+          style={{ position: "relative" }}
+          keyboardOffset={100}
+          multilineInputStyle={{ lineHeight: 30 }}>
           {this.props.entries.map((entry, index) => {
             return [this.renderEntry(entry, index), this.renderCreateCta(index)]
           })}>
         </InputScrollView>
-        <View>
-          <EditorToolbar />
-        </View>
-      </View>
+        {this.renderEditorToolbar()}
+      </KeyboardAvoidingView>
     )
   }
 }

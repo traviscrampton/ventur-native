@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, EDIT_TEXT } from "actions/action_types"
-import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
+import {updateFormatBar, editEntry} from "actions/editor"
+import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
@@ -11,13 +12,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateFormatBar: payload => {
-    dispatch({ type: UPDATE_FORMAT_BAR, payload })
-  },
-
-  editText: payload => {
-    dispatch({ type: EDIT_TEXT, payload })
-  }
+  updateFormatBar: payload => dispatch(updateFormatBar(payload)),
+  editEntry: payload => dispatch(editEntry(payload)),
 })
 
 class EditorToolbar extends Component {
@@ -26,7 +22,7 @@ class EditorToolbar extends Component {
     let entry = { ...this.props.entries[this.props.activeIndex], styles: styling }
     let payload = { entry: entry, index: this.props.activeIndex }
     this.props.updateFormatBar(styling)
-    this.props.editText(payload)
+    this.props.editEntry(payload)
   }
 
   getProperStyling(option) {
@@ -48,8 +44,8 @@ class EditorToolbar extends Component {
   isSelectedStyle(option) {
     if (this.props.activeAttribute === option) {
       return {
-        backgroundColor: "green",
-        color: "white"
+        backgroundColor: "white",
+        color: "green"
       }
     }
   }
@@ -77,12 +73,17 @@ export default connect(
 const styles = StyleSheet.create({
   toolbarContainer: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "white",
+    borderWidth: 1, 
+    paddingTop: 5, 
+    paddingBottom: 5,
+    borderColor: "green"
   },
   option: {
-    borderWidth: 1,
-    borderColor: "green",
     fontSize: 20,
+    fontWeight: "500",
     minWidth: 80
   }
 })
