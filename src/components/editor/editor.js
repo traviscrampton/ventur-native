@@ -248,8 +248,8 @@ class Editor extends Component {
             paddingRight: 10,
             paddingTop: 0,
             paddingBottom: 0,
-            fontSize: 18,
-            lineHeight: 25,
+            fontSize: 17,
+            lineHeight: 24,
             minHeight: Math.max(30, entry.height)
           },
           this.getInputStyling(entry)
