@@ -65,7 +65,7 @@ class EditorToolbar extends Component {
 
   renderManageContent() {
     return (
-      <TouchableWithoutFeedback onPress={() => this.handleManageContentPress()}>
+      <TouchableWithoutFeedback onPress={this.props.openManageContent}>
         <View>
           <Text style={styles.option}>MANAGE CONTENT</Text>
         </View>

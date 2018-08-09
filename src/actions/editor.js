@@ -5,6 +5,25 @@ export function editEntry(payload) {
   }
 }
 
+export function updateManageContentEntries(payload) {
+  return {
+    type: "UPDATE_MANAGE_CONTENT_ENTRIES",
+    payload: payload
+  }
+}
+
+export function updateEntriesOrder() {
+  return {
+    type: "UPDATE_ENTRIES_ORDER",
+  }
+}
+
+export function prepManageContent() {
+  return {
+    type: "PREP_MANAGE_CONTENT"
+  }
+}
+
 export function updateImageCaption(payload) {
   return function(dispatch, getState) {
     dispatch(editEntry(payload))
