@@ -5,6 +5,25 @@ export function editEntry(payload) {
   }
 }
 
+export function updateManageContentEntries(payload) {
+  return {
+    type: "UPDATE_MANAGE_CONTENT_ENTRIES",
+    payload: payload
+  }
+}
+
+export function updateEntriesOrder() {
+  return {
+    type: "UPDATE_ENTRIES_ORDER",
+  }
+}
+
+export function prepManageContent() {
+  return {
+    type: "PREP_MANAGE_CONTENT"
+  }
+}
+
 export function updateImageCaption(payload) {
   return function(dispatch, getState) {
     dispatch(editEntry(payload))
@@ -55,9 +74,9 @@ export function setNextIndexNull() {
   }
 }
 
-export function updateContainerHeight(payload) {
+export function updateKeyboardState(payload) {
   return {
-    type: "UPDATE_CONTAINER_HEIGHT",
+    type: "UPDATE_KEYBOARD_STATE",
     payload: payload
   }
 }
@@ -106,7 +125,6 @@ export function deleteWithEdit(payload) {
     dispatch(deleteEntry(index))
     dispatch(updateActiveIndex(index))
     dispatch(updateCursorPosition(cursorPosition))
-    // instance.refs[`textInput${index - 1}`].focus()
   }
 }
 

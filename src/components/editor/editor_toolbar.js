@@ -1,19 +1,20 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { UPDATE_FORMAT_BAR, EDIT_TEXT } from "actions/action_types"
-import {updateFormatBar, editEntry} from "actions/editor"
+import { updateFormatBar, editEntry } from "actions/editor"
 import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
   activeAttribute: state.editor.activeAttribute,
   activeIndex: state.editor.activeIndex,
-  entries: state.editor.entries
+  entries: state.editor.entries,
+  keyboardShowing: state.editor.keyboardShowing
 })
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
-  editEntry: payload => dispatch(editEntry(payload)),
+  editEntry: payload => dispatch(editEntry(payload))
 })
 
 class EditorToolbar extends Component {
@@ -50,7 +51,9 @@ class EditorToolbar extends Component {
     }
   }
 
-  renderToolbar() {
+  handleManageContentPress() {}
+
+  renderTextStyler() {
     return this.props.toolbarOptions.map((option, index) => {
       return (
         <TouchableWithoutFeedback key={index} style={styles.option} onPress={() => this.handleOnPress(option)}>
@@ -58,6 +61,24 @@ class EditorToolbar extends Component {
         </TouchableWithoutFeedback>
       )
     })
+  }
+
+  renderManageContent() {
+    return (
+      <TouchableWithoutFeedback onPress={this.props.openManageContent}>
+        <View>
+          <Text style={styles.option}>MANAGE CONTENT</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderToolbar() {
+    if (this.props.keyboardShowing) {
+      return this.renderTextStyler()
+    } else {
+      return this.renderManageContent()
+    }
   }
 
   render() {
@@ -76,8 +97,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     backgroundColor: "white",
-    borderWidth: 1, 
-    paddingTop: 5, 
+    borderWidth: 1,
+    paddingTop: 5,
     paddingBottom: 5,
     borderColor: "green"
   },

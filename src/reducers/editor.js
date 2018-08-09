@@ -4,12 +4,15 @@ import {
   CREATE_NEW_ENTRY,
   DELETE_ENTRY,
   UPDATE_ACTIVE_INDEX,
-  UPDATE_CONTAINER_HEIGHT,
+  UPDATE_KEYBOARD_STATE,
   UPDATE_ACTIVE_CREATOR,
   SET_SELECTED_IMAGES,
   ADD_IMAGES_TO_ENTRIES,
   UPDATE_ACTIVE_IMAGE_CAPTION,
-  SET_NEXT_INDEX_NULL
+  SET_NEXT_INDEX_NULL,
+  PREP_MANAGE_CONTENT,
+  UPDATE_MANAGE_CONTENT_ENTRIES,
+  UPDATE_ENTRIES_ORDER
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -61,9 +64,11 @@ const defaultTextData = {
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
+  keyboardShowing: false,
   selectedImages: [],
   activeCaption: "",
-  newIndex: null
+  newIndex: null,
+  manageContentEntries: []
 }
 
 export default (state = defaultTextData, action) => {
@@ -72,6 +77,23 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         activeAttribute: action.payload
+      }
+    case UPDATE_ENTRIES_ORDER:
+      return {
+        ...state,
+        entries: [...state.manageContentEntries],
+        manageContentEntries: []
+      }
+    case UPDATE_MANAGE_CONTENT_ENTRIES:
+      return {
+        ...state,
+        manageContentEntries: action.payload
+      }
+
+    case PREP_MANAGE_CONTENT:
+      return {
+        ...state,
+        manageContentEntries: [...state.entries]
       }
 
     case UPDATE_ACTIVE_IMAGE_CAPTION:
@@ -111,10 +133,10 @@ export default (state = defaultTextData, action) => {
         ].reduce((a, b) => a.concat(b), [])
       }
 
-    case UPDATE_CONTAINER_HEIGHT:
+    case UPDATE_KEYBOARD_STATE:
       return {
         ...state,
-        containerHeight: action.payload
+        keyboardShowing: action.payload
       }
     case SET_NEXT_INDEX_NULL:
       return {
