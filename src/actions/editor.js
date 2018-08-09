@@ -55,9 +55,9 @@ export function setNextIndexNull() {
   }
 }
 
-export function updateContainerHeight(payload) {
+export function updateKeyboardState(payload) {
   return {
-    type: "UPDATE_CONTAINER_HEIGHT",
+    type: "UPDATE_KEYBOARD_STATE",
     payload: payload
   }
 }
@@ -106,7 +106,6 @@ export function deleteWithEdit(payload) {
     dispatch(deleteEntry(index))
     dispatch(updateActiveIndex(index))
     dispatch(updateCursorPosition(cursorPosition))
-    // instance.refs[`textInput${index - 1}`].focus()
   }
 }
 

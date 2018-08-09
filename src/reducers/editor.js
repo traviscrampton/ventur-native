@@ -4,7 +4,7 @@ import {
   CREATE_NEW_ENTRY,
   DELETE_ENTRY,
   UPDATE_ACTIVE_INDEX,
-  UPDATE_CONTAINER_HEIGHT,
+  UPDATE_KEYBOARD_STATE,
   UPDATE_ACTIVE_CREATOR,
   SET_SELECTED_IMAGES,
   ADD_IMAGES_TO_ENTRIES,
@@ -61,6 +61,7 @@ const defaultTextData = {
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
+  keyboardShowing: false,
   selectedImages: [],
   activeCaption: "",
   newIndex: null
@@ -111,10 +112,10 @@ export default (state = defaultTextData, action) => {
         ].reduce((a, b) => a.concat(b), [])
       }
 
-    case UPDATE_CONTAINER_HEIGHT:
+    case UPDATE_KEYBOARD_STATE:
       return {
         ...state,
-        containerHeight: action.payload
+        keyboardShowing: action.payload
       }
     case SET_NEXT_INDEX_NULL:
       return {

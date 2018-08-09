@@ -22,7 +22,7 @@ import {
   removeEntryAndFocus,
   updateActiveImageCaption,
   setNextIndexNull,
-  updateContainerHeight
+  updateKeyboardState
 } from "actions/editor"
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => ({
   updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
   editEntry: payload => dispatch(editEntry(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
-  updateContainerHeight: payload => dispatch(updateContainerHeight(payload)),
+  updateKeyboardState: payload => dispatch(updateKeyboardState(payload)),
   removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload))
 })
@@ -57,8 +57,8 @@ class Editor extends Component {
   }
 
   componentWillMount() {
-    // this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardDidShow.bind(this))
-    // this.keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide.bind(this))
+    this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardDidShow.bind(this))
+    this.keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide.bind(this))
   }
 
   componentDidUpdate(prevProps) {
@@ -69,15 +69,13 @@ class Editor extends Component {
     }
   }
 
-  // keyboardDidShow(e) {
-  //   let newSize = Dimensions.get("window").height - e.endCoordinates.height - 80
-  //   this.props.updateContainerHeight(true)
-  // }
+  keyboardDidShow(e) {
+    this.props.updateKeyboardState(true)
+  }
 
-  // keyboardDidHide() {
-  //   let newSize = Dimensions.get("window").height - 80
-  //   this.props.updateContainerHeight(false)
-  // }
+  keyboardDidHide(e) {
+    this.props.updateKeyboardState(false)
+  }
 
   handleTextChange(content, index) {
     let payload
