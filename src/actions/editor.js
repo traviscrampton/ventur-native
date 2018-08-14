@@ -12,6 +12,13 @@ export function updateManageContentEntries(payload) {
   }
 }
 
+export function removeEntryFromClone(payload) {
+  return {
+    type: "REMOVE_ENTRY_FROM_CLONE",
+    payload: payload
+  }
+}
+
 export function updateEntriesOrder() {
   return {
     type: "UPDATE_ENTRIES_ORDER",

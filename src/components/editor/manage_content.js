@@ -1,16 +1,18 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { updateManageContentEntries, updateEntriesOrder } from "actions/editor"
-import { Text, FlatList, TouchableWithoutFeedback, Image, Dimensions, StyleSheet, View } from "react-native"
+import { updateManageContentEntries, updateEntriesOrder, removeEntryFromClone } from "actions/editor"
+import { Text, FlatList, TouchableWithoutFeedback, ImageBackground, Image, Dimensions, StyleSheet, View } from "react-native"
 import { Header } from "components/editor/header"
 import SortableList from "react-native-sortable-list"
 
 const mapStateToProps = state => ({
-  entries: state.editor.entries
+  entries: state.editor.entriesSortBase,
+  manageContentEntries: state.editor.manageContentEntries
 })
 const mapDispatchToProps = dispatch => ({
   updateManageContentEntries: payload => dispatch(updateManageContentEntries(payload)),
-  updateEntriesOrder: () => dispatch(updateEntriesOrder())
+  updateEntriesOrder: () => dispatch(updateEntriesOrder()),
+  removeEntryFromClone: payload => dispatch(removeEntryFromClone(payload))
 })
 
 class ManageContent extends Component {
@@ -45,15 +47,30 @@ class ManageContent extends Component {
   renderText(data, active) {
     return (
       <View active={active} style={{ height: 100 }}>
+        <TouchableWithoutFeedback onPress={() => this.removeEntryFromClone(data)}>
+          <View>
+            <Text>DELETE</Text>
+          </View>
+        </TouchableWithoutFeedback>
         <Text>{data.content}</Text>
       </View>
     )
   }
 
+  removeEntryFromClone(data) {
+    const index = this.props.entries.indexOf(data)
+    this.props.removeEntryFromClone(index)
+  }
+
   renderImage(data, active) {
     return (
       <View active={active}>
-        <Image style={{ width: Dimensions.get("window").width, height: 100 }} source={{ uri: data.uri }} />
+        <TouchableWithoutFeedback onPress={() => this.removeEntryFromClone(data)}>
+          <View>
+            <Text>DELETE</Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <ImageBackground style={{ width: Dimensions.get("window").width, height: 100 }} source={{ uri: data.uri }} />
       </View>
     )
   }
