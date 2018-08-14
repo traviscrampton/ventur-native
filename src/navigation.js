@@ -40,7 +40,7 @@ const RootNavigator = (signedIn = false) =>
       Editor: EditorNavigator
     },
     {
-      initialRouteName: signedIn ? "Editor" : "Editor"
+      initialRouteName: signedIn ? "JournalFeed" : "JournalNavigator"
     }
   )
 

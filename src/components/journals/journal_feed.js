@@ -29,6 +29,7 @@ class JournalFeed extends Component {
   }
 
   getJournalFeed() {
+    debugger
     gql(allJournalsQuery).then(res => {
       this.props.onLoad(res.allJournals)
     })
