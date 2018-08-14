@@ -12,7 +12,8 @@ import {
   SET_NEXT_INDEX_NULL,
   PREP_MANAGE_CONTENT,
   UPDATE_MANAGE_CONTENT_ENTRIES,
-  UPDATE_ENTRIES_ORDER
+  UPDATE_ENTRIES_ORDER,
+  REMOVE_ENTRY_FROM_CLONE
 } from "actions/action_types"
 
 const defaultTextData = {
@@ -38,25 +39,25 @@ const defaultTextData = {
     },
     {
       type: "text",
-      content: "If anybody crosses me i'm going to fuck everyone once",
+      content: "I hope you like jammin too",
       styles: "",
       height: ""
     },
     {
       type: "text",
-      content: "If anybody crosses me i'm going to fuck everyone once",
+      content: "If somebody stope me once",
       styles: "",
       height: ""
     },
     {
       type: "text",
-      content: "If anybody crosses me i'm going to fuck everyone once",
+      content: "If anybody crosses me i'm going to jimmy jammy once",
       styles: "",
       height: ""
     },
     {
       type: "text",
-      content: "If anybody crosses me i'm going to fuck everyone once",
+      content: "Did ludacris die for my sins",
       styles: "",
       height: ""
     }
@@ -68,7 +69,8 @@ const defaultTextData = {
   selectedImages: [],
   activeCaption: "",
   newIndex: null,
-  manageContentEntries: []
+  manageContentEntries: [],
+  entriesSortBase: []
 }
 
 export default (state = defaultTextData, action) => {
@@ -82,7 +84,8 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         entries: [...state.manageContentEntries],
-        manageContentEntries: []
+        manageContentEntries: [],
+        entriesSortBase: []
       }
     case UPDATE_MANAGE_CONTENT_ENTRIES:
       return {
@@ -90,10 +93,22 @@ export default (state = defaultTextData, action) => {
         manageContentEntries: action.payload
       }
 
+    case REMOVE_ENTRY_FROM_CLONE:
+      const newArray = [
+        ...state.entriesSortBase.slice(0, action.payload),
+        ...state.entriesSortBase.slice(action.payload + 1)
+      ]
+      return {
+        ...state,
+        entriesSortBase: newArray,
+        manageContentEntries: newArray
+      }
+
     case PREP_MANAGE_CONTENT:
       return {
         ...state,
-        manageContentEntries: [...state.entries]
+        manageContentEntries: [...state.entries],
+        entriesSortBase: [...state.entries]
       }
 
     case UPDATE_ACTIVE_IMAGE_CAPTION:
