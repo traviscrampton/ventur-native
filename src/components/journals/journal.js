@@ -1,12 +1,13 @@
 import React, { Component } from "react"
 import { journalQuery, journalChaptersQuery, journalGearItems } from "graphql/queries/journals"
-import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from "react-native"
+import { StyleSheet, FlatList, View, Text, ScrollView, Image, ImageBackground, Dimensions } from "react-native"
 import ChapterList from "components/chapters/chapter_list"
 import GearList from "components/gear/gear_list"
 import Tabs from "components/shared/tabs"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED, SWITCH_JOURNAL_TAB } from "actions/action_types"
 import { connect } from "react-redux"
+import { SimpleLineIcons } from '@expo/vector-icons'
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -53,23 +54,20 @@ class Journal extends Component {
     const { journal, user } = this.props
     return (
       <View>
-        <Image style={styles.bannerImage} source={{ uri: journal.cardImageUrl }} />
+        <View style={{ position: "relative", height: bannerImageHeight + 30, backgroundColor: "white" }}>
+          <Image style={styles.bannerImage} source={{ uri: journal.cardImageUrl }} />
+          <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+        </View>
         <View style={styles.metaDataContainer}>
           <View style={styles.titleSubTitleContainer}>
             <Text style={styles.journalHeader}>{journal.title}</Text>
-            <Text style={styles.journalDescription}>{journal.description}</Text>
+            <View style={{ display: "flex", flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
+              <SimpleLineIcons name="location-pin" style={{ marginRight: 10 }} size={22} color="black" />
+              <Text style={styles.journalDescription}>{journal.description}</Text>
+            </View>
           </View>
-          <View style={styles.userInfo}>
-            <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
-            <Text style={styles.userName}>{`${user.fullName}`.toUpperCase()}</Text>
-          </View>
-          <View style={styles.wideFlex}>
-            <Text style={styles.stats}>{`Status:`.toUpperCase()}</Text>
-            <Text style={styles.stats}>{`${journal.status}`.toUpperCase()}</Text>
-          </View>
-          <View style={styles.wideFlex}>
-            <Text style={styles.stats}>{`Stats:`.toUpperCase()}</Text>
-            <Text style={styles.stats}>{`${journal.distance}`.toUpperCase()}</Text>
+          <View>
+            <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} miles`.toUpperCase()}</Text>
           </View>
         </View>
       </View>
@@ -160,13 +158,17 @@ const styles = StyleSheet.create({
   },
   metaDataContainer: {
     padding: 16,
+    paddingTop: 0,
+    paddingBottom: 20,
     backgroundColor: "white"
   },
   journalHeader: {
-    fontSize: 32
+    fontSize: 20,
+    fontFamily: "playfair"
   },
   journalDescription: {
-    fontSize: 24
+    fontSize: 14,
+    fontFamily: "open-sans-regular",
   },
   userInfo: {
     display: "flex",
@@ -177,10 +179,16 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   userImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    marginRight: 10,
+    borderWidth: 4,
+    borderColor: "white",
+    position: "absolute",
+    bottom: 0,
+    left: 30,
+    zIndex: 100
   },
   userName: {
     fontSize: 18
@@ -192,7 +200,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   stats: {
-    letterSpacing: 1
+    fontFamily: "overpass"
   },
   activeTabContainer: {
     padding: 16,

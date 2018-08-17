@@ -9,12 +9,18 @@ import { getCurrentUser } from "auth"
 import { SET_CURRENT_USER } from "actions/action_types"
 import thunk from "redux-thunk"
 import { AsyncStorage } from "react-native"
+import { Font } from "expo"
 
 const store = createStore(allReducers, applyMiddleware(thunk))
 
 export default class App extends Component {
   componentWillMount() {
     this.setCurrentUser()
+    Font.loadAsync({
+      "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
+      playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
+      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf")
+    })
   }
 
   async setCurrentUser() {
