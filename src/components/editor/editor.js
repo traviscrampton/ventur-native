@@ -60,6 +60,7 @@ class Editor extends Component {
   }
 
   componentWillMount() {
+    this.props.navigation.setParams({ visible: false })
     this.keyboardWillShowListener = Keyboard.addListener("keyboardWillShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
@@ -301,7 +302,7 @@ class Editor extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={{ backgroundColor: "white" }}>
+      <KeyboardAvoidingView style={{ backgroundColor: "white", paddingBottom: 100 }}>
         <View style={{ height: 60 }} />
         <InputScrollView
           useAnimatedScrollView={true}
