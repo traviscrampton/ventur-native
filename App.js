@@ -19,7 +19,8 @@ export default class App extends Component {
     Font.loadAsync({
       "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
       playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
-      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf")
+      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
+      "open-sans-bold": require("assets/fonts/Open_Sans/OpenSans-Bold.ttf")
     })
   }
 

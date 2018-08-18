@@ -1,13 +1,15 @@
 import React, { Component } from "react"
+import { Feather } from "@expo/vector-icons"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
 
 export default class BottomTabBar extends Component {
   constructor(props) {
     super(props)
+    this.navigateToRoute = this.navigateToRoute.bind(this)
   }
 
   renderIcon(route, idx) {
-    const color = idx === 0 ? "black" : "gray"
+    const color = idx === this.props.navigation.state.index ? "black" : "gray"
     return <View style={{ width: 22, borderRadius: 2, marginBottom: 2, height: 22, backgroundColor: color }} />
   }
 
@@ -17,6 +19,10 @@ export default class BottomTabBar extends Component {
         <Text style={{ fontSize: 8, fontFamily: "overpass" }}>{`${route.key}`.toUpperCase()}</Text>
       </View>
     )
+  }
+
+  navigateToRoute(route) {
+    this.props.navigation.navigate(route.key)
   }
 
   renderFloatingButton(route, idx) {
@@ -39,7 +45,7 @@ export default class BottomTabBar extends Component {
             justifyContent: "center",
             alignItems: "center"
           }}>
-          <Text style={{ fontSize: 30, lineHeight: 32, fontWeight: "700" }}>+</Text>
+          <Feather name="plus" size={32} color="black" />
         </View>
       </TouchableWithoutFeedback>
     )
@@ -47,7 +53,7 @@ export default class BottomTabBar extends Component {
 
   renderStandardTab(route, idx) {
     return (
-      <TouchableWithoutFeedback key={idx}>
+      <TouchableWithoutFeedback key={idx} onPress={() => this.navigateToRoute(route)}>
         <View
           style={{ display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center" }}>
           {this.renderIcon(route, idx)}
@@ -80,7 +86,7 @@ export default class BottomTabBar extends Component {
           position: "relative",
           alignItems: "center",
           paddingLeft: 15,
-          paddingRight: 15, 
+          paddingRight: 15,
           backgroundColor: "white"
         }}>
         {this.props.navigation.state.routes.map((route, idx) => {

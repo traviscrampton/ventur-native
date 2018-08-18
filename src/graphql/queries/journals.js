@@ -17,6 +17,18 @@ export const allJournalsQuery = `
 	}
 `
 
+export const myJournalsQuery = `
+  query {
+    myJournals {
+      id
+      title
+      status
+      distance
+      cardImageUrl
+    }
+  }
+`
+
 export const journalQuery = `
     query journal($id: ID) {
       journal(id: $id) {

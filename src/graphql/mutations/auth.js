@@ -1,7 +1,6 @@
 export const loginMutation = `
-  mutation signIn($email: String!, $password: String!) {
-    signIn(input: {email: $email, password: $password}) {
-      errors
+  mutation Login($email: String!, $password: String!) {
+    Login(email: $email, password: $password) {
       token
       user {
         id

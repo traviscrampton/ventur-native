@@ -2,13 +2,17 @@ import React, { Component } from "react"
 import { StyleSheet, FlatList, View, Text, List, ScrollView } from "react-native"
 import { connect } from "react-redux"
 import { gql } from "agent"
-import { JOURNAL_FEED_LOADED } from "actions/action_types"
+import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
 import { allJournalsQuery } from "graphql/queries/journals"
 import JournalCard from "components/journals/journal_card"
 
 const mapDispatchToProps = dispatch => ({
   onLoad: payload => {
     dispatch({ type: JOURNAL_FEED_LOADED, payload })
+  },
+
+  resetJournal: () => {
+    dispatch({ type: RESET_JOURNAL_TAB })
   }
 })
 
@@ -35,6 +39,7 @@ class JournalFeed extends Component {
   }
 
   handlePress(journalId) {
+    this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }
 
