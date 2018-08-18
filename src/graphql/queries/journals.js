@@ -24,6 +24,7 @@ export const myJournalsQuery = `
       title
       status
       distance
+      cardImageUrl
     }
   }
 `

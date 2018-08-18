@@ -24,10 +24,18 @@ const tripMetaData = props => {
   return (
     <View style={{ padding: 10 }}>
       <Text style={{ fontFamily: "overpass" }}>
-        {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}{" "}
+        {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
       </Text>
       <Text style={styles.title}>{props.title}</Text>
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", position: "absolute", left: 8, bottom: -40 }}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          position: "absolute",
+          left: 8,
+          bottom: -40
+        }}>
         <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={18} color="black" />
         <Text style={{ fontFamily: "open-sans-regular" }}>{props.description}</Text>
       </View>

@@ -38,7 +38,8 @@ const MyJournalsNavigator = createStackNavigator(
       headerStyle: {
         borderBottomWidth: 0
       }
-    }
+    },
+    initialRouteName: "MyJournals"
   }
 )
 
@@ -81,7 +82,7 @@ const BottomNavigator = createBottomTabNavigator(
     tabBarComponent: BottomTabBar
   },
   {
-    initialRouteName: "Explore"
+    initialRouteName: "My Trips"
   }
 )
 export const Ventur = BottomNavigator
