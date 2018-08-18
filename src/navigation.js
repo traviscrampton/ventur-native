@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
 import JournalFeed from "components/journals/journal_feed"
+import MyJournals from "components/journals/my_journals"
 import Journal from "components/journals/journal"
 import Login from "components/users/login"
 import Editor from "components/editor/editor"
@@ -11,9 +12,24 @@ import ManageContent from "components/editor/manage_content"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
-const JournalNavigator = createStackNavigator(
+const JournalFeedNavigator = createStackNavigator(
   {
     JournalFeed: JournalFeed,
+    Journal: Journal
+  },
+  {
+    navigationOptions: {
+      headerTransparent: true,
+      headerStyle: {
+        borderBottomWidth: 0
+      }
+    }
+  }
+)
+
+const MyJournalsNavigator = createStackNavigator(
+  {
+    MyJournals: MyJournals,
     Journal: Journal
   },
   {
@@ -41,13 +57,11 @@ const EditorNavigator = createStackNavigator(
   }
 )
 
-const signedIn = isSignedIn()
-
 const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
-      JournalFeed: JournalNavigator,
+      JournalFeed: JournalFeedNavigator,
       Editor: EditorNavigator
     },
     {
@@ -57,17 +71,17 @@ const RootNavigator = (signedIn = false) =>
 
 const BottomNavigator = createBottomTabNavigator(
   {
-    "My Trips": RootNavigator(signedIn),
+    Explore: RootNavigator(isSignedIn()),
     Saved: Editor,
     Add: Login,
-    Explore: Editor,
+    "My Trips": MyJournalsNavigator,
     Profile: Editor
   },
   {
     tabBarComponent: BottomTabBar
   },
   {
-    initialRouteName: "My Trips"
+    initialRouteName: "Explore"
   }
 )
 export const Ventur = BottomNavigator

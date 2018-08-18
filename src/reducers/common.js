@@ -7,6 +7,7 @@ const defaultAppState = {
 export default (state = defaultAppState, action) => {
   switch (action.type) {
     case SET_CURRENT_USER:
+      console.log(action.payload)
       return {
         ...state,
         currentUser: action.payload

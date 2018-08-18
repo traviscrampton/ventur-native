@@ -1,6 +1,6 @@
 import React from "react"
 import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
-import { SimpleLineIcons } from '@expo/vector-icons'
+import { SimpleLineIcons } from "@expo/vector-icons"
 
 const imageWidth = Dimensions.get("window").width - 20
 const imageHeight = Math.round(imageWidth * (240 / 350))
@@ -27,8 +27,9 @@ const tripMetaData = props => {
         {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}{" "}
       </Text>
       <Text style={styles.title}>{props.title}</Text>
-      <View style={{display: 'flex', flexDirection: "row", position: "absolute", left: 8, bottom: -40}}>
-      <SimpleLineIcons name="location-pin" style={{marginRight: 10}} size={22} color="black" /><Text style={{fontFamily: "open-sans-regular"}}>{props.description}</Text>
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", position: "absolute", left: 8, bottom: -40 }}>
+        <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={18} color="black" />
+        <Text style={{ fontFamily: "open-sans-regular" }}>{props.description}</Text>
       </View>
     </View>
   )
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     width: imageWidth,
     backgroundColor: "white",
     height: imageHeight + 150,
-    marginTop: 20, 
+    marginTop: 20,
     position: "relative"
   },
   journalImage: {

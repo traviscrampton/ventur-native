@@ -35,7 +35,7 @@ class Login extends Component {
   submitForm() {
     const { email, password } = this.props
     gql(loginMutation, { email: email, password: password }).then(res => {
-      const { token, user } = res.signIn
+      const { token, user } = res.Login
       let obj = Object.assign({}, { token: token, user: user })
       storeJWT(obj)
       this.props.setCurrentUser(user)
