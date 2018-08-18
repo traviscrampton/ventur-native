@@ -14,7 +14,7 @@ export default class BottomTabBar extends Component {
   renderText(route) {
     return (
       <View>
-        <Text style={{ fontSize: 8 }}>{route.key}</Text>
+        <Text style={{ fontSize: 8, fontFamily: "overpass" }}>{`${route.key}`.toUpperCase()}</Text>
       </View>
     )
   }

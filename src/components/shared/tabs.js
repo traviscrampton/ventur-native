@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		alignItems: "center"
 	},
 	tab: {
-		width: width / 3,
+		width: width / 2,
 		paddingTop: 10,
 		paddingBottom: 10,
 		backgroundColor: "#E5E5E5",
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
 	},
 	tabFont: {
 		textAlign: "center",
-		fontSize: 15
+		fontSize: 15,
+    fontFamily: "overpass"
 	}
 })
 

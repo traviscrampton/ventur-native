@@ -93,7 +93,7 @@ class Editor extends Component {
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return { fontWeight: "600", fontSize: 22 }
+        return { fontFamily: "playfair", fontSize: 22 }
       case "QUOTE":
         return {
           fontStyle: "italic",
@@ -251,6 +251,7 @@ class Editor extends Component {
             paddingTop: 0,
             paddingBottom: 0,
             fontSize: 17,
+            fontFamily: "open-sans-regular",
             lineHeight: 24,
             minHeight: Math.max(30, entry.height)
           },
@@ -306,7 +307,7 @@ class Editor extends Component {
         <View style={{ height: 60 }} />
         <InputScrollView
           useAnimatedScrollView={true}
-          bounces={false}
+          bounces={true}
           keyboardDismissMode="on-drag"
           style={{ position: "relative" }}
           keyboardOffset={100}
