@@ -1,4 +1,4 @@
-import { UPDATE_JOURNAL_FORM } from "actions/journal_form"
+import { UPDATE_JOURNAL_FORM, CANCEL_JOURNAL_FORM } from "actions/journal_form"
 
 const defaultJournalFormData = {
   form: {
@@ -14,7 +14,6 @@ export default (state = defaultJournalFormData, action) => {
   switch (action.type) {
     case UPDATE_JOURNAL_FORM:
       let { key, value } = action.payload
-      console.log(key, value)
       return {
         ...state,
         form: {
@@ -22,6 +21,8 @@ export default (state = defaultJournalFormData, action) => {
           [key]: value
         }
       }
+    case CANCEL_JOURNAL_FORM:
+      return defaultJournalFormData
     default:
       return state
   }

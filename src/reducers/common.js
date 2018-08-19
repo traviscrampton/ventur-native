@@ -1,17 +1,21 @@
-import { SET_CURRENT_USER } from "actions/action_types"
-// this still doesn't work
+import { SET_CURRENT_USER, TOGGLE_TAB_BAR } from "actions/action_types"
 const defaultAppState = {
-  currentUser: null
+  currentUser: null,
+  hideTabBar: false
 }
 
 export default (state = defaultAppState, action) => {
   switch (action.type) {
     case SET_CURRENT_USER:
-      console.log(action.payload)
       return {
         ...state,
         currentUser: action.payload
       }
+    case TOGGLE_TAB_BAR:
+      return {
+        ...state,
+        hideTabBar: action.payload
+      }  
     default:
       return state
   }
