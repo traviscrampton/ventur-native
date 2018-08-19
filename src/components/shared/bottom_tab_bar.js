@@ -1,18 +1,19 @@
 import React, { Component } from "react"
+import { connect } from "react-redux" 
 import { Feather } from "@expo/vector-icons"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
 import ContentCreate from "components/modals/content_create"
 
-export default class BottomTabBar extends Component {
+const mapStateToProps = state => ({
+  hideToolbar: state.common.hideToolbar
+})
+
+class BottomTabBar extends Component {
   constructor(props) {
     super(props)
     this.navigateToRoute = this.navigateToRoute.bind(this)
-    this.toggleModal = this.toggleModal.bind(this)
-
-    this.state = {
-      showModal: false
-    }
   }
+
 
   renderIcon(route, idx) {
     const color = idx === this.props.navigation.state.index ? "black" : "gray"
@@ -31,13 +32,9 @@ export default class BottomTabBar extends Component {
     this.props.navigation.navigate(route.key)
   }
 
-  toggleModal(bool) {
-    this.setState({ showModal: bool })
-  }
-
   renderFloatingButton(route, idx) {
     return (
-      <TouchableWithoutFeedback key={idx} onPress={() => this.toggleModal(true)}>
+      <TouchableWithoutFeedback key={idx} onPress={() => this.navigateToRoute(route)}>
         <View
           shadowColor="#000"
           shadowOffset={{ width: 0, height: 2 }}
@@ -81,6 +78,10 @@ export default class BottomTabBar extends Component {
     }
   }
 
+  dontRenderToolbar() {
+    return this.props.hideToolbar
+  }
+
   renderToolbar() {
     return (
       <View
@@ -97,7 +98,7 @@ export default class BottomTabBar extends Component {
           alignItems: "center",
           paddingLeft: 15,
           paddingRight: 15,
-          backgroundColor: "white"
+          backgroundColor: "white",
         }}>
         {this.props.navigation.state.routes.map((route, idx) => {
           return this.renderTab(route, idx)
@@ -106,19 +107,12 @@ export default class BottomTabBar extends Component {
     )
   }
 
-  exitModal() {}
-
-  renderCreateModal() {
-    if (!this.state.showModal) return
-    return <ContentCreate exitModal={() => this.toggleModal(false)} navigation={this.props.navigation} />
-  }
-
   render() {
-    return (
-      <React.Fragment>
-        {this.renderToolbar()}
-        {this.renderCreateModal()}
-      </React.Fragment>
-    )
+    return this.renderToolbar()
   }
 }
+
+export default connect(
+  mapStateToProps,
+  null
+)(BottomTabBar)

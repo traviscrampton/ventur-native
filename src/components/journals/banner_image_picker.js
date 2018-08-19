@@ -26,7 +26,7 @@ class BannerImagePicker extends Component {
     this.setState({
       selectedImage: {}
     })
-    this.props.navigation.dismiss()
+    this.props.navigation.goBack()
   }
 
   getSelectedImage(images) {
@@ -51,7 +51,7 @@ class BannerImagePicker extends Component {
   journalImage() {
     let payload = { key: "cardImageUrl", value: this.state.selectedImage.uri }
     this.props.updateJournalForm(payload)
-    this.props.navigation.dismiss()
+    this.props.navigation.goBack()
   }
 
   renderCameraRollPicker() {

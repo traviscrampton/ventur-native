@@ -35,14 +35,17 @@ const JournalFeedNavigator = createStackNavigator(
 const ContentCreateNavigator = createStackNavigator(
   {
     ContentCreate: ContentCreate,
+    JournalForm: {
+      screen: JournalForm,
+      navigationOptions: ({ navigation }) => ({
+        tabBarVisible: false
+      })
+    },
     BannerImagePicker: BannerImagePicker
   },
   {
     mode: "modal",
-    headerMode: "none",
-    cardStyle: {
-      opacity: 1
-    }
+    headerMode: "none"
   }
 )
 
@@ -82,8 +85,7 @@ const RootNavigator = (signedIn = false) =>
     {
       Login: Login,
       JournalFeed: JournalFeedNavigator,
-      Editor: EditorNavigator,
-      JournalForm: JournalForm
+      Editor: EditorNavigator
     },
     {
       initialRouteName: signedIn ? "JournalFeed" : "Login"
@@ -99,10 +101,10 @@ const BottomNavigator = createBottomTabNavigator(
     Profile: Editor
   },
   {
-    tabBarComponent: BottomTabBar
+    tabBarComponent: BottomTabBar,
   },
   {
-    initialRouteName: "My Trips"
+    initialRouteName: "Explore"
   }
 )
 export const Ventur = BottomNavigator

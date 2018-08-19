@@ -14,7 +14,8 @@ import {
 import { gql } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
-import { updateJournalForm } from "actions/journal_form"
+import { updateJournalForm, cancelJournalForm } from "actions/journal_form"
+import { Header } from "components/editor/header"
 const defaultImage = require("assets/images/mountain-sketch.png")
 
 const bannerImageWidth = Dimensions.get("window").width
@@ -29,7 +30,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+  updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  cancelJournalForm: () => dispatch(cancelJournalForm())
 })
 
 class JournalForm extends Component {
@@ -37,12 +39,6 @@ class JournalForm extends Component {
     super(props)
     this.dismissForm = this.dismissForm.bind(this)
     this.openCameraRoll = this.openCameraRoll.bind(this)
-  }
-
-  componentDidUpdate(prevProps) {
-    console.log(this.props.title)
-    console.log(this.props.description)
-    console.log(this.props.status)
   }
 
   static STATUS_OPTIONS = [
@@ -205,48 +201,39 @@ class JournalForm extends Component {
   }
 
   dismissForm() {
+    this.props.cancelJournalForm()
     this.props.navigation.goBack()
   }
 
-  renderSubmitCancel() {
-    return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          marginTop: 100,
-          justifyContent: "flex-end",
-          alignItems: "center"
-        }}>
-        <TouchableWithoutFeedback onPress={this.dismissForm}>
-          <View style={{ marginRight: 20 }}>
-            <Text style={{ fontFamily: "open-sans-regular" }}>Cancel</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback>
-          <View
-            style={{ borderWidth: 1, borderColor: "#cc5500", backgroundColor: "#cc5500", borderRadius: 4, padding: 5 }}>
-            <Text style={{ fontFamily: "open-sans-regular", color: "white" }}>Submit</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
+  goBack() {}
+
+  persistForm() {}
+
+  renderHeader() {
+    const headerProps = {
+      goBackCta: "Cancel",
+      handleGoBack: this.dismissForm,
+      centerCta: ``,
+      handleConfirm: this.persistForm,
+      confirmCta: "Save"
+    }
+    return <Header key="header" {...headerProps} />
   }
 
   renderStageInput() {}
 
   render() {
     return (
-      <React.Fragment>
+      <View style={{ backgroundColor: "white", height: "100%" }}>
+        {this.renderHeader()}
         {this.renderBannerImage()}
         <View style={{ padding: 16 }}>
           {this.renderTitleInput()}
           {this.renderDescriptionInput()}
           {this.renderRadioButtons()}
           {this.renderStageInput()}
-          {this.renderSubmitCancel()}
         </View>
-      </React.Fragment>
+      </View>
     )
   }
 }

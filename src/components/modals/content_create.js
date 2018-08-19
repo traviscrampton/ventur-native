@@ -1,22 +1,50 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { TOGGLE_TAB_BAR } from "actions/action_types"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
+import { Header } from "components/editor/header"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
-export default class ContentCreate extends Component {
+const mapDispatchToProps = dispatch => ({
+  toggleToolbar: payload =>
+    dispatch({
+      type: TOGGLE_TAB_BAR,
+      payload: true
+    })
+})
+
+const mapStateToProps = state => ({})
+
+class ContentCreate extends Component {
   constructor(props) {
     super(props)
     this.openJournalForm = this.openJournalForm.bind(this)
+    this.exitModal = this.exitModal.bind(this)
   }
 
   openJournalForm() {
-    this.props.exitModal()
+    this.props.toggleToolbar(true)
     this.props.navigation.navigate("JournalForm")
+  }
+
+  exitModal() {
+    this.props.navigation.dismiss()
+  }
+
+  renderHeader() {
+    const headerProps = {
+      goBackCta: "",
+      handleGoBack: "",
+      centerCta: `Create`,
+      handleConfirm: "",
+      confirmCta: ""
+    }
+    return <Header key="header" {...headerProps} />
   }
 
   renderExitButton() {
     return (
-      <TouchableWithoutFeedback onPress={this.props.exitModal}>
+      <TouchableWithoutFeedback onPress={this.exitModal}>
         <View>
           <MaterialCommunityIcons name="window-close" size={40} color="black" />
         </View>
@@ -47,7 +75,7 @@ export default class ContentCreate extends Component {
                 fontSize: 20,
                 fontFamily: "playfair"
               }}>
-              Create Journal
+              Start a new trip
             </Text>
           </View>
         </TouchableWithoutFeedback>
@@ -83,11 +111,16 @@ export default class ContentCreate extends Component {
     return (
       <View
         style={{ height: "100%", position: "absolute", top: 0, width: "100%", opacity: 0.9, backgroundColor: "white" }}>
-        <View style={{ padding: 30 }}>
-          {this.renderExitButton()}
+        <View style={{ paddingLeft: 30, paddingRight: 30 }}>
+          {this.renderHeader()}
           {this.renderCreateButtons()}
         </View>
       </View>
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ContentCreate)
