@@ -1,11 +1,17 @@
 import React, { Component } from "react"
 import { Feather } from "@expo/vector-icons"
 import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
+import ContentCreate from "components/modals/content_create"
 
 export default class BottomTabBar extends Component {
   constructor(props) {
     super(props)
     this.navigateToRoute = this.navigateToRoute.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
+
+    this.state = {
+      showModal: false
+    }
   }
 
   renderIcon(route, idx) {
@@ -25,9 +31,13 @@ export default class BottomTabBar extends Component {
     this.props.navigation.navigate(route.key)
   }
 
+  toggleModal(bool) {
+    this.setState({ showModal: bool })
+  }
+
   renderFloatingButton(route, idx) {
     return (
-      <TouchableWithoutFeedback key={idx}>
+      <TouchableWithoutFeedback key={idx} onPress={() => this.toggleModal(true)}>
         <View
           shadowColor="#000"
           shadowOffset={{ width: 0, height: 2 }}
@@ -71,7 +81,7 @@ export default class BottomTabBar extends Component {
     }
   }
 
-  render() {
+  renderToolbar() {
     return (
       <View
         shadowColor="#000"
@@ -93,6 +103,22 @@ export default class BottomTabBar extends Component {
           return this.renderTab(route, idx)
         })}
       </View>
+    )
+  }
+
+  exitModal() {}
+
+  renderCreateModal() {
+    if (!this.state.showModal) return
+    return <ContentCreate exitModal={() => this.toggleModal(false)} navigation={this.props.navigation} />
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        {this.renderToolbar()}
+        {this.renderCreateModal()}
+      </React.Fragment>
     )
   }
 }
