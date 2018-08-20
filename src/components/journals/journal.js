@@ -42,7 +42,7 @@ class Journal extends Component {
   renderBannerAndUserImages(journal, user) {
     return (
       <View style={{ position: "relative", height: bannerImageHeight + 30, backgroundColor: "white" }}>
-        <Image style={styles.bannerImage} source={{ uri: journal.cardImageUrl }} />
+        <Image style={styles.bannerImage} source={{ uri: journal.cardBannerImageUrl }} />
         <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
       </View>
     )

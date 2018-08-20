@@ -5,7 +5,7 @@ export const allJournalsQuery = `
 			slug
 			title
 			description
-			cardImageUrl
+			cardBannerImageUrl
 			status
 			distance
 			user {
@@ -24,7 +24,7 @@ export const myJournalsQuery = `
       title
       status
       distance
-      cardImageUrl
+      miniBannerImageUrl
     }
   }
 `
@@ -35,7 +35,7 @@ export const journalQuery = `
     		id
 		    title
 		    description
-		    cardImageUrl
+		    cardBannerImageUrl
 		    status
 		    distance
     		user {

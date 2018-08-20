@@ -15,7 +15,7 @@ const JournalMini = props => {
         position: "relative"
       }}
       imageStyle={{ borderRadius: 10 }}
-      source={{ uri: props.cardImageUrl }}>
+      source={{ uri: props.miniBannerImageUrl }}>
       <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
         <View
           style={{

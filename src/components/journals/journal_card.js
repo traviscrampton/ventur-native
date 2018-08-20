@@ -13,7 +13,7 @@ const JournalCard = props => {
         shadowOpacity={0.5}
         shadowRadius={2}
         style={styles.card}>
-        <Image style={styles.journalImage} source={{ uri: props.cardImageUrl }} />
+        <Image style={styles.journalImage} source={{ uri: props.cardBannerImageUrl }} />
         <View>{tripMetaData(props)}</View>
       </View>
     </TouchableWithoutFeedback>

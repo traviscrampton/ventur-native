@@ -32,6 +32,7 @@ class BannerImagePicker extends Component {
   getSelectedImage(images) {
     if (images.length === 0) return
     let image = images[0]
+    console.log("image", image)
     this.setState({
       selectedImage: image
     })
@@ -49,7 +50,7 @@ class BannerImagePicker extends Component {
   }
 
   journalImage() {
-    let payload = { key: "cardImageUrl", value: this.state.selectedImage.uri }
+    let payload = { key: "bannerImage", value: this.state.selectedImage }
     this.props.updateJournalForm(payload)
     this.props.navigation.goBack()
   }

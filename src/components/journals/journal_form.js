@@ -14,6 +14,7 @@ import {
 import { gql } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
+import { journalCreate } from "graphql/mutations/journal"
 import { updateJournalForm, cancelJournalForm } from "actions/journal_form"
 import { Header } from "components/editor/header"
 const defaultImage = require("assets/images/mountain-sketch.png")
@@ -22,7 +23,7 @@ const bannerImageWidth = Dimensions.get("window").width
 const bannerImageHeight = Math.round(bannerImageWidth * (150 / 300))
 
 const mapStateToProps = state => ({
-  cardImageUrl: state.journalForm.form.cardImageUrl,
+  bannerImage: state.journalForm.form.bannerImage,
   title: state.journalForm.form.title,
   description: state.journalForm.form.description,
   status: state.journalForm.form.status,
@@ -39,13 +40,14 @@ class JournalForm extends Component {
     super(props)
     this.dismissForm = this.dismissForm.bind(this)
     this.openCameraRoll = this.openCameraRoll.bind(this)
+    this.persistForm = this.persistForm.bind(this)
   }
 
   static STATUS_OPTIONS = [
-    { text: "NOT STARTED", enum: 0 },
-    { text: "ACTIVE", enum: 1 },
-    { text: "PAUSED", enum: 2 },
-    { text: "FINISHED", enum: 4 }
+    { text: "NOT STARTED", enum: "not_started" },
+    { text: "ACTIVE", enum: "active" },
+    { text: "PAUSED", enum: "paused" },
+    { text: "FINISHED", enum: "completed" }
   ]
 
   updateForm(key, value) {
@@ -54,7 +56,7 @@ class JournalForm extends Component {
   }
 
   noUploadedImage() {
-    return this.props.cardImageUrl.length === 0
+    return this.props.bannerImage.uri.length === 0
   }
 
   renderUploadImageCta() {
@@ -86,7 +88,7 @@ class JournalForm extends Component {
   renderBannerImage() {
     return (
       <ImageBackground
-        source={this.noUploadedImage() ? defaultImage : { uri: this.props.cardImageUrl }}
+        source={this.noUploadedImage() ? defaultImage : { uri: this.props.bannerImage.uri }}
         style={{
           height: bannerImageHeight,
           display: "flex",
@@ -205,9 +207,18 @@ class JournalForm extends Component {
     this.props.navigation.goBack()
   }
 
-  goBack() {}
-
-  persistForm() {}
+  persistForm() {
+    let { title, description, status, stage, bannerImage } = this.props
+    gql(journalCreate, {
+      title: title,
+      description: description,
+      status: status,
+      stage: stage,
+      bannerImage: bannerImage
+    }).then(res => {
+      console.log("res", res)
+    })
+  }
 
   renderHeader() {
     const headerProps = {

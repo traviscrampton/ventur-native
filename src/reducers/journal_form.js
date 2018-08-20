@@ -2,11 +2,13 @@ import { UPDATE_JOURNAL_FORM, CANCEL_JOURNAL_FORM } from "actions/journal_form"
 
 const defaultJournalFormData = {
   form: {
-    cardImageUrl: "",
+    bannerImage: {
+      uri: ""
+    },
     title: "",
     description: "",
-    status: 0,
-    stage: ""
+    status: "not_started",
+    stage: "draft"
   }
 }
 
