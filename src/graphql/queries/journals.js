@@ -2,7 +2,6 @@ export const allJournalsQuery = `
   query {
   	allJournals {
 			id
-			slug
 			title
 			description
 			cardBannerImageUrl

@@ -41,7 +41,8 @@ const ContentCreateNavigator = createStackNavigator(
         tabBarVisible: false
       })
     },
-    BannerImagePicker: BannerImagePicker
+    BannerImagePicker: BannerImagePicker,
+    Journal: Journal
   },
   {
     mode: "modal",
@@ -101,7 +102,7 @@ const BottomNavigator = createBottomTabNavigator(
     Profile: Editor
   },
   {
-    tabBarComponent: BottomTabBar,
+    tabBarComponent: BottomTabBar
   },
   {
     initialRouteName: "Explore"

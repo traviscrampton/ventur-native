@@ -12,3 +12,11 @@ export function cancelJournalForm() {
     type: CANCEL_JOURNAL_FORM
   }
 }
+
+export const SINGLE_JOURNAL_LOADED = "SINGLE_JOURNAL_LOADED"
+export function populateJournal(payload) {
+  return {
+    type: SINGLE_JOURNAL_LOADED,
+    payload: payload
+  }
+}

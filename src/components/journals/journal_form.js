@@ -12,13 +12,15 @@ import {
   Dimensions
 } from "react-native"
 import { gql } from "agent"
+import { setToken } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import { journalCreate } from "graphql/mutations/journal"
-import { updateJournalForm, cancelJournalForm } from "actions/journal_form"
+import { updateJournalForm, cancelJournalForm, populateJournal } from "actions/journal_form"
 import { Header } from "components/editor/header"
+import request from "superagent"
 const defaultImage = require("assets/images/mountain-sketch.png")
-
+const API_ROOT = "http://192.168.7.23:3000"
 const bannerImageWidth = Dimensions.get("window").width
 const bannerImageHeight = Math.round(bannerImageWidth * (150 / 300))
 
@@ -32,7 +34,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  cancelJournalForm: () => dispatch(cancelJournalForm())
+  cancelJournalForm: () => dispatch(cancelJournalForm()),
+  populateJournal: payload => dispatch(populateJournal(payload))
 })
 
 class JournalForm extends Component {
@@ -207,17 +210,39 @@ class JournalForm extends Component {
     this.props.navigation.goBack()
   }
 
-  persistForm() {
+  async persistForm() {
+    const formData = new FormData()
     let { title, description, status, stage, bannerImage } = this.props
-    gql(journalCreate, {
-      title: title,
-      description: description,
-      status: status,
-      stage: stage,
-      bannerImage: bannerImage
-    }).then(res => {
-      console.log("res", res)
+    let imgPost = {
+      uri: bannerImage.uri,
+      name: bannerImage.filename,
+      type: "multipart/form-data"
+    }
+    formData.append("title", title)
+    formData.append("description", description)
+    formData.append("status", status)
+    formData.append("stage", stage)
+    formData.append("banner_image", imgPost)
+    const token = await setToken()
+    fetch(`${API_ROOT}/journals`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+        "Content-Type": "multipart/form-data"
+      },
+      body: formData
     })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        //would rather just use the json that i pass back, come back and investigate.
+        // there's a componentDidMount on the journal show page, that seems 
+        // reasonable to remove so we can reuse this component. 
+        let journalId = data.id
+        this.props.navigation.navigate("Journal", { journalId })
+        this.props.populateJournal(data)
+      })
   }
 
   renderHeader() {
