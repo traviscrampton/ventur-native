@@ -237,8 +237,8 @@ class JournalForm extends Component {
       })
       .then(data => {
         //would rather just use the json that i pass back, come back and investigate.
-        // there's a componentDidMount on the journal show page, that seems 
-        // reasonable to remove so we can reuse this component. 
+        // there's a componentDidMount on the journal show page, that seems
+        // reasonable to remove so we can reuse this component.
         let journalId = data.id
         this.props.navigation.navigate("Journal", { journalId })
         this.props.populateJournal(data)

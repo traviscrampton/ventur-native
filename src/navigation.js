@@ -32,21 +32,55 @@ const JournalFeedNavigator = createStackNavigator(
   }
 )
 
+const JournalCreateStackNavigator = createStackNavigator(
+  {
+    JournalForm: JournalForm,
+    BannerImagePicker: BannerImagePicker
+  },
+  {
+    headerMode: "none",
+    initialRouteName: "JournalForm"
+  }
+)
+
+const EditorNavigator = createStackNavigator(
+  {
+    Editor: Editor,
+    CameraRollContainer: CameraRollContainer,
+    ImageCaptionForm: ImageCaptionForm,
+    ManageContent: ManageContent
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+)
+
+const CreatorNavigator = createBottomTabNavigator(
+  {
+    Journal: JournalCreateStackNavigator,
+    Chapter: EditorNavigator, // these are coming soon
+    Gear: ContentCreate // these are coming soon
+  },
+  { mode: "modal" }
+)
+
 const ContentCreateNavigator = createStackNavigator(
   {
     ContentCreate: ContentCreate,
-    JournalForm: {
-      screen: JournalForm,
-      navigationOptions: ({ navigation }) => ({
-        tabBarVisible: false
-      })
-    },
+    JournalForm: JournalForm,
     BannerImagePicker: BannerImagePicker,
     Journal: Journal
   },
   {
     mode: "modal",
-    headerMode: "none"
+    headerMode: "none",
+    tabBarVisible: false,
+    navigationOptions: ({ navigation }) => ({
+      tabBarVisible: false
+    })
   }
 )
 
@@ -66,21 +100,6 @@ const MyJournalsNavigator = createStackNavigator(
   }
 )
 
-const EditorNavigator = createStackNavigator(
-  {
-    Editor: Editor,
-    CameraRollContainer: CameraRollContainer,
-    ImageCaptionForm: ImageCaptionForm,
-    ManageContent: ManageContent
-  },
-  {
-    headerMode: "none",
-    navigationOptions: {
-      headerVisible: false
-    }
-  }
-)
-
 const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
@@ -97,7 +116,12 @@ const BottomNavigator = createBottomTabNavigator(
   {
     Explore: RootNavigator(signedIn),
     Saved: Editor,
-    Add: ContentCreateNavigator,
+    Add: {
+      screen: CreatorNavigator,
+      navigationOptions: ({ navigation }) => ({
+        tabBarVisible: false
+      })
+    },
     "My Trips": MyJournalsNavigator,
     Profile: Editor
   },
