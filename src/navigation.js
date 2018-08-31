@@ -23,6 +23,7 @@ const JournalFeedNavigator = createStackNavigator(
     Journal: Journal
   },
   {
+    headerMode: "none",
     navigationOptions: {
       headerTransparent: true,
       headerStyle: {

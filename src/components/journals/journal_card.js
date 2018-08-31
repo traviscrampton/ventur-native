@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16
   },
   title: {
-    fontSize: 20,
+    fontSize: 28,
     marginBottom: 10,
     fontFamily: "playfair"
   },
