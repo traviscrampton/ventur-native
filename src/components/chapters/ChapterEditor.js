@@ -1,19 +1,21 @@
 import React, { Component } from "react"
+import { resetChapter } from "actions/chapter"
 import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   ScrollView,
   Image,
-  Dimensions,
-  TouchableWithoutFeedback,
+  TextInput,
+  ImageBackground,
   Keyboard,
-  findNodeHandle,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  Dimensions
 } from "react-native"
+import { gql } from "agent"
 import { connect } from "react-redux"
-import { UPDATE_FORMAT_BAR, CREATE_NEW_ENTRY, DELETE_ENTRY, UPDATE_ENTRY_FOCUS } from "actions/action_types"
 import {
   editEntry,
   updateFormatBar,
@@ -25,20 +27,10 @@ import {
   prepManageContent,
   updateKeyboardState
 } from "actions/editor"
+import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import InputScrollView from "react-native-input-scroll-view"
-
-const mapStateToProps = state => ({
-  entries: state.editor.entries,
-  activeAttribute: state.editor.activeAttribute,
-  focusedEntryIndex: state.editor.focusedEntryIndex,
-  activeIndex: state.editor.activeIndex,
-  cursorPosition: state.editor.cursorPosition,
-  containerHeight: state.editor.containerHeight,
-  newIndex: state.editor.newIndex
-})
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -51,7 +43,20 @@ const mapDispatchToProps = dispatch => ({
   prepManageContent: payload => dispatch(prepManageContent(payload))
 })
 
-class Editor extends Component {
+const mapStateToProps = state => ({
+  chapter: state.chapter.chapter,
+  loaded: state.chapter.loaded,
+  currentUser: state.common.currentUser,
+  entries: state.editor.entries,
+  activeAttribute: state.editor.activeAttribute,
+  focusedEntryIndex: state.editor.focusedEntryIndex,
+  activeIndex: state.editor.activeIndex,
+  cursorPosition: state.editor.cursorPosition,
+  containerHeight: state.editor.containerHeight,
+  newIndex: state.editor.newIndex
+})
+
+class ChapterEditor extends Component {
   constructor(props) {
     super(props)
     this.openCameraRoll = this.openCameraRoll.bind(this)
@@ -62,6 +67,59 @@ class Editor extends Component {
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener("keyboardWillShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
+  }
+
+  navigateBack() {
+    this.props.navigation.goBack()
+  }
+
+  renderTitleAndDescription() {
+    const { title, description } = this.props.chapter
+    return (
+      <View style={{ padding: 20, paddingTop: 0, paddingBottom: 10 }}>
+        <View>
+          <Text
+            style={{
+              fontSize: 28,
+              fontFamily: "playfair",
+              color: "black"
+            }}>
+            {title}
+          </Text>
+        </View>
+        <View>
+          <Text style={{ fontSize: 18, color: "#c3c3c3", fontFamily: "open-sans-semi" }}>{description}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  renderStatistics() {
+    const { dateCreated, distance } = this.props.chapter
+    return (
+      <View style={{ padding: 20, paddingTop: 0 }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            borderTopWidth: 1,
+            borderTopColor: "#f8f8f8",
+            paddingTop: 10
+          }}>
+          <MaterialCommunityIcons name="calendar" size={18} style={{ marginRight: 5 }} />
+          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
+        </View>
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <MaterialIcons style={{ marginRight: 5 }} name="directions-bike" size={16} />
+          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${distance} miles`.toUpperCase()}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  renderBannerImage() {
+    const { bannerImageUrl } = this.props.chapter
+    return <Image style={{ width: Dimensions.get("window").width, height: 200 }} source={{ uri: bannerImageUrl }} />
   }
 
   componentDidUpdate(prevProps) {
@@ -147,14 +205,6 @@ class Editor extends Component {
         </View>
       </TouchableWithoutFeedback>
     )
-  }
-
-  TextOrTextInput(entry, index) {
-    if (this.props.activeIndex === index) {
-      return this.renderAsTextInput(entry, index)
-    } else {
-      return this.renderAsTheText(entry, index)
-    }
   }
 
   renderEntry(entry, index) {
@@ -249,7 +299,7 @@ class Editor extends Component {
             paddingRight: 10,
             paddingTop: 0,
             paddingBottom: 0,
-            fontSize: 17,
+            fontSize: 22,
             fontFamily: "open-sans-regular",
             lineHeight: 24,
             minHeight: Math.max(30, entry.height)
@@ -285,7 +335,7 @@ class Editor extends Component {
   renderEditorToolbar() {
     return (
       <KeyboardAvoidingView behavior={"position"}>
-        <EditorToolbar openManageContent={this.openManageContent}/>
+        <EditorToolbar openManageContent={this.openManageContent} />
       </KeyboardAvoidingView>
     )
   }
@@ -300,10 +350,30 @@ class Editor extends Component {
     )
   }
 
+  renderChapterMetadata() {
+    return (
+      <React.Fragment>
+        {this.renderTitleAndDescription()}
+        {this.renderStatistics()}
+        {this.renderBannerImage()}
+      </React.Fragment>
+    )
+  }
+
+  renderEditor() {
+    return this.props.entries.map((entry, index) => {
+      return (
+        <React.Fragment>
+          {this.renderEntry(entry, index)}
+          {this.renderCreateCta(index)}
+        </React.Fragment>
+      )
+    })
+  }
+
   render() {
     return (
-      <KeyboardAvoidingView style={{ backgroundColor: "white", paddingBottom: 100 }}>
-        <View style={{ height: 60 }} />
+      <KeyboardAvoidingView style={{ backgroundColor: "white", marginBottom: 200 }}>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
@@ -311,9 +381,8 @@ class Editor extends Component {
           style={{ position: "relative" }}
           keyboardOffset={100}
           multilineInputStyle={{ lineHeight: 30 }}>
-          {this.props.entries.map((entry, index) => {
-            return [this.renderEntry(entry, index), this.renderCreateCta(index)]
-          })}>
+          {this.renderChapterMetadata()}
+          {this.renderEditor()}
         </InputScrollView>
         {this.renderEditorToolbar()}
       </KeyboardAvoidingView>
@@ -321,7 +390,9 @@ class Editor extends Component {
   }
 }
 
+const styles = StyleSheet.create({})
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Editor)
+)(ChapterEditor)

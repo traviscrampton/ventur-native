@@ -9,7 +9,7 @@ import Editor from "components/editor/editor"
 import BottomTabBar from "components/shared/bottom_tab_bar"
 import CameraRollContainer from "components/editor/camera_roll_container"
 import ImageCaptionForm from "components/editor/image_caption_form"
-import Chapter from "components/chapters/chapter"
+import ChapterDispatch from "components/chapters/ChapterDispatch"
 import ManageContent from "components/editor/manage_content"
 import BannerImagePicker from "components/journals/banner_image_picker"
 import JournalForm from "components/journals/journal_form"
@@ -21,7 +21,7 @@ const signedIn = isSignedIn()
 const JournalNavigation = createStackNavigator(
   {
     Journal: Journal,
-    Chapter: Chapter
+    Chapter: ChapterDispatch
   },
   {
     headerMode: "none",
@@ -36,7 +36,10 @@ const JournalFeedNavigator = createStackNavigator(
   {
     JournalFeed: JournalFeed,
     Journal: Journal,
-    Chapter: Chapter
+    Chapter: ChapterDispatch,
+    CameraRollContainer: CameraRollContainer,
+    ImageCaptionForm: ImageCaptionForm,
+    ManageContent: ManageContent
   },
   {
     headerMode: "none",
@@ -105,7 +108,7 @@ const MyJournalsNavigator = createStackNavigator(
   {
     MyJournals: MyJournals,
     Journal: Journal,
-    Chapter: Chapter
+    Chapter: ChapterDispatch
   },
   {
     headerMode: "none",
@@ -120,8 +123,7 @@ const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
-      JournalFeed: JournalFeedNavigator,
-      Editor: EditorNavigator
+      JournalFeed: JournalFeedNavigator
     },
     {
       initialRouteName: signedIn ? "JournalFeed" : "Login"

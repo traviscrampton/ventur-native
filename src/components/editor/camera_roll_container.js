@@ -64,7 +64,12 @@ class CameraRollContainer extends Component {
   }
 
   render() {
-    return [this.renderHeader(), this.renderCameraRollPicker()]
+    return (
+      <React.Fragment>
+        {this.renderHeader()}
+        {this.renderCameraRollPicker()}
+      </React.Fragment>
+    )
   }
 }
 
