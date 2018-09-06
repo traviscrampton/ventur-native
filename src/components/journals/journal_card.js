@@ -22,22 +22,22 @@ const JournalCard = props => {
 
 const tripMetaData = props => {
   return (
-    <View style={{ padding: 10 }}>
-      <Text style={{ fontFamily: "overpass" }}>
-        {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
-      </Text>
-      <Text style={styles.title}>{props.title}</Text>
+    <View style={{ padding: 10, display: "flex", flexDirection: "column" }}>
+      <View style={{ marginBottom: "auto" }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={14} color="black" />
+          <Text style={{ fontFamily: "open-sans-regular" }}>{props.description}</Text>
+        </View>
+        <Text style={styles.title}>{props.title}</Text>
+      </View>
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          position: "absolute",
-          left: 8,
-          bottom: -40
+          marginTop: "auto",
+          display: "flex"
         }}>
-        <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={18} color="black" />
-        <Text style={{ fontFamily: "open-sans-regular" }}>{props.description}</Text>
+        <Text>
+          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
+        </Text>
       </View>
     </View>
   )

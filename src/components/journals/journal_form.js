@@ -207,7 +207,7 @@ class JournalForm extends Component {
 
   dismissForm() {
     this.props.cancelJournalForm()
-    this.props.navigation.goBack()
+    this.props.navigation.navigate("JournalFeed")
   }
 
   async persistForm() {

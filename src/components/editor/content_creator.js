@@ -56,8 +56,15 @@ class ContentCreator extends Component {
     return (
       <TouchableWithoutFeedback onPress={() => this.props.updateActiveCreator(this.props.index)}>
         <View
-          style={{ paddingTop: 10, paddingLeft: 20, paddingRight: 20, paddingBottom: 10, backgroundColor: "white", height: 50 }}>
-        </View>
+          style={{
+            paddingTop: 10,
+            paddingLeft: 20,
+            paddingRight: 20,
+            paddingBottom: 10,
+            backgroundColor: "white",
+            height: 50
+          }}
+        />
       </TouchableWithoutFeedback>
     )
   }

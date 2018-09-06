@@ -60,7 +60,7 @@ class Editor extends Component {
   }
 
   componentWillMount() {
-    this.props.navigation.setParams({ visible: false })
+    // this.props.navigation.setParams({ visible: false })
     this.keyboardWillShowListener = Keyboard.addListener("keyboardWillShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }

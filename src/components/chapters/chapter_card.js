@@ -1,18 +1,27 @@
 import React from "react"
 import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions, TouchableWithoutFeedback } from "react-native"
-import {MaterialIcons} from "@expo/vector-icons"
+import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
   const { imageUrl, title, distance, dateCreated, description } = props
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
         <View>
           <Text style={styles.chapterTitle}>{title}</Text>
-          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
-          <View style={{ display: "flex", flexDirection: "row",  marginTop: "auto", marginBottom: -4 }}>
-          <MaterialIcons style={{marginRight: 5}} name="directions-bike" size={16} />
-            <Text style={{fontFamily: "overpass", fontSize: 14}}>{` ${distance} miles`.toUpperCase()}</Text>
+          <View style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <MaterialCommunityIcons name="calendar" size={18} style={{ marginRight: 5 }} />
+              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <MaterialIcons style={{ marginRight: 5 }} name="directions-bike" size={16} />
+              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${distance} miles`.toUpperCase()}</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Feather style={{ marginRight: 5 }} name="camera" size={16} />
+              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>5 Photos</Text>
+            </View>
           </View>
         </View>
         <View>
@@ -31,22 +40,22 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     backgroundColor: "white",
-    borderRadius: 6,
     paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#C8C8C8"
+    borderBottomColor: "#d3d3d3"
   },
   chapterImage: {
     width: 80,
-    height: 80,
+    height: 100,
     borderRadius: 5,
     marginLeft: 20
   },
   chapterTitle: {
     fontFamily: "open-sans-semi",
-    color: "#666",
+    color: "black",
     fontSize: 20,
+    marginBottom: 10
   }
 })
 

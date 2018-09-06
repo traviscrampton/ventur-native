@@ -9,6 +9,7 @@ import Editor from "components/editor/editor"
 import BottomTabBar from "components/shared/bottom_tab_bar"
 import CameraRollContainer from "components/editor/camera_roll_container"
 import ImageCaptionForm from "components/editor/image_caption_form"
+import Chapter from "components/chapters/chapter"
 import ManageContent from "components/editor/manage_content"
 import BannerImagePicker from "components/journals/banner_image_picker"
 import JournalForm from "components/journals/journal_form"
@@ -17,10 +18,25 @@ import { isSignedIn } from "auth"
 
 const signedIn = isSignedIn()
 
+const JournalNavigation = createStackNavigator(
+  {
+    Journal: Journal,
+    Chapter: Chapter
+  },
+  {
+    headerMode: "none",
+    headerTransparent: true,
+    headerStyle: {
+      borderBottomWidth: 0
+    }
+  }
+)
+
 const JournalFeedNavigator = createStackNavigator(
   {
     JournalFeed: JournalFeed,
-    Journal: Journal
+    Journal: Journal,
+    Chapter: Chapter
   },
   {
     headerMode: "none",
@@ -88,16 +104,15 @@ const ContentCreateNavigator = createStackNavigator(
 const MyJournalsNavigator = createStackNavigator(
   {
     MyJournals: MyJournals,
-    Journal: Journal
+    Journal: Journal,
+    Chapter: Chapter
   },
   {
-    navigationOptions: {
-      headerTransparent: true,
-      headerStyle: {
-        borderBottomWidth: 0
-      }
-    },
-    initialRouteName: "MyJournals"
+    headerMode: "none",
+    headerTransparent: true,
+    headerStyle: {
+      borderBottomWidth: 0
+    }
   }
 )
 

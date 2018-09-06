@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { journalQuery, journalChaptersQuery, journalGearItems } from "graphql/queries/journals"
+import { chapterQuery } from "graphql/queries/chapters"
 import {
   StyleSheet,
   View,
@@ -13,6 +14,7 @@ import {
 import ChapterList from "components/chapters/chapter_list"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
@@ -26,7 +28,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onLoad: payload => {
     dispatch({ type: SINGLE_JOURNAL_LOADED, payload })
-  }
+  },
+
+  loadChapter: payload => dispatch(loadChapter(payload))
 })
 
 const bannerImageWidth = Dimensions.get("window").width
@@ -36,6 +40,7 @@ class Journal extends Component {
   constructor(props) {
     super(props)
     this.navigateBack = this.navigateBack.bind(this)
+    this.requestForChapter = this.requestForChapter.bind(this)
   }
 
   componentWillMount() {
@@ -46,6 +51,13 @@ class Journal extends Component {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
     gql(journalQuery, { id: journalId }).then(res => {
       this.props.onLoad(res.journal)
+    })
+  }
+
+  requestForChapter(chapterId) {
+    gql(chapterQuery, { id: chapterId }).then(res => {
+      this.props.loadChapter(res.chapter)
+      this.props.navigation.navigate("Chapter")
     })
   }
 
@@ -65,9 +77,16 @@ class Journal extends Component {
         }}>
         <TouchableHighlight
           underlayColor="rgba(111, 111, 111, 0.5)"
-          style={{ padding: 20 }}
+          style={{
+            padding: 20,
+            height: 50,
+            width: 50,
+            marginLeft: 10,
+            borderRadius: "50%",
+            position: "relative"
+          }}
           onPress={this.navigateBack}>
-          <Ionicons name="ios-arrow-back" size={28} color="white" />
+          <Ionicons style={{ position: "absolute", top: 11, left: 18 }} name="ios-arrow-back" size={28} color="white" />
         </TouchableHighlight>
         <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
       </View>
@@ -115,7 +134,7 @@ class Journal extends Component {
   }
 
   renderChapters() {
-    return <ChapterList chapters={this.props.chapters} />
+    return <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
   }
 
   render() {
