@@ -9,18 +9,18 @@ const ChapterCard = props => {
       <View style={styles.chapterCardContainer}>
         <View>
           <Text style={styles.chapterTitle}>{title}</Text>
-          <View style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <View style={{ display: "flex", flexDirection: "row" }}>
-              <MaterialCommunityIcons name="calendar" size={18} style={{ marginRight: 5 }} />
-              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
+          <View style={styles.allIcons}>
+            <View style={styles.individualIconTextContainer}>
+              <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
+              <Text style={styles.textStats}>{`${dateCreated}`.toUpperCase()}</Text>
             </View>
-            <View style={{ display: "flex", flexDirection: "row" }}>
-              <MaterialIcons style={{ marginRight: 5 }} name="directions-bike" size={16} />
-              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${distance} miles`.toUpperCase()}</Text>
+            <View style={styles.individualIconTextContainer}>
+              <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
+              <Text style={styles.textStats}>{`${distance} miles`.toUpperCase()}</Text>
             </View>
-            <View style={{ display: "flex", flexDirection: "row" }}>
-              <Feather style={{ marginRight: 5 }} name="camera" size={16} />
-              <Text style={{ fontFamily: "overpass", fontSize: 14 }}>5 Photos</Text>
+            <View style={styles.individualIconTextContainer}>
+              <Feather style={styles.iconMargin} name="camera" size={16} />
+              <Text style={styles.textStats}>5 Photos</Text>
             </View>
           </View>
         </View>
@@ -45,17 +45,33 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#d3d3d3"
   },
+  chapterTitle: {
+    fontFamily: "open-sans-semi",
+    color: "black",
+    fontSize: 20,
+    marginBottom: 10
+  },
+  allIcons: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between"
+  },
+  individualIconTextContainer: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  textStats: {
+    fontFamily: "overpass",
+    fontSize: 14
+  },
   chapterImage: {
     width: 80,
     height: 100,
     borderRadius: 5,
     marginLeft: 20
   },
-  chapterTitle: {
-    fontFamily: "open-sans-semi",
-    color: "black",
-    fontSize: 20,
-    marginBottom: 10
+  iconMargin: {
+    marginRight: 5
   }
 })
 
