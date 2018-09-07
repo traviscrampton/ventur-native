@@ -28,15 +28,7 @@ class ChapterDispatch extends Component {
 
   renderChapterNavigation() {
     return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingTop: 20,
-          height: 80
-        }}>
+      <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
         {this.renderEditButton()}
       </View>
@@ -45,18 +37,10 @@ class ChapterDispatch extends Component {
 
   renderJournalAndUser() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        <Image
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            marginRight: 5
-          }}
-          source={{ uri: this.props.journal.miniBannerImageUrl }}
-        />
+      <View style={styles.journalAndUserContainer}>
+        <Image style={styles.journalImage} source={{ uri: this.props.journal.miniBannerImageUrl }} />
         <View>
-          <Text style={{ fontFamily: "open-sans-semi" }}>{this.props.journal.title}</Text>
+          <Text style={styles.journalTitle}>{this.props.journal.title}</Text>
           <Text>{this.props.user.fullName}</Text>
         </View>
       </View>
@@ -65,19 +49,12 @@ class ChapterDispatch extends Component {
 
   renderBackIcon() {
     return (
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      <View style={styles.backIconContainer}>
         <TouchableHighlight
           underlayColor="rgba(111, 111, 111, 0.5)"
-          style={{
-            padding: 20,
-            height: 50,
-            width: 50,
-            marginLeft: 2,
-            borderRadius: "50%",
-            position: "relative"
-          }}
+          style={styles.backButton}
           onPress={this.navigateBack}>
-          <Ionicons style={{ position: "absolute", top: 11, left: 18 }} name="ios-arrow-back" size={28} color="black" />
+          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="black" />
         </TouchableHighlight>
         {this.renderJournalAndUser()}
       </View>
@@ -85,7 +62,7 @@ class ChapterDispatch extends Component {
   }
 
   renderEditButton() {
-    return <View style={{ paddingRight: 20 }}>{this.getUserCta()}</View>
+    return <View style={styles.userCtaPosition}>{this.getUserCta()}</View>
   }
 
   getUserCta() {
@@ -100,7 +77,7 @@ class ChapterDispatch extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}
         {this.dispatchChapter()}
       </View>
@@ -108,7 +85,53 @@ class ChapterDispatch extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  chapterDispatchContainer: {
+    backgroundColor: "white"
+  },
+  chapterNavigationContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 20,
+    height: 80
+  },
+  journalAndUserContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  journalImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 5
+  },
+  journalTitle: {
+    fontFamily: "open-sans-semi"
+  },
+  backIconContainer: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  backButton: {
+    padding: 20,
+    height: 50,
+    width: 50,
+    marginLeft: 2,
+    borderRadius: "50%",
+    position: "relative"
+  },
+  backIcon: {
+    position: "absolute",
+    top: 11,
+    left: 18
+  },
+  userCtaPosition: {
+    paddingRight: 20
+  }
+})
 
 export default connect(
   mapStateToProps,
