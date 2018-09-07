@@ -56,44 +56,10 @@ const styles = StyleSheet.create({
     height: imageHeight,
     position: "relative"
   },
-  userInfo: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  userImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10
-  },
-  userName: {
-    color: "white"
-  },
-  metaData: {
-    backgroundColor: "rgb(245,245,245)",
-    padding: 8,
-    paddingBottom: 16
-  },
   title: {
     fontSize: 28,
     marginBottom: 10,
     fontFamily: "playfair"
-  },
-  wideFlex: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  subTitle: {
-    fontSize: 16,
-    marginBottom: 10
-  },
-  stats: {
-    letterSpacing: 1
   }
 })
 

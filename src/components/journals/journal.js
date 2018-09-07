@@ -169,14 +169,6 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-regular",
     color: "white"
   },
-  userInfo: {
-    // display: "flex",
-    // flexDirection: "row",
-    // alignItems: "center",
-    // justifyContent: "center",
-    // marginTop: 20,
-    // marginBottom: 20
-  },
   userImage: {
     width: 50,
     height: 50,
@@ -184,12 +176,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderWidth: 2,
     borderColor: "white"
-  },
-  wideFlex: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10
   },
   stats: {
     fontFamily: "open-sans-regular",
