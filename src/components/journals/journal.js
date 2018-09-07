@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { journalQuery, journalChaptersQuery, journalGearItems } from "graphql/queries/journals"
+import { journalQuery, journalGearItems } from "graphql/queries/journals"
 import { chapterQuery } from "graphql/queries/chapters"
 import {
   StyleSheet,

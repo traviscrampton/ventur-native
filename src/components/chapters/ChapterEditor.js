@@ -4,22 +4,18 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   Image,
   TextInput,
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableHighlight,
   TouchableWithoutFeedback,
   Dimensions
 } from "react-native"
-import { gql } from "agent"
 import { connect } from "react-redux"
 import {
   editEntry,
   updateFormatBar,
-  turnTextToTextInput,
   updateActiveIndex,
   removeEntryAndFocus,
   updateActiveImageCaption,
@@ -30,7 +26,7 @@ import {
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/content_creator"
 import EditorToolbar from "components/editor/editor_toolbar"
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -181,32 +177,6 @@ class ChapterEditor extends Component {
     }
   }
 
-  renderAsTheText(entry, index) {
-    return (
-      <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, index)} key={index}>
-        <View
-          style={{
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 0,
-            paddingBottom: 10,
-            minHeight: Math.max(60, entry.height)
-          }}>
-          <Text
-            style={[
-              {
-                fontSize: 18,
-                lineHeight: 25
-              },
-              this.getInputStyling(entry)
-            ]}>
-            {entry.content}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
@@ -230,23 +200,20 @@ class ChapterEditor extends Component {
           style={{
             width: Dimensions.get("window").width,
             height: 350,
-            padding: 10,
-            zIndex: 1,
-            opacity: 0.6,
+            padding: 20,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
             display: "flex",
-            backgroundColor: "black",
             flexDirection: "row",
-            justifyContent: "space-between",
-            position: "absolute"
+            justifyContent: "space-between"
           }}>
           <TouchableWithoutFeedback onPress={() => this.props.removeEntryAndFocus(index)}>
             <View>
-              <Text style={{ color: "white", opacity: 1, fontSize: 20 }}>Delete</Text>
+              <FontAwesome name={"trash-o"} size={28} color={"white"} />
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={e => this.openImageCaptionForm(e, index)}>
             <View>
-              <Text style={{ color: "white", opacity: 1, fontSize: 20 }}>Caption</Text>
+              <FontAwesome name={"quote-right"} color={"white"} size={28} />
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -258,10 +225,11 @@ class ChapterEditor extends Component {
     // todo => make functional component
     return (
       <View key={`image${index}`} style={{ position: "relative" }}>
-        {this.renderOpacCover(index)}
         <TouchableWithoutFeedback style={{ position: "relative" }} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
-            <Image style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }} />
+            <ImageBackground style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }}>
+              {this.renderOpacCover(index)}
+            </ImageBackground>
             {this.renderImageCaption(entry)}
           </View>
         </TouchableWithoutFeedback>
@@ -299,7 +267,7 @@ class ChapterEditor extends Component {
             paddingRight: 10,
             paddingTop: 0,
             paddingBottom: 0,
-            fontSize: 22,
+            fontSize: 20,
             fontFamily: "open-sans-regular",
             lineHeight: 24,
             minHeight: Math.max(30, entry.height)
@@ -334,9 +302,9 @@ class ChapterEditor extends Component {
 
   renderEditorToolbar() {
     return (
-      <KeyboardAvoidingView behavior={"position"}>
+      <View>
         <EditorToolbar openManageContent={this.openManageContent} />
-      </KeyboardAvoidingView>
+      </View>
     )
   }
 
@@ -352,40 +320,41 @@ class ChapterEditor extends Component {
 
   renderChapterMetadata() {
     return (
-      <React.Fragment>
+      <View style={{ marginBottom: 20 }}>
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
         {this.renderBannerImage()}
-      </React.Fragment>
+      </View>
     )
   }
 
   renderEditor() {
     return this.props.entries.map((entry, index) => {
       return (
-        <React.Fragment>
+        <View>
           {this.renderEntry(entry, index)}
           {this.renderCreateCta(index)}
-        </React.Fragment>
+        </View>
       )
     })
   }
 
   render() {
     return (
-      <KeyboardAvoidingView style={{ backgroundColor: "white", marginBottom: 200 }}>
+      <View style={{ backgroundColor: "white", marginBottom: 0 }}>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
           keyboardDismissMode="on-drag"
           style={{ position: "relative" }}
-          keyboardOffset={100}
+          keyboardOffset={90}
+          keyboardShouldPersistTaps={true}
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterMetadata()}
           {this.renderEditor()}
+          {this.renderEditorToolbar()}
         </InputScrollView>
-        {this.renderEditorToolbar()}
-      </KeyboardAvoidingView>
+      </View>
     )
   }
 }

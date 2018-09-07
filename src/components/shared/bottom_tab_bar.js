@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux" 
 import { Feather } from "@expo/vector-icons"
-import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 import ContentCreate from "components/modals/content_create"
 
 const mapStateToProps = state => ({

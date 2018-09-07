@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { createNewTextEntry, updateActiveCreator } from "actions/editor"
-import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View, CameraRoll } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 
 const mapStateToProps = state => ({
   activeContentCreator: state.editor.activeContentCreator
@@ -73,16 +73,12 @@ class ContentCreator extends Component {
     return this.renderOptionState()
   }
 
-  renderProperCreator() {
+  render() {
     if (this.props.activeContentCreator === this.props.index) {
       return this.renderOrHidden()
     } else {
       return this.renderInitialState()
     }
-  }
-
-  render() {
-    return this.renderProperCreator()
   }
 }
 

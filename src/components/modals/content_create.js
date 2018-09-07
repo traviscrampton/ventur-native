@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { TOGGLE_TAB_BAR } from "actions/action_types"
-import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dimensions } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 import { Header } from "components/editor/header"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 

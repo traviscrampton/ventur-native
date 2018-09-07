@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { UPDATE_FORMAT_BAR, EDIT_TEXT } from "actions/action_types"
 import { updateFormatBar, editEntry } from "actions/editor"
-import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
+import { MaterialIcons, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
@@ -37,17 +37,26 @@ class EditorToolbar extends Component {
   renderToolbarOption(option) {
     return (
       <View>
-        <Text style={[styles.option, this.isSelectedStyle(option)]}>{option}</Text>
+        <Text style={[styles.option, this.isSelectedStyle(option)]}>{this.get_icon(option)}</Text>
       </View>
     )
   }
 
+  get_icon(option) {
+    if (option === "H1") {
+      return <MaterialIcons color={this.isSelectedStyle(option)} name="text-fields" size={24} />
+    } else if (option === "QUOTE") {
+      return <Entypo name={"quote"} size={24} color={this.isSelectedStyle(option)} />
+    } else {
+      return <Entypo name={"text"} size={24} color={this.isSelectedStyle(option)} />
+    }
+  }
+
   isSelectedStyle(option) {
     if (this.props.activeAttribute === option) {
-      return {
-        backgroundColor: "white",
-        color: "green"
-      }
+      return "#CF5300"
+    } else {
+      return "black"
     }
   }
 
@@ -96,15 +105,24 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "white",
-    borderWidth: 1,
+    alignItems: "center",
+    // backgroundColor: "white",
     paddingTop: 5,
     paddingBottom: 5,
-    borderColor: "green"
+    backgroundColor: "#efefef",
+    height: 40,
+    // shadowColor: "#d3d3d3",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 3
+    // },
+    // shadowRadius: 5,
+    // shadowOpacity: 1.0
   },
   option: {
     fontSize: 20,
     fontWeight: "500",
-    minWidth: 80
+    minWidth: 80,
+    textAlign: "center"
   }
 })

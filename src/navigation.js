@@ -126,13 +126,18 @@ const RootNavigator = (signedIn = false) =>
       JournalFeed: JournalFeedNavigator
     },
     {
-      initialRouteName: signedIn ? "JournalFeed" : "Login"
+      initialRouteName: signedIn ? "Login" : "Login"
     }
   )
 
 const BottomNavigator = createBottomTabNavigator(
   {
-    Explore: RootNavigator(signedIn),
+    Explore: {
+      screen: JournalFeedNavigator,
+      navigationOptions: ({ navigation }) => ({
+        tabBarVisible: navigation.state.index < 2
+      })
+    },
     Saved: Editor,
     Add: {
       screen: CreatorNavigator,

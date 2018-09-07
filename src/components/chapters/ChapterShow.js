@@ -1,19 +1,8 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight,
-  Dimensions
-} from "react-native"
-import { gql } from "agent"
+import { StyleSheet, View, Text, ScrollView, Image, Dimensions } from "react-native"
 import { connect } from "react-redux"
-import Editor from "components/editor/editor"
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,

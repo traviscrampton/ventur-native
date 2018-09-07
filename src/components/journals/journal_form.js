@@ -3,15 +3,11 @@ import {
   StyleSheet,
   View,
   Text,
-  Picker,
-  ScrollView,
   TouchableWithoutFeedback,
   TextInput,
-  Image,
   ImageBackground,
   Dimensions
 } from "react-native"
-import { gql } from "agent"
 import { setToken } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"

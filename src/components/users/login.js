@@ -1,11 +1,10 @@
 import React, { Component } from "react"
-import { StyleSheet, Button, View, Text, List, Form, TextInput } from "react-native"
+import { StyleSheet, Button, View, Text, TextInput } from "react-native"
 import { connect } from "react-redux"
-import request from "superagent"
 import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
 import { loginMutation } from "graphql/mutations/auth"
 import { gql } from "agent"
-import { storeJWT, retrieveJWT } from "auth"
+import { storeJWT } from "auth"
 
 const mapStateToProps = state => ({
   email: state.login.email,

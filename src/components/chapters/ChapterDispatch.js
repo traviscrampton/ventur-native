@@ -1,20 +1,10 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight,
-  Dimensions
-} from "react-native"
-import { gql } from "agent"
+import { StyleSheet, View, Text, Image, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -105,7 +95,7 @@ class ChapterDispatch extends Component {
   }
 
   dispatchChapter() {
-    return <ChapterEditor navigation={this.props.navigation}/>
+    return <ChapterEditor navigation={this.props.navigation} />
   }
 
   render() {

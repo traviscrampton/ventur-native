@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
 const imageWidth = Dimensions.get("window").width - 20

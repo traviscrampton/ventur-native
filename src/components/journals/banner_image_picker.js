@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateJournalForm } from "actions/journal_form"
-import { Text, FlatList, TouchableWithoutFeedback, StyleSheet, ScrollView, View, Image, Button } from "react-native"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { Header } from "components/editor/header"
 
@@ -66,7 +65,12 @@ class BannerImagePicker extends Component {
   }
 
   render() {
-    return [this.renderHeader(), this.renderCameraRollPicker()]
+    return (
+      <React.Fragment>
+        {this.renderHeader()}
+        {this.renderCameraRollPicker()}
+      </React.Fragment>
+    )
   }
 }
 

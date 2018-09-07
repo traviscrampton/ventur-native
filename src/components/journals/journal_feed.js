@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Text, List, ScrollView } from "react-native"
+import { StyleSheet, FlatList, ScrollView } from "react-native"
 import { connect } from "react-redux"
 import { gql } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"

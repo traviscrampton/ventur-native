@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, ImageBackground, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback, Dimensions } from "react-native"
 
 const pad = Dimensions.get("window").width * 0.04
 const imageGaps = Dimensions.get("window").width * 0.11

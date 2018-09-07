@@ -1,9 +1,9 @@
 import React from "react"
-import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
-  const { imageUrl, title, distance, dateCreated, description } = props
+  const { imageUrl, title, distance, dateCreated } = props
   return (
     <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>

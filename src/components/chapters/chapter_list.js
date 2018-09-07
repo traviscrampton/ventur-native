@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, FlatList, View, Text, ScrollView, Image, Dimensions } from "react-native"
+import { StyleSheet, View } from "react-native"
 import ChapterCard from "components/chapters/chapter_card"
 
 const ChapterList = props => {

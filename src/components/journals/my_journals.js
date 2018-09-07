@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Text, List, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, FlatList, View, Dimensions } from "react-native"
 import { connect } from "react-redux"
 import { myJournalsQuery } from "graphql/queries/journals"
 import { gql } from "agent"
