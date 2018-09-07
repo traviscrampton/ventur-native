@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateManageContentEntries, updateEntriesOrder, removeEntryFromClone } from "actions/editor"
 import { Text, FlatList, TouchableWithoutFeedback, ImageBackground, Image, Dimensions, StyleSheet, View } from "react-native"
-import { Header } from "components/editor/header"
+import { Header } from "components/editor/Header"
 import SortableList from "react-native-sortable-list"
 
 const mapStateToProps = state => ({

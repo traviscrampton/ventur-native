@@ -13,7 +13,7 @@ import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import { journalCreate } from "graphql/mutations/journal"
 import { updateJournalForm, cancelJournalForm, populateJournal } from "actions/journal_form"
-import { Header } from "components/editor/header"
+import { Header } from "components/editor/Header"
 import request from "superagent"
 const defaultImage = require("assets/images/mountain-sketch.png")
 const API_ROOT = "http://192.168.7.23:3000"

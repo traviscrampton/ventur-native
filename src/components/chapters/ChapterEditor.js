@@ -24,8 +24,8 @@ import {
   updateKeyboardState
 } from "actions/editor"
 import InputScrollView from "react-native-input-scroll-view"
-import ContentCreator from "components/editor/content_creator"
-import EditorToolbar from "components/editor/editor_toolbar"
+import ContentCreator from "components/editor/ContentCreator"
+import EditorToolbar from "components/editor/EditorToolbar"
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({

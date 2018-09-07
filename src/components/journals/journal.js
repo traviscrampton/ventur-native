@@ -11,7 +11,7 @@ import {
   TouchableHighlight,
   Dimensions
 } from "react-native"
-import ChapterList from "components/chapters/chapter_list"
+import ChapterList from "components/chapters/ChapterList"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
 import { loadChapter } from "actions/chapter"

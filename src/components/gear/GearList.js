@@ -1,6 +1,6 @@
 import React from "react"
 import { View } from "react-native"
-import GearItem from "components/gear/gear_item"
+import GearItem from "components/gear/GearItem"
 
 const GearList = props => {
   return (

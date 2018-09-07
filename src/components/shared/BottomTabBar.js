@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux" 
 import { Feather } from "@expo/vector-icons"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
-import ContentCreate from "components/modals/content_create"
+import ContentCreate from "components/modals/ContentCreate"
 
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar

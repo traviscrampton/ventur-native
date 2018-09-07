@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import { gql } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
 import { allJournalsQuery } from "graphql/queries/journals"
-import JournalCard from "components/journals/journal_card"
+import JournalCard from "components/journals/JournalCard"
 
 const mapDispatchToProps = dispatch => ({
   onLoad: payload => {

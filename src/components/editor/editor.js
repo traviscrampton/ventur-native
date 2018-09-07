@@ -25,8 +25,8 @@ import {
   prepManageContent,
   updateKeyboardState
 } from "actions/editor"
-import ContentCreator from "components/editor/content_creator"
-import EditorToolbar from "components/editor/editor_toolbar"
+import ContentCreator from "components/editor/ContentCreator"
+import EditorToolbar from "components/editor/EditorToolbar"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import InputScrollView from "react-native-input-scroll-view"
 

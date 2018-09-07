@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateJournalForm } from "actions/journal_form"
 import CameraRollPicker from "react-native-camera-roll-picker"
-import { Header } from "components/editor/header"
+import { Header } from "components/editor/Header"
 
 const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
