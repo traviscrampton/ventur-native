@@ -67,26 +67,12 @@ class Journal extends Component {
 
   renderNavHeader(user) {
     return (
-      <View
-        style={{
-          marginTop: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}>
+      <View style={styles.navigationContainer}>
         <TouchableHighlight
           underlayColor="rgba(111, 111, 111, 0.5)"
-          style={{
-            padding: 20,
-            height: 50,
-            width: 50,
-            marginLeft: 10,
-            borderRadius: "50%",
-            position: "relative"
-          }}
+          style={styles.backButton}
           onPress={this.navigateBack}>
-          <Ionicons style={{ position: "absolute", top: 11, left: 18 }} name="ios-arrow-back" size={28} color="white" />
+          <Ionicons style={styles.backIconPosition} name="ios-arrow-back" size={28} color="white" />
         </TouchableHighlight>
         <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
       </View>
@@ -95,14 +81,9 @@ class Journal extends Component {
 
   renderBannerAndUserImages(journal, user) {
     return (
-      <View style={{ position: "relative", height: bannerImageHeight + 10, backgroundColor: "white" }}>
+      <View style={styles.bannerUserImage}>
         <ImageBackground style={styles.bannerImage} source={{ uri: journal.cardBannerImageUrl }}>
-          <View
-            style={{
-              width: bannerImageWidth,
-              height: bannerImageHeight,
-              backgroundColor: "rgba(0, 0, 0, 0.5)"
-            }}>
+          <View style={styles.banner}>
             {this.renderNavHeader(user)}
             {this.renderJournalMetadata(journal)}
           </View>
@@ -115,8 +96,8 @@ class Journal extends Component {
     return (
       <View style={styles.metaDataContainer}>
         <View style={styles.titleSubTitleContainer}>
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={14} color="white" />
+          <View style={styles.locationContainer}>
+            <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
             <Text style={styles.journalDescription}>{journal.description}</Text>
           </View>
           <Text style={styles.journalHeader}>{journal.title}</Text>
@@ -140,7 +121,7 @@ class Journal extends Component {
   render() {
     if (!this.props.loaded) return null
     return (
-      <ScrollView bounces={"none"} style={{ backgroundColor: "white" }}>
+      <ScrollView bounces={"none"} style={styles.container}>
         {this.renderHeader()}
         {this.renderChapters()}
       </ScrollView>
@@ -149,9 +130,27 @@ class Journal extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white"
+  },
   bannerImage: {
     width: bannerImageWidth,
     height: bannerImageHeight
+  },
+  navigationContainer: {
+    marginTop: 20,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  backButton: {
+    padding: 20,
+    height: 50,
+    width: 50,
+    marginLeft: 10,
+    borderRadius: "50%",
+    position: "relative"
   },
   metaDataContainer: {
     padding: 16,
@@ -180,7 +179,28 @@ const styles = StyleSheet.create({
   stats: {
     fontFamily: "open-sans-regular",
     color: "white"
-  }
+  },
+  backIconPosition: {
+    position: "absolute",
+    top: 11,
+    left: 18
+  },
+  banner: {
+    width: bannerImageWidth,
+    height: bannerImageHeight,
+    backgroundColor: "rgba(0, 0, 0, 0.5)"
+  },
+  bannerUserImage: {
+    position: "relative",
+    height: bannerImageHeight + 10,
+    backgroundColor: "white"
+  },
+  locationContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  iconPosition: { marginRight: 5 }
 })
 
 export default connect(

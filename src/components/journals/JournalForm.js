@@ -1,13 +1,5 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  TextInput,
-  ImageBackground,
-  Dimensions
-} from "react-native"
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TextInput, ImageBackground, Dimensions } from "react-native"
 import { setToken } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
@@ -66,19 +58,8 @@ class JournalForm extends Component {
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={{
-            height: 50,
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingLeft: 10,
-            paddingRight: 10
-          }}>
-          <Text style={{ fontFamily: "open-sans-regular" }}>
-            {this.noUploadedImage() ? "Upload Image" : "Upload Different Image"}
-          </Text>
+          style={styles.imageUploadCta}>
+          <Text style={styles.openSans}>{this.noUploadedImage() ? "Upload Image" : "Upload Different Image"}</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -88,14 +69,7 @@ class JournalForm extends Component {
     return (
       <ImageBackground
         source={this.noUploadedImage() ? defaultImage : { uri: this.props.bannerImage.uri }}
-        style={{
-          height: bannerImageHeight,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: bannerImageWidth
-        }}>
+        style={styles.bannerImage}>
         {this.renderUploadImageCta()}
       </ImageBackground>
     )
@@ -106,12 +80,8 @@ class JournalForm extends Component {
       <TextInput
         multiline
         onChangeText={text => this.journalTitle(text)}
-        style={{
-          fontSize: 20,
-          fontFamily: "playfair",
-          marginBottom: 10
-        }}
-        placeholder={"Enter the title"}
+        style={styles.titleInput}
+        placeholder="Enter the title"
         value={this.props.title}
       />
     )
@@ -119,14 +89,10 @@ class JournalForm extends Component {
 
   renderDescriptionInput() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", marginTop: 10, marginBottom: 10 }}>
+      <View style={styles.descriptionContainer}>
         <SimpleLineIcons name="location-pin" style={{ marginRight: 10 }} size={22} color="black" />
         <TextInput
-          style={{
-            fontSize: 14,
-            fontFamily: "open-sans-regular",
-            marginBottom: 10
-          }}
+          style={styles.descriptionInput}
           placeholder={"Location"}
           onChangeText={text => this.journalDescription(text)}
           value={this.props.description}
@@ -136,11 +102,7 @@ class JournalForm extends Component {
   }
 
   renderRadioButtons() {
-    return (
-      <View style={{ display: "flex", marginTop: 10, flexDirection: "row", justifyContent: "space-around" }}>
-        {this.renderStatusInput()}
-      </View>
-    )
+    return <View style={styles.radioButtons}>{this.renderStatusInput()}</View>
   }
 
   openCameraRoll() {
@@ -177,24 +139,8 @@ class JournalForm extends Component {
       isSelectedTab = this.props.status === option.enum
       return (
         <TouchableWithoutFeedback onPress={() => this.journalStatus(option)}>
-          <View
-            style={[
-              isSelectedTab ? { backgroundColor: "gray" } : {},
-              {
-                borderWidth: 1,
-                paddingLeft: 2,
-                borderRadius: 3,
-                paddingRight: 2,
-                paddingTop: 2,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
-              }
-            ]}>
-            <Text style={[isSelectedTab ? { color: "white" } : {}, { fontSize: 10, fontFamily: "overpass" }]}>
-              {option.text}
-            </Text>
+          <View style={[isSelectedTab ? { backgroundColor: "gray" } : {}, styles.statusInput]}>
+            <Text style={[isSelectedTab ? { color: "white" } : {}, styles.statusText]}>{option.text}</Text>
           </View>
         </TouchableWithoutFeedback>
       )
@@ -256,7 +202,7 @@ class JournalForm extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <View style={styles.container}>
         {this.renderHeader()}
         {this.renderBannerImage()}
         <View style={{ padding: 16 }}>
@@ -269,6 +215,71 @@ class JournalForm extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    height: "100%"
+  },
+  imageUploadCta: {
+    height: 50,
+    backgroundColor: "white",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  openSans: {
+    fontFamily: "open-sans-regular"
+  },
+  bannerImage: {
+    height: bannerImageHeight,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: bannerImageWidth
+  },
+  titleInput: {
+    fontSize: 20,
+    fontFamily: "playfair",
+    marginBottom: 10
+  },
+  descriptionContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 10
+  },
+  descriptionInput: {
+    fontSize: 14,
+    fontFamily: "open-sans-regular",
+    marginBottom: 10
+  },
+  radioButtons: {
+    display: "flex",
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  statusInput: {
+    borderWidth: 1,
+    paddingLeft: 2,
+    borderRadius: 3,
+    paddingRight: 2,
+    paddingTop: 2,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  statusText: {
+    fontSize: 10,
+    fontFamily: "overpass"
+  }
+})
 
 export default connect(
   mapStateToProps,

@@ -8,24 +8,13 @@ const imageHeight = Math.round(imageWidth * (240 / 350))
 const JournalMini = props => {
   return (
     <ImageBackground
-      style={{
-        width: imageWidth,
-        height: imageWidth,
-        marginBottom: pad,
-        position: "relative"
-      }}
-      imageStyle={{ borderRadius: 10 }}
+      style={styles.imageBackground}
+      imageStyle={styles.borderRadius}
       source={{ uri: props.miniBannerImageUrl }}>
       <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1
-          }}>
-          <Text style={{ color: "white", fontFamily: "playfair", marginBottom: 5 }}>{props.title}</Text>
-          <Text style={{ color: "white", fontFamily: "overpass", fontSize: 8 }}>
+        <View style={styles.metadataContainer}>
+          <Text style={styles.title}>{props.title}</Text>
+          <Text style={styles.metadata}>
             {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
           </Text>
         </View>
@@ -33,5 +22,33 @@ const JournalMini = props => {
     </ImageBackground>
   )
 }
+
+const styles = StyleSheet.create({
+  imageBackground: {
+    width: imageWidth,
+    height: imageWidth,
+    marginBottom: pad,
+    position: "relative"
+  },
+  borderRadius: {
+    borderRadius: 10
+  },
+  metadataContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1
+  },
+  title: {
+    color: "white",
+    fontFamily: "playfair",
+    marginBottom: 5
+  },
+  metadata: {
+    color: "white",
+    fontFamily: "overpass",
+    fontSize: 8
+  }
+})
 
 export default JournalMini

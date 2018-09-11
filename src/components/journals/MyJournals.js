@@ -44,22 +44,11 @@ class MyJournals extends Component {
   }
 
   render() {
-    const pad = Dimensions.get("window").width * 0.035
     return (
       <View>
         <FlatList
           scrollEnabled={true}
-          contentContainerStyle={{
-            display: "flex",
-            height: "100%",
-            backgroundColor: "white",
-            paddingTop: 20,
-            paddingLeft: pad,
-            paddingRight: pad,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            flexWrap: "wrap"
-          }}
+          contentContainerStyle={styles.flatListContainer}
           data={this.props.journals}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalMini {...item} handlePress={this.handlePress} />}
@@ -68,6 +57,21 @@ class MyJournals extends Component {
     )
   }
 }
+
+const pad = Dimensions.get("window").width * 0.035
+const styles = StyleSheet.create({
+  flatListContainer: {
+    display: "flex",
+    height: "100%",
+    backgroundColor: "white",
+    paddingTop: 20,
+    paddingLeft: pad,
+    paddingRight: pad,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap"
+  }
+})
 
 export default connect(
   mapStateToProps,

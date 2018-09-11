@@ -29,23 +29,15 @@ class ContentCreator extends Component {
 
   renderOptionState() {
     return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingLeft: 50,
-          paddingRight: 50,
-          height: 50
-        }}>
+      <View style={styles.optionState}>
         <TouchableWithoutFeedback onPress={() => this.createNewEntry(this.props.index + 1)}>
-          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "white" }}>
-            <Text style={{ color: "gray" }}>Add Text</Text>
+          <View style={styles.optionContainer}>
+            <Text style={styles.grayText}>Add Text</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
-          <View style={{ paddingTop: 10, paddingBottom: 10, backgroundColor: "white" }}>
-            <Text style={{ color: "gray" }}>Add Image</Text>
+          <View style={styles.optionContainer}>
+            <Text style={styles.grayText}>Add Image</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -55,16 +47,7 @@ class ContentCreator extends Component {
   renderInitialState() {
     return (
       <TouchableWithoutFeedback onPress={() => this.props.updateActiveCreator(this.props.index)}>
-        <View
-          style={{
-            paddingTop: 10,
-            paddingLeft: 20,
-            paddingRight: 20,
-            paddingBottom: 10,
-            backgroundColor: "white",
-            height: 50
-          }}
-        />
+        <View style={styles.initialState} />
       </TouchableWithoutFeedback>
     )
   }
@@ -81,6 +64,35 @@ class ContentCreator extends Component {
     }
   }
 }
+
+const styles = StyleSheet.create({
+  initialState: {
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 10,
+    backgroundColor: "white",
+    height: 50
+  },
+  optionState: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 50,
+    paddingRight: 50,
+    height: 50
+  },
+  optionContainer: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: "white"
+  },
+  grayText: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: "white"
+  }
+})
 
 export default connect(
   mapStateToProps,

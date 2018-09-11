@@ -72,19 +72,12 @@ class ChapterEditor extends Component {
   renderTitleAndDescription() {
     const { title, description } = this.props.chapter
     return (
-      <View style={{ padding: 20, paddingTop: 0, paddingBottom: 10 }}>
+      <View style={styles.titleAndDescriptionContainer}>
         <View>
-          <Text
-            style={{
-              fontSize: 28,
-              fontFamily: "playfair",
-              color: "black"
-            }}>
-            {title}
-          </Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 18, color: "#c3c3c3", fontFamily: "open-sans-semi" }}>{description}</Text>
+          <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     )
@@ -93,21 +86,14 @@ class ChapterEditor extends Component {
   renderStatistics() {
     const { dateCreated, distance } = this.props.chapter
     return (
-      <View style={{ padding: 20, paddingTop: 0 }}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            borderTopWidth: 1,
-            borderTopColor: "#f8f8f8",
-            paddingTop: 10
-          }}>
-          <MaterialCommunityIcons name="calendar" size={18} style={{ marginRight: 5 }} />
-          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
+      <View style={styles.statsContainer}>
+        <View style={styles.iconsAndText}>
+          <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
+          <Text style={styles.iconText}>{`${dateCreated}`.toUpperCase()}</Text>
         </View>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <MaterialIcons style={{ marginRight: 5 }} name="directions-bike" size={16} />
-          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${distance} miles`.toUpperCase()}</Text>
+        <View style={styles.iconsAndText}>
+          <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
+          <Text style={styles.iconText}>{`${distance} miles`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -115,7 +101,7 @@ class ChapterEditor extends Component {
 
   renderBannerImage() {
     const { bannerImageUrl } = this.props.chapter
-    return <Image style={{ width: Dimensions.get("window").width, height: 200 }} source={{ uri: bannerImageUrl }} />
+    return <Image style={styles.bannerImage} source={{ uri: bannerImageUrl }} />
   }
 
   componentDidUpdate(prevProps) {
@@ -146,14 +132,9 @@ class ChapterEditor extends Component {
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return { fontFamily: "playfair", fontSize: 22 }
+        return styles.headerText
       case "QUOTE":
-        return {
-          fontStyle: "italic",
-          borderLeftWidth: 5,
-          paddingTop: 10,
-          paddingBottom: 10
-        }
+        return styles.quoteText
       default:
         return {}
     }
@@ -196,16 +177,7 @@ class ChapterEditor extends Component {
 
     return (
       <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
-        <View
-          style={{
-            width: Dimensions.get("window").width,
-            height: 350,
-            padding: 20,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between"
-          }}>
+        <View style={styles.opacCover}>
           <TouchableWithoutFeedback onPress={() => this.props.removeEntryAndFocus(index)}>
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
@@ -224,10 +196,10 @@ class ChapterEditor extends Component {
   renderAsImage(entry, index) {
     // todo => make functional component
     return (
-      <View key={`image${index}`} style={{ position: "relative" }}>
-        <TouchableWithoutFeedback style={{ position: "relative" }} onPress={e => this.updateActiveIndex(e, index)}>
+      <View key={`image${index}`} style={styles.positionRelative}>
+        <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
-            <ImageBackground style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }}>
+            <ImageBackground style={styles.imageDimmensions} source={{ uri: entry.uri }}>
               {this.renderOpacCover(index)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
@@ -243,8 +215,8 @@ class ChapterEditor extends Component {
     }
 
     return (
-      <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-        <Text style={{ textAlign: "center" }}>{entry.caption}</Text>
+      <View style={styles.captionPadding}>
+        <Text style={styles.textAlignCenter}>{entry.caption}</Text>
       </View>
     )
   }
@@ -261,19 +233,7 @@ class ChapterEditor extends Component {
         multiline
         key={index}
         ref={`textInput${index}`}
-        style={[
-          {
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 0,
-            paddingBottom: 0,
-            fontSize: 20,
-            fontFamily: "open-sans-regular",
-            lineHeight: 24,
-            minHeight: Math.max(30, entry.height)
-          },
-          this.getInputStyling(entry)
-        ]}
+        style={[styles.textInput, this.getInputStyling(entry)]}
         onChangeText={text => this.handleTextChange(text, index)}
         onBlur={() => this.deleteIfEmpty(index)}
         placeholder={"Enter Entry..."}
@@ -320,7 +280,7 @@ class ChapterEditor extends Component {
 
   renderChapterMetadata() {
     return (
-      <View style={{ marginBottom: 20 }}>
+      <View style={styles.marginBottom20}>
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
         {this.renderBannerImage()}
@@ -341,12 +301,12 @@ class ChapterEditor extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white", marginBottom: 0 }}>
+      <View style={styles.container}>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
           keyboardDismissMode="on-drag"
-          style={{ position: "relative" }}
+          style={styles.positionRelative}
           keyboardOffset={90}
           keyboardShouldPersistTaps={true}
           multilineInputStyle={{ lineHeight: 30 }}>
@@ -359,7 +319,92 @@ class ChapterEditor extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    marginBottom: 0
+  },
+  titleAndDescriptionContainer: {
+    padding: 20,
+    paddingTop: 0,
+    paddingBottom: 10
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: "playfair",
+    color: "black"
+  },
+  description: {
+    fontSize: 18,
+    color: "#c3c3c3",
+    fontFamily: "open-sans-semi"
+  },
+  statsContainer: {
+    padding: 20,
+    paddingTop: 0
+  },
+  iconsAndText: {
+    display: "flex",
+    flexDirection: "row",
+    borderTopWidth: 1,
+    borderTopColor: "#f8f8f8"
+  },
+  iconPositioning: {
+    marginRight: 5
+  },
+  iconText: {
+    fontFamily: "overpass",
+    fontSize: 14
+  },
+  bannerImage: {
+    width: Dimensions.get("window").width,
+    height: 200
+  },
+  headerText: {
+    fontFamily: "playfair",
+    fontSize: 22
+  },
+  quoteText: {
+    fontStyle: "italic",
+    borderLeftWidth: 5,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  opacCover: {
+    width: Dimensions.get("window").width,
+    height: 350,
+    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  positionRelative: {
+    position: "relative"
+  },
+  imageDimmensions: {
+    width: Dimensions.get("window").width,
+    height: 350
+  },
+  captionPadding: {
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  textAlignCenter: {
+    textAlign: "center"
+  },
+  textInput: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
+    fontSize: 20,
+    fontFamily: "open-sans-regular",
+    lineHeight: 24,
+    minHeight: 30
+  },
+  marginBottom20: { marginBottom: 20 }
+})
 
 export default connect(
   mapStateToProps,

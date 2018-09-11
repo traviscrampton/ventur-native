@@ -22,11 +22,11 @@ const JournalCard = props => {
 
 const tripMetaData = props => {
   return (
-    <View style={{ padding: 10, display: "flex", flexDirection: "column" }}>
-      <View style={{ marginBottom: "auto" }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <SimpleLineIcons name="location-pin" style={{ marginRight: 5 }} size={14} color="black" />
-          <Text style={{ fontFamily: "open-sans-regular" }}>{props.description}</Text>
+    <View style={styles.metadataContainer}>
+      <View style={styles.marginBottomAuto}>
+        <View style={styles.iconTextContainer}>
+          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="black" />
+          <Text style={styles.description}>{props.description}</Text>
         </View>
         <Text style={styles.title}>{props.title}</Text>
       </View>
@@ -56,10 +56,29 @@ const styles = StyleSheet.create({
     height: imageHeight,
     position: "relative"
   },
+  metadataContainer: {
+    padding: 10,
+    display: "flex",
+    flexDirection: "column"
+  },
   title: {
     fontSize: 28,
     marginBottom: 10,
     fontFamily: "playfair"
+  },
+  marginBottomAuto: {
+    marginBottom: "auto"
+  },
+  iconTextContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  iconPosition: {
+    marginRight: 5
+  },
+  description: {
+    fontFamily: "open-sans-regular"
   }
 })
 

@@ -4,18 +4,7 @@ import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dim
 
 export const Header = props => {
   return (
-    <View
-      key="header"
-      style={{
-        display: "flex",
-        height: 60,
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingTop: 10,
-        paddingLeft: 10,
-        paddingRight: 10
-      }}>
+    <View key="header" style={styles.container}>
       <TouchableWithoutFeedback onPress={props.handleGoBack}>
         <View>
           <Text>{props.goBackCta}</Text>
@@ -32,3 +21,16 @@ export const Header = props => {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    height: 60,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10
+  }
+})

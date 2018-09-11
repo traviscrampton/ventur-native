@@ -1,7 +1,16 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateManageContentEntries, updateEntriesOrder, removeEntryFromClone } from "actions/editor"
-import { Text, FlatList, TouchableWithoutFeedback, ImageBackground, Image, Dimensions, StyleSheet, View } from "react-native"
+import {
+  Text,
+  FlatList,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  Dimensions,
+  StyleSheet,
+  View
+} from "react-native"
 import { Header } from "components/editor/Header"
 import SortableList from "react-native-sortable-list"
 
@@ -70,7 +79,7 @@ class ManageContent extends Component {
             <Text>DELETE</Text>
           </View>
         </TouchableWithoutFeedback>
-        <ImageBackground style={{ width: Dimensions.get("window").width, height: 100 }} source={{ uri: data.uri }} />
+        <ImageBackground style={styles.imageCard} source={{ uri: data.uri }} />
       </View>
     )
   }
@@ -105,9 +114,21 @@ class ManageContent extends Component {
   }
 
   render() {
-    return [this.renderHeader(), this.renderManagableEntries()]
+    return (
+      <React.Fragment>
+        {this.renderHeader()}
+        {this.renderManagableEntries()}
+      </React.Fragment>
+    )
   }
 }
+
+const styles = StyleSheet.create({
+  imageCard: {
+    width: Dimensions.get("window").width,
+    height: 100
+  }
+})
 
 export default connect(
   mapStateToProps,

@@ -26,19 +26,12 @@ class ChapterShow extends Component {
   renderTitleAndDescription() {
     const { title, description } = this.props.chapter
     return (
-      <View style={{ padding: 20, paddingTop: 0, paddingBottom: 10 }}>
+      <View style={styles.titleDescriptionContainer}>
         <View>
-          <Text
-            style={{
-              fontSize: 28,
-              fontFamily: "playfair",
-              color: "black"
-            }}>
-            {title}
-          </Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 18, color: "#c3c3c3", fontFamily: "open-sans-semi" }}>{description}</Text>
+          <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     )
@@ -47,32 +40,27 @@ class ChapterShow extends Component {
   renderStatistics() {
     const { dateCreated, distance } = this.props.chapter
     return (
-      <View style={{ padding: 20, paddingTop: 0 }}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            borderTopWidth: 1,
-            borderTopColor: "#f8f8f8",
-            paddingTop: 10
-          }}>
-          <MaterialCommunityIcons name="calendar" size={18} style={{ marginRight: 5 }} />
-          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${dateCreated}`.toUpperCase()}</Text>
+      <View style={styles.statisticsPadding}>
+        <View style={styles.statisticsContainer}>
+          <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPosition} />
+          <Text style={styles.statisticsText}>{`${dateCreated}`.toUpperCase()}</Text>
         </View>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <MaterialIcons style={{ marginRight: 5 }} name="directions-bike" size={16} />
-          <Text style={{ fontFamily: "overpass", fontSize: 14 }}>{`${distance} miles`.toUpperCase()}</Text>
+        <View style={styles.statisticsContainer}>
+          <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
+          <Text style={styles.statisticsText}>{`${distance} miles`.toUpperCase()}</Text>
         </View>
       </View>
     )
   }
 
   renderBannerImage() {
+    // not ready yet
     const { bannerImageUrl } = this.props.chapter
     return <Image style={{ width: Dimensions.get("window").width, height: 200 }} source={{ uri: bannerImageUrl }} />
   }
 
   renderBodyContent() {
+    // this isn't ready yet
     let content = JSON.parse(this.props.chapter.content)
     return (
       <View style={{ minHeight: Dimensions.get("window").height / 2 }}>
@@ -83,7 +71,7 @@ class ChapterShow extends Component {
 
   render() {
     return (
-      <ScrollView bounces={"none"} style={{ backgroundColor: "white" }}>
+      <ScrollView bounces={"none"} style={styles.container}>
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
         {this.renderBannerImage()}
@@ -93,7 +81,44 @@ class ChapterShow extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white"
+  },
+  titleDescriptionContainer: {
+    padding: 20,
+    paddingTop: 0,
+    paddingBottom: 10
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: "playfair",
+    color: "black"
+  },
+  description: {
+    fontSize: 18,
+    color: "#c3c3c3",
+    fontFamily: "open-sans-semi"
+  },
+  statisticsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    borderTopWidth: 1,
+    borderTopColor: "#f8f8f8",
+    paddingTop: 10
+  },
+  iconPosition: {
+    marginRight: 5
+  },
+  statisticsPadding: {
+    padding: 20,
+    paddingTop: 0
+  },
+  statisticsText: {
+    fontFamily: "overpass",
+    fontSize: 14
+  }
+})
 
 export default connect(
   mapStateToProps,

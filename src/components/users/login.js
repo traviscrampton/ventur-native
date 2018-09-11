@@ -43,18 +43,10 @@ class Login extends Component {
 
   render() {
     return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 200 }}>
+      <View style={styles.container}>
         <Text>EMAIL</Text>
         <TextInput
-          style={{
-            height: 50,
-            fontSize: 20,
-            textAlign: "left",
-            borderColor: "black",
-            borderWidth: 1,
-            width: 200,
-            marginBottom: 30
-          }}
+          style={styles.textInput}
           editable={true}
           autoCapitalize="none"
           maxLength={50}
@@ -63,15 +55,7 @@ class Login extends Component {
         />
         <Text>PASSWORD</Text>
         <TextInput
-          style={{
-            height: 50,
-            fontSize: 20,
-            textAlign: "left",
-            borderColor: "black",
-            borderWidth: 1,
-            width: 200,
-            marginBottom: 30
-          }}
+          style={styles.textInput}
           editable={true}
           secureTextEntry={true}
           maxLength={50}
@@ -83,6 +67,24 @@ class Login extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: 200
+  },
+  textInput: {
+    height: 50,
+    fontSize: 20,
+    textAlign: "left",
+    borderColor: "black",
+    borderWidth: 1,
+    width: 200,
+    marginBottom: 30
+  }
+})
 
 export default connect(
   mapStateToProps,

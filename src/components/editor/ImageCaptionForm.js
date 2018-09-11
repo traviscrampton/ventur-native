@@ -49,9 +49,7 @@ class ImageCaptionForm extends Component {
 
   renderImage() {
     const image = this.props.entries[this.index]
-    return (
-      <Image key="image" style={{ width: Dimensions.get("window").width, height: 250 }} source={{ uri: image.uri }} />
-    )
+    return <Image key="image" style={styles.image} source={{ uri: image.uri }} />
   }
 
   updateActiveImageCaption(text) {
@@ -67,7 +65,7 @@ class ImageCaptionForm extends Component {
         <TextInput
           autoFocus
           multiline
-          style={{ textAlign: "center" }}
+          style={styles.textAlignCenter}
           value={this.props.activeCaption}
           maxLength={200}
           onChangeText={text => this.updateActiveImageCaption(text)}
@@ -77,9 +75,25 @@ class ImageCaptionForm extends Component {
   }
 
   render() {
-    return [this.renderHeader(), this.renderImage(), this.renderForm()]
+    return (
+      <React.Fragment>
+        {this.renderHeader()}
+        {this.renderImage()}
+        {this.renderForm()}
+      </React.Fragment>
+    )
   }
 }
+
+const styles = StyleSheet.create({
+  image: {
+    width: Dimensions.get("window").width,
+    height: 250
+  },
+  textAlignCenter: {
+    textAlign: "center"
+  }
+})
 
 export default connect(
   mapStateToProps,

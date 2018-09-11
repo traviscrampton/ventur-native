@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 20,
+    marginBottom: 10,
     height: 80
   },
   journalAndUserContainer: {
