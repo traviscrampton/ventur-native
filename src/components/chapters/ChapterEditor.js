@@ -26,6 +26,7 @@ import {
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
+const InputAccessoryView = require("InputAccessoryView")
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -49,19 +50,23 @@ const mapStateToProps = state => ({
   activeIndex: state.editor.activeIndex,
   cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
-  newIndex: state.editor.newIndex
+  newIndex: state.editor.newIndex,
+  keyboardShowing: state.editor.keyboardShowing
 })
 
 class ChapterEditor extends Component {
   constructor(props) {
     super(props)
     this.openCameraRoll = this.openCameraRoll.bind(this)
-    this.handleLayoutChange = this.handleLayoutChange.bind(this)
     this.openManageContent = this.openManageContent.bind(this)
+
+    this.state = {
+      containerHeight: Dimensions.get("window").height - 110
+    }
   }
 
   componentWillMount() {
-    this.keyboardWillShowListener = Keyboard.addListener("keyboardWillShow", this.keyboardWillShow.bind(this))
+    this.keyboardWillShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
 
@@ -75,9 +80,6 @@ class ChapterEditor extends Component {
       <View style={styles.titleAndDescriptionContainer}>
         <View>
           <Text style={styles.title}>{title}</Text>
-        </View>
-        <View>
-          <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     )
@@ -114,10 +116,14 @@ class ChapterEditor extends Component {
 
   keyboardWillShow(e) {
     this.props.updateKeyboardState(true)
+    this.setState({})
   }
 
   keyboardWillHide(e) {
     this.props.updateKeyboardState(false)
+    this.setState({
+      positionDistance: Dimensions.get("window").height - 110
+    })
   }
 
   handleTextChange(content, index) {
@@ -144,18 +150,11 @@ class ChapterEditor extends Component {
     this.props.updateActiveIndex(index)
   }
 
-  handleLayoutChange(e, index) {
-    let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, height: e.nativeEvent.contentSize.height + 5 }
-    payload = Object.assign({}, { entry, index })
-    this.props.editEntry(payload)
-  }
-
   deleteIfEmpty(index) {
-    const entry = this.props.entries[index]
-    if (entry.content.length === 0) {
-      this.props.removeEntryAndFocus(index)
-    }
+    // const entry = this.props.entries[index]
+    // if (entry.content.length === 0) {
+    //   this.props.removeEntryAndFocus(index)
+    // }
   }
 
   renderEntry(entry, index) {
@@ -239,14 +238,13 @@ class ChapterEditor extends Component {
         placeholder={"Enter Entry..."}
         value={entry.content}
         onFocus={() => this.handleOnFocus(index)}
-        onContentSizeChange={e => this.handleLayoutChange(e, index)}
         blurOnSubmit={false}
       />
     )
   }
 
-  openCameraRoll(e, index) {
-    this.props.navigation.navigate("CameraRollContainer", { index: index })
+  openCameraRoll(e) {
+    this.props.navigation.navigate("CameraRollContainer", { index: this.props.activeIndex + 1 })
   }
 
   openImageCaptionForm(e, index) {
@@ -260,22 +258,24 @@ class ChapterEditor extends Component {
     this.props.navigation.navigate("ManageContent")
   }
 
+  getToolbarPositioning() {
+    if (this.props.keyboardShowing) {
+      return { width: Dimensions.get("window").width, position: "absolute", top: 300 }
+    } else {
+      return { width: Dimensions.get("window").width }
+    }
+  }
+
   renderEditorToolbar() {
     return (
-      <View>
-        <EditorToolbar openManageContent={this.openManageContent} />
+      <View style={this.getToolbarPositioning()}>
+        <EditorToolbar openManageContent={this.openManageContent} openCameraRoll={e => this.openCameraRoll(e)} />
       </View>
     )
   }
 
   renderCreateCta(index) {
-    return (
-      <ContentCreator
-        index={index}
-        key={`contentCreator${index}`}
-        openCameraRoll={e => this.openCameraRoll(e, index)}
-      />
-    )
+    return <ContentCreator index={index} key={`contentCreator${index}`} />
   }
 
   renderChapterMetadata() {
@@ -299,21 +299,24 @@ class ChapterEditor extends Component {
     })
   }
 
+  getContainerSize() {
+    return { height: Dimensions.get("window").height - 110 }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={([styles.container], this.getContainerSize())}>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
-          keyboardDismissMode="on-drag"
           style={styles.positionRelative}
           keyboardOffset={90}
           keyboardShouldPersistTaps={true}
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterMetadata()}
           {this.renderEditor()}
-          {this.renderEditorToolbar()}
         </InputScrollView>
+        {this.renderEditorToolbar()}
       </View>
     )
   }
@@ -321,8 +324,9 @@ class ChapterEditor extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    marginBottom: 0
+    backgroundColor: "yellow",
+    marginBottom: 0,
+    position: "relative"
   },
   titleAndDescriptionContainer: {
     padding: 20,
@@ -345,9 +349,7 @@ const styles = StyleSheet.create({
   },
   iconsAndText: {
     display: "flex",
-    flexDirection: "row",
-    borderTopWidth: 1,
-    borderTopColor: "#f8f8f8"
+    flexDirection: "row"
   },
   iconPositioning: {
     marginRight: 5

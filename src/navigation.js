@@ -13,6 +13,9 @@ import ChapterDispatch from "components/chapters/ChapterDispatch"
 import ManageContent from "components/editor/ManageContent"
 import BannerImagePicker from "components/journals/BannerImagePicker"
 import JournalForm from "components/journals/JournalForm"
+import JournalFormTitle from "components/JournalForm/JournalFormTitle"
+import JournalFormLocation from "components/JournalForm/JournalFormLocation"
+import JournalFormStatus from "components/JournalForm/JournalFormStatus"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -54,12 +57,16 @@ const JournalFeedNavigator = createStackNavigator(
 
 const JournalCreateStackNavigator = createStackNavigator(
   {
-    JournalForm: JournalForm,
-    BannerImagePicker: BannerImagePicker
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus
   },
   {
+    initialRouteName: "JournalFormTitle",
     headerMode: "none",
-    initialRouteName: "JournalForm"
+    navigationOptions: ({ navigation }) => ({
+      tabBarVisible: false
+    })
   }
 )
 
@@ -78,13 +85,13 @@ const EditorNavigator = createStackNavigator(
   }
 )
 
-const CreatorNavigator = createBottomTabNavigator(
+const CreatorNavigator = createStackNavigator(
   {
     Journal: JournalCreateStackNavigator,
     Chapter: EditorNavigator, // these are coming soon
     Gear: ContentCreate // these are coming soon
   },
-  { mode: "modal" }
+  { headerMode: "none" }
 )
 
 const ContentCreateNavigator = createStackNavigator(
@@ -126,7 +133,7 @@ const RootNavigator = (signedIn = false) =>
       JournalFeed: JournalFeedNavigator
     },
     {
-      initialRouteName: signedIn ? "Login" : "Login"
+      initialRouteName: signedIn ? "JournalFeed" : "Login"
     }
   )
 

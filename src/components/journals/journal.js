@@ -40,7 +40,6 @@ class Journal extends Component {
   constructor(props) {
     super(props)
     this.navigateBack = this.navigateBack.bind(this)
-    this.requestForChapter = this.requestForChapter.bind(this)
   }
 
   componentWillMount() {
@@ -54,14 +53,14 @@ class Journal extends Component {
     })
   }
 
-  requestForChapter(chapterId) {
+  requestForChapter = chapterId => {
     gql(chapterQuery, { id: chapterId }).then(res => {
       this.props.loadChapter(res.chapter)
       this.props.navigation.navigate("Chapter")
     })
   }
 
-  navigateBack() {
+  navigateBack = () => {
     this.props.navigation.goBack()
   }
 

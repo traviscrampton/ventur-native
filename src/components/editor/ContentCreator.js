@@ -27,17 +27,17 @@ class ContentCreator extends Component {
     this.props.updateActiveCreator(null)
   }
 
+  // <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
+  //   <View style={styles.optionContainer}>
+  //     <Text style={styles.grayText}>Add Image</Text>
+  //   </View>
+  // </TouchableWithoutFeedback>
   renderOptionState() {
     return (
       <View style={styles.optionState}>
         <TouchableWithoutFeedback onPress={() => this.createNewEntry(this.props.index + 1)}>
           <View style={styles.optionContainer}>
-            <Text style={styles.grayText}>Add Text</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
-          <View style={styles.optionContainer}>
-            <Text style={styles.grayText}>Add Image</Text>
+            <Text style={styles.grayText}>+ ADD CONTENT</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -78,8 +78,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingLeft: 50,
-    paddingRight: 50,
+    paddingLeft: 20,
     height: 50
   },
   optionContainer: {

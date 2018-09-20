@@ -19,10 +19,9 @@ const mapDispatchToProps = dispatch => ({
 class ChapterDispatch extends Component {
   constructor(props) {
     super(props)
-    this.navigateBack = this.navigateBack.bind(this)
   }
 
-  navigateBack() {
+  navigateBack = () => {
     this.props.navigation.goBack()
   }
 
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 20,
     marginBottom: 10,
-    height: 80
+    height: 60
   },
   journalAndUserContainer: {
     display: "flex",

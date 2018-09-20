@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateFormatBar, editEntry } from "actions/editor"
 import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
-import { MaterialIcons, Entypo } from "@expo/vector-icons"
+import { MaterialIcons, Entypo, EvilIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
@@ -75,23 +75,37 @@ class EditorToolbar extends Component {
   renderManageContent() {
     return (
       <TouchableWithoutFeedback onPress={this.props.openManageContent}>
-        <View>
-          <Text style={styles.option}>MANAGE CONTENT</Text>
+        <View style={{ textAlign: "center" }}>
+          <Text style={{ fontSize: 18 }}>MANAGE CONTENT</Text>
         </View>
       </TouchableWithoutFeedback>
     )
   }
 
-  renderToolbar() {
+  renderAddImageCta() {
+    return (
+      <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
+        <Entypo name="image" size={27} color={"black"} />
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  dispatchRender() {
+    console.log("this.props.keyboarshowing", this.props.keyboardShowing)
     if (this.props.keyboardShowing) {
-      return this.renderTextStyler()
+      return (
+        <React.Fragment>
+          <View style={styles.textEditButtons}>{this.renderTextStyler()}</View>
+          <View>{this.renderAddImageCta()}</View>
+        </React.Fragment>
+      )
     } else {
       return this.renderManageContent()
     }
   }
 
   render() {
-    return <View style={styles.toolbarContainer}>{this.renderToolbar()}</View>
+    return <View style={styles.toolbarContainer}>{this.dispatchRender()}</View>
   }
 }
 
@@ -104,25 +118,24 @@ const styles = StyleSheet.create({
   toolbarContainer: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "white",
     paddingTop: 5,
     paddingBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: "#efefef",
     height: 40
-    // shadowColor: "#d3d3d3",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 3
-    // },
-    // shadowRadius: 5,
-    // shadowOpacity: 1.0
+  },
+  textEditButtons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   option: {
     fontSize: 20,
     fontWeight: "500",
-    minWidth: 80,
-    textAlign: "center"
+    minWidth: 50,
+    textAlign: "left"
   }
 })

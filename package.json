@@ -29,6 +29,7 @@
     "react-native-camera-roll-picker": "^1.2.3",
     "react-native-input-scroll-view": "^1.7.0",
     "react-native-keyboard-aware-scroll-view": "^0.6.0",
+    "react-native-keyboard-spacer": "^0.4.1",
     "react-native-markdown-renderer": "^3.2.8",
     "react-native-sortable-list": "0.0.22",
     "react-navigation": "^2.6.1",

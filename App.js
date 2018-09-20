@@ -17,11 +17,11 @@ export default class App extends Component {
   componentWillMount() {
     this.setCurrentUser()
     Font.loadAsync({
-      "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
-      playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
-      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
-      "open-sans-bold": require("assets/fonts/Open_Sans/OpenSans-Bold.ttf"),
-      "open-sans-semi": require("assets/fonts/Open_Sans/OpenSans-SemiBold.ttf")
+      "open-sans-regular": require("assets/fonts/Lato/Lato-Regular.ttf"),
+      playfair: require("assets/fonts/Lato/Lato-Bold.ttf"),
+      overpass: require("assets/fonts/Lato/Lato-Light.ttf"),
+      "open-sans-bold": require("assets/fonts/Lato/Lato-Hairline.ttf"),
+      "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
     })
   }
 

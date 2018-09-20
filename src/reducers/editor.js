@@ -22,14 +22,28 @@ const defaultTextData = {
   activeAttribute: "",
   entries: [
     {
-      type: "text",
-      content: "It all started with a bang!",
-      styles: "H1",
-      height: ""
+      content: "",
+      styles: "",
+      type: "text"
+    },
+    {
+      caption: "",
+      type: "image",
+      uri: "assets-library://asset/asset.PNG?id=F3152360-1A07-485A-AE48-B5DFEEE1E6B5&ext=PNG"
+    },
+    {
+      caption: "",
+      type: "image",
+      uri: "assets-library://asset/asset.PNG?id=02E71585-C14D-402E-B601-33B5270D95D4&ext=PNG"
+    },
+    {
+      caption: "",
+      type: "image",
+      uri: "assets-library://asset/asset.PNG?id=E2704100-7084-4C24-BAB2-B149B20AE94F&ext=PNG"
     }
   ],
   activeIndex: 0,
-  toolbarOptions: ["H1", "text", "QUOTE" ],
+  toolbarOptions: ["H1", "text", "QUOTE"],
   activeContentCreator: null,
   keyboardShowing: false,
   selectedImages: [],
@@ -38,7 +52,7 @@ const defaultTextData = {
   manageContentEntries: [],
   entriesSortBase: []
 }
-
+let newState
 export default (state = defaultTextData, action) => {
   switch (action.type) {
     case UPDATE_FORMAT_BAR:
@@ -102,14 +116,25 @@ export default (state = defaultTextData, action) => {
       }
 
     case ADD_IMAGES_TO_ENTRIES:
+      console.log(
+        _.flatten([
+          ...state.entries.slice(0, action.payload),
+          state.selectedImages,
+          ...state.entries.slice(action.payload)
+        ])
+      )
       return {
         ...state,
         selectedImages: [],
         activeIndex: null,
         activeContentCreator: null,
-        entries: _.flatten(Object.assign([], state.entries, { [action.payload]: state.selectedImages }))
+        entries: _.flatten([
+          ...state.entries.slice(0, action.payload),
+          state.selectedImages,
+          ...state.entries.slice(action.payload)
+        ])
+        // entries: _.flatten(Object.assign([], state.entries, { [action.payload]: state.selectedImages }))
       }
-
     case UPDATE_KEYBOARD_STATE:
       return {
         ...state,
@@ -132,7 +157,7 @@ export default (state = defaultTextData, action) => {
       const { newIndex, newEntry } = action.payload
       return {
         ...state,
-        entries: Object.assign([], state.entries, { [newIndex]: newEntry }),
+        entries: [...state.entries.slice(0, newIndex), newEntry, ...state.entries.slice(newIndex)],
         newIndex: newIndex
       }
     case DELETE_ENTRY:
