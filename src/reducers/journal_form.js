@@ -2,6 +2,7 @@ import { UPDATE_JOURNAL_FORM, CANCEL_JOURNAL_FORM } from "actions/journal_form"
 
 const defaultJournalFormData = {
   form: {
+    id: null,
     bannerImage: { uri: "" },
     title: "",
     description: "",
@@ -13,14 +14,12 @@ const defaultJournalFormData = {
 export default (state = defaultJournalFormData, action) => {
   switch (action.type) {
     case UPDATE_JOURNAL_FORM:
-      let { key, value } = action.payload
+      console.log(Object.assign({}, ...state.form, action.payload))
       return {
         ...state,
-        form: {
-          ...state.form,
-          [key]: value
-        }
+        form: Object.assign({}, ...state.form, action.payload)
       }
+
     case CANCEL_JOURNAL_FORM:
       return defaultJournalFormData
     default:

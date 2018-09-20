@@ -11,15 +11,27 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import { setToken } from "agent"
+import { createJournal, updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
-const mapStateToProps = state => ({})
+const API_ROOT = "http://192.168.7.23:3000"
 
-const mapDispatchToProps = dispatch => ({})
+const mapStateToProps = state => ({
+  title: state.journalForm.form.title
+})
+
+const mapDispatchToProps = dispatch => ({
+  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+})
 
 class JournalFormTitle extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      title: this.props.title
+    }
   }
 
   navigateBack = () => {
@@ -36,8 +48,28 @@ class JournalFormTitle extends Component {
     )
   }
 
-  persistAndNavigate = () => {
-    this.props.navigation.navigate("JournalFormLocation")
+  handleTextChange(text) {
+    this.setState({
+      title: text
+    })
+  }
+
+  persistAndNavigate = async () => {
+    let params = { title: this.state.title }
+    fetch(`${API_ROOT}/journals`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.updateJournalForm({ id: data.id, title: data.title })
+        this.props.navigation.navigate("JournalFormLocation")
+      })
   }
 
   renderForm() {
@@ -50,6 +82,8 @@ class JournalFormTitle extends Component {
           <TextInput
             autoFocus
             multiline
+            onChangeText={text => this.handleTextChange(text)}
+            value={this.state.text}
             selectionColor="white"
             style={{
               fontSize: 28,
