@@ -11,23 +11,30 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import { updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+const API_ROOT = "http://192.168.7.23:3000"
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  id: state.journalForm.id,
+  description: state.journalForm.description
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+})
 
 class JournalFormLocation extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      description: props.description
+    }
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
-  }
-
-  persistAndNavigate = () => {
-    this.props.navigation.navigate("JournalFormStatus")
   }
 
   renderBackButtonHeader() {
@@ -38,6 +45,29 @@ class JournalFormLocation extends Component {
         </TouchableHighlight>
       </View>
     )
+  }
+  handleTextChange(text) {
+    this.setState({
+      description: text
+    })
+  }
+
+  persistUpdate = async () => {
+    let params = { id: this.props.id, description: this.state.description }
+    fetch(`${API_ROOT}/journals/${params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.updateJournalForm({ description: data.description })
+        this.props.navigation.navigate("JournalFormStatus")
+      })
   }
 
   renderForm() {
@@ -50,6 +80,7 @@ class JournalFormLocation extends Component {
           <TextInput
             autoFocus
             multiline
+            onChangeText={text => this.handleTextChange(text)}
             selectionColor="white"
             style={{
               fontSize: 28,
@@ -62,7 +93,7 @@ class JournalFormLocation extends Component {
           />
         </View>
         <View>
-          <TouchableHighlight onPress={this.persistAndNavigate}>
+          <TouchableHighlight onPress={this.persistUpdate}>
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{

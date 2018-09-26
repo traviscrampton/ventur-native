@@ -5,6 +5,7 @@ const defaultJournalData = {
     user: {},
     chapters: []
   },
+  noRequest: false,
   loaded: false
 }
 

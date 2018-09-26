@@ -48,6 +48,8 @@ class Journal extends Component {
 
   requestForJournal() {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
+
+    if(journalId === "NO-ID") return 
     gql(journalQuery, { id: journalId }).then(res => {
       this.props.onLoad(res.journal)
     })

@@ -20,3 +20,9 @@ export function populateJournal(payload) {
     payload: payload
   }
 }
+
+export function endOfForm(payload) {
+  return function(dispatch, getState) {
+    dispatch(cancelJournalForm())
+  }
+}

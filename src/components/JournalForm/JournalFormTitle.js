@@ -18,7 +18,8 @@ import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
-  title: state.journalForm.form.title
+  id: state.journalForm.id,
+  title: state.journalForm.title
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -54,7 +55,7 @@ class JournalFormTitle extends Component {
     })
   }
 
-  persistAndNavigate = async () => {
+  persistCreate = async () => {
     let params = { title: this.state.title }
     fetch(`${API_ROOT}/journals`, {
       method: "POST",
@@ -70,6 +71,32 @@ class JournalFormTitle extends Component {
         this.props.updateJournalForm({ id: data.id, title: data.title })
         this.props.navigation.navigate("JournalFormLocation")
       })
+  }
+
+  persistUpdate = async () => {
+    let params = { id: this.props.id, title: this.state.title }
+    fetch(`${API_ROOT}/journals/${this.props.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.updateJournalForm({ title: data.title })
+        this.props.navigation.navigate("JournalFormLocation")
+      })
+  }
+
+  persistAndNavigate = () => {
+    if (this.props.id) {
+      this.persistUpdate()
+    } else {
+      this.persistCreate()
+    }
   }
 
   renderForm() {

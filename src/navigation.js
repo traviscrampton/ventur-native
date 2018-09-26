@@ -16,6 +16,7 @@ import JournalForm from "components/journals/JournalForm"
 import JournalFormTitle from "components/JournalForm/JournalFormTitle"
 import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
+import JournalFormUpload from "components/JournalForm/JournalFormUpload"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -59,14 +60,12 @@ const JournalCreateStackNavigator = createStackNavigator(
   {
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus
+    JournalFormStatus: JournalFormStatus,
+    JournalFormUpload: JournalFormUpload,
   },
   {
     initialRouteName: "JournalFormTitle",
     headerMode: "none",
-    navigationOptions: ({ navigation }) => ({
-      tabBarVisible: false
-    })
   }
 )
 

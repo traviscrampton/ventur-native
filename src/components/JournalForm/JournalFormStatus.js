@@ -11,18 +11,25 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import { updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+const API_ROOT = "http://192.168.7.23:3000"
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  id: state.journalForm.id,
+  status: state.journalForm.status
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+})
 
 class JournalFormStatus extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      activeOptionEnum: "not_started"
+      status: props.status
     }
   }
 
@@ -47,12 +54,27 @@ class JournalFormStatus extends Component {
     )
   }
 
-  persistAndNavigate = () => {
-    this.props.navigation.navigate("JournalFormUpload")
+  persistUpdate = async () => {
+    let params = { id: this.props.id, status: this.state.status }
+    console.log(this.props.status)
+    fetch(`${API_ROOT}/journals/${params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.updateJournalForm({ status: data.status })
+        this.props.navigation.navigate("JournalFormUpload")
+      })
   }
 
   isActiveOption(option) {
-    return option.enum === this.state.activeOptionEnum
+    return option.enum === this.state.status
   }
 
   renderRadioButton(isActive) {
@@ -85,7 +107,7 @@ class JournalFormStatus extends Component {
 
   updateActiveOption = option => {
     this.setState({
-      activeOptionEnum: option.enum
+      status: option.enum
     })
   }
 
@@ -133,7 +155,7 @@ class JournalFormStatus extends Component {
         </View>
         <View>{this.renderStatusOptions()}</View>
         <View>
-          <TouchableHighlight onPress={this.persistAndNavigate}>
+          <TouchableHighlight onPress={this.persistUpdate}>
             <View style={{ borderRadius: 30, marginTop: 20, backgroundColor: "white" }}>
               <Text
                 style={{
