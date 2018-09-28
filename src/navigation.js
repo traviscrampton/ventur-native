@@ -17,10 +17,21 @@ import JournalFormTitle from "components/JournalForm/JournalFormTitle"
 import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
 import JournalFormUpload from "components/JournalForm/JournalFormUpload"
+import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
 const signedIn = isSignedIn()
+
+const ChapterCreateStackNavigator = createStackNavigator(
+  {
+    ChapterFormTitle: ChapterFormTitle
+  },
+  {
+    initialRouteName: "ChapterFormTitle",
+    headerMode: "none"
+  }
+)
 
 const JournalNavigation = createStackNavigator(
   {
@@ -41,6 +52,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    ChapterCreateStackNavigator: ChapterCreateStackNavigator,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent
@@ -61,11 +73,11 @@ const JournalCreateStackNavigator = createStackNavigator(
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
-    JournalFormUpload: JournalFormUpload,
+    JournalFormUpload: JournalFormUpload
   },
   {
     initialRouteName: "JournalFormTitle",
-    headerMode: "none",
+    headerMode: "none"
   }
 )
 
@@ -113,6 +125,7 @@ const ContentCreateNavigator = createStackNavigator(
 const MyJournalsNavigator = createStackNavigator(
   {
     MyJournals: MyJournals,
+    JournalForm: JournalCreateStackNavigator,
     Journal: Journal,
     Chapter: ChapterDispatch
   },
@@ -144,14 +157,8 @@ const BottomNavigator = createBottomTabNavigator(
         tabBarVisible: navigation.state.index < 2
       })
     },
-    Saved: Editor,
-    Add: {
-      screen: CreatorNavigator,
-      navigationOptions: ({ navigation }) => ({
-        tabBarVisible: false
-      })
-    },
     "My Trips": MyJournalsNavigator,
+    Gear: Editor,
     Profile: Editor
   },
   {

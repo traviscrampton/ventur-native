@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Feather } from "@expo/vector-icons"
+import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 import ContentCreate from "components/modals/ContentCreate"
 
@@ -16,7 +16,16 @@ class BottomTabBar extends Component {
 
   renderIcon(route, idx) {
     const color = idx === this.props.navigation.state.index ? "black" : "gray"
-    return <View style={[styles.containerFiller, { backgroundColor: color }]} />
+    switch (route.key) {
+      case "Explore":
+        return <MaterialIcons name="explore" color={color} size={30} />
+      case "Profile":
+        return <Feather name="user" color={color} size={30} />
+      case "My Trips":
+        return <Ionicons name="ios-bicycle" color={color} size={30} />
+      case "Gear":
+        return <Entypo name="tools" color={color} size={30} />
+    }
   }
 
   renderText(route) {
@@ -31,21 +40,6 @@ class BottomTabBar extends Component {
     this.props.navigation.navigate(route.key)
   }
 
-  renderFloatingButton(route, idx) {
-    return (
-      <TouchableWithoutFeedback key={idx} onPress={() => this.navigateToRoute(route)}>
-        <View
-          shadowColor="#000"
-          shadowOffset={{ width: 0, height: 2 }}
-          shadowOpacity={0.7}
-          shadowRadius={2}
-          style={styles.floatingButton}>
-          <Feather name="plus" size={32} color="black" />
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
   renderStandardTab(route, idx) {
     return (
       <TouchableWithoutFeedback key={idx} onPress={() => this.navigateToRoute(route)}>
@@ -57,14 +51,6 @@ class BottomTabBar extends Component {
     )
   }
 
-  renderTab(route, idx) {
-    if (route.key === "Add") {
-      return this.renderFloatingButton(route, idx)
-    } else {
-      return this.renderStandardTab(route, idx)
-    }
-  }
-
   dontRenderToolbar() {
     return this.props.hideToolbar
   }
@@ -73,7 +59,7 @@ class BottomTabBar extends Component {
     return (
       <View shadowColor="#000" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.container}>
         {this.props.navigation.state.routes.map((route, idx) => {
-          return this.renderTab(route, idx)
+          return this.renderStandardTab(route, idx)
         })}
       </View>
     )
@@ -93,8 +79,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     position: "relative",
     alignItems: "center",
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 25,
+    paddingRight: 25,
     backgroundColor: "white"
   },
   standardTab: {

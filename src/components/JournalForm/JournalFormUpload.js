@@ -84,8 +84,8 @@ class JournalFormLocation extends Component {
         return response.json()
       })
       .then(data => {
-        this.props.endOfForm(data)
-        this.props.navigation.navigate("Explore")
+        let journalId = data.id
+        this.props.navigation.navigate("Journal", { journalId })
         // runs something that resets journal form and then goes to journal
       })
   }

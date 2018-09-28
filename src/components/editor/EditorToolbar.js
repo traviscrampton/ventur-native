@@ -91,7 +91,6 @@ class EditorToolbar extends Component {
   }
 
   dispatchRender() {
-    console.log("this.props.keyboarshowing", this.props.keyboardShowing)
     if (this.props.keyboardShowing) {
       return (
         <React.Fragment>

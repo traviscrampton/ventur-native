@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { journalQuery, journalGearItems } from "graphql/queries/journals"
+import { Feather } from "@expo/vector-icons"
 import { chapterQuery } from "graphql/queries/chapters"
 import {
   StyleSheet,
@@ -9,7 +10,8 @@ import {
   Image,
   ImageBackground,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { gql } from "agent"
@@ -49,7 +51,7 @@ class Journal extends Component {
   requestForJournal() {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
-    if(journalId === "NO-ID") return 
+    if (journalId === "NO-ID") return
     gql(journalQuery, { id: journalId }).then(res => {
       this.props.onLoad(res.journal)
     })
@@ -119,13 +121,42 @@ class Journal extends Component {
     return <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
   }
 
+  renderCreateChapterCta() {
+    return (
+      <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate("ChapterCreateStackNavigator")}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 1, height: 1 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            position: "absolute",
+            backgroundColor: "#067BC2",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            bottom: 20,
+            right: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Feather name="plus" size={32} color="white" />
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
   render() {
     if (!this.props.loaded) return null
     return (
-      <ScrollView bounces={"none"} style={styles.container}>
-        {this.renderHeader()}
-        {this.renderChapters()}
-      </ScrollView>
+      <View style={{ height: "100%", position: "relative" }}>
+        <ScrollView bounces={"none"} style={styles.container}>
+          {this.renderHeader()}
+          {this.renderChapters()}
+        </ScrollView>
+        {this.renderCreateChapterCta()}
+      </View>
     )
   }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, ScrollView } from "react-native"
+import { StyleSheet, FlatList, ScrollView, View, Text } from "react-native"
 import { connect } from "react-redux"
 import { gql } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
@@ -53,6 +53,7 @@ class JournalFeed extends Component {
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalCard {...item} handlePress={this.handlePress} />}
         />
+
       </ScrollView>
     )
   }

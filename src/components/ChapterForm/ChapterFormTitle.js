@@ -18,15 +18,14 @@ import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
-  id: state.journalForm.id,
-  title: state.journalForm.title
+  // id: state.journalForm.id,
+  // title: state.journalForm.title
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateJournalForm: payload => dispatch(updateJournalForm(payload))
 })
 
-class JournalFormTitle extends Component {
+class ChapterFormTitle extends Component {
   constructor(props) {
     super(props)
 
@@ -36,7 +35,7 @@ class JournalFormTitle extends Component {
   }
 
   navigateBack = () => {
-    this.props.navigation.navigate("MyJournals")
+    this.props.navigation.navigate("Journal")
   }
 
   renderBackButtonHeader() {
@@ -74,36 +73,36 @@ class JournalFormTitle extends Component {
   }
 
   persistUpdate = async () => {
-    let params = { id: this.props.id, title: this.state.title }
-    fetch(`${API_ROOT}/journals/${this.props.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(params)
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.props.updateJournalForm({ title: data.title })
-        this.props.navigation.navigate("JournalFormLocation")
-      })
+    // let params = { id: this.props.id, title: this.state.title }
+    // fetch(`${API_ROOT}/journals/${this.props.id}`, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(params)
+    // })
+    //   .then(response => {
+    //     return response.json()
+    //   })
+    //   .then(data => {
+    //     this.props.updateJournalForm({ title: data.title })
+    //     this.props.navigation.navigate("JournalFormLocation")
+    //   })
   }
 
   persistAndNavigate = () => {
-    if (this.props.id) {
-      this.persistUpdate()
-    } else {
-      this.persistCreate()
-    }
+    // if (this.props.id) {
+    //   this.persistUpdate()
+    // } else {
+    //   this.persistCreate()
+    // }
   }
 
   renderForm() {
     return (
       <View style={{ margin: 20 }}>
         <View style={{ marginBottom: 50 }}>
-          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>Whats the name of your trip?</Text>
+          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>What's the title of this Chapter</Text>
         </View>
         <View>
           <TextInput
@@ -127,7 +126,7 @@ class JournalFormTitle extends Component {
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
-                  color: "#FF8C34",
+                  color: "#067BC2",
                   textAlign: "center",
                   paddingTop: 15,
                   fontSize: 18,
@@ -146,7 +145,7 @@ class JournalFormTitle extends Component {
     // chapters ["#067BC2", "#032D47"]
     return (
       <View>
-        <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#FF8C34", "#E46545"]}>
+        <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#067BC2", "#032D47"]}>
           {this.renderBackButtonHeader()}
           {this.renderForm()}
         </LinearGradient>
@@ -158,4 +157,4 @@ class JournalFormTitle extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(JournalFormTitle)
+)(ChapterFormTitle)
