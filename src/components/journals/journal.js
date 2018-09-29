@@ -24,7 +24,8 @@ const mapStateToProps = state => ({
   journal: state.journal.journal,
   user: state.journal.journal.user,
   chapters: state.journal.journal.chapters,
-  loaded: state.journal.loaded
+  loaded: state.journal.loaded,
+  currentUser: state.common.currentUser
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -121,7 +122,12 @@ class Journal extends Component {
     return <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
   }
 
+  isCurrentUsersJournal() {
+    return this.props.user.id === this.props.currentUser.id
+  }
+
   renderCreateChapterCta() {
+    if (!this.isCurrentUsersJournal()) return
     return (
       <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate("ChapterCreateStackNavigator")}>
         <View

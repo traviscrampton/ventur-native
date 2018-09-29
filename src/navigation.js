@@ -21,7 +21,11 @@ import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
-const signedIn = isSignedIn()
+const signedIn = async () => {
+  await isSignedIn().then(res => {
+    return res
+  })
+}
 
 const ChapterCreateStackNavigator = createStackNavigator(
   {
@@ -142,10 +146,10 @@ const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
-      JournalFeed: JournalFeedNavigator
+      Bottom: BottomNavigator
     },
     {
-      initialRouteName: signedIn ? "JournalFeed" : "Login"
+      initialRouteName: signedIn ? "Bottom" : "Login"
     }
   )
 
@@ -168,4 +172,4 @@ const BottomNavigator = createBottomTabNavigator(
     initialRouteName: "Explore"
   }
 )
-export const Ventur = BottomNavigator
+export const Ventur = RootNavigator(signedIn())

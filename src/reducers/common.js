@@ -9,7 +9,7 @@ export default (state = defaultAppState, action) => {
     case SET_CURRENT_USER:
       return {
         ...state,
-        currentUser: { id: 1, fullName: "Travis Crampton" }
+        currentUser: action.payload
       }
     case TOGGLE_TAB_BAR:
       return {
