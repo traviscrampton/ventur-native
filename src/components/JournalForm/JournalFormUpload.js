@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { LinearGradient } from "expo"
+import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import {
   StyleSheet,
@@ -88,8 +89,14 @@ class JournalFormLocation extends Component {
       })
       .then(data => {
         let journalId = data.id
-        this.props.navigation.navigate("Journal", { journalId })
-        // runs something that resets journal form and then goes to journal
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: "MyJournals" }),
+            NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
+          ]
+        })
+        this.props.navigation.dispatch(resetAction)
       })
   }
 

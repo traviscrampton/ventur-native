@@ -46,6 +46,7 @@ const JournalNavigation = createStackNavigator(
     Chapter: ChapterDispatch
   },
   {
+    initialRouteName: "Journal",
     headerMode: "none",
     headerTransparent: true,
     headerStyle: {
@@ -59,7 +60,8 @@ const JournalCreateStackNavigator = createStackNavigator(
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
-    JournalFormUpload: JournalFormUpload
+    JournalFormUpload: JournalFormUpload,
+    MyJournals: MyJournals
   },
   {
     initialRouteName: "JournalFormTitle",
@@ -76,9 +78,10 @@ const JournalFeedNavigator = createStackNavigator(
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
-    JournalForm:JournalCreateStackNavigator
+    JournalForm: JournalCreateStackNavigator
   },
   {
+    initialRouteName: "JournalFeed",
     headerMode: "none",
     navigationOptions: {
       headerTransparent: true,
@@ -133,11 +136,16 @@ const ContentCreateNavigator = createStackNavigator(
 const MyJournalsNavigator = createStackNavigator(
   {
     MyJournals: MyJournals,
-    JournalForm: JournalCreateStackNavigator,
     Journal: Journal,
-    Chapter: ChapterDispatch
+    Chapter: ChapterDispatch,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
+    JournalFormUpload: JournalFormUpload,
+    ChapterCreateStackNavigator: ChapterCreateStackNavigator
   },
   {
+    initialRouteName: "MyJournals",
     headerMode: "none",
     headerTransparent: true,
     headerStyle: {

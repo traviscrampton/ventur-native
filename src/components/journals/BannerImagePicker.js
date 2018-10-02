@@ -36,7 +36,6 @@ class BannerImagePicker extends Component {
   }
 
   getSelectedImage(images) {
-    console.log("images", images)
     if (images.length === 0) {
       this.setState({
         selectedImages: {}

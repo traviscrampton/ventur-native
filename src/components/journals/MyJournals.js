@@ -45,7 +45,7 @@ class MyJournals extends Component {
   }
 
   navigateToJournalForm = () => {
-    this.props.navigation.navigate("JournalForm")
+    this.props.navigation.navigate("JournalFormTitle")
   }
 
   renderCreateJournalCta() {

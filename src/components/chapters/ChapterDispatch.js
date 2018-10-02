@@ -24,7 +24,6 @@ class ChapterDispatch extends Component {
 
   navigateBack = () => {
     this.props.navigation.goBack()
-    this.props.navigation.goBack()
   }
 
   renderChapterNavigation() {

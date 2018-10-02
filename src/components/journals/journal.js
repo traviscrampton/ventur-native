@@ -46,7 +46,6 @@ const bannerImageHeight = Math.round(bannerImageWidth * 0.65)
 class Journal extends Component {
   constructor(props) {
     super(props)
-    this.navigateBack = this.navigateBack.bind(this)
   }
 
   componentWillMount() {
