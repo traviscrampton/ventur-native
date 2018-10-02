@@ -12,7 +12,8 @@ import {
   Dimensions,
   ScrollView
 } from "react-native"
-import { updateJournalForm, endOfForm } from "actions/journal_form"
+import { updateJournalForm, endOfForm, addJournalEverywhere } from "actions/journal_form"
+import { setToken } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 const API_ROOT = "http://192.168.7.23:3000"
@@ -73,10 +74,12 @@ class JournalFormLocation extends Component {
     }
     formData.append("banner_image", imgPost)
     let params = { id: this.props.id, banner_image: imgPost }
+    const token = await setToken()
     fetch(`${API_ROOT}/journals/${params.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        Authorization: token
       },
       body: formData
     })

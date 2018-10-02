@@ -1,4 +1,4 @@
-import { JOURNAL_FEED_LOADED } from "actions/action_types"
+import { JOURNAL_FEED_LOADED, ADD_TO_JOURNAL_FEED } from "actions/action_types"
 
 const defaultJournalData = {
 	allJournals: []

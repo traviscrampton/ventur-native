@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
 import { StyleSheet, View, Text, Image, TouchableHighlight } from "react-native"
+import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from "react-redux"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
@@ -22,6 +23,7 @@ class ChapterDispatch extends Component {
   }
 
   navigateBack = () => {
+    this.props.navigation.goBack()
     this.props.navigation.goBack()
   }
 

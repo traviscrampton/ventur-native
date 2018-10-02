@@ -24,7 +24,6 @@ const mapStateToProps = state => ({
 class JournalFeed extends Component {
   constructor(props) {
     super(props)
-
     this.handlePress = this.handlePress.bind(this)
   }
 

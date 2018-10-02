@@ -13,6 +13,7 @@ import {
 } from "react-native"
 import { updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { setToken } from "agent"
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
@@ -29,7 +30,8 @@ class JournalFormLocation extends Component {
     super(props)
 
     this.state = {
-      description: props.description
+      description: props.description,
+      submittable: props.description.length > 0
     }
   }
 
@@ -48,16 +50,20 @@ class JournalFormLocation extends Component {
   }
   handleTextChange(text) {
     this.setState({
-      description: text
+      description: text,
+      submittable: text.length > 0
     })
   }
 
   persistUpdate = async () => {
+    if (!this.state.submittable) return
+    const token = await setToken()
     let params = { id: this.props.id, description: this.state.description }
     fetch(`${API_ROOT}/journals/${params.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": token
       },
       body: JSON.stringify(params)
     })
@@ -94,7 +100,7 @@ class JournalFormLocation extends Component {
         </View>
         <View>
           <TouchableHighlight onPress={this.persistUpdate}>
-            <View style={{ borderRadius: 30, backgroundColor: "white" }}>
+            <View style={{ borderRadius: 30, backgroundColor: this.state.submittable ? "white" : "lightgray" }}>
               <Text
                 style={{
                   color: "#FF8C34",

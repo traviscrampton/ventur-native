@@ -21,6 +21,29 @@ export function populateJournal(payload) {
   }
 }
 
+export function addJournalEverywhere(payload) {
+  return function(dispatch, getState) {
+    dispatch(addToJournalFeed(payload))
+    dispatch(addToMyTrips(payload))
+  }
+}
+
+export const ADD_TO_JOURNAL_FEED = "ADD_TO_JOURNAL_FEED"
+export function addToJournalFeed(payload) {
+  return {
+    type: ADD_TO_JOURNAL_FEED,
+    payload: payload
+  }
+}
+
+export const ADD_TO_MY_TRIPS = "ADD_TO_MY_TRIPS"
+export function addToMyTrips(payload) {
+  return {
+    type: ADD_TO_MY_TRIPS,
+    payload: payload
+  }
+}
+
 export function endOfForm(payload) {
   return function(dispatch, getState) {
     dispatch(cancelJournalForm())

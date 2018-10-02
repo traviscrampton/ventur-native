@@ -17,6 +17,7 @@ import JournalFormTitle from "components/JournalForm/JournalFormTitle"
 import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
 import JournalFormUpload from "components/JournalForm/JournalFormUpload"
+import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
@@ -29,7 +30,9 @@ const signedIn = async () => {
 
 const ChapterCreateStackNavigator = createStackNavigator(
   {
-    ChapterFormTitle: ChapterFormTitle
+    ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDistance: ChapterFormDistance,
+    BannerImagePicker: BannerImagePicker
   },
   {
     initialRouteName: "ChapterFormTitle",
@@ -51,27 +54,6 @@ const JournalNavigation = createStackNavigator(
   }
 )
 
-const JournalFeedNavigator = createStackNavigator(
-  {
-    JournalFeed: JournalFeed,
-    Journal: Journal,
-    Chapter: ChapterDispatch,
-    ChapterCreateStackNavigator: ChapterCreateStackNavigator,
-    CameraRollContainer: CameraRollContainer,
-    ImageCaptionForm: ImageCaptionForm,
-    ManageContent: ManageContent
-  },
-  {
-    headerMode: "none",
-    navigationOptions: {
-      headerTransparent: true,
-      headerStyle: {
-        borderBottomWidth: 0
-      }
-    }
-  }
-)
-
 const JournalCreateStackNavigator = createStackNavigator(
   {
     JournalFormTitle: JournalFormTitle,
@@ -82,6 +64,28 @@ const JournalCreateStackNavigator = createStackNavigator(
   {
     initialRouteName: "JournalFormTitle",
     headerMode: "none"
+  }
+)
+
+const JournalFeedNavigator = createStackNavigator(
+  {
+    JournalFeed: JournalFeed,
+    Journal: Journal,
+    Chapter: ChapterDispatch,
+    ChapterCreateStackNavigator: ChapterCreateStackNavigator,
+    CameraRollContainer: CameraRollContainer,
+    ImageCaptionForm: ImageCaptionForm,
+    ManageContent: ManageContent,
+    JournalForm:JournalCreateStackNavigator
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerTransparent: true,
+      headerStyle: {
+        borderBottomWidth: 0
+      }
+    }
   }
 )
 
@@ -146,10 +150,10 @@ const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
-      Bottom: BottomNavigator
+      BottomNavigator: BottomNavigator
     },
     {
-      initialRouteName: signedIn ? "Bottom" : "Login"
+      initialRouteName: signedIn ? "BottomNavigator" : "Login"
     }
   )
 

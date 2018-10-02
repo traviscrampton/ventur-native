@@ -31,7 +31,8 @@ class JournalFormTitle extends Component {
     super(props)
 
     this.state = {
-      title: this.props.title
+      title: this.props.title,
+      submittable: this.props.title.length > 0
     }
   }
 
@@ -51,16 +52,19 @@ class JournalFormTitle extends Component {
 
   handleTextChange(text) {
     this.setState({
-      title: text
+      title: text,
+      submittable: text.length > 0
     })
   }
 
   persistCreate = async () => {
     let params = { title: this.state.title }
+    const token = await setToken()
     fetch(`${API_ROOT}/journals`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": token
       },
       body: JSON.stringify(params)
     })
@@ -75,10 +79,12 @@ class JournalFormTitle extends Component {
 
   persistUpdate = async () => {
     let params = { id: this.props.id, title: this.state.title }
+    const token = await setToken()
     fetch(`${API_ROOT}/journals/${this.props.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": token
       },
       body: JSON.stringify(params)
     })
@@ -92,6 +98,7 @@ class JournalFormTitle extends Component {
   }
 
   persistAndNavigate = () => {
+    if(!this.state.submittable) return
     if (this.props.id) {
       this.persistUpdate()
     } else {
@@ -124,7 +131,7 @@ class JournalFormTitle extends Component {
         </View>
         <View>
           <TouchableHighlight onPress={this.persistAndNavigate}>
-            <View style={{ borderRadius: 30, backgroundColor: "white" }}>
+            <View style={{ borderRadius: 30, backgroundColor: this.state.submittable ? "white" : "lightgray" }}>
               <Text
                 style={{
                   color: "#FF8C34",

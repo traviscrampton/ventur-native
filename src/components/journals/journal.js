@@ -16,9 +16,11 @@ import {
 import ChapterList from "components/chapters/ChapterList"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { updateChapterForm } from "actions/chapter_form"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -33,7 +35,9 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: SINGLE_JOURNAL_LOADED, payload })
   },
 
-  loadChapter: payload => dispatch(loadChapter(payload))
+  loadChapter: payload => dispatch(loadChapter(payload)),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  updateJournalForm: payload => dispatch(updateJournalForm(payload))
 })
 
 const bannerImageWidth = Dimensions.get("window").width
@@ -69,6 +73,32 @@ class Journal extends Component {
     this.props.navigation.goBack()
   }
 
+  renderJournalEditForm = () => {
+    const { id, title, description, status } = this.props.journal
+    let obj = {
+      id: id,
+      title: title,
+      description: description,
+      status: status
+    }
+    this.props.updateJournalForm(obj)
+    this.props.navigation.navigate("JournalForm")
+  }
+
+  renderImageOrEdit(user) {
+    if (user.id === this.props.currentUser.id) {
+      return (
+        <TouchableHighlight onPress={this.renderJournalEditForm}>
+          <View style={{ padding: 20 }}>
+            <Text style={{ color: "white" }}>EDIT</Text>
+          </View>
+        </TouchableHighlight>
+      )
+    } else {
+      return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+    }
+  }
+
   renderNavHeader(user) {
     return (
       <View style={styles.navigationContainer}>
@@ -78,7 +108,7 @@ class Journal extends Component {
           onPress={this.navigateBack}>
           <Ionicons style={styles.backIconPosition} name="ios-arrow-back" size={28} color="white" />
         </TouchableHighlight>
-        <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+        {this.renderImageOrEdit(user)}
       </View>
     )
   }
@@ -126,10 +156,15 @@ class Journal extends Component {
     return this.props.user.id === this.props.currentUser.id
   }
 
+  navigateToChapterForm = () => {
+    this.props.updateChapterForm({ journalId: this.props.journal.id })
+    this.props.navigation.navigate("ChapterCreateStackNavigator")
+  }
+
   renderCreateChapterCta() {
     if (!this.isCurrentUsersJournal()) return
     return (
-      <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate("ChapterCreateStackNavigator")}>
+      <TouchableWithoutFeedback onPress={this.navigateToChapterForm}>
         <View
           shadowColor="gray"
           shadowOffset={{ width: 1, height: 1 }}
@@ -157,7 +192,7 @@ class Journal extends Component {
     if (!this.props.loaded) return null
     return (
       <View style={{ height: "100%", position: "relative" }}>
-        <ScrollView bounces={"none"} style={styles.container}>
+        <ScrollView style={styles.container}>
           {this.renderHeader()}
           {this.renderChapters()}
         </ScrollView>

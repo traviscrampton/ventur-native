@@ -12,17 +12,20 @@ import {
   Dimensions
 } from "react-native"
 import { setToken } from "agent"
-import { createJournal, updateJournalForm } from "actions/journal_form"
+import { createJournal } from "actions/journal_form"
+import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
-  // id: state.journalForm.id,
-  // title: state.journalForm.title
+  id: state.chapterForm.id,
+  title: state.chapterForm.title,
+  journalId: state.chapterForm.journalId
 })
 
 const mapDispatchToProps = dispatch => ({
+  updateChapterForm: payload => dispatch(updateChapterForm(payload))
 })
 
 class ChapterFormTitle extends Component {
@@ -55,11 +58,13 @@ class ChapterFormTitle extends Component {
   }
 
   persistCreate = async () => {
-    let params = { title: this.state.title }
-    fetch(`${API_ROOT}/journals`, {
+    const token = await setToken()
+    let params = { journalId: this.props.journalId, title: this.state.title, distance: 0 }
+    fetch(`${API_ROOT}/chapters`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": token
       },
       body: JSON.stringify(params)
     })
@@ -67,8 +72,8 @@ class ChapterFormTitle extends Component {
         return response.json()
       })
       .then(data => {
-        this.props.updateJournalForm({ id: data.id, title: data.title })
-        this.props.navigation.navigate("JournalFormLocation")
+        this.props.updateChapterForm({id: data.id, title: data.title})
+        this.props.navigation.navigate("ChapterFormDistance")
       })
   }
 
@@ -94,7 +99,7 @@ class ChapterFormTitle extends Component {
     // if (this.props.id) {
     //   this.persistUpdate()
     // } else {
-    //   this.persistCreate()
+      this.persistCreate()
     // }
   }
 
@@ -142,7 +147,6 @@ class ChapterFormTitle extends Component {
   }
 
   render() {
-    // chapters ["#067BC2", "#032D47"]
     return (
       <View>
         <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#067BC2", "#032D47"]}>

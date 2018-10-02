@@ -38,6 +38,7 @@ class Login extends Component {
       let obj = Object.assign({}, { token: token, user: user })
       storeJWT(obj)
       this.props.setCurrentUser(user)
+      this.props.navigation.navigate("BottomNavigator")
     })
   }
 
