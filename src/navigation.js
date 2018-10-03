@@ -28,17 +28,17 @@ const signedIn = async () => {
   })
 }
 
-const ChapterCreateStackNavigator = createStackNavigator(
-  {
-    ChapterFormTitle: ChapterFormTitle,
-    ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker
-  },
-  {
-    initialRouteName: "ChapterFormTitle",
-    headerMode: "none"
-  }
-)
+// const ChapterCreateStackNavigator = createStackNavigator(
+//   {
+//     ChapterFormTitle: ChapterFormTitle,
+//     ChapterFormDistance: ChapterFormDistance,
+//     BannerImagePicker: BannerImagePicker
+//   },
+//   {
+//     initialRouteName: "ChapterFormTitle",
+//     headerMode: "none"
+//   }
+// )
 
 const JournalNavigation = createStackNavigator(
   {
@@ -74,11 +74,13 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
-    ChapterCreateStackNavigator: ChapterCreateStackNavigator,
+    ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDistance: ChapterFormDistance,
+    BannerImagePicker: BannerImagePicker,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
-    JournalForm: JournalCreateStackNavigator
+    JournalForm: JournalCreateStackNavigator,
   },
   {
     initialRouteName: "JournalFeed",
@@ -142,7 +144,10 @@ const MyJournalsNavigator = createStackNavigator(
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
     JournalFormUpload: JournalFormUpload,
-    ChapterCreateStackNavigator: ChapterCreateStackNavigator
+    ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDistance: ChapterFormDistance,
+    BannerImagePicker: BannerImagePicker,
+    JournalFeed: JournalFeedNavigator
   },
   {
     initialRouteName: "MyJournals",

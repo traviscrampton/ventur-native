@@ -157,7 +157,7 @@ class Journal extends Component {
 
   navigateToChapterForm = () => {
     this.props.updateChapterForm({ journalId: this.props.journal.id })
-    this.props.navigation.navigate("ChapterCreateStackNavigator")
+    this.props.navigation.navigate("ChapterFormTitle")
   }
 
   renderCreateChapterCta() {

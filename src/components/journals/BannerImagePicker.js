@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { StackActions, NavigationActions } from "react-navigation"
 import { updateChapterForm } from "actions/chapter_form"
 import { chapterQuery } from "graphql/queries/chapters"
 import { setToken } from "agent"
@@ -10,7 +11,8 @@ import { loadChapter } from "actions/chapter"
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
-  id: state.chapterForm.id
+  id: state.chapterForm.id,
+  currentRoot: state.common.currentBottomTab
 })
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateJournalForm(payload)),
@@ -92,10 +94,30 @@ class BannerImagePicker extends Component {
       })
   }
 
+  getFirstRoute() {
+    if (this.props.currentRoot === "My Trips") {
+      return "MyJournals"
+    } else if (this.props.currentRoot === "Explore") {
+      return "JournalFeed"
+    }
+  }
+
   loadAndNavigate(id) {
+    let journalId
+    let initialRoute = this.getFirstRoute()
     gql(chapterQuery, { id: id }).then(res => {
       this.props.loadChapter(res.chapter)
-      this.props.navigation.navigate("Chapter")
+      journalId = res.chapter.journal.id
+      const resetAction = StackActions.reset({
+        index: 2,
+        actions: [
+          NavigationActions.navigate({ routeName: initialRoute }),
+          NavigationActions.navigate({ routeName: "Journal", params: { journalId } }),
+          NavigationActions.navigate({ routeName: "Chapter" })
+        ]
+      })
+
+      this.props.navigation.dispatch(resetAction)
     })
   }
 

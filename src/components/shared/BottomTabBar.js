@@ -1,11 +1,16 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
+import {updateCurrentBottomTab} from "actions/common"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 import ContentCreate from "components/modals/ContentCreate"
 
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar
+})
+
+const mapDispatchToProps = dispatch => ({
+  updateCurrentBottomTab: payload => dispatch(updateCurrentBottomTab(payload))
 })
 
 class BottomTabBar extends Component {
@@ -37,6 +42,7 @@ class BottomTabBar extends Component {
   }
 
   navigateToRoute(route) {
+    this.props.updateCurrentBottomTab(route.key)
     this.props.navigation.navigate(route.key)
   }
 
@@ -115,5 +121,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(BottomTabBar)

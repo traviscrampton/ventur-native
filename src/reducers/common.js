@@ -1,7 +1,9 @@
 import { SET_CURRENT_USER, TOGGLE_TAB_BAR } from "actions/action_types"
+import { UPDATE_CURRENT_BOTTOM_TAB } from "actions/common"
 const defaultAppState = {
   currentUser: null,
-  hideTabBar: false
+  hideTabBar: false,
+  currentBottomTab: "Explore"
 }
 
 export default (state = defaultAppState, action) => {
@@ -15,7 +17,12 @@ export default (state = defaultAppState, action) => {
       return {
         ...state,
         hideTabBar: action.payload
-      }  
+      }
+    case UPDATE_CURRENT_BOTTOM_TAB:
+      return {
+        ...state,
+        currentBottomTab: action.payload
+      }
     default:
       return state
   }
