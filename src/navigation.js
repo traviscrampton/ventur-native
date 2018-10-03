@@ -28,18 +28,6 @@ const signedIn = async () => {
   })
 }
 
-// const ChapterCreateStackNavigator = createStackNavigator(
-//   {
-//     ChapterFormTitle: ChapterFormTitle,
-//     ChapterFormDistance: ChapterFormDistance,
-//     BannerImagePicker: BannerImagePicker
-//   },
-//   {
-//     initialRouteName: "ChapterFormTitle",
-//     headerMode: "none"
-//   }
-// )
-
 const JournalNavigation = createStackNavigator(
   {
     Journal: Journal,
@@ -80,7 +68,10 @@ const JournalFeedNavigator = createStackNavigator(
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
-    JournalForm: JournalCreateStackNavigator,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
+    JournalFormUpload: JournalFormUpload
   },
   {
     initialRouteName: "JournalFeed",
@@ -147,7 +138,6 @@ const MyJournalsNavigator = createStackNavigator(
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
     BannerImagePicker: BannerImagePicker,
-    JournalFeed: JournalFeedNavigator
   },
   {
     initialRouteName: "MyJournals",

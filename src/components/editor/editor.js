@@ -164,7 +164,7 @@ class Editor extends Component {
       case "image":
         return this.renderAsImage(entry, index)
       default:
-        console.log("WHAT IS IT?!", entry)
+        return null
     }
   }
 

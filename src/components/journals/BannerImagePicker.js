@@ -66,7 +66,6 @@ class BannerImagePicker extends Component {
   }
 
   uploadChapterImage = async () => {
-    console.log("HIT")
     const formData = new FormData()
     let { selectedImage } = this.state
     let imgPost = {
@@ -76,7 +75,6 @@ class BannerImagePicker extends Component {
     }
     formData.append("banner_image", imgPost)
     let params = { id: this.props.id, banner_image: imgPost }
-    console.log("PARAMS", params)
     const token = await setToken()
     fetch(`${API_ROOT}/chapters/${params.id}`, {
       method: "PUT",

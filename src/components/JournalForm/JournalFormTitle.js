@@ -37,7 +37,7 @@ class JournalFormTitle extends Component {
   }
 
   navigateBack = () => {
-    this.props.navigation.navigate("MyJournals")
+    this.props.navigation.goBack()
   }
 
   renderBackButtonHeader() {

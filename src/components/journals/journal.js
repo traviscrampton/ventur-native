@@ -81,7 +81,7 @@ class Journal extends Component {
       status: status
     }
     this.props.updateJournalForm(obj)
-    this.props.navigation.navigate("JournalForm")
+    this.props.navigation.navigate("JournalFormTitle")
   }
 
   renderImageOrEdit(user) {
