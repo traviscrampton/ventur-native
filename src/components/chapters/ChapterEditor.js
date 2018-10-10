@@ -10,7 +10,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
+  TouchableHighlight
 } from "react-native"
 import { connect } from "react-redux"
 import {
@@ -21,12 +22,17 @@ import {
   updateActiveImageCaption,
   setNextIndexNull,
   prepManageContent,
-  updateKeyboardState
+  updateKeyboardState,
+  populateEntries
 } from "actions/editor"
+import {
+  loadChapter
+} from "actions/chapter"
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
-const InputAccessoryView = require("InputAccessoryView")
+import { setToken } from "agent"
+const API_ROOT = "http://192.168.7.23:3000"
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -37,7 +43,9 @@ const mapDispatchToProps = dispatch => ({
   updateKeyboardState: payload => dispatch(updateKeyboardState(payload)),
   removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
-  prepManageContent: payload => dispatch(prepManageContent(payload))
+  prepManageContent: payload => dispatch(prepManageContent(payload)),
+  populateEntries: payload => dispatch(populateEntries(payload)),
+  loadChapter: payload => dispatch(loadChapter(payload))
 })
 
 const mapStateToProps = state => ({
@@ -68,6 +76,29 @@ class ChapterEditor extends Component {
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
+  }
+
+  componentDidMount() {
+    this.populateEditor()
+  }
+
+  componentDidUpdate(prevProps) {
+    let nextIndex = this.refs[`textInput${this.props.newIndex}`]
+    if (nextIndex) {
+      nextIndex.focus()
+      this.props.setNextIndexNull()
+    }
+  }
+
+  populateEditor = () => {
+    let entries
+    if (!this.props.chapter.content) {
+      entries = [{type: "text", content: "", styles:"" }]
+    } else {
+      entries = JSON.parse(this.props.chapter.content)
+    }
+
+    this.props.populateEntries(entries)
   }
 
   navigateBack() {
@@ -106,17 +137,8 @@ class ChapterEditor extends Component {
     return <Image style={styles.bannerImage} source={{ uri: bannerImageUrl }} />
   }
 
-  componentDidUpdate(prevProps) {
-    let nextIndex = this.refs[`textInput${this.props.newIndex}`]
-    if (nextIndex) {
-      nextIndex.focus()
-      this.props.setNextIndexNull()
-    }
-  }
-
   keyboardWillShow(e) {
     this.props.updateKeyboardState(true)
-    this.setState({})
   }
 
   keyboardWillHide(e) {
@@ -169,10 +191,7 @@ class ChapterEditor extends Component {
   }
 
   renderOpacCover(index) {
-    // todo => make functional component
-    if (index !== this.props.activeIndex) {
-      return
-    }
+    if (index !== this.props.activeIndex) return
 
     return (
       <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
@@ -193,7 +212,6 @@ class ChapterEditor extends Component {
   }
 
   renderAsImage(entry, index) {
-    // todo => make functional component
     return (
       <View key={`image${index}`} style={styles.positionRelative}>
         <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
@@ -209,9 +227,7 @@ class ChapterEditor extends Component {
   }
 
   renderImageCaption(entry) {
-    if (entry.caption.length === 0) {
-      return
-    }
+    if (entry.caption.length === 0) return
 
     return (
       <View style={styles.captionPadding}>
@@ -299,13 +315,72 @@ class ChapterEditor extends Component {
     })
   }
 
+  saveEditorContent = async () => {
+    const newImages = this.props.entries.filter(entry => {
+      return entry.type === "image" && entry.id === null
+    })
+
+    if (newImages.length === 0) return
+
+    const token = await setToken()
+    const formData = new FormData()
+    let selectedImage
+    for (let image of newImages) {
+      selectedImage = {
+        uri: image.uri,
+        name: image.filename,
+        type: "multipart/form-data"
+      }
+      formData.append("files[]", selectedImage)
+    }
+    formData.append("content", JSON.stringify(this.props.entries))
+    fetch(`${API_ROOT}/chapters/${this.props.chapter.id}/update_blog_content`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: token
+      },
+      body: formData
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.loadChapter(data)
+      })
+  }
+
   getContainerSize() {
     return { height: Dimensions.get("window").height - 110 }
+  }
+
+    renderToggleEdit() {
+    return (
+      <TouchableHighlight onPress={this.props.toggleEditMode}>
+        <View
+          style={{
+            height: 50,
+            backgroundColor: "#f8f8f8",
+            width: Dimensions.get("window").width,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Text style={{fontSize: 18}}>Edit Content</Text>
+        </View>
+      </TouchableHighlight>
+    )
   }
 
   render() {
     return (
       <View style={([styles.container], this.getContainerSize())}>
+        <TouchableWithoutFeedback onPress={this.saveEditorContent}>
+          <View style={{ width: Dimensions.get("window").width, height: 50, backgroundColor: "orange" }}>
+            <Text style={{ color: "white" }}>PERSIST TO SERVER!</Text>
+          </View>
+        </TouchableWithoutFeedback>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
@@ -314,6 +389,7 @@ class ChapterEditor extends Component {
           keyboardShouldPersistTaps={true}
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterMetadata()}
+          {this.renderToggleEdit()}
           {this.renderEditor()}
         </InputScrollView>
         {this.renderEditorToolbar()}

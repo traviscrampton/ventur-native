@@ -20,7 +20,8 @@ import CameraRollPicker from "react-native-camera-roll-picker"
 const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
-  id: state.journalForm.id
+  id: state.journalForm.id,
+  currentRoot: state.common.currentBottomTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -65,7 +66,28 @@ class JournalFormLocation extends Component {
     })
   }
 
+  getFirstRoute() {
+    if (this.props.currentRoot === "My Trips") {
+      return "MyJournals"
+    } else if (this.props.currentRoot === "Explore") {
+      return "JournalFeed"
+    }
+  }
+
+  redirectToJournal() {
+    const journalId = this.props.id
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
+        NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
+  }
+
   persistUpdate = async () => {
+    if (!this.state.selectedImage.uri) return this.redirectToJournal()
     const formData = new FormData()
     let { selectedImage } = this.state
     let imgPost = {
@@ -88,15 +110,7 @@ class JournalFormLocation extends Component {
         return response.json()
       })
       .then(data => {
-        let journalId = data.id
-        const resetAction = StackActions.reset({
-          index: 1,
-          actions: [
-            NavigationActions.navigate({ routeName: "MyTrips" }),
-            NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
-          ]
-        })
-        this.props.navigation.dispatch(resetAction)
+        this.redirectToJournal()
       })
   }
 

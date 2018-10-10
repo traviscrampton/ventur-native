@@ -85,6 +85,7 @@ class ChapterFormDistance extends Component {
             keyboardType={"numeric"}
             onChangeText={text => this.handleTextChange(text)}
             selectionColor="white"
+            value={this.state.distance.toString()}
             style={{
               fontSize: 28,
               borderBottomWidth: 1,

@@ -37,12 +37,12 @@ class EditorToolbar extends Component {
   renderToolbarOption(option) {
     return (
       <View>
-        <Text style={[styles.option, this.isSelectedStyle(option)]}>{this.get_icon(option)}</Text>
+        <Text style={[styles.option, this.isSelectedStyle(option)]}>{this.getIcon(option)}</Text>
       </View>
     )
   }
 
-  get_icon(option) {
+  getIcon(option) {
     if (option === "H1") {
       return <MaterialIcons color={this.isSelectedStyle(option)} name="text-fields" size={24} />
     } else if (option === "QUOTE") {

@@ -80,6 +80,7 @@ class Journal extends Component {
       description: description,
       status: status
     }
+    
     this.props.updateJournalForm(obj)
     this.props.navigation.navigate("JournalFormTitle")
   }

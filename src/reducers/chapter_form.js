@@ -5,14 +5,13 @@ const defaultChapterFormData = {
   journalId: null,
   bannerImage: { uri: "" },
   title: "",
-  distance: "",
+  distance: 0,
   description: "",
 }
 
 export default (state = defaultChapterFormData, action) => {
   switch (action.type) {
     case UPDATE_CHAPTER_FORM:
-    console.log(action.payload)
       return Object.assign({}, state, action.payload)
     default:
       return state

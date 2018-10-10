@@ -29,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
 class JournalFormTitle extends Component {
   constructor(props) {
     super(props)
-
+    
     this.state = {
       title: this.props.title,
       submittable: this.props.title.length > 0
@@ -117,7 +117,7 @@ class JournalFormTitle extends Component {
             autoFocus
             multiline
             onChangeText={text => this.handleTextChange(text)}
-            value={this.state.text}
+            value={this.state.title}
             selectionColor="white"
             style={{
               fontSize: 28,

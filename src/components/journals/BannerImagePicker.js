@@ -66,6 +66,7 @@ class BannerImagePicker extends Component {
   }
 
   uploadChapterImage = async () => {
+    if (!this.state.selectedImage.uri) return this.loadAndNavigate(this.props.id)
     const formData = new FormData()
     let { selectedImage } = this.state
     let imgPost = {

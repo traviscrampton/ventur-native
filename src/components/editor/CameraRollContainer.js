@@ -30,8 +30,10 @@ class CameraRollContainer extends Component {
   compileSelectedImages(images) {
     const selectedImages = images.map((img, idx) => {
       return {
+        id: null,
         type: "image",
         uri: img.uri,
+        filename: img.filename,
         caption: ""
       }
     })

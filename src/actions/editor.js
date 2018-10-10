@@ -166,6 +166,14 @@ export function handleReturnKey(payload) {
   }
 }
 
+export const POPULATE_ENTRIES = "POPULATE_ENTRIES"
+export function populateEntries(payload) {
+  return {
+    type: "POPULATE_ENTRIES",
+    payload: payload
+  }
+}
+
 export function updateCursorPosition(payload) {
   return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }

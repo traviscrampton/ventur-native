@@ -1,14 +1,16 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
 import { StyleSheet, View, Text, Image, TouchableHighlight } from "react-native"
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
+import { updateChapterForm } from "actions/chapter_form"
 import { Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
+  chapter: state.chapter.chapter,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser
 })
@@ -20,6 +22,10 @@ const mapDispatchToProps = dispatch => ({
 class ChapterDispatch extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      editMode: false
+    }
   }
 
   navigateBack = () => {
@@ -30,7 +36,6 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
-        {this.renderEditButton()}
       </View>
     )
   }
@@ -61,18 +66,19 @@ class ChapterDispatch extends Component {
     )
   }
 
-  renderEditButton() {
-    return <View style={styles.userCtaPosition}>{this.getUserCta()}</View>
-  }
-
-  getUserCta() {
-    if (this.props.currentUser.id === this.props.user.id) {
-      return <Text>Saving...</Text>
-    }
+  toggleEditMode = () => {
+    let toggledEditMode = !this.state.editMode
+    this.setState({
+      editMode: toggledEditMode
+    })
   }
 
   dispatchChapter() {
-    return <ChapterEditor navigation={this.props.navigation} />
+    if(this.state.editMode) {
+      return <ChapterEditor toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
+    }else {
+      return <ChapterShow toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
+    }
   }
 
   render() {

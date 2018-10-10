@@ -64,7 +64,7 @@ class ChapterFormTitle extends Component {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        Authorization: token
       },
       body: JSON.stringify(params)
     })
@@ -72,35 +72,37 @@ class ChapterFormTitle extends Component {
         return response.json()
       })
       .then(data => {
-        this.props.updateChapterForm({id: data.id, title: data.title})
+        this.props.updateChapterForm({ id: data.id, title: data.title })
         this.props.navigation.navigate("ChapterFormDistance")
       })
   }
 
   persistUpdate = async () => {
-    // let params = { id: this.props.id, title: this.state.title }
-    // fetch(`${API_ROOT}/journals/${this.props.id}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(params)
-    // })
-    //   .then(response => {
-    //     return response.json()
-    //   })
-    //   .then(data => {
-    //     this.props.updateJournalForm({ title: data.title })
-    //     this.props.navigation.navigate("JournalFormLocation")
-    //   })
+    const token = await setToken()
+    let params = { journalId: this.props.journalId, title: this.state.title, distance: 0 }
+    fetch(`${API_ROOT}/chapters/${this.props.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        this.props.updateChapterForm({ title: data.title })
+        this.props.navigation.navigate("ChapterFormDistance")
+      })
   }
 
   persistAndNavigate = () => {
-    // if (this.props.id) {
-    //   this.persistUpdate()
-    // } else {
+    if (this.props.id) {
+      this.persistUpdate()
+    } else {
       this.persistCreate()
-    // }
+    }
   }
 
   renderForm() {
@@ -114,7 +116,7 @@ class ChapterFormTitle extends Component {
             autoFocus
             multiline
             onChangeText={text => this.handleTextChange(text)}
-            value={this.state.text}
+            value={this.state.title}
             selectionColor="white"
             style={{
               fontSize: 28,

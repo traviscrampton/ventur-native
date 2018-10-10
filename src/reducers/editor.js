@@ -15,8 +15,10 @@ import {
   PREP_MANAGE_CONTENT,
   UPDATE_MANAGE_CONTENT_ENTRIES,
   UPDATE_ENTRIES_ORDER,
-  REMOVE_ENTRY_FROM_CLONE
+  REMOVE_ENTRY_FROM_CLONE,
 } from "actions/action_types"
+
+import { POPULATE_ENTRIES } from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
@@ -25,21 +27,6 @@ const defaultTextData = {
       content: "",
       styles: "",
       type: "text"
-    },
-    {
-      caption: "",
-      type: "image",
-      uri: "assets-library://asset/asset.PNG?id=F3152360-1A07-485A-AE48-B5DFEEE1E6B5&ext=PNG"
-    },
-    {
-      caption: "",
-      type: "image",
-      uri: "assets-library://asset/asset.PNG?id=02E71585-C14D-402E-B601-33B5270D95D4&ext=PNG"
-    },
-    {
-      caption: "",
-      type: "image",
-      uri: "assets-library://asset/asset.PNG?id=E2704100-7084-4C24-BAB2-B149B20AE94F&ext=PNG"
     }
   ],
   activeIndex: 0,
@@ -165,6 +152,12 @@ export default (state = defaultTextData, action) => {
         ...state,
         entries: [...state.entries.slice(0, action.payload), ...state.entries.slice(action.payload + 1)]
       }
+
+    case POPULATE_ENTRIES:
+     return {
+      ...state,
+      entries: action.payload
+     }  
 
     default:
       return state

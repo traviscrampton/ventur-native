@@ -88,6 +88,7 @@ class JournalFormLocation extends Component {
             multiline
             onChangeText={text => this.handleTextChange(text)}
             selectionColor="white"
+            value={this.state.description}
             style={{
               fontSize: 28,
               borderBottomWidth: 1,

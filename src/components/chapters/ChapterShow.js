@@ -1,17 +1,29 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import { StyleSheet, View, Text, ScrollView, Image, Dimensions } from "react-native"
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Dimensions,
+  ImageBackground,
+  TouchableHighlight
+} from "react-native"
 import { connect } from "react-redux"
+import { updateChapterForm } from "actions/chapter_form"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
   loaded: state.chapter.loaded,
+  user: state.chapter.chapter.user,
   currentUser: state.common.currentUser
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: dispatch(resetChapter)
+  resetChapter: dispatch(resetChapter),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload))
 })
 
 class ChapterShow extends Component {
@@ -27,14 +39,48 @@ class ChapterShow extends Component {
     const { title, description } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
-        <View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            alignItems: "center"
+          }}>
           <Text style={styles.title}>{title}</Text>
+          {this.renderEditCta()}
         </View>
         <View>
           <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     )
+  }
+
+  editMetaData = () => {
+    let { id, title, distance, description } = this.props.chapter
+
+    let obj = {
+      id: id,
+      title: title,
+      distance: distance,
+      description: description,
+      journalId: this.props.chapter.journal.id
+    }
+
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterFormTitle")
+  }
+
+  renderEditCta() {
+    if (this.props.currentUser.id === this.props.user.id) {
+      return (
+        <TouchableHighlight onPress={this.editMetaData}>
+          <View>
+            <Text>EDIT</Text>
+          </View>
+        </TouchableHighlight>
+      )
+    }
   }
 
   renderStatistics() {
@@ -54,27 +100,120 @@ class ChapterShow extends Component {
   }
 
   renderBannerImage() {
-    // not ready yet
     const { bannerImageUrl } = this.props.chapter
     return <Image style={{ width: Dimensions.get("window").width, height: 200 }} source={{ uri: bannerImageUrl }} />
   }
 
-  renderBodyContent() {
-    // this isn't ready yet
-    let content = JSON.parse(this.props.chapter.content)
+  getInputStyling(entry) {
+    switch (entry.styles) {
+      case "H1":
+        return {
+          fontFamily: "playfair",
+          fontSize: 22
+        }
+      case "QUOTE":
+        return {
+          fontStyle: "italic",
+          borderLeftWidth: 5,
+          paddingTop: 10,
+          paddingBottom: 10
+        }
+      default:
+        return {}
+    }
+  }
+
+  renderImageCaption(entry) {
+    if (entry.caption.length === 0) return
+
     return (
-      <View style={{ minHeight: Dimensions.get("window").height / 2 }}>
-        <Text>{this.props.chapter.content}</Text>
+      <View
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20
+        }}>
+        <Text style={{ textAlign: "center" }}>{entry.caption}</Text>
       </View>
+    )
+  }
+
+  renderImageEntry(entry, index) {
+    return (
+      <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
+        <ImageBackground style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }} />
+        {this.renderImageCaption(entry)}
+      </View>
+    )
+  }
+
+  renderTextEntry(entry, index) {
+    return (
+      <View
+        style={{
+          padding: 20
+        }}>
+        <Text
+          multiline
+          key={index}
+          style={[
+            {
+              fontSize: 20,
+              fontFamily: "open-sans-regular"
+            },
+            this.getInputStyling(entry)
+          ]}>
+          {entry.content}
+        </Text>
+      </View>
+    )
+  }
+
+  renderEntry(entry, index) {
+    switch (entry.type) {
+      case "text":
+        return this.renderTextEntry(entry, index)
+      case "image":
+        return this.renderImageEntry(entry, index)
+      default:
+        console.log("WHAT IS IT", entry)
+    }
+  }
+
+  renderBodyContent() {
+    if (!this.props.chapter.content) return
+
+    const entries = JSON.parse(this.props.chapter.content)
+    return entries.map((entry, index) => {
+      return this.renderEntry(entry, index)
+    })
+  }
+
+  renderToggleEdit() {
+    return (
+      <TouchableHighlight onPress={this.props.toggleEditMode}>
+        <View
+          style={{
+            height: 50,
+            backgroundColor: "#f8f8f8",
+            width: Dimensions.get("window").width,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Text style={{fontSize: 18}}>Edit Content</Text>
+        </View>
+      </TouchableHighlight>
     )
   }
 
   render() {
     return (
-      <ScrollView bounces={"none"} style={styles.container}>
+      <ScrollView style={styles.container}>
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
         {this.renderBannerImage()}
+        {this.renderToggleEdit()}
         {this.renderBodyContent()}
       </ScrollView>
     )
@@ -83,7 +222,9 @@ class ChapterShow extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    marginBottom: 100,
+    minHeight: Dimensions.get("window").height
   },
   titleDescriptionContainer: {
     padding: 20,
