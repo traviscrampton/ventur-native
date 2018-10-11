@@ -137,10 +137,17 @@ class ChapterShow extends Component {
     )
   }
 
+  getImageHeight(aspectRatio) {
+    return aspectRatio * Dimensions.get("window").width
+  }
+
   renderImageEntry(entry, index) {
     return (
       <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
-        <ImageBackground style={{ width: Dimensions.get("window").width, height: 350 }} source={{ uri: entry.uri }} />
+        <ImageBackground
+          style={{ width: Dimensions.get("window").width, height: this.getImageHeight(entry.aspectRatio) }}
+          source={{ uri: entry.uri }}
+        />
         {this.renderImageCaption(entry)}
       </View>
     )
@@ -189,6 +196,8 @@ class ChapterShow extends Component {
   }
 
   renderToggleEdit() {
+    if (this.props.user.id !== this.props.currentUser.id) return
+
     return (
       <TouchableHighlight onPress={this.props.toggleEditMode}>
         <View
@@ -201,7 +210,7 @@ class ChapterShow extends Component {
             alignItems: "center",
             justifyContent: "center"
           }}>
-          <Text style={{fontSize: 18}}>Edit Content</Text>
+          <Text style={{ fontSize: 18 }}>Edit Content</Text>
         </View>
       </TouchableHighlight>
     )

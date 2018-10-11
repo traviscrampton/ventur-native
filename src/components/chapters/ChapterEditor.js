@@ -25,9 +25,7 @@ import {
   updateKeyboardState,
   populateEntries
 } from "actions/editor"
-import {
-  loadChapter
-} from "actions/chapter"
+import { loadChapter } from "actions/chapter"
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
@@ -65,8 +63,6 @@ const mapStateToProps = state => ({
 class ChapterEditor extends Component {
   constructor(props) {
     super(props)
-    this.openCameraRoll = this.openCameraRoll.bind(this)
-    this.openManageContent = this.openManageContent.bind(this)
 
     this.state = {
       containerHeight: Dimensions.get("window").height - 110
@@ -93,7 +89,7 @@ class ChapterEditor extends Component {
   populateEditor = () => {
     let entries
     if (!this.props.chapter.content) {
-      entries = [{type: "text", content: "", styles:"" }]
+      entries = [{ type: "text", content: "", styles: "" }]
     } else {
       entries = JSON.parse(this.props.chapter.content)
     }
@@ -211,12 +207,18 @@ class ChapterEditor extends Component {
     )
   }
 
+  getImageHeight(aspectRatio) {
+    return aspectRatio * Dimensions.get("window").width
+  }
+
   renderAsImage(entry, index) {
     return (
       <View key={`image${index}`} style={styles.positionRelative}>
         <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
-            <ImageBackground style={styles.imageDimmensions} source={{ uri: entry.uri }}>
+            <ImageBackground
+              style={{ width: Dimensions.get("window").width, height: this.getImageHeight(entry.aspectRatio) }}
+              source={{ uri: entry.uri }}>
               {this.renderOpacCover(index)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
@@ -259,7 +261,7 @@ class ChapterEditor extends Component {
     )
   }
 
-  openCameraRoll(e) {
+  openCameraRoll = e => {
     this.props.navigation.navigate("CameraRollContainer", { index: this.props.activeIndex + 1 })
   }
 
@@ -269,7 +271,7 @@ class ChapterEditor extends Component {
     this.props.navigation.navigate("ImageCaptionForm", { index: index })
   }
 
-  openManageContent() {
+  openManageContent = () => {
     this.props.prepManageContent()
     this.props.navigation.navigate("ManageContent")
   }
@@ -320,8 +322,6 @@ class ChapterEditor extends Component {
       return entry.type === "image" && entry.id === null
     })
 
-    if (newImages.length === 0) return
-
     const token = await setToken()
     const formData = new FormData()
     let selectedImage
@@ -354,7 +354,7 @@ class ChapterEditor extends Component {
     return { height: Dimensions.get("window").height - 110 }
   }
 
-    renderToggleEdit() {
+  renderToggleEdit() {
     return (
       <TouchableHighlight onPress={this.props.toggleEditMode}>
         <View
@@ -367,7 +367,7 @@ class ChapterEditor extends Component {
             alignItems: "center",
             justifyContent: "center"
           }}>
-          <Text style={{fontSize: 18}}>Edit Content</Text>
+          <Text style={{ fontSize: 18 }}>Edit Content</Text>
         </View>
       </TouchableHighlight>
     )
@@ -459,10 +459,6 @@ const styles = StyleSheet.create({
   },
   positionRelative: {
     position: "relative"
-  },
-  imageDimmensions: {
-    width: Dimensions.get("window").width,
-    height: 350
   },
   captionPadding: {
     paddingLeft: 20,

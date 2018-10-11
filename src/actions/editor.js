@@ -40,6 +40,19 @@ export function updateImageCaption(payload) {
 }
 
 export function addImagesToEntries(payload) {
+  const updatedImages = payload.images.map((img) => {
+    return {
+      id: null,
+      filename: img.filename,
+      uri: img.uri,
+      type: "image",
+      aspectRatio: img.height/img.width,
+      caption: ""
+    }
+  })
+
+  payload.images = updatedImages
+  console.log(payload)
   return {
     type: "ADD_IMAGES_TO_ENTRIES",
     payload: payload

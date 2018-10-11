@@ -103,24 +103,16 @@ export default (state = defaultTextData, action) => {
       }
 
     case ADD_IMAGES_TO_ENTRIES:
-      console.log(
-        _.flatten([
-          ...state.entries.slice(0, action.payload),
-          state.selectedImages,
-          ...state.entries.slice(action.payload)
-        ])
-      )
       return {
         ...state,
         selectedImages: [],
         activeIndex: null,
         activeContentCreator: null,
         entries: _.flatten([
-          ...state.entries.slice(0, action.payload),
-          state.selectedImages,
-          ...state.entries.slice(action.payload)
+          ...state.entries.slice(0, action.payload.index),
+          action.payload.images,
+          ...state.entries.slice(action.payload.index)
         ])
-        // entries: _.flatten(Object.assign([], state.entries, { [action.payload]: state.selectedImages }))
       }
     case UPDATE_KEYBOARD_STATE:
       return {
