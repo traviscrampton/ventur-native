@@ -29,7 +29,7 @@ class CameraRollContainer extends Component {
     this.props.navigation.goBack()
   }
 
-  compileSelectedImages(images) {
+  compileSelectedImages = (images) => {
     this.setState({
       selectedImages: images
     })

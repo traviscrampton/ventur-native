@@ -1,9 +1,86 @@
+import _ from "lodash"
+import { setToken } from "agent"
+import { loadChapter } from "actions/chapter"
+const API_ROOT = "http://192.168.7.23:3000"
+
 export function editEntry(payload) {
+  return function(dispatch, getState) {
+    dispatch(updateEntryState(payload))
+    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+  }
+}
+
+export function updateEntryState(payload) {
   return {
     type: "EDIT_ENTRY",
     payload: payload
   }
 }
+
+export function updateImagesState(payload) {
+  const updatedImages = payload.images.map(img => {
+    return {
+      id: null,
+      filename: img.filename,
+      uri: img.uri,
+      type: "image",
+      aspectRatio: img.height / img.width,
+      caption: ""
+    }
+  })
+
+  payload.images = updatedImages
+  return {
+    type: "ADD_IMAGES_TO_ENTRIES",
+    payload: payload
+  }
+}
+
+export function addImagesToEntries(payload) {
+  return function(dispatch, getState) {
+    dispatch(updateImagesState(payload))
+    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+  }
+}
+
+const saveEditorContent = async (entries, chapterId, dispatch) => {
+  let selectedImage
+  const formData = new FormData()
+  const token = await setToken()
+
+  const newImages = entries.filter(entry => {
+    return entry.type === "image" && entry.id === null
+  })
+
+  if (newImages) {
+    for (let image of newImages) {
+      selectedImage = {
+        uri: image.uri,
+        name: image.filename,
+        type: "multipart/form-data"
+      }
+      formData.append("files[]", selectedImage)
+    }
+  }
+
+  formData.append("content", JSON.stringify(entries))
+  fetch(`${API_ROOT}/chapters/${chapterId}/update_blog_content`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      dispatch(loadChapter(data))
+    })
+}
+
+const debouncePersist = _.debounce(saveEditorContent, 800)
 
 export function updateManageContentEntries(payload) {
   return {
@@ -21,7 +98,7 @@ export function removeEntryFromClone(payload) {
 
 export function updateEntriesOrder() {
   return {
-    type: "UPDATE_ENTRIES_ORDER",
+    type: "UPDATE_ENTRIES_ORDER"
   }
 }
 
@@ -36,26 +113,7 @@ export function updateImageCaption(payload) {
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
-  }
-}
-
-export function addImagesToEntries(payload) {
-  const updatedImages = payload.images.map((img) => {
-    return {
-      id: null,
-      filename: img.filename,
-      uri: img.uri,
-      type: "image",
-      aspectRatio: img.height/img.width,
-      caption: ""
-    }
-  })
-
-  payload.images = updatedImages
-  console.log(payload)
-  return {
-    type: "ADD_IMAGES_TO_ENTRIES",
-    payload: payload
+    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
   }
 }
 
@@ -128,6 +186,7 @@ export function removeEntryAndFocus(payload) {
   return function(dispatch, getState) {
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
+    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
   }
 }
 

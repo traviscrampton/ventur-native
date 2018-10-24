@@ -29,8 +29,6 @@ import { loadChapter } from "actions/chapter"
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
-import { setToken } from "agent"
-const API_ROOT = "http://192.168.7.23:3000"
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -169,10 +167,10 @@ class ChapterEditor extends Component {
   }
 
   deleteIfEmpty(index) {
-    // const entry = this.props.entries[index]
-    // if (entry.content.length === 0) {
-    //   this.props.removeEntryAndFocus(index)
-    // }
+    const entry = this.props.entries[index]
+    if (entry.content.length === 0) {
+      this.props.removeEntryAndFocus(index)
+    }
   }
 
   renderEntry(entry, index) {
@@ -317,39 +315,6 @@ class ChapterEditor extends Component {
     })
   }
 
-  saveEditorContent = async () => {
-    const newImages = this.props.entries.filter(entry => {
-      return entry.type === "image" && entry.id === null
-    })
-
-    const token = await setToken()
-    const formData = new FormData()
-    let selectedImage
-    for (let image of newImages) {
-      selectedImage = {
-        uri: image.uri,
-        name: image.filename,
-        type: "multipart/form-data"
-      }
-      formData.append("files[]", selectedImage)
-    }
-    formData.append("content", JSON.stringify(this.props.entries))
-    fetch(`${API_ROOT}/chapters/${this.props.chapter.id}/update_blog_content`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: token
-      },
-      body: formData
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.props.loadChapter(data)
-      })
-  }
-
   getContainerSize() {
     return { height: Dimensions.get("window").height - 110 }
   }
@@ -376,11 +341,6 @@ class ChapterEditor extends Component {
   render() {
     return (
       <View style={([styles.container], this.getContainerSize())}>
-        <TouchableWithoutFeedback onPress={this.saveEditorContent}>
-          <View style={{ width: Dimensions.get("window").width, height: 50, backgroundColor: "orange" }}>
-            <Text style={{ color: "white" }}>PERSIST TO SERVER!</Text>
-          </View>
-        </TouchableWithoutFeedback>
         <InputScrollView
           useAnimatedScrollView={true}
           bounces={true}
