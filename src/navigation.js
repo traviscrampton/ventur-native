@@ -137,7 +137,7 @@ const MyJournalsNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker,
+    BannerImagePicker: BannerImagePicker
   },
   {
     initialRouteName: "MyJournals",
@@ -149,7 +149,7 @@ const MyJournalsNavigator = createStackNavigator(
   }
 )
 
-const RootNavigator = (signedIn = false) =>
+export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       Login: Login,
@@ -179,4 +179,5 @@ const BottomNavigator = createBottomTabNavigator(
     initialRouteName: "Explore"
   }
 )
-export const Ventur = RootNavigator(signedIn())
+
+export const Ventur = RootNavigator(isSignedIn())

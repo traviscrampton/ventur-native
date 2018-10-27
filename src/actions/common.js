@@ -5,3 +5,5 @@ export function updateCurrentBottomTab(payload) {
     payload: payload
   }
 }
+
+export const INITIAL_APP_LOADED = "INITIAL_APP_LOADED"

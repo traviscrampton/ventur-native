@@ -2,6 +2,8 @@ import _superagent from "superagent"
 import superagentPromise from "superagent-promise"
 import request from "superagent"
 import { AsyncStorage } from "react-native"
+import { logOut } from "auth"
+
 const ql = require("superagent-graphql")
 const API_ROOT = "http://192.168.7.23:3000"
 const responseBody = res => res.body.data
@@ -10,7 +12,9 @@ export const setToken = async () => {
   let token
   try {
     token = await AsyncStorage.getItem("JWT")
-    return `Token ${token}`
+    if (token) {
+      return `Token ${token}`
+    }
   } catch (err) {
     return null
   }
@@ -23,5 +27,13 @@ export const gql = async (queryString, queryVariables = {}) => {
     .set("Accept", "application/json")
     .set("Authorization", token)
     .use(ql(queryString, queryVariables))
-    .then(responseBody)
+    .then(res => {
+      return res.body.data
+    })
+    .catch(err => {
+      if(err.status === 401) {
+        return logOut()
+      }
+      return err
+    })
 }

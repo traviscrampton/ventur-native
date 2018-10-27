@@ -18,6 +18,15 @@ export const getCurrentUser = async () => {
   }
 }
 
+export const logOut = () => {
+  try {
+    AsyncStorage.removeItem("JWT")
+    AsyncStorage.removeItem("currentUser")
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const isSignedIn = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem("JWT")

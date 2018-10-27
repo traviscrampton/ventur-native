@@ -32,7 +32,7 @@ class JournalFeed extends Component {
   }
 
   getJournalFeed() {
-    gql(allJournalsQuery).then(res => {
+    gql(allJournalsQuery).then((res) => {
       this.props.onLoad(res.allJournals)
     })
   }
@@ -52,7 +52,6 @@ class JournalFeed extends Component {
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalCard {...item} handlePress={this.handlePress} />}
         />
-
       </ScrollView>
     )
   }
