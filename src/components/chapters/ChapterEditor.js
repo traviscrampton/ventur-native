@@ -281,7 +281,6 @@ class ChapterEditor extends Component {
   }
 
   getToolbarPositioning() {
-    console.log(this.state.containerHeight)
     if (this.props.keyboardShowing) {
       return { width: Dimensions.get("window").width, position: "absolute", top: this.state.containerHeight }
     } else {

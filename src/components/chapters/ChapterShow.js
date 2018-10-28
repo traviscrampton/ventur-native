@@ -196,7 +196,9 @@ class ChapterShow extends Component {
   }
 
   renderToggleEdit() {
-    if (this.props.user.id !== this.props.currentUser.id) return
+    console.log("chapter id", typeof(this.props.user.id))
+    console.log("currentUser id", typeof(this.props.currentUser.id))
+    if (parseInt(this.props.user.id) !== parseInt(this.props.currentUser.id)) return
 
     return (
       <TouchableHighlight onPress={this.props.toggleEditMode}>

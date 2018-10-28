@@ -12,7 +12,7 @@ export default (state = defaultAppState, action) => {
     case SET_CURRENT_USER:
       return {
         ...state,
-        currentUser: action.payload,
+        currentUser: action.payload
       }
     case TOGGLE_TAB_BAR:
       return {
@@ -28,7 +28,7 @@ export default (state = defaultAppState, action) => {
       return {
         ...state,
         initialAppLoaded: true
-      }  
+      }
     default:
       return state
   }

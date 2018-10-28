@@ -38,7 +38,9 @@ export default class App extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      store.dispatch({ type: SET_CURRENT_USER, payload: JSON.parse(user) })
+      user = JSON.parse(user)
+      user.id = parseInt(user.id)
+      store.dispatch({ type: SET_CURRENT_USER, payload: user })
       store.dispatch({ type: INITIAL_APP_LOADED })
     } catch (err) {
       store.dispatch({ type: SET_CURRENT_USER, payload: null })
@@ -46,7 +48,6 @@ export default class App extends Component {
   }
 
   render() {
-    console.log(store)
     return (
       <Provider store={store}>
         <Ventur />

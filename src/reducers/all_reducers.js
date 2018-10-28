@@ -8,6 +8,7 @@ import myJournals from "reducers/my_journals"
 import journalForm from "reducers/journal_form"
 import chapter from "reducers/chapter"
 import chapterForm from "reducers/chapter_form"
+import user from "reducers/user"
 
 export default combineReducers({
   editor,
@@ -15,6 +16,7 @@ export default combineReducers({
   login,
   journalFeed,
   myJournals,
+  user,
   chapter,
   journalForm,
   journal,

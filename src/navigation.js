@@ -17,6 +17,7 @@ import JournalFormTitle from "components/JournalForm/JournalFormTitle"
 import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
 import JournalFormUpload from "components/JournalForm/JournalFormUpload"
+import Profile from "components/users/Profile"
 import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import { Text } from "react-native"
@@ -170,13 +171,13 @@ const BottomNavigator = createBottomTabNavigator(
     },
     "My Trips": MyJournalsNavigator,
     Gear: Editor,
-    Profile: Editor
+    Profile: Profile
   },
   {
     tabBarComponent: BottomTabBar
   },
   {
-    initialRouteName: "Explore"
+    initialRouteName: "Profile"
   }
 )
 
