@@ -133,13 +133,13 @@ class ChapterEditor extends Component {
 
   keyboardWillShow(e) {
     this.props.updateKeyboardState(true)
+    this.setState({
+      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 110
+    })
   }
 
   keyboardWillHide(e) {
     this.props.updateKeyboardState(false)
-    this.setState({
-      positionDistance: Dimensions.get("window").height - 110
-    })
   }
 
   handleTextChange(content, index) {
@@ -173,6 +173,10 @@ class ChapterEditor extends Component {
     }
   }
 
+  getOpacCoverHeight() {
+    return {}
+  }
+
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
@@ -184,12 +188,12 @@ class ChapterEditor extends Component {
     }
   }
 
-  renderOpacCover(index) {
+  renderOpacCover(index, imageHeight) {
     if (index !== this.props.activeIndex) return
 
     return (
       <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
-        <View style={styles.opacCover}>
+        <View style={[styles.opacCover, { height: imageHeight }]}>
           <TouchableWithoutFeedback onPress={() => this.props.removeEntryAndFocus(index)}>
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
@@ -210,14 +214,16 @@ class ChapterEditor extends Component {
   }
 
   renderAsImage(entry, index) {
+    const imageHeight = this.getImageHeight(entry.aspectRatio)
+
     return (
       <View key={`image${index}`} style={styles.positionRelative}>
         <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
             <ImageBackground
-              style={{ width: Dimensions.get("window").width, height: this.getImageHeight(entry.aspectRatio) }}
+              style={{ width: Dimensions.get("window").width, height: imageHeight }}
               source={{ uri: entry.uri }}>
-              {this.renderOpacCover(index)}
+              {this.renderOpacCover(index, imageHeight)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
           </View>
@@ -275,8 +281,9 @@ class ChapterEditor extends Component {
   }
 
   getToolbarPositioning() {
+    console.log(this.state.containerHeight)
     if (this.props.keyboardShowing) {
-      return { width: Dimensions.get("window").width, position: "absolute", top: 300 }
+      return { width: Dimensions.get("window").width, position: "absolute", top: this.state.containerHeight }
     } else {
       return { width: Dimensions.get("window").width }
     }
@@ -332,7 +339,7 @@ class ChapterEditor extends Component {
             alignItems: "center",
             justifyContent: "center"
           }}>
-          <Text style={{ fontSize: 18 }}>Edit Content</Text>
+          <Text style={{ fontSize: 18 }}>Done Editing</Text>
         </View>
       </TouchableHighlight>
     )
@@ -346,7 +353,6 @@ class ChapterEditor extends Component {
           bounces={true}
           style={styles.positionRelative}
           keyboardOffset={90}
-          keyboardShouldPersistTaps={true}
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterMetadata()}
           {this.renderToggleEdit()}
@@ -410,7 +416,6 @@ const styles = StyleSheet.create({
   },
   opacCover: {
     width: Dimensions.get("window").width,
-    height: 350,
     padding: 20,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
@@ -436,8 +441,7 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-regular",
     lineHeight: 24,
     minHeight: 30
-  },
-  marginBottom20: { marginBottom: 20 }
+  }
 })
 
 export default connect(

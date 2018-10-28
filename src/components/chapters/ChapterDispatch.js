@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import { StyleSheet, View, Text, Image, TouchableHighlight } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableHighlight, ActivityIndicator, Dimensions } from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import ChapterEditor from "components/chapters/ChapterEditor"
@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
   chapter: state.chapter.chapter,
   user: state.chapter.chapter.user,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  isUpdating: state.editor.isUpdating
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -36,7 +37,16 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
+        {this.renderActivityIndicator()}
       </View>
+    )
+  }
+
+  renderActivityIndicator() {
+    if(!this.props.isUpdating) return
+
+    return (
+        <ActivityIndicator size="small" color="#FF8C34" />
     )
   }
 
@@ -74,9 +84,9 @@ class ChapterDispatch extends Component {
   }
 
   dispatchChapter() {
-    if(this.state.editMode) {
+    if (this.state.editMode) {
       return <ChapterEditor toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
-    }else {
+    } else {
       return <ChapterShow toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
     }
   }
@@ -102,6 +112,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 20,
     marginBottom: 10,
+    paddingRight: 20,
     height: 60
   },
   journalAndUserContainer: {

@@ -15,10 +15,10 @@ import {
   PREP_MANAGE_CONTENT,
   UPDATE_MANAGE_CONTENT_ENTRIES,
   UPDATE_ENTRIES_ORDER,
-  REMOVE_ENTRY_FROM_CLONE,
+  REMOVE_ENTRY_FROM_CLONE
 } from "actions/action_types"
 
-import { POPULATE_ENTRIES } from "actions/editor"
+import { POPULATE_ENTRIES, DONE_UPDATING, START_UPDATING } from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
@@ -37,7 +37,8 @@ const defaultTextData = {
   activeCaption: "",
   newIndex: null,
   manageContentEntries: [],
-  entriesSortBase: []
+  entriesSortBase: [],
+  isUpdating: false
 }
 let newState
 export default (state = defaultTextData, action) => {
@@ -101,6 +102,17 @@ export default (state = defaultTextData, action) => {
         ...state,
         activeContentCreator: action.payload
       }
+    case START_UPDATING:
+      return {
+        ...state,
+        isUpdating: true
+      }
+
+    case DONE_UPDATING:
+      return {
+        ...state,
+        isUpdating: false
+      }
 
     case ADD_IMAGES_TO_ENTRIES:
       return {
@@ -146,10 +158,10 @@ export default (state = defaultTextData, action) => {
       }
 
     case POPULATE_ENTRIES:
-     return {
-      ...state,
-      entries: action.payload
-     }  
+      return {
+        ...state,
+        entries: action.payload
+      }
 
     default:
       return state

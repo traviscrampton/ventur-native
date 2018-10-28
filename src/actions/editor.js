@@ -5,6 +5,7 @@ const API_ROOT = "http://192.168.7.23:3000"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
+    dispatch(startUpdating())
     dispatch(updateEntryState(payload))
     debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
   }
@@ -38,6 +39,7 @@ export function updateImagesState(payload) {
 
 export function addImagesToEntries(payload) {
   return function(dispatch, getState) {
+    dispatch(startUpdating())
     dispatch(updateImagesState(payload))
     debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
   }
@@ -77,15 +79,30 @@ const saveEditorContent = async (entries, chapterId, dispatch) => {
     })
     .then(data => {
       dispatch(loadChapter(data))
+      dispatch(doneUpdating(data))
     })
 }
 
-const debouncePersist = _.debounce(saveEditorContent, 800)
+const debouncePersist = _.debounce(saveEditorContent, 2000)
 
 export function updateManageContentEntries(payload) {
   return {
     type: "UPDATE_MANAGE_CONTENT_ENTRIES",
     payload: payload
+  }
+}
+
+export const DONE_UPDATING = "DONE_UPDATING"
+export function doneUpdating() {
+  return {
+    type: DONE_UPDATING
+  }
+}
+
+export const START_UPDATING = "START_UPDATING"
+export function startUpdating() {
+  return {
+    type: START_UPDATING
   }
 }
 
@@ -110,6 +127,7 @@ export function prepManageContent() {
 
 export function updateImageCaption(payload) {
   return function(dispatch, getState) {
+    dispatch(startUpdating())
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
@@ -184,6 +202,7 @@ export function createNewEntry(payload) {
 
 export function removeEntryAndFocus(payload) {
   return function(dispatch, getState) {
+    dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
     debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)

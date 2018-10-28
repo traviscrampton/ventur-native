@@ -63,10 +63,12 @@ class BottomTabBar extends Component {
 
   renderToolbar() {
     return (
-      <View shadowColor="#000" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.container}>
+      <View shadowColor="#000" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.outerContainer}>
+        <View style={styles.innerContainer}>
         {this.props.navigation.state.routes.map((route, idx) => {
           return this.renderStandardTab(route, idx)
         })}
+        </View>
       </View>
     )
   }
@@ -77,7 +79,16 @@ class BottomTabBar extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
+    height: 50,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "white"
+  },
+  innerContainer: {
+    maxWidth: 450,
     height: 50,
     display: "flex",
     flexDirection: "row",
@@ -87,7 +98,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 25,
     paddingRight: 25,
-    backgroundColor: "white"
   },
   standardTab: {
     display: "flex",
