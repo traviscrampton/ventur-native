@@ -54,7 +54,7 @@ class Profile extends Component {
 
   isActiveTab(tab) {
     if (this.state.activeTab === tab) {
-      return "red"
+      return "#FF8C34"
     } else {
       return "lightgray"
     }
@@ -143,7 +143,7 @@ class Profile extends Component {
           {this.renderJournalStatistics()}
           {this.renderGearItemsStatistics()}
         </View>
-        <View>{this.renderEditProfile()}</View>
+        <View style={{ marginTop: 10 }}>{this.renderEditProfile()}</View>
       </View>
     )
   }

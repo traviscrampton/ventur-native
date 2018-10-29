@@ -11,6 +11,11 @@ export const userQuery = `
           distance
           miniBannerImageUrl
         }
+        gearItems {
+          id
+          title
+          productImageUrl
+        }
       }
     }
 `

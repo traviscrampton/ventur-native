@@ -170,7 +170,6 @@ const BottomNavigator = createBottomTabNavigator(
       })
     },
     "My Trips": MyJournalsNavigator,
-    Gear: Editor,
     Profile: Profile
   },
   {

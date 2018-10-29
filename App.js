@@ -20,7 +20,7 @@ const SplashScreen = () => {
     <View>
       <Text>Its a big time slash screen</Text>
     </View>
-    )
+  )
 }
 
 export default class App extends Component {
@@ -38,8 +38,6 @@ export default class App extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      user = JSON.parse(user)
-      user.id = parseInt(user.id)
       store.dispatch({ type: SET_CURRENT_USER, payload: user })
       store.dispatch({ type: INITIAL_APP_LOADED })
     } catch (err) {

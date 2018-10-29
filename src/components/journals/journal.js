@@ -80,7 +80,7 @@ class Journal extends Component {
       description: description,
       status: status
     }
-    
+
     this.props.updateJournalForm(obj)
     this.props.navigation.navigate("JournalFormTitle")
   }
@@ -153,7 +153,7 @@ class Journal extends Component {
   }
 
   isCurrentUsersJournal() {
-    return this.props.user.id === this.props.currentUser.id
+    return this.props.user.id == this.props.currentUser.id
   }
 
   navigateToChapterForm = () => {

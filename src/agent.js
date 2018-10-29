@@ -32,7 +32,7 @@ export const gql = async (queryString, queryVariables = {}) => {
       return res.body.data
     })
     .catch(err => {
-      if(err.status === 401) {
+      if (err.status === 401) {
         return logOut()
       }
       return err
