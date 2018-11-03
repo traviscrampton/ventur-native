@@ -157,7 +157,7 @@ export const RootNavigator = (signedIn = false) =>
       BottomNavigator: BottomNavigator
     },
     {
-      initialRouteName: signedIn ? "Login" : "Login"
+      initialRouteName: signedIn ? "BottomNavigator" : "Login"
     }
   )
 

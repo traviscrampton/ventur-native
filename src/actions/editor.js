@@ -1,7 +1,9 @@
 import _ from "lodash"
 import { setToken } from "agent"
 import { loadChapter } from "actions/chapter"
-const API_ROOT = "http://192.168.7.23:3000"
+import { CameraRoll } from "react-native"
+// const API_ROOT = "http://192.168.7.23:3000"
+const API_ROOT = "http://localhost:3000"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
@@ -21,8 +23,9 @@ export function updateEntryState(payload) {
 export function updateImagesState(payload) {
   const updatedImages = payload.images.map(img => {
     return {
-      id: null,
+      id: img.id,
       filename: img.filename,
+      localUri: img.uri,
       uri: img.uri,
       type: "image",
       aspectRatio: img.height / img.width,
@@ -45,15 +48,34 @@ export function addImagesToEntries(payload) {
   }
 }
 
-const saveEditorContent = async (entries, chapterId, dispatch) => {
+export function storeChapterToOfflineMode(payload) {
+  return (dispatch, getState) => {
+    saveImagesToCameraRoll(payload, dispatch)
+
+    // debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+  }
+}
+
+export const saveImagesToCameraRoll = async (payload, dispatch) => {
+  for (let img of payload) {
+    CameraRoll.saveToCameraRoll(img.entry.uri, "photo").then(uri => {
+      entry = Object.assign(img.entry, { localUri: uri })
+      dispatch(updateEntryState({ entry: entry, index: img.index }))
+    })
+  }
+}
+
+export function saveEntriesToOfflineMode() {
+  console.log("WE OUT HERE SAVIN BIG TIME!")
+}
+
+export const saveEditorContent = async (entries, chapterId, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
-
   const newImages = entries.filter(entry => {
     return entry.type === "image" && entry.id === null
   })
-
   if (newImages) {
     for (let image of newImages) {
       selectedImage = {
@@ -64,7 +86,6 @@ const saveEditorContent = async (entries, chapterId, dispatch) => {
       formData.append("files[]", selectedImage)
     }
   }
-
   formData.append("content", JSON.stringify(entries))
   fetch(`${API_ROOT}/chapters/${chapterId}/update_blog_content`, {
     method: "PUT",
@@ -83,7 +104,7 @@ const saveEditorContent = async (entries, chapterId, dispatch) => {
     })
 }
 
-const debouncePersist = _.debounce(saveEditorContent, 2000)
+export const debouncePersist = _.debounce(saveEditorContent, 2000)
 
 export function updateManageContentEntries(payload) {
   return {

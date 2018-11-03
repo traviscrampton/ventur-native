@@ -33,12 +33,20 @@ export default class App extends Component {
       "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
     })
     this.setCurrentUser()
+    this.setChaptersForAsyncStorage()
+  }
+
+  async setChaptersForAsyncStorage() {
+    let chapters = await AsyncStorage.getItem("chapters")
+    if (!chapters) {
+      await AsyncStorage.setItem("chapters", JSON.stringify([]))
+    }
   }
 
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      store.dispatch({ type: SET_CURRENT_USER, payload: user })
+      store.dispatch({ type: SET_CURRENT_USER, payload: JSON.parse(user) })
       store.dispatch({ type: INITIAL_APP_LOADED })
     } catch (err) {
       store.dispatch({ type: SET_CURRENT_USER, payload: null })
