@@ -7,11 +7,13 @@ import {
   ScrollView,
   Image,
   FlatList,
+  AsyncStorage,
   Dimensions,
   ImageBackground,
   TouchableWithoutFeedback
 } from "react-native"
-import { populateUserPage } from "actions/user"
+import ChapterList from "components/chapters/ChapterList"
+import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
 import { userQuery } from "graphql/queries/users"
 import { gql } from "agent"
@@ -20,11 +22,13 @@ import { Ionicons, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
-  user: state.user.user
+  user: state.user.user,
+  offlineChapters: state.user.offlineChapters
 })
 
 const mapDispatchToProps = dispatch => ({
-  populateUserPage: payload => dispatch(populateUserPage(payload))
+  populateUserPage: payload => dispatch(populateUserPage(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 class Profile extends Component {
@@ -38,12 +42,19 @@ class Profile extends Component {
 
   componentWillMount() {
     this.getProfilePageData()
+    this.getOfflineChapters()
   }
 
   getProfilePageData() {
     gql(userQuery, { id: this.props.currentUser.id }).then(res => {
       this.props.populateUserPage(res.user)
     })
+  }
+
+  async getOfflineChapters() {
+    let offlineChapters = await AsyncStorage.getItem("chapters")
+    offlineChapters = JSON.parse(offlineChapters)
+    this.props.populateOfflineChapters(offlineChapters)
   }
 
   switchActiveTab = newTab => {
@@ -204,13 +215,21 @@ class Profile extends Component {
     )
   }
 
-  renderProfileGear() {
-    return <Text>yall need gear to even do this haha what?!</Text>
+  renderOfflineChapter(chapter, index) {
+    return (
+      <View>
+        <Text>{chapter.title}</Text>
+      </View>
+    )
+  }
+
+  renderOfflineChapters() {
+    return <ChapterList chapters={this.props.offlineChapters} handleSelectChapter={() => console.log("hit")} />
   }
 
   renderProfileJournals() {
     const pad = Dimensions.get("window").width * 0.035
-    console.log(this.props.user.journals)
+
     return (
       <View style={{ position: "relative", backgroundColor: "white" }}>
         <FlatList
@@ -237,7 +256,7 @@ class Profile extends Component {
       case "journals":
         return this.renderProfileJournals()
       case "gear":
-        return this.renderProfileGear()
+        return this.renderOfflineChapters()
       default:
         console.log("WHAT IS THIS", this.state.activeTab)
     }

@@ -1,15 +1,15 @@
 import _ from "lodash"
 import { setToken } from "agent"
 import { loadChapter } from "actions/chapter"
-import { CameraRoll } from "react-native"
-// const API_ROOT = "http://192.168.7.23:3000"
-const API_ROOT = "http://localhost:3000"
+import { persistChapterToAsyncStorage } from "utils/offline_helpers"
+import { CameraRoll, NetInfo } from "react-native"
+const API_ROOT = "http://192.168.7.23:3000"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -44,7 +44,7 @@ export function addImagesToEntries(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateImagesState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -52,7 +52,7 @@ export function storeChapterToOfflineMode(payload) {
   return (dispatch, getState) => {
     saveImagesToCameraRoll(payload, dispatch)
 
-    // debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+    // debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -69,7 +69,7 @@ export function saveEntriesToOfflineMode() {
   console.log("WE OUT HERE SAVIN BIG TIME!")
 }
 
-export const saveEditorContent = async (entries, chapterId, dispatch) => {
+export const saveEditorContent = async (entries, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
@@ -87,7 +87,7 @@ export const saveEditorContent = async (entries, chapterId, dispatch) => {
     }
   }
   formData.append("content", JSON.stringify(entries))
-  fetch(`${API_ROOT}/chapters/${chapterId}/update_blog_content`, {
+  fetch(`${API_ROOT}/chapters/${chapter.id}/update_blog_content`, {
     method: "PUT",
     headers: {
       "Content-Type": "multipart/form-data",
@@ -101,10 +101,45 @@ export const saveEditorContent = async (entries, chapterId, dispatch) => {
     .then(data => {
       dispatch(loadChapter(data))
       dispatch(doneUpdating(data))
+      if (data.offline) {
+        persistChapterToAsyncStorage(data)
+      }
     })
 }
 
-export const debouncePersist = _.debounce(saveEditorContent, 2000)
+export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
+  const token = await setToken()
+  let params = { id: chapter.id, offline: offline }
+  fetch(`${API_ROOT}/chapters/${params.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      dispatch(loadChapter(data))
+    })
+}
+
+export const dispatchPersist = async (entries, chapter, dispatch) => {
+  let connectionType
+  NetInfo.getConnectionInfo().then(connectionInfo => {
+    connectionType = connectionInfo.type
+  })
+  if (connectionType === "none" && chapter.offline) {
+    let updatedChapter = { ...chapter, content: entries }
+    let asyncChapter = await persistChapterToAsyncStorage(updatedChapter)
+    dispatch(loadChapter(asyncChapter))
+    dispatch(doneUpdating())
+  } else {
+    saveEditorContent(entries, chapter, dispatch)
+  }
+}
 
 export function updateManageContentEntries(payload) {
   return {
@@ -152,7 +187,7 @@ export function updateImageCaption(payload) {
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -226,7 +261,7 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter.id, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -289,3 +324,4 @@ export function populateEntries(payload) {
 export function updateCursorPosition(payload) {
   return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }
+export const debouncePersist = _.debounce(dispatchPersist, 2000)

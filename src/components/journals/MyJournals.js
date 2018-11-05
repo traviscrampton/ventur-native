@@ -3,6 +3,7 @@ import { StyleSheet, FlatList, View, Dimensions, Text, TouchableWithoutFeedback 
 import { connect } from "react-redux"
 import { Feather } from "@expo/vector-icons"
 import { myJournalsQuery } from "graphql/queries/journals"
+import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 import { gql } from "agent"
 import { MY_JOURNALS_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
 import JournalMini from "components/journals/JournalMini"
@@ -36,6 +37,7 @@ class MyJournals extends Component {
   getJournals() {
     gql(myJournalsQuery).then(res => {
       this.props.onLoad(res.myJournals)
+      addJournalsToAsyncStorage(res.myJournals)
     })
   }
 

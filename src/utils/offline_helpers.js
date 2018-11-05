@@ -1,23 +1,6 @@
 import _ from "lodash"
 import { AsyncStorage } from "react-native"
 
-export const storeJWT = async obj => {
-  try {
-    AsyncStorage.setItem("JWT", obj.token)
-    AsyncStorage.setItem("currentUser", JSON.stringify(obj.user))
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-export const getCurrentUser = async () => {
-  try {
-    await AsyncStorage.getItem("currentUser")
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const persistChapterToAsyncStorage = async chapter => {
   let updatedChapters
   let chapters = await AsyncStorage.getItem("chapters")
@@ -38,6 +21,8 @@ export const persistChapterToAsyncStorage = async chapter => {
   }
 
   let refoundChapters = await AsyncStorage.getItem("chapters")
+  parsedChapters = JSON.parse(refoundChapters)
+  return findChapter(parsedChapters, chapter.id)
 }
 
 const findChapter = (chapters, chapterId) => {
@@ -46,7 +31,12 @@ const findChapter = (chapters, chapterId) => {
   })
 }
 
-const removeChapterFromAsyncStorage = async chapter => {
+export const addJournalsToAsyncStorage = async journals => {
+  const stringifedJournals = JSON.stringify(journals)
+  await AsyncStorage.setItem("journals", stringifedJournals)
+}
+
+export const removeChapterFromAsyncStorage = async chapter => {
   let chapters = await AsyncStorage.getItem("chapters")
   let parsedChapters = JSON.parse(chapters)
 
@@ -55,6 +45,4 @@ const removeChapterFromAsyncStorage = async chapter => {
   })
 
   filteredChapters = JSON.stringify(filteredChapters)
-
-  await AsyncStorage.setItem("chapters", filteredChapters)
 }

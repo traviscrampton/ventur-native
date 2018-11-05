@@ -7,6 +7,7 @@ export const chapterQuery = `
         content
         bannerImageUrl
         dateCreated
+        offline
         distance
         user {
           id

@@ -38,8 +38,11 @@ export default class App extends Component {
 
   async setChaptersForAsyncStorage() {
     let chapters = await AsyncStorage.getItem("chapters")
+    let journals = await AsyncStorage.getItem("journals")
     if (!chapters) {
       await AsyncStorage.setItem("chapters", JSON.stringify([]))
+    } else if (!journals) {
+      await AsyncStorage.setItem("journals", JSON.stringify([]))
     }
   }
 
