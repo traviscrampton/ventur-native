@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
+import { Feather } from "@expo/vector-icons"
 import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
 import { userQuery } from "graphql/queries/users"
@@ -36,7 +37,7 @@ class Profile extends Component {
     super(props)
 
     this.state = {
-      activeTab: "journals"
+      activeTab: "offlineChapters"
     }
   }
 
@@ -115,14 +116,14 @@ class Profile extends Component {
     )
   }
 
-  renderGearItemsStatistics() {
+  renderOfflineChapterStatistics() {
     return (
       <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <View>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{15}</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{this.props.offlineChapters.length}</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 16, color: "gray" }}>Gear</Text>
+          <Text style={{ fontSize: 16, color: "gray" }}>Offline Chapters</Text>
         </View>
       </View>
     )
@@ -152,7 +153,7 @@ class Profile extends Component {
         }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           {this.renderJournalStatistics()}
-          {this.renderGearItemsStatistics()}
+          {this.renderOfflineChapterStatistics()}
         </View>
         <View style={{ marginTop: 10 }}>{this.renderEditProfile()}</View>
       </View>
@@ -206,9 +207,14 @@ class Profile extends Component {
             />
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("gear")}>
+        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
           <View style={{ width: Dimensions.get("window").width / 2 }}>
-            <Entypo style={{ textAlign: "center" }} name="tools" color={this.isActiveTab("gear")} size={22} />
+            <Entypo
+              style={{ textAlign: "center" }}
+              name="tools"
+              color={this.isActiveTab("offlineChapters")}
+              size={22}
+            />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -255,22 +261,50 @@ class Profile extends Component {
     switch (this.state.activeTab) {
       case "journals":
         return this.renderProfileJournals()
-      case "gear":
+      case "offlineChapters":
         return this.renderOfflineChapters()
       default:
         console.log("WHAT IS THIS", this.state.activeTab)
     }
   }
 
+  renderCreateChapterCta() {
+    if (this.state.activeTab !== "offlineChapters") return
+    return (
+      <TouchableWithoutFeedback onPress={() => console.log("we out here")}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 1, height: 1 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            position: "absolute",
+            backgroundColor: "#067BC2",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            bottom: 80,
+            right: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Feather name="plus" size={32} color="white" />
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
   render() {
     return (
       <View>
         {this.renderHeader()}
-        <ScrollView>
+        <ScrollView style={{ height: "100%" }}>
           {this.renderProfilePhotoAndMetadata()}
           {this.renderProfileTabBar()}
           {this.renderRelatedProfileContent()}
         </ScrollView>
+        {this.renderCreateChapterCta()}
       </View>
     )
   }
