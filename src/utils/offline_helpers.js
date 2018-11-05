@@ -11,13 +11,17 @@ export const persistChapterToAsyncStorage = async chapter => {
     updatedChapters = parsedChapters.map(parsedChapter => {
       return parsedChapter.id == chapter.id ? parsedChapter : chapter
     })
-    updatedChapters = JSON.stringify(updatedChapters)
-    await AsyncStorage.setItem("chapters", updatedChapters)
+
+    let uniqueChapters = _.uniqBy(updatedChapters, "id")
+    let stringifiedChapter = JSON.stringify(uniqueChapters)
+    await AsyncStorage.setItem("chapters", stringifiedChapter)
   } else {
     parsedChapters.push(chapter)
-    updatedChapters = JSON.stringify(parsedChapters)
 
-    await AsyncStorage.setItem("chapters", updatedChapters)
+    let uniqueChapters = _.uniqBy(parsedChapters, "id")
+    let stringifiedChapters = JSON.stringify(uniqueChapters)
+
+    await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
   let refoundChapters = await AsyncStorage.getItem("chapters")
@@ -45,4 +49,5 @@ export const removeChapterFromAsyncStorage = async chapter => {
   })
 
   filteredChapters = JSON.stringify(filteredChapters)
+  await AsyncStorage.setItem("chapters", filteredChapters)
 }

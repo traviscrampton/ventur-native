@@ -94,8 +94,8 @@ class BannerImagePicker extends Component {
   }
 
   getFirstRoute() {
-    if (this.props.currentRoot === "My Trips") {
-      return "MyJournals"
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
     } else if (this.props.currentRoot === "Explore") {
       return "JournalFeed"
     }

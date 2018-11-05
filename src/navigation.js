@@ -110,20 +110,26 @@ const CreatorNavigator = createStackNavigator(
   { headerMode: "none" }
 )
 
-const ContentCreateNavigator = createStackNavigator(
+const ProfileNavigator = createStackNavigator(
   {
-    ContentCreate: ContentCreate,
-    JournalForm: JournalForm,
-    BannerImagePicker: BannerImagePicker,
-    Journal: Journal
+    Profile: Profile,
+    Journal: Journal,
+    Chapter: ChapterDispatch,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
+    JournalFormUpload: JournalFormUpload,
+    ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDistance: ChapterFormDistance,
+    BannerImagePicker: BannerImagePicker
   },
   {
-    mode: "modal",
+    initialRouteName: "Profile",
     headerMode: "none",
-    tabBarVisible: false,
-    navigationOptions: ({ navigation }) => ({
-      tabBarVisible: false
-    })
+    headerTransparent: true,
+    headerStyle: {
+      borderBottomWidth: 0
+    }
   }
 )
 
@@ -169,14 +175,14 @@ const BottomNavigator = createBottomTabNavigator(
         tabBarVisible: navigation.state.index < 2
       })
     },
-    "My Trips": MyJournalsNavigator,
-    Profile: Profile
+    // "My Trips": MyJournalsNavigator,
+    Profile: ProfileNavigator
   },
   {
     tabBarComponent: BottomTabBar
   },
   {
-    initialRouteName: "Profile"
+    initialRouteName: ProfileNavigator
   }
 )
 

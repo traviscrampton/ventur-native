@@ -30,7 +30,6 @@ class MyJournals extends Component {
   }
 
   componentWillMount() {
-    // expect this will read from local storage in #daFuture
     this.getJournals()
   }
 
