@@ -18,10 +18,12 @@ import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
 import { userQuery } from "graphql/queries/users"
 import { gql } from "agent"
+import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { Ionicons, Entypo } from "@expo/vector-icons"
 import { RESET_JOURNAL_TAB } from "actions/action_types"
+import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -33,6 +35,7 @@ const mapDispatchToProps = dispatch => ({
   populateUserPage: payload => dispatch(populateUserPage(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   resetJournal: () => {
     dispatch({ type: RESET_JOURNAL_TAB })
   }
@@ -55,6 +58,7 @@ class Profile extends Component {
   getProfilePageData() {
     gql(userQuery, { id: this.props.currentUser.id }).then(res => {
       this.props.populateUserPage(res.user)
+      addJournalsToAsyncStorage(res.user.journals)
     })
   }
 
@@ -91,6 +95,13 @@ class Profile extends Component {
     /// make sure to have the chapter make sens when you update it
     this.props.loadChapter(chapter)
     this.props.navigation.navigate("Chapter")
+  }
+
+  populateJournalsAndBeginNavigation = async () => {
+    const journals = await AsyncStorage.getItem("journals")
+    const obj = { journals: JSON.parse(journals) }
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterFormJournals")
   }
 
   renderHeader() {
@@ -331,7 +342,7 @@ class Profile extends Component {
 
   createOfflineChapters() {
     return (
-      <TouchableWithoutFeedback onPress={() => console.log("we out here")}>
+      <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
         <View
           shadowColor="gray"
           shadowOffset={{ width: 1, height: 1 }}

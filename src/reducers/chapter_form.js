@@ -7,6 +7,7 @@ const defaultChapterFormData = {
   title: "",
   distance: 0,
   description: "",
+  journals: []
 }
 
 export default (state = defaultChapterFormData, action) => {

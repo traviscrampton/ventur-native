@@ -20,6 +20,7 @@ import JournalFormUpload from "components/JournalForm/JournalFormUpload"
 import Profile from "components/users/Profile"
 import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
+import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -119,6 +120,7 @@ const ProfileNavigator = createStackNavigator(
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
     JournalFormUpload: JournalFormUpload,
+    ChapterFormJournals: ChapterFormJournals,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
     BannerImagePicker: BannerImagePicker
