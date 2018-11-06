@@ -5,8 +5,10 @@ const defaultChapterFormData = {
   journalId: null,
   bannerImage: { uri: "" },
   title: "",
+  offline: false,
   distance: 0,
   description: "",
+  content: [],
   journals: []
 }
 

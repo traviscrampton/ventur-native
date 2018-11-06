@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import _ from "lodash"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import {
@@ -13,7 +14,8 @@ import {
   Dimensions
 } from "react-native"
 import { setToken } from "agent"
-import { createJournal } from "actions/journal_form"
+import { offlineChapterCreate, createChapter } from "utils/chapter_form_helper"
+import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
@@ -21,7 +23,10 @@ const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   journals: state.chapterForm.journals,
-  journalId: state.chapterForm.journalId
+  id: state.chapterForm.id,
+  journalId: state.chapterForm.journalId,
+  offline: state.chapterForm.offline,
+  chapter: state.chapterForm
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -41,9 +46,42 @@ class ChapterFormJournals extends Component {
     this.props.navigation.goBack()
   }
 
-  persistAndNavigate = () => {
-    // this.checkForOfflineMode()
+  async persistUpdate() {
+    if (false /* if not connected to the internet store offline is true */) {
+      let chapter = _.omit(this.props.chapter, "journals")
+      await persistChapterToAsyncStorage(chapter)
+    } else {
+      let params = { journalId: this.props.journalId, offline: this.props.offline }
+      updateChapter(this.props.id, params, this.handleCreateCallback)
+    }
+  }
+
+  handleCreateCallback = async data => {
+    if (data.offline) {
+      await persistChapterToAsyncStorage(data)
+    }
+    this.props.updateChapterForm({ id: data.id, offline: data.offline, journalId: data.journal.id })
     this.props.navigation.navigate("ChapterFormTitle")
+  }
+
+  async persistCreate() {
+    if (false /* if not connected to the internet store offline is true */) {
+      const chapter = await offlineChapterCreate(this.props.chapter)
+
+      this.props.updateChapterForm({ id: chapter.id })
+      this.props.navigation.navigate("ChapterFormTitle")
+    } else {
+      let params = { journalId: this.props.journalId, offline: this.props.offline }
+      createChapter(params, this.handleCreateCallback)
+    }
+  }
+
+  persistAndNavigate = async () => {
+    if (this.props.id) {
+      this.persistUpdate()
+    } else {
+      this.persistCreate()
+    }
   }
 
   renderFormSubmission() {

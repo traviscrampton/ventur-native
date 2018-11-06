@@ -99,7 +99,7 @@ class Profile extends Component {
 
   populateJournalsAndBeginNavigation = async () => {
     const journals = await AsyncStorage.getItem("journals")
-    const obj = { journals: JSON.parse(journals) }
+    const obj = { journals: JSON.parse(journals), offline: true }
     this.props.updateChapterForm(obj)
     this.props.navigation.navigate("ChapterFormJournals")
   }
