@@ -13,8 +13,8 @@ import {
 } from "react-native"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { setToken } from "agent"
-const API_ROOT = "http://192.168.7.23:3000"
+import { updateChapter } from "utils/chapter_form_helper"
+import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
@@ -28,14 +28,19 @@ const mapDispatchToProps = dispatch => ({
 class ChapterFormDistance extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      distance: props.distance
-    }
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
+  }
+
+  chapterCallback = async data => {
+    if (data.offline) {
+      await persistChapterToAsyncStorage(data)
+    }
+
+    this.props.updateChapterForm({ distance: data.distance })
+    this.props.navigation.navigate("BannerImagePicker")
   }
 
   renderBackButtonHeader() {
@@ -47,30 +52,19 @@ class ChapterFormDistance extends Component {
       </View>
     )
   }
+
   handleTextChange(text) {
-    this.setState({
-      distance: text
-    })
+    this.props.updateChapterForm({ distance: text })
   }
 
   persistUpdate = async () => {
-    const token = await setToken()
-    let params = { id: this.props.id, distance: this.state.distance }
-    fetch(`${API_ROOT}/chapters/${params.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.props.updateChapterForm({ distance: data.distance })
-        this.props.navigation.navigate("BannerImagePicker")
-      })
+    if (false /* if not connected to the internet store offline is true */) {
+      let chapter = _.omit(this.props.chapter, "journals")
+      await persistChapterToAsyncStorage(chapter)
+    } else {
+      let params = { distance: this.props.distance }
+      updateChapter(this.props.id, params, this.chapterCallback)
+    }
   }
 
   renderForm() {
@@ -85,7 +79,7 @@ class ChapterFormDistance extends Component {
             keyboardType={"numeric"}
             onChangeText={text => this.handleTextChange(text)}
             selectionColor="white"
-            value={this.state.distance.toString()}
+            value={this.props.distance.toString()}
             style={{
               fontSize: 28,
               borderBottomWidth: 1,

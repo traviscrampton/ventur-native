@@ -14,7 +14,7 @@ import {
   Dimensions
 } from "react-native"
 import { setToken } from "agent"
-import { offlineChapterCreate, createChapter } from "utils/chapter_form_helper"
+import { offlineChapterCreate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
@@ -52,11 +52,11 @@ class ChapterFormJournals extends Component {
       await persistChapterToAsyncStorage(chapter)
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }
-      updateChapter(this.props.id, params, this.handleCreateCallback)
+      updateChapter(this.props.id, params, this.chapterCallback)
     }
   }
 
-  handleCreateCallback = async data => {
+  chapterCallback = async data => {
     if (data.offline) {
       await persistChapterToAsyncStorage(data)
     }
@@ -72,7 +72,7 @@ class ChapterFormJournals extends Component {
       this.props.navigation.navigate("ChapterFormTitle")
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }
-      createChapter(params, this.handleCreateCallback)
+      createChapter(params, this.chapterCallback)
     }
   }
 

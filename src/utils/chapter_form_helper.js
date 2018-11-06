@@ -12,6 +12,7 @@ export const offlineChapterCreate = async chapter => {
 }
 
 export const updateChapter = async (id, params, callback) => {
+  const token = await setToken()
   fetch(`${API_ROOT}/chapters/${id}`, {
     method: "PUT",
     headers: {

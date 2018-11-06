@@ -2,7 +2,6 @@ import _ from "lodash"
 import { AsyncStorage } from "react-native"
 
 export const persistChapterToAsyncStorage = async chapter => {
-  console.log("CHAPTER HAS HIT", chapter)
   let updatedChapters
   let chapters = await AsyncStorage.getItem("chapters")
   let parsedChapters = JSON.parse(chapters)
