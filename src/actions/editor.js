@@ -1,9 +1,8 @@
 import _ from "lodash"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { loadChapter } from "actions/chapter"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
-const API_ROOT = "http://192.168.7.23:3000"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {

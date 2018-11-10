@@ -40,7 +40,7 @@ class ChapterFormDistance extends Component {
     }
 
     this.props.updateChapterForm({ distance: data.distance })
-    this.props.navigation.navigate("BannerImagePicker")
+    this.props.navigation.navigate("ChapterFormUpload")
   }
 
   renderBackButtonHeader() {
@@ -92,7 +92,7 @@ class ChapterFormDistance extends Component {
         </View>
         <View>
           <TouchableHighlight onPress={this.persistUpdate}>
-            <View style={{ borderRadius: 30, backgroundColor: this.state.submittable ? "white" : "lightgray" }}>
+            <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
                   color: "#FF8C34",

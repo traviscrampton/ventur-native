@@ -13,7 +13,6 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
-import { setToken } from "agent"
 import { createJournal } from "actions/journal_form"
 import { updateChapterForm } from "actions/chapter_form"
 import { createChapter, updateChapter } from "utils/chapter_form_helper"

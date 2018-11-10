@@ -13,13 +13,11 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   journals: state.chapterForm.journals,

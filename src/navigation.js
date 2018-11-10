@@ -21,6 +21,7 @@ import Profile from "components/users/Profile"
 import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
+import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -66,7 +67,7 @@ const JournalFeedNavigator = createStackNavigator(
     Chapter: ChapterDispatch,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker,
+    ChapterFormUpload: ChapterFormUpload,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
@@ -123,7 +124,7 @@ const ProfileNavigator = createStackNavigator(
     ChapterFormJournals: ChapterFormJournals,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker
+    ChapterFormUpload: ChapterFormUpload
   },
   {
     initialRouteName: "Profile",
@@ -146,7 +147,7 @@ const MyJournalsNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker
+    ChapterFormUpload: ChapterFormUpload
   },
   {
     initialRouteName: "MyJournals",

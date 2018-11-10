@@ -1,8 +1,7 @@
 import { AsyncStorage } from "react-native"
 import _ from "lodash"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { persistChapterToAsyncStorage, findChapter } from "utils/offline_helpers"
-const API_ROOT = "http://192.168.7.23:3000"
 
 export const offlineChapterCreate = async chapter => {
   const localId = Date.now()

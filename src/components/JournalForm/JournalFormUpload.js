@@ -14,10 +14,9 @@ import {
   ScrollView
 } from "react-native"
 import { updateJournalForm, endOfForm, addJournalEverywhere } from "actions/journal_form"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,

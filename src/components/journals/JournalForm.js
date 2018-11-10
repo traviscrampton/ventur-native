@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TextInput, ImageBackground, Dimensions } from "react-native"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { connect } from "react-redux"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import { journalCreate } from "graphql/mutations/journal"
@@ -8,7 +8,6 @@ import { updateJournalForm, cancelJournalForm, populateJournal } from "actions/j
 import { Header } from "components/editor/Header"
 import request from "superagent"
 const defaultImage = require("assets/images/mountain-sketch.png")
-const API_ROOT = "http://192.168.7.23:3000"
 const bannerImageWidth = Dimensions.get("window").width
 const bannerImageHeight = Math.round(bannerImageWidth * (150 / 300))
 
