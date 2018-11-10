@@ -7,6 +7,7 @@ const ChapterCard = props => {
   if (bannerImageUrl) {
     imageUrl = bannerImageUrl
   }
+
   return (
     <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>

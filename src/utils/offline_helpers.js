@@ -2,35 +2,32 @@ import _ from "lodash"
 import { AsyncStorage } from "react-native"
 
 export const persistChapterToAsyncStorage = async chapter => {
+  let foundIndex
   let updatedChapters
+  let stringifiedChapters
   let chapters = await AsyncStorage.getItem("chapters")
   let parsedChapters = JSON.parse(chapters)
   let foundChapter = findChapter(parsedChapters, chapter.id)
 
   if (foundChapter) {
-    updatedChapters = parsedChapters.map(parsedChapter => {
-      return parsedChapter.id == chapter.id ? parsedChapter : chapter
-    })
-
-    let uniqueChapters = _.uniqBy(updatedChapters, "id")
-    let stringifiedChapter = JSON.stringify(uniqueChapters)
-    await AsyncStorage.setItem("chapters", stringifiedChapter)
+    foundIndex = parsedChapters.indexOf(foundChapter)
+    parsedChapters = Object.assign([], parsedChapters, { [foundIndex]: chapter })
+    stringifiedChapters = JSON.stringify(parsedChapters)
+    await AsyncStorage.setItem("chapters", stringifiedChapters)
   } else {
-    parsedChapters.push(chapter)
-
-    let uniqueChapters = _.uniqBy(parsedChapters, "id")
-    let stringifiedChapters = JSON.stringify(uniqueChapters)
+    parsedChapters = [...parsedChapters, chapter]
+    stringifiedChapters = JSON.stringify(parsedChapters)
 
     await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
-  let refoundChapters = await AsyncStorage.getItem("chapters")
-  parsedChapters = JSON.parse(refoundChapters)
-  return findChapter(parsedChapters, chapter.id)
+  // let refoundChapters = await AsyncStorage.getItem("chapters")
+  // parsedChapters = JSON.parse(refoundChapters)
+  return chapter
 }
 
 export const findChapter = (chapters, chapterId) => {
-  return chapters.find(chapter => {
+  return chapters.find((chapter, index) => {
     return chapter.id == chapterId
   })
 }

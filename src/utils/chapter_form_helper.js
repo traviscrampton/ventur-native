@@ -42,7 +42,6 @@ export const createChapter = async (params, callback) => {
       return response.json()
     })
     .then(data => {
-      console.log(callback)
       callback(data)
     })
 }

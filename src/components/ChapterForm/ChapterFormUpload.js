@@ -14,10 +14,11 @@ import {
   ActivityIndicator,
   ScrollView
 } from "react-native"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { setToken, API_ROOT } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { loadChapter } from "actions/chapter"
+import { populateOfflineChapters } from "actions/user"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import CameraRollPicker from "react-native-camera-roll-picker"
 
@@ -31,7 +32,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload))
+  loadChapter: payload => dispatch(loadChapter(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  resetChapterForm: () => dispatch(resetChapterForm())
 })
 
 class ChapterFormUpload extends Component {
@@ -91,6 +94,12 @@ class ChapterFormUpload extends Component {
     // this.props.navigation.dispatch(resetAction)
   }
 
+  syncOfflineChapters = async () => {
+    let offlineChapters = await AsyncStorage.getItem("chapters")
+    offlineChapters = JSON.parse(offlineChapters)
+    this.props.populateOfflineChapters(offlineChapters)
+  }
+
   persistUpdate = async () => {
     if (!this.state.selectedImage.uri) {
       // redirect without an image
@@ -114,7 +123,8 @@ class ChapterFormUpload extends Component {
       formData.append("banner_image", imgPost)
       let params = { id: this.props.id, banner_image: imgPost }
       const token = await setToken()
-      fetch(`${API_ROOT}/chapters/${params.id}`, {
+
+      await fetch(`${API_ROOT}/chapters/${params.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -126,14 +136,18 @@ class ChapterFormUpload extends Component {
           return response.json()
         })
         .then(chapter => {
-          this.setState({ loading: false })
+          console.log("is offline?", chapter.offline)
           if (chapter.offline) {
             persistChapterToAsyncStorage(chapter)
+            // this.syncOfflineChapters()
           }
-
+          return chapter
+        })
+        .then(chapter => {
+          this.setState({ loading: false })
           this.props.loadChapter(chapter)
-
           this.props.navigation.navigate("Chapter") // figure out the navigation to handle both
+          this.props.resetChapterForm()
         })
     }
   }
