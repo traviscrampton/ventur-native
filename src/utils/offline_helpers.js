@@ -21,8 +21,6 @@ export const persistChapterToAsyncStorage = async chapter => {
     await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
-  // let refoundChapters = await AsyncStorage.getItem("chapters")
-  // parsedChapters = JSON.parse(refoundChapters)
   return chapter
 }
 

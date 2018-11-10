@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   TextInput,
   ImageBackground,
+  AsyncStorage,
   Dimensions,
   ActivityIndicator,
   ScrollView
@@ -94,7 +95,8 @@ class ChapterFormUpload extends Component {
     // this.props.navigation.dispatch(resetAction)
   }
 
-  syncOfflineChapters = async () => {
+  syncOfflineChapters = async chapter => {
+    await persistChapterToAsyncStorage(chapter)
     let offlineChapters = await AsyncStorage.getItem("chapters")
     offlineChapters = JSON.parse(offlineChapters)
     this.props.populateOfflineChapters(offlineChapters)
@@ -136,18 +138,16 @@ class ChapterFormUpload extends Component {
           return response.json()
         })
         .then(chapter => {
-          console.log("is offline?", chapter.offline)
-          if (chapter.offline) {
-            persistChapterToAsyncStorage(chapter)
-            // this.syncOfflineChapters()
-          }
-          return chapter
-        })
-        .then(chapter => {
           this.setState({ loading: false })
           this.props.loadChapter(chapter)
           this.props.navigation.navigate("Chapter") // figure out the navigation to handle both
           this.props.resetChapterForm()
+          return chapter
+        })
+        .then(chapter => {
+          if (chapter.offline) {
+            this.syncOfflineChapters(chapter)
+          }
         })
     }
   }
