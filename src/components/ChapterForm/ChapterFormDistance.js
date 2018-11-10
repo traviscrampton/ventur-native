@@ -95,7 +95,7 @@ class ChapterFormDistance extends Component {
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
-                  color: "#FF8C34",
+                  color: "#067BC2",
                   textAlign: "center",
                   fontSize: 18,
                   paddingTop: 15,

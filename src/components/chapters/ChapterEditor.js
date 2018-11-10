@@ -243,7 +243,6 @@ class ChapterEditor extends Component {
 
   actuallyDownload = async () => {
     await this.saveImagesToCameraRoll()
-    console.log(this.props.entries)
     await this.props.saveEditorContent(this.props.entries, this.props.chapter.id)
     this.persistChapterToLocalStorage()
     this.setState({

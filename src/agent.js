@@ -23,7 +23,6 @@ export const setToken = async () => {
 }
 
 export const gql = async (queryString, queryVariables = {}) => {
-  console.log(API_ROOT)
   const token = await setToken()
   return request
     .post(`${API_ROOT}/graphql`)

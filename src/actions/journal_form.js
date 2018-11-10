@@ -24,12 +24,30 @@ export function populateJournal(payload) {
 export function addJournalEverywhere(payload) {
   return function(dispatch, getState) {
     dispatch(addToJournalFeed(payload))
-    dispatch(addToMyTrips(payload))
+    // dispatch(addToMyTrips(payload))
   }
 }
 
 export const ADD_TO_JOURNAL_FEED = "ADD_TO_JOURNAL_FEED"
 export function addToJournalFeed(payload) {
+  return function(dispatch, getState) {
+    let newPayload
+    let allJournals = [...getState().journalFeed.allJournals]
+    const foundJournal = allJournals.find(journal => {
+      return payload.id == journal.id
+    })
+
+    if (foundJournal) {
+      let index = allJournals.indexOf(foundJournal)
+      newPayload = Object.assign([], allJournals, { [index]: payload })
+    } else {
+      newPayload = [...allJournals, payload]
+    }
+    dispatch(sendToReducerForJournalFeed(newPayload))
+  }
+}
+
+export function sendToReducerForJournalFeed(payload) {
   return {
     type: ADD_TO_JOURNAL_FEED,
     payload: payload

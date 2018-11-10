@@ -150,7 +150,7 @@ class ChapterFormUpload extends Component {
             justifyContent: "space-around",
             alignItems: "center"
           }}>
-          <ActivityIndicator size="large" color="#FF8C34" />
+          <ActivityIndicator size="large" color="#067BC2" />
         </View>
       )
     } else {
@@ -185,7 +185,7 @@ class ChapterFormUpload extends Component {
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
-                  color: "#FF8C34",
+                  color: "#067BC2",
                   textAlign: "center",
                   fontSize: 18,
                   paddingTop: 15,

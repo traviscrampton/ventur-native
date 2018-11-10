@@ -1,17 +1,24 @@
-import { JOURNAL_FEED_LOADED, ADD_TO_JOURNAL_FEED } from "actions/action_types"
+import { JOURNAL_FEED_LOADED } from "actions/action_types"
+import { ADD_TO_JOURNAL_FEED } from "actions/journal_form"
 
 const defaultJournalData = {
-	allJournals: []
+  allJournals: []
 }
 
 export default (state = defaultJournalData, action) => {
-	switch (action.type) {
-		case JOURNAL_FEED_LOADED:
-			return {
-				...state,
-				allJournals: action.payload
-			}
-		default:
-			return state
-	}
+  switch (action.type) {
+    case JOURNAL_FEED_LOADED:
+      return {
+        ...state,
+        allJournals: action.payload
+      }
+
+    case ADD_TO_JOURNAL_FEED:
+      return {
+        ...state,
+        allJournals: action.payload
+      }
+    default:
+      return state
+  }
 }

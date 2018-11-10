@@ -88,7 +88,7 @@ class ChapterFormJournals extends Component {
         <View style={{ borderRadius: 30, marginRight: 20, marginLeft: 20, marginTop: 20, backgroundColor: "white" }}>
           <Text
             style={{
-              color: "#032D47",
+              color: "#067BC2",
               textAlign: "center",
               paddingTop: 15,
               fontSize: 18,

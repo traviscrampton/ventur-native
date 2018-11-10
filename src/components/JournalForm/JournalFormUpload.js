@@ -25,7 +25,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  endOfForm: () => dispatch(endOfForm())
+  endOfForm: () => dispatch(endOfForm()),
+  addJournalEverywhere: payload => dispatch(addJournalEverywhere(payload))
 })
 
 class JournalFormLocation extends Component {
@@ -109,6 +110,7 @@ class JournalFormLocation extends Component {
         return response.json()
       })
       .then(data => {
+        this.props.addJournalEverywhere(data)
         this.redirectToJournal()
       })
   }
