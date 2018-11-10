@@ -13,7 +13,7 @@ import {
   Dimensions,
   ScrollView
 } from "react-native"
-import { updateJournalForm, endOfForm, addJournalEverywhere } from "actions/journal_form"
+import { updateJournalForm, endOfForm, addJournalEverywhere, resetJournalForm } from "actions/journal_form"
 import { setToken, API_ROOT } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
@@ -26,7 +26,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   endOfForm: () => dispatch(endOfForm()),
-  addJournalEverywhere: payload => dispatch(addJournalEverywhere(payload))
+  addJournalEverywhere: payload => dispatch(addJournalEverywhere(payload)),
+  resetJournalForm: () => dispatch(resetJournalForm())
 })
 
 class JournalFormLocation extends Component {
@@ -87,7 +88,11 @@ class JournalFormLocation extends Component {
   }
 
   persistUpdate = async () => {
-    if (!this.state.selectedImage.uri) return this.redirectToJournal()
+    if (!this.state.selectedImage.uri) {
+      this.redirectToJournal()
+      this.props.resetJournalForm()
+      return
+    }
     const formData = new FormData()
     let { selectedImage } = this.state
     let imgPost = {
@@ -112,6 +117,7 @@ class JournalFormLocation extends Component {
       .then(data => {
         this.props.addJournalEverywhere(data)
         this.redirectToJournal()
+        this.props.resetJournalForm()
       })
   }
 

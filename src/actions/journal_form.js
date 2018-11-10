@@ -6,10 +6,10 @@ export function updateJournalForm(payload) {
   }
 }
 
-export const CANCEL_JOURNAL_FORM = "CANCEL_JOURNAL_FORM"
-export function cancelJournalForm() {
+export const RESET_JOURNAL_FORM = "RESET_JOURNAL_FORM"
+export function resetJournalForm() {
   return {
-    type: CANCEL_JOURNAL_FORM
+    type: RESET_JOURNAL_FORM
   }
 }
 
