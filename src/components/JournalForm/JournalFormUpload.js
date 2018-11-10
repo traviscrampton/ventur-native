@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
+  ActivityIndicator,
   ImageBackground,
   Dimensions,
   ScrollView
@@ -88,9 +89,11 @@ class JournalFormLocation extends Component {
   }
 
   persistUpdate = async () => {
+    this.setState({ loading: true })
     if (!this.state.selectedImage.uri) {
       this.redirectToJournal()
       this.props.resetJournalForm()
+      this.setState({ loading: false })
       return
     }
     const formData = new FormData()
@@ -115,10 +118,38 @@ class JournalFormLocation extends Component {
         return response.json()
       })
       .then(data => {
+        this.setState({ loading: false })
         this.props.addJournalEverywhere(data)
         this.redirectToJournal()
         this.props.resetJournalForm()
       })
+  }
+
+  renderCameraPicker() {
+    if (this.state.loading) {
+      return (
+        <View
+          style={{
+            height: 350,
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center"
+          }}>
+          <ActivityIndicator size="large" color="#E46545" />
+        </View>
+      )
+    } else {
+      return (
+        <CameraRollPicker
+          selectSingleItem
+          key="cameraRollPicker"
+          selected={[this.state.selectedImage]}
+          callback={this.getSelectedImage}
+        />
+      )
+    }
   }
 
   renderForm() {
@@ -134,12 +165,7 @@ class JournalFormLocation extends Component {
             height: 350,
             width: Dimensions.get("window").width
           }}>
-          <CameraRollPicker
-            selectSingleItem
-            key="cameraRollPicker"
-            selected={[this.state.selectedImage]}
-            callback={this.getSelectedImage}
-          />
+          {this.renderCameraPicker()}
         </ScrollView>
         <View>
           <TouchableHighlight onPress={this.persistUpdate}>
