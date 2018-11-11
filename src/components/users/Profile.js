@@ -55,10 +55,6 @@ class Profile extends Component {
     this.getOfflineChapters()
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log("NEW CHAPTERS", this.props.offlineChapters)
-  }
-
   getProfilePageData() {
     gql(userQuery, { id: this.props.currentUser.id }).then(res => {
       this.props.populateUserPage(res.user)
