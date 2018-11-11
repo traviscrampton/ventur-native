@@ -9,15 +9,15 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
+  ActivityIndicator,
   ImageBackground,
   Dimensions,
   ScrollView
 } from "react-native"
-import { updateJournalForm, endOfForm, addJournalEverywhere } from "actions/journal_form"
-import { setToken } from "agent"
+import { updateJournalForm, endOfForm, addJournalEverywhere, resetJournalForm } from "actions/journal_form"
+import { setToken, API_ROOT } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -26,7 +26,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  endOfForm: () => dispatch(endOfForm())
+  endOfForm: () => dispatch(endOfForm()),
+  addJournalEverywhere: payload => dispatch(addJournalEverywhere(payload)),
+  resetJournalForm: () => dispatch(resetJournalForm())
 })
 
 class JournalFormLocation extends Component {
@@ -67,8 +69,8 @@ class JournalFormLocation extends Component {
   }
 
   getFirstRoute() {
-    if (this.props.currentRoot === "My Trips") {
-      return "MyJournals"
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
     } else if (this.props.currentRoot === "Explore") {
       return "JournalFeed"
     }
@@ -87,7 +89,15 @@ class JournalFormLocation extends Component {
   }
 
   persistUpdate = async () => {
-    if (!this.state.selectedImage.uri) return this.redirectToJournal()
+    if (this.state.loading) return
+
+    this.setState({ loading: true })
+    if (!this.state.selectedImage.uri) {
+      this.redirectToJournal()
+      this.props.resetJournalForm()
+      this.setState({ loading: false })
+      return
+    }
     const formData = new FormData()
     let { selectedImage } = this.state
     let imgPost = {
@@ -110,8 +120,40 @@ class JournalFormLocation extends Component {
         return response.json()
       })
       .then(data => {
+        this.setState({ loading: false })
+        this.props.addJournalEverywhere(data)
         this.redirectToJournal()
+        this.props.resetJournalForm()
       })
+  }
+
+  renderCameraPicker() {
+    if (this.state.loading) {
+      return (
+        <ImageBackground
+          style={{
+            height: 350,
+            width: Dimensions.get("window").width,
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center"
+          }}
+          source={{ uri: this.state.selectedImage.uri }}>
+          <ActivityIndicator size="large" color="#E46545" />
+        </ImageBackground>
+      )
+    } else {
+      return (
+        <CameraRollPicker
+          selectSingleItem
+          key="cameraRollPicker"
+          selected={[this.state.selectedImage]}
+          callback={this.getSelectedImage}
+        />
+      )
+    }
   }
 
   renderForm() {
@@ -127,12 +169,7 @@ class JournalFormLocation extends Component {
             height: 350,
             width: Dimensions.get("window").width
           }}>
-          <CameraRollPicker
-            selectSingleItem
-            key="cameraRollPicker"
-            selected={[this.state.selectedImage]}
-            callback={this.getSelectedImage}
-          />
+          {this.renderCameraPicker()}
         </ScrollView>
         <View>
           <TouchableHighlight onPress={this.persistUpdate}>

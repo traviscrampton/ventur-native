@@ -13,8 +13,7 @@ import {
 } from "react-native"
 import { updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { setToken } from "agent"
-const API_ROOT = "http://192.168.7.23:3000"
+import { setToken, API_ROOT } from "agent"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -63,7 +62,7 @@ class JournalFormLocation extends Component {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        Authorization: token
       },
       body: JSON.stringify(params)
     })

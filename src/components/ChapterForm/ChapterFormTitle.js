@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import _ from "lodash"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import {
@@ -8,37 +9,49 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
+  AsyncStorage,
   ImageBackground,
   Dimensions
 } from "react-native"
-import { setToken } from "agent"
 import { createJournal } from "actions/journal_form"
 import { updateChapterForm } from "actions/chapter_form"
+import { populateOfflineChapters } from "actions/user"
+import { createChapter, updateChapter } from "utils/chapter_form_helper"
+import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
   title: state.chapterForm.title,
-  journalId: state.chapterForm.journalId
+  journalId: state.chapterForm.journalId,
+  chapter: state.chapterForm
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload))
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 class ChapterFormTitle extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      title: this.props.title
-    }
   }
 
   navigateBack = () => {
     this.props.navigation.navigate("Journal")
+  }
+
+  handleTextChange(text) {
+    this.props.updateChapterForm({ title: text })
+  }
+
+  chapterCallback = async data => {
+    if (data.offline) {
+      await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
+    }
+
+    this.props.updateChapterForm({ id: data.id, title: data.title })
+    this.props.navigation.navigate("ChapterFormDistance")
   }
 
   renderBackButtonHeader() {
@@ -51,50 +64,26 @@ class ChapterFormTitle extends Component {
     )
   }
 
-  handleTextChange(text) {
-    this.setState({
-      title: text
-    })
-  }
-
   persistCreate = async () => {
-    const token = await setToken()
-    let params = { journalId: this.props.journalId, title: this.state.title, distance: 0 }
-    fetch(`${API_ROOT}/chapters`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.props.updateChapterForm({ id: data.id, title: data.title })
-        this.props.navigation.navigate("ChapterFormDistance")
-      })
+    if (false /* if not connected to the internet store offline is true */) {
+      const chapter = await offlineChapterCreate(this.props.chapter)
+
+      this.props.updateChapterForm({ id: chapter.id })
+      this.props.navigation.navigate("ChapterFormDistance")
+    } else {
+      let params = { journalId: this.props.journalId, title: this.props.title }
+      createChapter(params, this.chapterCallback)
+    }
   }
 
   persistUpdate = async () => {
-    const token = await setToken()
-    let params = { journalId: this.props.journalId, title: this.state.title, distance: 0 }
-    fetch(`${API_ROOT}/chapters/${this.props.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.props.updateChapterForm({ title: data.title })
-        this.props.navigation.navigate("ChapterFormDistance")
-      })
+    if (false /* if not connected to the internet store offline is true */) {
+      let chapter = _.omit(this.props.chapter, "journals")
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+    } else {
+      let params = { journalId: this.props.journalId, title: this.props.title }
+      updateChapter(this.props.id, params, this.chapterCallback)
+    }
   }
 
   persistAndNavigate = () => {
@@ -116,7 +105,7 @@ class ChapterFormTitle extends Component {
             autoFocus
             multiline
             onChangeText={text => this.handleTextChange(text)}
-            value={this.state.title}
+            value={this.props.title}
             selectionColor="white"
             style={{
               fontSize: 28,

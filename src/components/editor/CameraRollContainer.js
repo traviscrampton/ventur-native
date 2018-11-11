@@ -25,11 +25,15 @@ class CameraRollContainer extends Component {
   }
 
   addImagesToEntries = () => {
-    this.props.addImagesToEntries({images: this.state.selectedImages, index: this.index + 1})
+    const selectedImages = this.state.selectedImages.map((img, idx) => {
+      return Object.assign(img, { id: null })
+    })
+
+    this.props.addImagesToEntries({ images: selectedImages, index: this.index + 1 })
     this.props.navigation.goBack()
   }
 
-  compileSelectedImages = (images) => {
+  compileSelectedImages = images => {
     this.setState({
       selectedImages: images
     })

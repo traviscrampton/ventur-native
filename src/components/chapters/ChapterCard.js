@@ -3,7 +3,11 @@ import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-n
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
-  const { imageUrl, title, distance, dateCreated } = props
+  let { imageUrl, title, distance, dateCreated, bannerImageUrl } = props
+  if (bannerImageUrl) {
+    imageUrl = bannerImageUrl
+  }
+
   return (
     <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>

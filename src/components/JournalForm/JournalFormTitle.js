@@ -11,11 +11,9 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import { createJournal, updateJournalForm } from "actions/journal_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -29,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
 class JournalFormTitle extends Component {
   constructor(props) {
     super(props)
-    
+
     this.state = {
       title: this.props.title,
       submittable: this.props.title.length > 0
@@ -64,7 +62,7 @@ class JournalFormTitle extends Component {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        Authorization: token
       },
       body: JSON.stringify(params)
     })
@@ -84,7 +82,7 @@ class JournalFormTitle extends Component {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        Authorization: token
       },
       body: JSON.stringify(params)
     })
@@ -98,7 +96,7 @@ class JournalFormTitle extends Component {
   }
 
   persistAndNavigate = () => {
-    if(!this.state.submittable) return
+    if (!this.state.submittable) return
     if (this.props.id) {
       this.persistUpdate()
     } else {

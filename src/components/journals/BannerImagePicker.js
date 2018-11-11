@@ -3,12 +3,11 @@ import { connect } from "react-redux"
 import { StackActions, NavigationActions } from "react-navigation"
 import { updateChapterForm } from "actions/chapter_form"
 import { chapterQuery } from "graphql/queries/chapters"
-import { setToken } from "agent"
+import { setToken, API_ROOT } from "agent"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { Header } from "components/editor/Header"
 import { gql } from "agent"
 import { loadChapter } from "actions/chapter"
-const API_ROOT = "http://192.168.7.23:3000"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
@@ -94,8 +93,8 @@ class BannerImagePicker extends Component {
   }
 
   getFirstRoute() {
-    if (this.props.currentRoot === "My Trips") {
-      return "MyJournals"
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
     } else if (this.props.currentRoot === "Explore") {
       return "JournalFeed"
     }

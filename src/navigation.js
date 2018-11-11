@@ -20,6 +20,8 @@ import JournalFormUpload from "components/JournalForm/JournalFormUpload"
 import Profile from "components/users/Profile"
 import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
+import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
+import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -65,7 +67,7 @@ const JournalFeedNavigator = createStackNavigator(
     Chapter: ChapterDispatch,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker,
+    ChapterFormUpload: ChapterFormUpload,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
@@ -110,20 +112,27 @@ const CreatorNavigator = createStackNavigator(
   { headerMode: "none" }
 )
 
-const ContentCreateNavigator = createStackNavigator(
+const ProfileNavigator = createStackNavigator(
   {
-    ContentCreate: ContentCreate,
-    JournalForm: JournalForm,
-    BannerImagePicker: BannerImagePicker,
-    Journal: Journal
+    Profile: Profile,
+    Journal: Journal,
+    Chapter: ChapterDispatch,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
+    JournalFormUpload: JournalFormUpload,
+    ChapterFormJournals: ChapterFormJournals,
+    ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDistance: ChapterFormDistance,
+    ChapterFormUpload: ChapterFormUpload
   },
   {
-    mode: "modal",
+    initialRouteName: "Profile",
     headerMode: "none",
-    tabBarVisible: false,
-    navigationOptions: ({ navigation }) => ({
-      tabBarVisible: false
-    })
+    headerTransparent: true,
+    headerStyle: {
+      borderBottomWidth: 0
+    }
   }
 )
 
@@ -138,7 +147,7 @@ const MyJournalsNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
-    BannerImagePicker: BannerImagePicker
+    ChapterFormUpload: ChapterFormUpload
   },
   {
     initialRouteName: "MyJournals",
@@ -169,14 +178,14 @@ const BottomNavigator = createBottomTabNavigator(
         tabBarVisible: navigation.state.index < 2
       })
     },
-    "My Trips": MyJournalsNavigator,
-    Profile: Profile
+    // "My Trips": MyJournalsNavigator,
+    Profile: ProfileNavigator
   },
   {
     tabBarComponent: BottomTabBar
   },
   {
-    initialRouteName: "Profile"
+    initialRouteName: ProfileNavigator
   }
 )
 

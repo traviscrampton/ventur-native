@@ -7,24 +7,38 @@ import {
   ScrollView,
   Image,
   FlatList,
+  AsyncStorage,
   Dimensions,
   ImageBackground,
   TouchableWithoutFeedback
 } from "react-native"
-import { populateUserPage } from "actions/user"
+import ChapterList from "components/chapters/ChapterList"
+import { Feather } from "@expo/vector-icons"
+import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
 import { userQuery } from "graphql/queries/users"
 import { gql } from "agent"
+import { updateChapterForm } from "actions/chapter_form"
+import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { Ionicons, Entypo } from "@expo/vector-icons"
+import { RESET_JOURNAL_TAB } from "actions/action_types"
+import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
-  user: state.user.user
+  user: state.user.user,
+  offlineChapters: state.user.offlineChapters
 })
 
 const mapDispatchToProps = dispatch => ({
-  populateUserPage: payload => dispatch(populateUserPage(payload))
+  populateUserPage: payload => dispatch(populateUserPage(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  loadChapter: payload => dispatch(loadChapter(payload)),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  resetJournal: () => {
+    dispatch({ type: RESET_JOURNAL_TAB })
+  }
 })
 
 class Profile extends Component {
@@ -32,18 +46,26 @@ class Profile extends Component {
     super(props)
 
     this.state = {
-      activeTab: "journals"
+      activeTab: "offlineChapters"
     }
   }
 
   componentWillMount() {
     this.getProfilePageData()
+    this.getOfflineChapters()
   }
 
   getProfilePageData() {
     gql(userQuery, { id: this.props.currentUser.id }).then(res => {
       this.props.populateUserPage(res.user)
+      addJournalsToAsyncStorage(res.user.journals)
     })
+  }
+
+  async getOfflineChapters() {
+    let offlineChapters = await AsyncStorage.getItem("chapters")
+    offlineChapters = JSON.parse(offlineChapters)
+    this.props.populateOfflineChapters(offlineChapters)
   }
 
   switchActiveTab = newTab => {
@@ -60,11 +82,38 @@ class Profile extends Component {
     }
   }
 
+  handleJournalPress = journalId => {
+    this.props.resetJournal()
+    this.props.navigation.navigate("Journal", { journalId })
+  }
+
+  selectChapter = async chapterId => {
+    let chapters = await AsyncStorage.getItem("chapters")
+    chapters = JSON.parse(chapters)
+    let chapter
+    chapter = chapters.find(chapter => {
+      return chapter.id === chapterId
+    })
+    // chapter = this.props.offlineChapters.find(chapter => {
+    //   return chapter.id === chapterId
+    // })
+    this.props.loadChapter(chapter)
+    this.props.navigation.navigate("Chapter")
+  }
+
+  populateJournalsAndBeginNavigation = async () => {
+    const journals = await AsyncStorage.getItem("journals")
+    const obj = { journals: JSON.parse(journals), offline: true }
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterFormJournals")
+  }
+
   renderHeader() {
     return (
       <View
         style={{
           height: 60,
+          backgroundColor: "white",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -104,14 +153,14 @@ class Profile extends Component {
     )
   }
 
-  renderGearItemsStatistics() {
+  renderOfflineChapterStatistics() {
     return (
       <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <View>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{15}</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{this.props.offlineChapters.length}</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 16, color: "gray" }}>Gear</Text>
+          <Text style={{ fontSize: 16, color: "gray" }}>Offline Chapters</Text>
         </View>
       </View>
     )
@@ -141,7 +190,7 @@ class Profile extends Component {
         }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           {this.renderJournalStatistics()}
-          {this.renderGearItemsStatistics()}
+          {this.renderOfflineChapterStatistics()}
         </View>
         <View style={{ marginTop: 10 }}>{this.renderEditProfile()}</View>
       </View>
@@ -152,7 +201,7 @@ class Profile extends Component {
     return (
       <View style={{ width: "33%", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Image
-          style={{ width: 90, height: 90, borderRadius: 45, marginBottom: 5 }}
+          style={{ width: 90, height: 90, borderRadius: 45, marginBottom: 5, borderWidth: 1, borderColor: "gray" }}
           source={{ uri: this.props.user.avatarImageUrl }}
         />
         <View>{this.renderUserName()}</View>
@@ -162,7 +211,7 @@ class Profile extends Component {
 
   renderProfilePhotoAndMetadata() {
     return (
-      <View style={{ marginBottom: 20, padding: 15 }}>
+      <View style={{ marginBottom: 20, padding: 15, backgroundColor: "white" }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           {this.renderProfilePhoto()}
           {this.renderStatistics()}
@@ -195,22 +244,35 @@ class Profile extends Component {
             />
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("gear")}>
+        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
           <View style={{ width: Dimensions.get("window").width / 2 }}>
-            <Entypo style={{ textAlign: "center" }} name="tools" color={this.isActiveTab("gear")} size={22} />
+            <Entypo
+              style={{ textAlign: "center" }}
+              name="tools"
+              color={this.isActiveTab("offlineChapters")}
+              size={22}
+            />
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
   }
 
-  renderProfileGear() {
-    return <Text>yall need gear to even do this haha what?!</Text>
+  renderOfflineChapter(chapter, index) {
+    return (
+      <View>
+        <Text>{chapter.title}</Text>
+      </View>
+    )
+  }
+
+  renderOfflineChapters() {
+    return <ChapterList chapters={this.props.offlineChapters} handleSelectChapter={this.selectChapter} />
   }
 
   renderProfileJournals() {
     const pad = Dimensions.get("window").width * 0.035
-    console.log(this.props.user.journals)
+
     return (
       <View style={{ position: "relative", backgroundColor: "white" }}>
         <FlatList
@@ -232,26 +294,92 @@ class Profile extends Component {
     )
   }
 
+  navigateToJournalForm = () => {
+    this.props.navigation.navigate("JournalFormTitle")
+  }
+
+  renderCreateJournalCta() {
+    return (
+      <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 1, height: 1 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            position: "absolute",
+            backgroundColor: "#FF8C34",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            bottom: 80,
+            right: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Feather name="plus" size={32} color="white" />
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
   renderRelatedProfileContent() {
     switch (this.state.activeTab) {
       case "journals":
         return this.renderProfileJournals()
-      case "gear":
-        return this.renderProfileGear()
+      case "offlineChapters":
+        return this.renderOfflineChapters()
       default:
         console.log("WHAT IS THIS", this.state.activeTab)
     }
   }
 
+  renderFloatingCreateButton() {
+    switch (this.state.activeTab) {
+      case "journals":
+        return this.renderCreateJournalCta()
+      case "offlineChapters":
+        return this.createOfflineChapters()
+    }
+  }
+
+  createOfflineChapters() {
+    return (
+      <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 1, height: 1 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            position: "absolute",
+            backgroundColor: "#067BC2",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            bottom: 80,
+            right: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <Feather name="plus" size={32} color="white" />
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
   render() {
     return (
-      <View>
+      <View style={{ backgroundColor: "white", paddingBottom: 60 }}>
         {this.renderHeader()}
-        <ScrollView>
+        <ScrollView style={{ height: "100%" }}>
           {this.renderProfilePhotoAndMetadata()}
           {this.renderProfileTabBar()}
           {this.renderRelatedProfileContent()}
         </ScrollView>
+        {this.renderFloatingCreateButton()}
       </View>
     )
   }

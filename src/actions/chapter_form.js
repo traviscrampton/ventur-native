@@ -5,3 +5,10 @@ export function updateChapterForm(payload) {
     payload: payload
   }
 }
+
+export const RESET_CHAPTER_FORM = "RESET_CHAPTER_FORM"
+export function resetChapterForm() {
+  return {
+    type: RESET_CHAPTER_FORM
+  }
+}

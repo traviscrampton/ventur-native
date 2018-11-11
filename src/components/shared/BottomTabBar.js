@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
-import {updateCurrentBottomTab} from "actions/common"
+import { updateCurrentBottomTab } from "actions/common"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 import ContentCreate from "components/modals/ContentCreate"
 
@@ -65,9 +65,9 @@ class BottomTabBar extends Component {
     return (
       <View shadowColor="#000" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.outerContainer}>
         <View style={styles.innerContainer}>
-        {this.props.navigation.state.routes.map((route, idx) => {
-          return this.renderStandardTab(route, idx)
-        })}
+          {this.props.navigation.state.routes.map((route, idx) => {
+            return this.renderStandardTab(route, idx)
+          })}
         </View>
       </View>
     )
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
     height: 50,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     width: Dimensions.get("window").width,
     position: "relative",
     alignItems: "center",
     paddingLeft: 25,
-    paddingRight: 25,
+    paddingRight: 25
   },
   standardTab: {
     display: "flex",

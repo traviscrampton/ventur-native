@@ -15,14 +15,6 @@ import { Font } from "expo"
 
 const store = createStore(allReducers, applyMiddleware(thunk))
 
-const SplashScreen = () => {
-  return (
-    <View>
-      <Text>Its a big time slash screen</Text>
-    </View>
-  )
-}
-
 export default class App extends Component {
   componentWillMount() {
     Font.loadAsync({
@@ -33,12 +25,24 @@ export default class App extends Component {
       "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
     })
     this.setCurrentUser()
+    this.setChaptersForAsyncStorage()
+  }
+
+  async setChaptersForAsyncStorage() {
+    let chapters = await AsyncStorage.getItem("chapters")
+    let journals = await AsyncStorage.getItem("journals")
+    // await AsyncStorage.setItem("chapters", JSON.stringify([]))
+    if (!chapters) {
+      await AsyncStorage.setItem("chapters", JSON.stringify([]))
+    } else if (!journals) {
+      await AsyncStorage.setItem("journals", JSON.stringify([]))
+    }
   }
 
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      store.dispatch({ type: SET_CURRENT_USER, payload: user })
+      store.dispatch({ type: SET_CURRENT_USER, payload: JSON.parse(user) })
       store.dispatch({ type: INITIAL_APP_LOADED })
     } catch (err) {
       store.dispatch({ type: SET_CURRENT_USER, payload: null })
