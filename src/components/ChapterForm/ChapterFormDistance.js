@@ -13,6 +13,7 @@ import {
 } from "react-native"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { populateOfflineChapters } from "actions/user"
 import { updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 
@@ -22,7 +23,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload))
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 class ChapterFormDistance extends Component {
@@ -36,7 +38,7 @@ class ChapterFormDistance extends Component {
 
   chapterCallback = async data => {
     if (data.offline) {
-      await persistChapterToAsyncStorage(data)
+      await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
 
     this.props.updateChapterForm({ distance: data.distance })
@@ -60,7 +62,7 @@ class ChapterFormDistance extends Component {
   persistUpdate = async () => {
     if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter)
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
     } else {
       let params = { distance: this.props.distance }
       updateChapter(this.props.id, params, this.chapterCallback)

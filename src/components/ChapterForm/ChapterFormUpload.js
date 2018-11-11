@@ -103,6 +103,7 @@ class ChapterFormUpload extends Component {
   }
 
   persistUpdate = async () => {
+    if (this.state.loading) return
     if (!this.state.selectedImage.uri) {
       // redirect without an image
     }
@@ -146,7 +147,7 @@ class ChapterFormUpload extends Component {
         })
         .then(chapter => {
           if (chapter.offline) {
-            this.syncOfflineChapters(chapter)
+            persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
           }
         })
     }
@@ -155,17 +156,18 @@ class ChapterFormUpload extends Component {
   renderCameraRollPicker() {
     if (this.state.loading) {
       return (
-        <View
+        <ImageBackground
           style={{
             height: 350,
-            backgroundColor: "white",
+            width: Dimensions.get("window").width,
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center"
-          }}>
+          }}
+          source={{ uri: this.state.selectedImage.uri }}>
           <ActivityIndicator size="large" color="#067BC2" />
-        </View>
+        </ImageBackground>
       )
     } else {
       return (

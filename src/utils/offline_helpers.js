@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { AsyncStorage } from "react-native"
 
-export const persistChapterToAsyncStorage = async chapter => {
+export const persistChapterToAsyncStorage = async (chapter, reduxCallBack) => {
   let foundIndex
   let updatedChapters
   let stringifiedChapters
@@ -21,6 +21,9 @@ export const persistChapterToAsyncStorage = async chapter => {
     await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
+  let refoundChapters = await AsyncStorage.getItem("chapters")
+  refoundChapters = JSON.parse(refoundChapters)
+  reduxCallBack(refoundChapters)
   return chapter
 }
 

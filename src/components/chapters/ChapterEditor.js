@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   Switch,
+  AsyncStorage,
   TouchableHighlight,
   CameraRoll
 } from "react-native"
@@ -35,6 +36,7 @@ import { loadChapter } from "actions/chapter"
 import InputScrollView from "react-native-input-scroll-view"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
+import { populateOfflineChapters } from "actions/user"
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
@@ -52,7 +54,8 @@ const mapDispatchToProps = dispatch => ({
   populateEntries: payload => dispatch(populateEntries(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   saveEditorContent: (entries, chapterId) => saveEditorContent(entries, chapterId, dispatch),
-  editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch)
+  editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 const mapStateToProps = state => ({
@@ -375,7 +378,7 @@ class ChapterEditor extends Component {
     if (offline) {
       await removeChapterFromAsyncStorage(chapter)
     } else {
-      await persistChapterToAsyncStorage(chapter)
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
     }
   }
 

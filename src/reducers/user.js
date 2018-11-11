@@ -14,7 +14,6 @@ export default (state = defaultAppState, action) => {
         ...state,
         user: action.payload
       }
-
     case POPULATE_OFFLINE_CHAPTERS:
       return {
         ...state,

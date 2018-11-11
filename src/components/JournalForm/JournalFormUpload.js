@@ -89,6 +89,8 @@ class JournalFormLocation extends Component {
   }
 
   persistUpdate = async () => {
+    if (this.state.loading) return
+
     this.setState({ loading: true })
     if (!this.state.selectedImage.uri) {
       this.redirectToJournal()
@@ -128,17 +130,19 @@ class JournalFormLocation extends Component {
   renderCameraPicker() {
     if (this.state.loading) {
       return (
-        <View
+        <ImageBackground
           style={{
             height: 350,
+            width: Dimensions.get("window").width,
             backgroundColor: "white",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center"
-          }}>
+          }}
+          source={{ uri: this.state.selectedImage.uri }}>
           <ActivityIndicator size="large" color="#E46545" />
-        </View>
+        </ImageBackground>
       )
     } else {
       return (
