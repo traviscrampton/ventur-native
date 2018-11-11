@@ -1,6 +1,7 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import { loadChapter } from "actions/chapter"
+import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
 
@@ -68,6 +69,13 @@ export function saveEntriesToOfflineMode() {
   console.log("WE OUT HERE SAVIN BIG TIME!")
 }
 
+export function dispatchPopulateOfflineChapters(payload) {
+  return (dispatch, getState) => {
+    console.log("HIT IN SIDE THE FUNC", payload)
+    dispatch(populateOfflineChapters(payload))
+  }
+}
+
 export const saveEditorContent = async (entries, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
@@ -101,7 +109,7 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       dispatch(loadChapter(data))
       dispatch(doneUpdating(data))
       if (data.offline) {
-        persistChapterToAsyncStorage(data)
+        persistChapterToAsyncStorage(data, populateOfflineChapters)
       }
     })
 }

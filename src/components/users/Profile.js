@@ -55,6 +55,10 @@ class Profile extends Component {
     this.getOfflineChapters()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    console.log("NEW CHAPTERS", this.props.offlineChapters)
+  }
+
   getProfilePageData() {
     gql(userQuery, { id: this.props.currentUser.id }).then(res => {
       this.props.populateUserPage(res.user)
@@ -87,12 +91,16 @@ class Profile extends Component {
     this.props.navigation.navigate("Journal", { journalId })
   }
 
-  selectChapter = chapterId => {
+  selectChapter = async chapterId => {
+    let chapters = await AsyncStorage.getItem("chapters")
+    chapters = JSON.parse(chapters)
     let chapter
-    chapter = this.props.offlineChapters.find(chapter => {
+    chapter = chapters.find(chapter => {
       return chapter.id === chapterId
     })
-    /// make sure to have the chapter make sens when you update it
+    // chapter = this.props.offlineChapters.find(chapter => {
+    //   return chapter.id === chapterId
+    // })
     this.props.loadChapter(chapter)
     this.props.navigation.navigate("Chapter")
   }

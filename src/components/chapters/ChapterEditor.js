@@ -376,7 +376,7 @@ class ChapterEditor extends Component {
     this.props.editChapterOfflineMode(chapter, !offline)
 
     if (offline) {
-      await removeChapterFromAsyncStorage(chapter)
+      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
     } else {
       await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
     }

@@ -23,7 +23,7 @@ export const persistChapterToAsyncStorage = async (chapter, reduxCallBack) => {
 
   let refoundChapters = await AsyncStorage.getItem("chapters")
   refoundChapters = JSON.parse(refoundChapters)
-  reduxCallBack(refoundChapters)
+  reduxCallBack([...refoundChapters])
   return chapter
 }
 
@@ -38,7 +38,7 @@ export const addJournalsToAsyncStorage = async journals => {
   await AsyncStorage.setItem("journals", stringifedJournals)
 }
 
-export const removeChapterFromAsyncStorage = async chapter => {
+export const removeChapterFromAsyncStorage = async (chapter, reduxCallBack) => {
   let chapters = await AsyncStorage.getItem("chapters")
   let parsedChapters = JSON.parse(chapters)
 
@@ -46,6 +46,7 @@ export const removeChapterFromAsyncStorage = async chapter => {
     return parsedChapter.id != chapter.id
   })
 
+  reduxCallBack(filteredChapters)
   filteredChapters = JSON.stringify(filteredChapters)
   await AsyncStorage.setItem("chapters", filteredChapters)
 }

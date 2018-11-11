@@ -8,6 +8,7 @@ export function populateUserPage(payload) {
 
 export const POPULATE_OFFLINE_CHAPTERS = "POPULATE_OFFLINE_CHAPTERS"
 export function populateOfflineChapters(payload) {
+  console.log("PAYLOAD", payload)
   return {
     type: POPULATE_OFFLINE_CHAPTERS,
     payload: payload
