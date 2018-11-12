@@ -47,3 +47,26 @@ export const createChapter = async (params, callback) => {
       callback(data)
     })
 }
+
+const MONTHS = [
+  "January",
+  "Feburary",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+]
+
+export const generateReadableDate = date => {
+  let month = MONTHS[date.getMonth()]
+  let day = " " + date.getDate() + ", "
+  let year = date.getFullYear()
+
+  return month + day + year
+}

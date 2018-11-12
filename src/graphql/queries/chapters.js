@@ -6,7 +6,7 @@ export const chapterQuery = `
         description
         content
         bannerImageUrl
-        dateCreated
+        readableDate
         offline
         distance
         user {

@@ -51,7 +51,7 @@ class ChapterFormTitle extends Component {
     }
 
     this.props.updateChapterForm({ id: data.id, title: data.title })
-    this.props.navigation.navigate("ChapterFormDistance")
+    this.props.navigation.navigate("ChapterFormDate")
   }
 
   renderBackButtonHeader() {
@@ -65,7 +65,7 @@ class ChapterFormTitle extends Component {
   }
 
   persistCreate = async () => {
-    if (true /* if not connected to the internet store offline is true */) {
+    if (false /* if not connected to the internet store offline is true */) {
       const chapter = await offlineChapterCreate(this.props.chapter)
 
       this.props.updateChapterForm({ id: chapter.id })
@@ -77,7 +77,7 @@ class ChapterFormTitle extends Component {
   }
 
   persistUpdate = async () => {
-    if (true /* if not connected to the internet store offline is true */) {
+    if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
       this.chapterCallback(chapter)
     } else {

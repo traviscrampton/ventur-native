@@ -20,6 +20,7 @@ import JournalFormUpload from "components/JournalForm/JournalFormUpload"
 import Profile from "components/users/Profile"
 import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
 import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
+import ChapterFormDate from "components/ChapterForm/ChapterFormDate"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
 import { Text } from "react-native"
@@ -66,6 +67,7 @@ const JournalFeedNavigator = createStackNavigator(
     Journal: Journal,
     Chapter: ChapterDispatch,
     ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDate: ChapterFormDate,
     ChapterFormDistance: ChapterFormDistance,
     ChapterFormUpload: ChapterFormUpload,
     CameraRollContainer: CameraRollContainer,
@@ -146,6 +148,7 @@ const MyJournalsNavigator = createStackNavigator(
     JournalFormStatus: JournalFormStatus,
     JournalFormUpload: JournalFormUpload,
     ChapterFormTitle: ChapterFormTitle,
+    ChapterFormDate: ChapterFormDate,
     ChapterFormDistance: ChapterFormDistance,
     ChapterFormUpload: ChapterFormUpload
   },

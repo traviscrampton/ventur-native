@@ -123,7 +123,7 @@ class ChapterFormUpload extends Component {
 
     await this.props.updateChapterForm({ bannerImage: imgPost })
 
-    if (true /* if we're in offline mode */) {
+    if (false /* if we're in offline mode */) {
       let chapter = _.omit(this.props.chapter, "journals")
       chapter = this.prepareLoadChapter(chapter)
       await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)

@@ -4,7 +4,7 @@ import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-ico
 
 const ChapterCard = props => {
   let notOnServer = ""
-  let { imageUrl, title, distance, dateCreated, bannerImageUrl } = props
+  let { imageUrl, title, distance, readableDate, bannerImageUrl } = props
   if (bannerImageUrl) {
     imageUrl = bannerImageUrl
   }
@@ -21,7 +21,7 @@ const ChapterCard = props => {
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
-              <Text style={styles.textStats}>{`${dateCreated}`.toUpperCase()}</Text>
+              <Text style={styles.textStats}>{`${readableDate}`.toUpperCase()}</Text>
             </View>
             <View style={styles.individualIconTextContainer}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />

@@ -36,7 +36,6 @@ class ChapterShow extends Component {
   }
 
   renderTitleAndDescription() {
-    console.log("TITLE AND DESCRIPTION")
     const { title, description } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
@@ -85,13 +84,12 @@ class ChapterShow extends Component {
   }
 
   renderStatistics() {
-    console.log("STATS BREAK!")
-    const { dateCreated, distance } = this.props.chapter
+    const { readableDate, distance } = this.props.chapter
     return (
       <View style={styles.statisticsPadding}>
         <View style={styles.statisticsContainer}>
           <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPosition} />
-          <Text style={styles.statisticsText}>{`${dateCreated}`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${readableDate}`.toUpperCase()}</Text>
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
@@ -198,7 +196,6 @@ class ChapterShow extends Component {
   }
 
   renderToggleEdit() {
-    console.log("TOGGLE EDIT BREAK")
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -220,7 +217,6 @@ class ChapterShow extends Component {
   }
 
   render() {
-    console.log("DONT BREAK")
     return (
       <ScrollView style={styles.container}>
         {this.renderTitleAndDescription()}

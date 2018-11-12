@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
+  DatePickerIOS,
   ImageBackground,
   Dimensions
 } from "react-native"
@@ -15,12 +16,12 @@ import _ from "lodash"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { populateOfflineChapters } from "actions/user"
-import { updateChapter } from "utils/chapter_form_helper"
+import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
-  distance: state.chapterForm.distance,
+  date: state.chapterForm.date,
   chapter: state.chapterForm
 })
 
@@ -29,7 +30,7 @@ const mapDispatchToProps = dispatch => ({
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
-class ChapterFormDistance extends Component {
+class ChapterFormDate extends Component {
   constructor(props) {
     super(props)
   }
@@ -43,8 +44,8 @@ class ChapterFormDistance extends Component {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
 
-    this.props.updateChapterForm({ distance: data.distance })
-    this.props.navigation.navigate("ChapterFormUpload")
+    this.props.updateChapterForm({ date: data.date, readableDate: generateReadableDate(new Date(data.date)) })
+    this.props.navigation.navigate("ChapterFormDistance")
   }
 
   renderBackButtonHeader() {
@@ -57,43 +58,32 @@ class ChapterFormDistance extends Component {
     )
   }
 
-  handleTextChange(text) {
-    this.props.updateChapterForm({ distance: text })
+  handleDateChange = date => {
+    this.props.updateChapterForm({ date: date })
   }
 
   persistUpdate = async () => {
     if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      console.log(this.props.chapter, chapter)
       this.chapterCallback(chapter)
     } else {
-      let params = { distance: this.props.distance }
+      let params = { date: this.props.date }
       updateChapter(this.props.id, params, this.chapterCallback)
     }
   }
 
   renderForm() {
+    let { date } = this.props
+    if (typeof this.props.date === "number") {
+      date = new Date(this.props.date)
+    }
     return (
       <View style={{ margin: 20 }}>
         <View style={{ marginBottom: 50 }}>
-          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>How far did you cycle?</Text>
+          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>When was this?</Text>
         </View>
-        <View>
-          <TextInput
-            autoFocus
-            keyboardType={"numeric"}
-            onChangeText={text => this.handleTextChange(text)}
-            selectionColor="white"
-            value={this.props.distance.toString()}
-            style={{
-              fontSize: 28,
-              borderBottomWidth: 1,
-              paddingBottom: 5,
-              marginBottom: 20,
-              borderBottomColor: "white",
-              color: "white"
-            }}
-          />
+        <View style={{ backgroundColor: "white", borderRadius: 4, marginBottom: 15 }}>
+          <DatePickerIOS style={{ color: "white" }} mode={"date"} date={date} onDateChange={this.handleDateChange} />
         </View>
         <View>
           <TouchableHighlight onPress={this.persistUpdate}>
@@ -130,4 +120,4 @@ class ChapterFormDistance extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChapterFormDistance)
+)(ChapterFormDate)

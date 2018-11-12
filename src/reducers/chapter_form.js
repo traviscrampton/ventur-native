@@ -8,6 +8,8 @@ const defaultChapterFormData = {
   journal: {},
   offline: false,
   distance: 0,
+  date: new Date(),
+  readableDate: "",
   description: "",
   content: [],
   journals: [],
