@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
+import _ from "lodash"
 import {
   StyleSheet,
   View,
@@ -102,6 +103,10 @@ class ChapterFormUpload extends Component {
     this.props.populateOfflineChapters(offlineChapters)
   }
 
+  prepareLoadChapter(chapter) {
+    return Object.assign({}, chapter, { bannerImageUrl: chapter.bannerImage.uri })
+  }
+
   persistUpdate = async () => {
     if (this.state.loading) return
     if (!this.state.selectedImage.uri) {
@@ -116,11 +121,14 @@ class ChapterFormUpload extends Component {
       type: "multipart/form-data"
     }
 
-    await this.props.updateChapterForm({ banner_image: imgPost })
+    await this.props.updateChapterForm({ bannerImage: imgPost })
 
-    if (false /* if we're in offline mode */) {
+    if (true /* if we're in offline mode */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter)
+      chapter = this.prepareLoadChapter(chapter)
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+      this.props.loadChapter(chapter)
+      this.props.navigation.navigate("Chapter")
     } else {
       const formData = new FormData()
       formData.append("banner_image", imgPost)

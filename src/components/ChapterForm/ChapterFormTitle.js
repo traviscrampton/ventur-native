@@ -65,7 +65,7 @@ class ChapterFormTitle extends Component {
   }
 
   persistCreate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
+    if (true /* if not connected to the internet store offline is true */) {
       const chapter = await offlineChapterCreate(this.props.chapter)
 
       this.props.updateChapterForm({ id: chapter.id })
@@ -77,9 +77,9 @@ class ChapterFormTitle extends Component {
   }
 
   persistUpdate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
+    if (true /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+      this.chapterCallback(chapter)
     } else {
       let params = { journalId: this.props.journalId, title: this.props.title }
       updateChapter(this.props.id, params, this.chapterCallback)

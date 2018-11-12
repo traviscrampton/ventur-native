@@ -1,11 +1,16 @@
 import React from "react"
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
+  let notOnServer = ""
   let { imageUrl, title, distance, dateCreated, bannerImageUrl } = props
   if (bannerImageUrl) {
     imageUrl = bannerImageUrl
+  }
+
+  if (isNaN(parseInt(props.id))) {
+    notOnServer = <Button title={"Persist"} style={{ fontSize: 10, marginTop: -11 }} />
   }
 
   return (
@@ -26,6 +31,7 @@ const ChapterCard = props => {
               <Feather style={styles.iconMargin} name="camera" size={16} />
               <Text style={styles.textStats}>5 Photos</Text>
             </View>
+            {notOnServer}
           </View>
         </View>
         <View>

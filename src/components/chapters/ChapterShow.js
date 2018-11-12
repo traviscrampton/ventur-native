@@ -36,6 +36,7 @@ class ChapterShow extends Component {
   }
 
   renderTitleAndDescription() {
+    console.log("TITLE AND DESCRIPTION")
     const { title, description } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
@@ -84,6 +85,7 @@ class ChapterShow extends Component {
   }
 
   renderStatistics() {
+    console.log("STATS BREAK!")
     const { dateCreated, distance } = this.props.chapter
     return (
       <View style={styles.statisticsPadding}>
@@ -189,13 +191,14 @@ class ChapterShow extends Component {
   renderBodyContent() {
     if (!this.props.chapter.content) return
 
-    const entries = JSON.parse(this.props.chapter.content)
+    let entries = this.props.chapter.content
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })
   }
 
   renderToggleEdit() {
+    console.log("TOGGLE EDIT BREAK")
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -217,6 +220,7 @@ class ChapterShow extends Component {
   }
 
   render() {
+    console.log("DONT BREAK")
     return (
       <ScrollView style={styles.container}>
         {this.renderTitleAndDescription()}

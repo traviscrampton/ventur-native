@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import _ from "lodash"
 import { updateChapterForm } from "actions/chapter_form"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { populateOfflineChapters } from "actions/user"
@@ -19,7 +20,8 @@ import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
-  distance: state.chapterForm.distance
+  distance: state.chapterForm.distance,
+  chapter: state.chapterForm
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -60,9 +62,10 @@ class ChapterFormDistance extends Component {
   }
 
   persistUpdate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
+    if (true /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+      console.log(this.props.chapter, chapter)
+      this.chapterCallback(chapter)
     } else {
       let params = { distance: this.props.distance }
       updateChapter(this.props.id, params, this.chapterCallback)

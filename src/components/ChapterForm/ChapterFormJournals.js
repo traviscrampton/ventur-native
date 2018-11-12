@@ -25,7 +25,8 @@ const mapStateToProps = state => ({
   id: state.chapterForm.id,
   journalId: state.chapterForm.journalId,
   offline: state.chapterForm.offline,
-  chapter: state.chapterForm
+  chapter: state.chapterForm,
+  currentUser: state.common.currentUser
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -47,28 +48,43 @@ class ChapterFormJournals extends Component {
   }
 
   async persistUpdate() {
-    if (false /* if not connected to the internet store offline is true */) {
+    if (true /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+      this.chapterCallback(chapter)
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }
       updateChapter(this.props.id, params, this.chapterCallback)
     }
   }
 
+  getSelectedJournal(journalId) {
+    return this.props.journals.find(journal => {
+      return journal.id == journalId
+    })
+  }
+
   chapterCallback = async data => {
     if (data.offline) {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
-    this.props.updateChapterForm({ id: data.id, offline: data.offline, journalId: data.journal.id })
+    this.props.updateChapterForm({
+      id: data.id,
+      offline: data.offline,
+      journalId: data.journal.id
+    })
     this.props.navigation.navigate("ChapterFormTitle")
   }
 
   async persistCreate() {
-    if (false /* if not connected to the internet store offline is true */) {
-      const chapter = await offlineChapterCreate(this.props.chapter)
-
-      this.props.updateChapterForm({ id: chapter.id })
+    if (true /* if not connected to the internet store offline is true */) {
+      const chapter = await offlineChapterCreate(this.props.chapter, this.props.populateOfflineChapters)
+      console.log(this.props.currentUser)
+      this.props.updateChapterForm({
+        id: chapter.id,
+        journalId: chapter.journalId,
+        journal: this.getSelectedJournal(chapter.journalId),
+        user: this.props.currentUser
+      })
       this.props.navigation.navigate("ChapterFormTitle")
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }

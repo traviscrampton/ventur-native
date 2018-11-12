@@ -5,11 +5,13 @@ const defaultChapterFormData = {
   journalId: null,
   bannerImage: { uri: "" },
   title: "",
+  journal: {},
   offline: false,
   distance: 0,
   description: "",
   content: [],
-  journals: []
+  journals: [],
+  user: {}
 }
 
 export default (state = defaultChapterFormData, action) => {

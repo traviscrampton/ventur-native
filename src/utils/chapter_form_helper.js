@@ -3,11 +3,13 @@ import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import { persistChapterToAsyncStorage, findChapter } from "utils/offline_helpers"
 
-export const offlineChapterCreate = async chapter => {
-  const localId = Date.now()
-  let saveableChapter = Object.assign(chapter, { id: localId })
-  saveableChapter = _.omit(saveableChapter, "journals")
-  await persistChapterToAsyncStorage(saveableChapter)
+export const offlineChapterCreate = async (chapter, reduxCallback) => {
+  const localId = "Created on " + Date.now()
+  let localIdChapter = Object.assign(chapter, { id: localId })
+  let persistableChapter = _.omit(localIdChapter, "journals")
+  await persistChapterToAsyncStorage(persistableChapter, reduxCallback)
+
+  return localIdChapter
 }
 
 export const updateChapter = async (id, params, callback) => {
