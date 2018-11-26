@@ -177,9 +177,9 @@ const BottomNavigator = createBottomTabNavigator(
   {
     Explore: {
       screen: JournalFeedNavigator,
-      navigationOptions: ({ navigation }) => ({
-        tabBarVisible: navigation.state.index < 2
-      })
+      // navigationOptions: ({ navigation }) => ({
+      //   tabBarVisible: navigation.state.index < 2
+      // })
     },
     // "My Trips": MyJournalsNavigator,
     Profile: ProfileNavigator

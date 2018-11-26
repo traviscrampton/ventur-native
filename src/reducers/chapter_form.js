@@ -11,7 +11,13 @@ const defaultChapterFormData = {
   date: new Date(),
   readableDate: "",
   description: "",
-  content: [],
+  content: [
+    {
+      content: "",
+      styles: "",
+      type: "text"
+    }
+  ],
   journals: [],
   user: {}
 }

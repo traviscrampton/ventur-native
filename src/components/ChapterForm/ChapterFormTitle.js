@@ -80,7 +80,7 @@ class ChapterFormTitle extends Component {
     if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
       this.chapterCallback(chapter)
-    } else {
+    } else {``
       let params = { journalId: this.props.journalId, title: this.props.title }
       updateChapter(this.props.id, params, this.chapterCallback)
     }

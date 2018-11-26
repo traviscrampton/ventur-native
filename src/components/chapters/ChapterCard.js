@@ -10,7 +10,7 @@ const ChapterCard = props => {
   }
 
   if (isNaN(parseInt(props.id))) {
-    notOnServer = <Button title={"Persist"} style={{ fontSize: 10, marginTop: -11 }} />
+    notOnServer = <Button title={"Persist"} onPress={() => props.persistOfflineChapter(props.id)} style={{ fontSize: 10, marginTop: -11 }} />
   }
 
   return (

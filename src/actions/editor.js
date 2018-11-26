@@ -71,7 +71,6 @@ export function saveEntriesToOfflineMode() {
 
 export function dispatchPopulateOfflineChapters(payload) {
   return (dispatch, getState) => {
-    console.log("HIT IN SIDE THE FUNC", payload)
     dispatch(populateOfflineChapters(payload))
   }
 }
@@ -138,7 +137,7 @@ export const dispatchPersist = async (entries, chapter, dispatch) => {
   NetInfo.getConnectionInfo().then(connectionInfo => {
     connectionType = connectionInfo.type
   })
-  if (connectionType === "none" && chapter.offline) {
+  if (connectionType === "none" && chapter.offline) { 
     let updatedChapter = { ...chapter, content: entries }
     let asyncChapter = await persistChapterToAsyncStorage(updatedChapter)
     dispatch(loadChapter(asyncChapter))

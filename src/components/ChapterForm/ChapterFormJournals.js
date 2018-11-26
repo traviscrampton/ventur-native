@@ -78,7 +78,6 @@ class ChapterFormJournals extends Component {
   async persistCreate() {
     if (false /* if not connected to the internet store offline is true */) {
       const chapter = await offlineChapterCreate(this.props.chapter, this.props.populateOfflineChapters)
-      console.log(this.props.currentUser)
       this.props.updateChapterForm({
         id: chapter.id,
         journalId: chapter.journalId,
