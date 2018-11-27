@@ -1,5 +1,4 @@
 function convertToJson(str) {
-  console.log(typeof str === "string")
   if (typeof str === "string") {
     return JSON.parse(str)
   } else {
