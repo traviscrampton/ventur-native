@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
+import _ from "lodash"
 import {
   StyleSheet,
   View,
@@ -28,7 +29,8 @@ const mapStateToProps = state => ({
   id: state.chapterForm.id,
   journalId: state.chapterForm.journalId,
   offline: state.chapterForm.offline,
-  chapter: state.chapterForm
+  chapter: state.chapterForm,
+  currentRoot: state.common.currentBottomTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -47,6 +49,14 @@ class ChapterFormUpload extends Component {
       selectedImage: {}
     }
   }
+
+  static CHAPTER_FORM_ROUTES = [
+    "ChapterFormJournals",
+    "ChapterFormTitle",
+    "ChapterFormUpload",
+    "ChapterFormDate",
+    "ChapterFormDistance"
+  ]
 
   navigateBack = () => {
     this.props.navigation.goBack()
@@ -69,30 +79,43 @@ class ChapterFormUpload extends Component {
       </View>
     )
   }
+
   handleTextChange(text) {
     this.setState({
       description: text
     })
   }
 
-  getFirstRoute() {
-    // if (this.props.currentRoot === "Profile") {
-    //   return "Profile"
-    // } else if (this.props.currentRoot === "Explore") {
-    //   return "JournalFeed"
-    // }
+  getChapterRoutingInformation() {
+    let actions = []
+    let obj
+    let { routes } = this.props.navigation.dangerouslyGetParent().state
+
+    routes.forEach(route => {
+      if (!_.includes(ChapterFormUpload.CHAPTER_FORM_ROUTES, route.routeName)) {
+        obj = { routeName: route.routeName }
+
+        if (route.params) {
+          obj["params"] = route.params
+        }
+
+        actions.push(NavigationActions.navigate(obj))
+      }
+    })
+
+    actions.push(NavigationActions.navigate({ routeName: "Chapter" }))
+
+    return {
+      index: actions.length - 1,
+      actions: actions
+    }
   }
 
-  redirectToJournal() {
-    // const journalId = this.props.id
-    // const resetAction = StackActions.reset({
-    //   index: 1,
-    //   actions: [
-    //     NavigationActions.navigate({ routeName: this.getFirstRoute() }),
-    //     NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
-    //   ]
-    // })
-    // this.props.navigation.dispatch(resetAction)
+  handleRedirect = () => {
+    const routingInformation = this.getChapterRoutingInformation()
+    const resetAction = StackActions.reset(routingInformation)
+
+    this.props.navigation.dispatch(resetAction)
   }
 
   syncOfflineChapters = async chapter => {
@@ -100,6 +123,10 @@ class ChapterFormUpload extends Component {
     let offlineChapters = await AsyncStorage.getItem("chapters")
     offlineChapters = JSON.parse(offlineChapters)
     this.props.populateOfflineChapters(offlineChapters)
+  }
+
+  prepareLoadChapter(chapter) {
+    return Object.assign({}, chapter, { bannerImageUrl: chapter.bannerImage.uri })
   }
 
   persistUpdate = async () => {
@@ -116,11 +143,14 @@ class ChapterFormUpload extends Component {
       type: "multipart/form-data"
     }
 
-    await this.props.updateChapterForm({ banner_image: imgPost })
+    await this.props.updateChapterForm({ bannerImage: imgPost })
 
     if (false /* if we're in offline mode */) {
       let chapter = _.omit(this.props.chapter, "journals")
-      await persistChapterToAsyncStorage(chapter)
+      chapter = this.prepareLoadChapter(chapter)
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+      this.props.loadChapter(chapter)
+      this.props.navigation.navigate("Chapter")
     } else {
       const formData = new FormData()
       formData.append("banner_image", imgPost)
@@ -141,7 +171,8 @@ class ChapterFormUpload extends Component {
         .then(chapter => {
           this.setState({ loading: false })
           this.props.loadChapter(chapter)
-          this.props.navigation.navigate("Chapter") // figure out the navigation to handle both
+          this.handleRedirect()
+          // this.props.navigation.navigate("Chapter") // figure out the navigation to handle both
           this.props.resetChapterForm()
           return chapter
         })

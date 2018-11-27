@@ -17,12 +17,11 @@ export const persistChapterToAsyncStorage = async (chapter, reduxCallBack) => {
   } else {
     parsedChapters = [...parsedChapters, chapter]
     stringifiedChapters = JSON.stringify(parsedChapters)
-
     await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
-  let refoundChapters = await AsyncStorage.getItem("chapters")
-  refoundChapters = JSON.parse(refoundChapters)
+  let refoundChapters = stringifiedChapters
+  refoundChapters = JSON.parse(stringifiedChapters)
   reduxCallBack([...refoundChapters])
   return chapter
 }
@@ -49,4 +48,17 @@ export const removeChapterFromAsyncStorage = async (chapter, reduxCallBack) => {
   reduxCallBack(filteredChapters)
   filteredChapters = JSON.stringify(filteredChapters)
   await AsyncStorage.setItem("chapters", filteredChapters)
+}
+
+export const getChapterFromStorage = async chapterId => {
+  let chapters = await AsyncStorage.getItem("chapters")
+  let parsedChapters = JSON.parse(chapters)
+
+  let foundChapter = findChapter(parsedChapters, chapterId)
+  return foundChapter
+}
+
+export const updateOfflineChapters = async (chapter, reduxCallback, oldChapter) => {
+  await persistChapterToAsyncStorage(chapter, reduxCallback)
+  await removeChapterFromAsyncStorage(oldChapter, reduxCallback)
 }

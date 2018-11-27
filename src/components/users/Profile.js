@@ -24,6 +24,8 @@ import { connect } from "react-redux"
 import { Ionicons, Entypo } from "@expo/vector-icons"
 import { RESET_JOURNAL_TAB } from "actions/action_types"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
+import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
+import { setToken, API_ROOT } from "agent"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -56,10 +58,12 @@ class Profile extends Component {
   }
 
   getProfilePageData() {
-    gql(userQuery, { id: this.props.currentUser.id }).then(res => {
-      this.props.populateUserPage(res.user)
-      addJournalsToAsyncStorage(res.user.journals)
-    })
+    if (this.props.currentUser) {
+      gql(userQuery, { id: this.props.currentUser.id }).then(res => {
+        this.props.populateUserPage(res.user)
+        addJournalsToAsyncStorage(res.user.journals)
+      })
+    }
   }
 
   async getOfflineChapters() {
@@ -94,9 +98,6 @@ class Profile extends Component {
     chapter = chapters.find(chapter => {
       return chapter.id === chapterId
     })
-    // chapter = this.props.offlineChapters.find(chapter => {
-    //   return chapter.id === chapterId
-    // })
     this.props.loadChapter(chapter)
     this.props.navigation.navigate("Chapter")
   }
@@ -266,8 +267,58 @@ class Profile extends Component {
     )
   }
 
+  persistOfflineChapter = async chapterId => {
+    const offlineChapter = await getChapterFromStorage(chapterId)
+    let selectedImage
+    const formData = new FormData()
+    const token = await setToken()
+    const newImages = offlineChapter.content.filter(entry => {
+      return entry.type === "image" && entry.id === null
+    })
+    if (newImages) {
+      for (let image of newImages) {
+        selectedImage = {
+          uri: image.uri,
+          name: image.filename,
+          type: "multipart/form-data"
+        }
+        formData.append("files[]", selectedImage)
+      }
+    }
+
+    formData.append("title", offlineChapter.title)
+    formData.append("status", offlineChapter.status)
+    formData.append("journalId", offlineChapter.journalId)
+    formData.append("offline", offlineChapter.offline)
+    formData.append("date", offlineChapter.date)
+    formData.append("distance", offlineChapter.distance)
+    formData.append("banner_image", offlineChapter.bannerImage)
+    formData.append("content", JSON.stringify(offlineChapter.content))
+
+    fetch(`${API_ROOT}/chapters/upload_offline_chapter`, {
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: token
+      },
+      body: formData
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        updateOfflineChapters(data, this.props.populateOfflineChapters, { id: chapterId })
+      })
+  }
+
   renderOfflineChapters() {
-    return <ChapterList chapters={this.props.offlineChapters} handleSelectChapter={this.selectChapter} />
+    return (
+      <ChapterList
+        chapters={this.props.offlineChapters}
+        persistOfflineChapter={this.persistOfflineChapter}
+        handleSelectChapter={this.selectChapter}
+      />
+    )
   }
 
   renderProfileJournals() {

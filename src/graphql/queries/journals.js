@@ -45,7 +45,7 @@ export const journalQuery = `
 		    chapters {
 		      id
 		      title
-		      dateCreated
+		      readableDate
 		      description
 		      imageUrl
 		      distance
@@ -60,7 +60,7 @@ export const journalChaptersQuery = `
 			chapters {
 				id
 				title
-				dateCreated
+				readableDate
 				description
 				imageUrl
 				distance

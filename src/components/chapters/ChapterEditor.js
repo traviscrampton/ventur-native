@@ -105,7 +105,7 @@ class ChapterEditor extends Component {
     if (!this.props.chapter.content) {
       entries = [{ type: "text", content: "", styles: "" }]
     } else {
-      entries = JSON.parse(this.props.chapter.content)
+      entries = this.props.chapter.content
     }
 
     this.props.populateEntries(entries)
@@ -127,12 +127,12 @@ class ChapterEditor extends Component {
   }
 
   renderStatistics() {
-    const { dateCreated, distance } = this.props.chapter
+    const { readableDate, distance } = this.props.chapter
     return (
       <View style={styles.statsContainer}>
         <View style={styles.iconsAndText}>
           <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
-          <Text style={styles.iconText}>{`${dateCreated}`.toUpperCase()}</Text>
+          <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
         </View>
         <View style={styles.iconsAndText}>
           <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />

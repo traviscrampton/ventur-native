@@ -1,11 +1,16 @@
 import React from "react"
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
-  let { imageUrl, title, distance, dateCreated, bannerImageUrl } = props
+  let notOnServer = ""
+  let { imageUrl, title, distance, readableDate, bannerImageUrl } = props
   if (bannerImageUrl) {
     imageUrl = bannerImageUrl
+  }
+
+  if (isNaN(parseInt(props.id))) {
+    notOnServer = <Button title={"Persist"} onPress={() => props.persistOfflineChapter(props.id)} style={{ fontSize: 10, marginTop: -11 }} />
   }
 
   return (
@@ -16,7 +21,7 @@ const ChapterCard = props => {
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
-              <Text style={styles.textStats}>{`${dateCreated}`.toUpperCase()}</Text>
+              <Text style={styles.textStats}>{`${readableDate}`.toUpperCase()}</Text>
             </View>
             <View style={styles.individualIconTextContainer}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
@@ -26,6 +31,7 @@ const ChapterCard = props => {
               <Feather style={styles.iconMargin} name="camera" size={16} />
               <Text style={styles.textStats}>5 Photos</Text>
             </View>
+            {notOnServer}
           </View>
         </View>
         <View>

@@ -84,12 +84,12 @@ class ChapterShow extends Component {
   }
 
   renderStatistics() {
-    const { dateCreated, distance } = this.props.chapter
+    const { readableDate, distance } = this.props.chapter
     return (
       <View style={styles.statisticsPadding}>
         <View style={styles.statisticsContainer}>
           <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPosition} />
-          <Text style={styles.statisticsText}>{`${dateCreated}`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${readableDate}`.toUpperCase()}</Text>
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
@@ -189,7 +189,7 @@ class ChapterShow extends Component {
   renderBodyContent() {
     if (!this.props.chapter.content) return
 
-    const entries = JSON.parse(this.props.chapter.content)
+    let entries = this.props.chapter.content
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })

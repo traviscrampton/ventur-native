@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import _ from "lodash"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import {
@@ -9,21 +8,20 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
-  AsyncStorage,
+  DatePickerIOS,
   ImageBackground,
   Dimensions
 } from "react-native"
-import { createJournal } from "actions/journal_form"
+import _ from "lodash"
 import { updateChapterForm } from "actions/chapter_form"
-import { populateOfflineChapters } from "actions/user"
-import { createChapter, updateChapter } from "utils/chapter_form_helper"
-import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { populateOfflineChapters } from "actions/user"
+import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
+import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   id: state.chapterForm.id,
-  title: state.chapterForm.title,
-  journalId: state.chapterForm.journalId,
+  date: state.chapterForm.date,
   chapter: state.chapterForm
 })
 
@@ -32,17 +30,13 @@ const mapDispatchToProps = dispatch => ({
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
-class ChapterFormTitle extends Component {
+class ChapterFormDate extends Component {
   constructor(props) {
     super(props)
   }
 
   navigateBack = () => {
-    this.props.navigation.navigate("Journal")
-  }
-
-  handleTextChange(text) {
-    this.props.updateChapterForm({ title: text })
+    this.props.navigation.goBack()
   }
 
   chapterCallback = async data => {
@@ -50,8 +44,8 @@ class ChapterFormTitle extends Component {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
 
-    this.props.updateChapterForm({ id: data.id, title: data.title })
-    this.props.navigation.navigate("ChapterFormDate")
+    this.props.updateChapterForm({ date: data.date, readableDate: generateReadableDate(new Date(data.date)) })
+    this.props.navigation.navigate("ChapterFormDistance")
   }
 
   renderBackButtonHeader() {
@@ -64,68 +58,42 @@ class ChapterFormTitle extends Component {
     )
   }
 
-  persistCreate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
-      const chapter = await offlineChapterCreate(this.props.chapter)
-
-      this.props.updateChapterForm({ id: chapter.id })
-      this.props.navigation.navigate("ChapterFormDistance")
-    } else {
-      let params = { journalId: this.props.journalId, title: this.props.title }
-      createChapter(params, this.chapterCallback)
-    }
+  handleDateChange = date => {
+    this.props.updateChapterForm({ date: date })
   }
 
   persistUpdate = async () => {
     if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
       this.chapterCallback(chapter)
-    } else {``
-      let params = { journalId: this.props.journalId, title: this.props.title }
+    } else {
+      let params = { date: this.props.date }
       updateChapter(this.props.id, params, this.chapterCallback)
     }
   }
 
-  persistAndNavigate = () => {
-    if (this.props.id) {
-      this.persistUpdate()
-    } else {
-      this.persistCreate()
-    }
-  }
-
   renderForm() {
+    let { date } = this.props
+    if (typeof this.props.date === "number") {
+      date = new Date(this.props.date)
+    }
     return (
       <View style={{ margin: 20 }}>
         <View style={{ marginBottom: 50 }}>
-          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>What's the title of this Chapter</Text>
+          <Text style={{ fontFamily: "playfair", fontSize: 36, color: "white" }}>When was this?</Text>
+        </View>
+        <View style={{ backgroundColor: "white", borderRadius: 4, marginBottom: 15 }}>
+          <DatePickerIOS style={{ color: "white" }} mode={"date"} date={date} onDateChange={this.handleDateChange} />
         </View>
         <View>
-          <TextInput
-            autoFocus
-            multiline
-            onChangeText={text => this.handleTextChange(text)}
-            value={this.props.title}
-            selectionColor="white"
-            style={{
-              fontSize: 28,
-              borderBottomWidth: 1,
-              paddingBottom: 5,
-              marginBottom: 20,
-              borderBottomColor: "white",
-              color: "white"
-            }}
-          />
-        </View>
-        <View>
-          <TouchableHighlight onPress={this.persistAndNavigate}>
+          <TouchableHighlight onPress={this.persistUpdate}>
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
                   color: "#067BC2",
                   textAlign: "center",
-                  paddingTop: 15,
                   fontSize: 18,
+                  paddingTop: 15,
                   paddingBottom: 15
                 }}>
                 CONTINUE
@@ -152,4 +120,4 @@ class ChapterFormTitle extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChapterFormTitle)
+)(ChapterFormDate)
