@@ -126,6 +126,7 @@ const ProfileNavigator = createStackNavigator(
     ChapterFormJournals: ChapterFormJournals,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
+    ChapterFormDate: ChapterFormDate,
     ChapterFormUpload: ChapterFormUpload
   },
   {
@@ -175,20 +176,12 @@ export const RootNavigator = (signedIn = false) =>
 
 const BottomNavigator = createBottomTabNavigator(
   {
-    Explore: {
-      screen: JournalFeedNavigator,
-      // navigationOptions: ({ navigation }) => ({
-      //   tabBarVisible: navigation.state.index < 2
-      // })
-    },
-    // "My Trips": MyJournalsNavigator,
-    Profile: ProfileNavigator
+    Explore: JournalFeedNavigator,
+    Profile: ProfileNavigator,
   },
   {
+    initialRouteName: "Explore",
     tabBarComponent: BottomTabBar
-  },
-  {
-    initialRouteName: ProfileNavigator
   }
 )
 

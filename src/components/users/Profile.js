@@ -58,10 +58,12 @@ class Profile extends Component {
   }
 
   getProfilePageData() {
-    gql(userQuery, { id: this.props.currentUser.id }).then(res => {
-      this.props.populateUserPage(res.user)
-      addJournalsToAsyncStorage(res.user.journals)
-    })
+    if (this.props.currentUser) {
+      gql(userQuery, { id: this.props.currentUser.id }).then(res => {
+        this.props.populateUserPage(res.user)
+        addJournalsToAsyncStorage(res.user.journals)
+      })
+    }
   }
 
   async getOfflineChapters() {
