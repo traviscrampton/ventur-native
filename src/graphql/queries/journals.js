@@ -49,6 +49,7 @@ export const journalQuery = `
 		      description
 		      imageUrl
 		      distance
+          blogImageCount
 		    }
       }
     }

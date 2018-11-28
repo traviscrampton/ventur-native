@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { StackActions, NavigationActions } from "react-navigation"
+import { chapterQuery } from "graphql/queries/chapters"
 import { connect } from "react-redux"
 import _ from "lodash"
 import {
@@ -17,7 +18,7 @@ import {
   ScrollView
 } from "react-native"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
-import { setToken, API_ROOT } from "agent"
+import { setToken, API_ROOT, gql } from "agent"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
@@ -55,7 +56,8 @@ class ChapterFormUpload extends Component {
     "ChapterFormTitle",
     "ChapterFormUpload",
     "ChapterFormDate",
-    "ChapterFormDistance"
+    "ChapterFormDistance",
+    "Chapter"
   ]
 
   navigateBack = () => {
@@ -129,11 +131,31 @@ class ChapterFormUpload extends Component {
     return Object.assign({}, chapter, { bannerImageUrl: chapter.bannerImage.uri })
   }
 
+  persistOrGet = async () => {
+    if (this.state.selectedImage.uri) {
+      this.persistUpdate()
+    } else {
+      this.getChapterAndRoute()
+    }
+  }
+
+  getChapterAndRoute = async () => {
+    if (false) {
+      let chapter = _.omit(this.props.chapter, "journals")
+      chapter = this.prepareLoadChapter(chapter)
+      this.props.loadChapter(chapter)
+      this.handleRedirect()
+    } else {
+      gql(chapterQuery, { id: this.props.chapter.id }).then(res => {
+        this.props.loadChapter(res.chapter)
+        this.handleRedirect()
+        this.props.resetChapterForm()
+      })
+    }
+  }
+
   persistUpdate = async () => {
     if (this.state.loading) return
-    if (!this.state.selectedImage.uri) {
-      // redirect without an image
-    }
 
     this.setState({ loading: true })
     let { selectedImage } = this.state
@@ -150,7 +172,7 @@ class ChapterFormUpload extends Component {
       chapter = this.prepareLoadChapter(chapter)
       await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
       this.props.loadChapter(chapter)
-      this.props.navigation.navigate("Chapter")
+      this.handleRedirect()
     } else {
       const formData = new FormData()
       formData.append("banner_image", imgPost)
@@ -228,7 +250,7 @@ class ChapterFormUpload extends Component {
           {this.renderCameraRollPicker()}
         </ScrollView>
         <View>
-          <TouchableHighlight onPress={this.persistUpdate}>
+          <TouchableHighlight onPress={this.persistOrGet}>
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{

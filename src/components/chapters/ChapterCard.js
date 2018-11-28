@@ -29,7 +29,7 @@ const ChapterCard = props => {
             </View>
             <View style={styles.individualIconTextContainer}>
               <Feather style={styles.iconMargin} name="camera" size={16} />
-              <Text style={styles.textStats}>5 Photos</Text>
+              <Text style={styles.textStats}>{props.blogImageCount} Photos</Text>
             </View>
             {notOnServer}
           </View>

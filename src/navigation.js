@@ -26,40 +26,26 @@ import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
+const NO_FOOTER_SCREENS = [
+  "Chapter",
+  "ChapterFormTitle",
+  "ChapterFormDate",
+  "ChapterFormDistance",
+  "ChapterFormUpload",
+  "CameraRollContainer",
+  "ImageCaptionForm",
+  "ManageContent",
+  "JournalFormTitle",
+  "JournalFormLocation",
+  "JournalFormStatus",
+  "JournalFormUpload"
+]
+
 const signedIn = async () => {
   await isSignedIn().then(res => {
     return res
   })
 }
-
-const JournalNavigation = createStackNavigator(
-  {
-    Journal: Journal,
-    Chapter: ChapterDispatch
-  },
-  {
-    initialRouteName: "Journal",
-    headerMode: "none",
-    headerTransparent: true,
-    headerStyle: {
-      borderBottomWidth: 0
-    }
-  }
-)
-
-const JournalCreateStackNavigator = createStackNavigator(
-  {
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
-    JournalFormUpload: JournalFormUpload,
-    MyJournals: MyJournals
-  },
-  {
-    initialRouteName: "JournalFormTitle",
-    headerMode: "none"
-  }
-)
 
 const JournalFeedNavigator = createStackNavigator(
   {
@@ -90,30 +76,6 @@ const JournalFeedNavigator = createStackNavigator(
   }
 )
 
-const EditorNavigator = createStackNavigator(
-  {
-    Editor: Editor,
-    CameraRollContainer: CameraRollContainer,
-    ImageCaptionForm: ImageCaptionForm,
-    ManageContent: ManageContent
-  },
-  {
-    headerMode: "none",
-    navigationOptions: {
-      headerVisible: false
-    }
-  }
-)
-
-const CreatorNavigator = createStackNavigator(
-  {
-    Journal: JournalCreateStackNavigator,
-    Chapter: EditorNavigator, // these are coming soon
-    Gear: ContentCreate // these are coming soon
-  },
-  { headerMode: "none" }
-)
-
 const ProfileNavigator = createStackNavigator(
   {
     Profile: Profile,
@@ -122,10 +84,13 @@ const ProfileNavigator = createStackNavigator(
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
+    ImageCaptionForm: ImageCaptionForm,
     JournalFormUpload: JournalFormUpload,
+    ManageContent: ManageContent,
     ChapterFormJournals: ChapterFormJournals,
     ChapterFormTitle: ChapterFormTitle,
     ChapterFormDistance: ChapterFormDistance,
+    CameraRollContainer: CameraRollContainer,
     ChapterFormDate: ChapterFormDate,
     ChapterFormUpload: ChapterFormUpload
   },
@@ -139,29 +104,23 @@ const ProfileNavigator = createStackNavigator(
   }
 )
 
-const MyJournalsNavigator = createStackNavigator(
-  {
-    MyJournals: MyJournals,
-    Journal: Journal,
-    Chapter: ChapterDispatch,
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
-    JournalFormUpload: JournalFormUpload,
-    ChapterFormTitle: ChapterFormTitle,
-    ChapterFormDate: ChapterFormDate,
-    ChapterFormDistance: ChapterFormDistance,
-    ChapterFormUpload: ChapterFormUpload
-  },
-  {
-    initialRouteName: "MyJournals",
-    headerMode: "none",
-    headerTransparent: true,
-    headerStyle: {
-      borderBottomWidth: 0
-    }
+JournalFeedNavigator.navigationOptions = ({ navigation }) => {
+  let { routeName } = navigation.state.routes[navigation.state.index]
+  let navigationOptions = {}
+  if (NO_FOOTER_SCREENS.includes(routeName)) {
+    navigationOptions.tabBarVisible = false
   }
-)
+  return navigationOptions
+}
+
+ProfileNavigator.navigationOptions = ({ navigation }) => {
+  let { routeName } = navigation.state.routes[navigation.state.index]
+  let navigationOptions = {}
+  if (NO_FOOTER_SCREENS.includes(routeName)) {
+    navigationOptions.tabBarVisible = false
+  }
+  return navigationOptions
+}
 
 export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
@@ -177,7 +136,7 @@ export const RootNavigator = (signedIn = false) =>
 const BottomNavigator = createBottomTabNavigator(
   {
     Explore: JournalFeedNavigator,
-    Profile: ProfileNavigator,
+    Profile: ProfileNavigator
   },
   {
     initialRouteName: "Explore",

@@ -92,6 +92,8 @@ class ChapterFormJournals extends Component {
   }
 
   persistAndNavigate = async () => {
+    if (!this.props.journalId) return
+
     if (this.props.id) {
       this.persistUpdate()
     } else {

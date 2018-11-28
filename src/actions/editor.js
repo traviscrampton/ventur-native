@@ -137,7 +137,7 @@ export const dispatchPersist = async (entries, chapter, dispatch) => {
   NetInfo.getConnectionInfo().then(connectionInfo => {
     connectionType = connectionInfo.type
   })
-  if (connectionType === "none" && chapter.offline) { 
+  if (connectionType === "none" && chapter.offline) {
     let updatedChapter = { ...chapter, content: entries }
     let asyncChapter = await persistChapterToAsyncStorage(updatedChapter)
     dispatch(loadChapter(asyncChapter))
@@ -267,6 +267,18 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
+    if (getState().editor.entries.length === 0) {
+      dispatch(
+        createNewEntry({
+          newIndex: 0,
+          newEntry: {
+            content: "",
+            styles: "",
+            type: "text"
+          }
+        })
+      )
+    }
     debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }

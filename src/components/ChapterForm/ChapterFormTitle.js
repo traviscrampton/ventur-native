@@ -87,6 +87,8 @@ class ChapterFormTitle extends Component {
   }
 
   persistAndNavigate = () => {
+    if(this.props.title.length === 0) return
+
     if (this.props.id) {
       this.persistUpdate()
     } else {

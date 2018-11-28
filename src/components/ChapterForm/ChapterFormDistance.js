@@ -62,6 +62,8 @@ class ChapterFormDistance extends Component {
   }
 
   persistUpdate = async () => {
+    if(!this.props.distance && this.props.distance !== 0) return
+
     if (false /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapter, "journals")
       this.chapterCallback(chapter)

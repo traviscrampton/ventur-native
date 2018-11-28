@@ -14,7 +14,8 @@ import {
   Switch,
   AsyncStorage,
   TouchableHighlight,
-  CameraRoll
+  CameraRoll,
+  Alert
 } from "react-native"
 import { connect } from "react-redux"
 import {
@@ -189,6 +190,18 @@ class ChapterEditor extends Component {
     }
   }
 
+  handleImageDelete = index => {
+    Alert.alert(
+      "Are you sure?",
+      "Deleting this image will erase it from this chapter",
+      [
+        { text: "Delete Image", onPress: () => this.props.removeEntryAndFocus(index) },
+        { text: "Cancel", style: "cancel" },
+      ],
+      { cancelable: true }
+    )
+  }
+
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
@@ -206,7 +219,7 @@ class ChapterEditor extends Component {
     return (
       <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
         <View style={[styles.opacCover, { height: imageHeight }]}>
-          <TouchableWithoutFeedback onPress={() => this.props.removeEntryAndFocus(index)}>
+          <TouchableWithoutFeedback onPress={() => this.handleImageDelete(index)}>
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
             </View>

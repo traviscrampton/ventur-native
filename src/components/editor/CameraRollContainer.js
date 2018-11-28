@@ -47,7 +47,7 @@ class CameraRollContainer extends Component {
     const headerProps = {
       goBackCta: "Cancel",
       handleGoBack: this.handleGoBack,
-      centerCta: `${this.props.selectedImages.length} selected`,
+      centerCta: `${this.state.selectedImages.length} selected`,
       handleConfirm: this.addImagesToEntries,
       confirmCta: "Add"
     }
