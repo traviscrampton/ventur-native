@@ -78,7 +78,7 @@ class ChapterEditor extends Component {
     super(props)
 
     this.state = {
-      containerHeight: Dimensions.get("window").height - 110,
+      containerHeight: Dimensions.get("window").height - 105,
       offlineMode: false,
       imagesNeededOffline: []
     }
@@ -143,15 +143,15 @@ class ChapterEditor extends Component {
     )
   }
 
-  renderBannerImage() {
+  renderChapterImage() {
     const { bannerImageUrl } = this.props.chapter
-    return <Image style={styles.bannerImage} source={{ uri: bannerImageUrl }} />
+    return <Image style={{ width: 100, height: 100, borderRadius: 50, margin: 20 }} source={{ uri: bannerImageUrl }} />
   }
 
   keyboardWillShow(e) {
     this.props.updateKeyboardState(true)
     this.setState({
-      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 110
+      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 105
     })
   }
 
@@ -196,7 +196,7 @@ class ChapterEditor extends Component {
       "Deleting this image will erase it from this chapter",
       [
         { text: "Delete Image", onPress: () => this.props.removeEntryAndFocus(index) },
-        { text: "Cancel", style: "cancel" },
+        { text: "Cancel", style: "cancel" }
       ],
       { cancelable: true }
     )
@@ -307,6 +307,21 @@ class ChapterEditor extends Component {
     return this.downloadButton()
   }
 
+  renderDivider() {
+    return (
+      <View
+        style={{
+          borderBottomWidth: 3,
+          borderBottomColor: "black",
+          width: 90,
+          marginTop: 10,
+          marginLeft: 20,
+          marginBottom: 30
+        }}
+      />
+    )
+  }
+
   renderAsImage(entry, index) {
     const imageHeight = this.getImageHeight(entry.aspectRatio)
 
@@ -383,18 +398,6 @@ class ChapterEditor extends Component {
     }
   }
 
-  updateOfflineStatus = async () => {
-    let { chapter } = this.props
-    const { offline } = chapter
-    this.props.editChapterOfflineMode(chapter, !offline)
-
-    if (offline) {
-      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
-    } else {
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
-    }
-  }
-
   renderEditorToolbar() {
     return (
       <View style={this.getToolbarPositioning()}>
@@ -408,15 +411,16 @@ class ChapterEditor extends Component {
   }
 
   renderSwitch() {
+    return
     return <Switch value={this.props.chapter.offline} onValueChange={this.updateOfflineStatus} />
   }
 
   renderChapterMetadata() {
     return (
       <View style={styles.marginBottom20}>
+        {this.renderChapterImage()}
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
-        {this.renderBannerImage()}
         {this.renderSwitch()}
       </View>
     )
@@ -434,10 +438,11 @@ class ChapterEditor extends Component {
   }
 
   getContainerSize() {
-    return { height: Dimensions.get("window").height - 110 }
+    return { height: Dimensions.get("window").height - 105 }
   }
 
   renderToggleEdit() {
+    return
     return (
       <TouchableHighlight onPress={this.props.toggleEditMode}>
         <View
@@ -466,6 +471,7 @@ class ChapterEditor extends Component {
           keyboardOffset={90}
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterMetadata()}
+          {this.renderDivider()}
           {this.renderOfflineButton()}
           {this.renderToggleEdit()}
           {this.renderEditor()}
@@ -478,7 +484,6 @@ class ChapterEditor extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "yellow",
     marginBottom: 0,
     position: "relative"
   },
@@ -503,7 +508,8 @@ const styles = StyleSheet.create({
   },
   iconsAndText: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    paddingTop: 5
   },
   iconPositioning: {
     marginRight: 5
@@ -545,8 +551,8 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   textInput: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     paddingTop: 0,
     paddingBottom: 0,
     fontSize: 20,

@@ -69,6 +69,7 @@ class ChapterShow extends Component {
   }
 
   renderEditCta() {
+    return 
     if (this.props.currentUser.id === this.props.user.id) {
       return (
         <TouchableHighlight onPress={this.editMetaData}>

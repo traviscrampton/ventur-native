@@ -17,7 +17,7 @@ class ChapterUserForm extends Component {
     return (
       <TouchableWithoutFeedback onPress={option.callback} key={option.title}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>
-          <Text>{option.title}</Text>
+          <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -27,13 +27,21 @@ class ChapterUserForm extends Component {
     return (
       <View
         key={option.title}
-        style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          height: 40,
+          paddingLeft: 10,
+          paddingRight: 10,
+          justifyContent: "space-between"
+        }}>
+        <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
         <Switch
-          value={false}
+          value={option.value}
           style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
           onValueChange={option.callback}
         />
-        <Text>{option.title}</Text>
       </View>
     )
   }
@@ -60,13 +68,13 @@ class ChapterUserForm extends Component {
       <View
         style={{
           position: "absolute",
-          top: 65,
+          top: 60,
           borderRadius: 4,
           right: 20,
           zIndex: 10,
-          // height: 200,
-          width: 200,
-          backgroundColor: "#DFDFDF"
+          width: 250,
+          backgroundColor: "black",
+          opacity: 0.85
         }}>
         {this.renderChapterOptions()}
       </View>

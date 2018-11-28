@@ -8,10 +8,14 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Dimensions
+  Dimensions,
+  Alert
 } from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
+import { editChapterOfflineMode } from "actions/editor"
+import { populateOfflineChapters } from "actions/user"
+import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
@@ -27,7 +31,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: dispatch(resetChapter)
+  resetChapter: dispatch(resetChapter),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 class ChapterDispatch extends Component {
@@ -48,15 +55,58 @@ class ChapterDispatch extends Component {
     console.log("hey")
   }
 
+  getToggleEditCta() {
+    if (this.state.editMode) {
+      return "Exit Blog Editor"
+    } else {
+      return "Open Blog Editor"
+    }
+  }
+
+  editMetaData = () => {
+    let { id, title, distance, description } = this.props.chapter
+
+    let obj = {
+      id: id,
+      title: title,
+      distance: distance,
+      description: description,
+      journalId: this.props.chapter.journal.id
+    }
+
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterFormTitle")
+  }
+
+  handleDeleteChapter() {
+    Alert.alert(
+      "Are you sure?",
+      "Deleting this chapter will erase all images and content",
+      [{ text: "Delete Chapter", onPress: () => console.log("delete") }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
+  }
+
   getChapterUserFormProps() {
     return [
-      { type: "touchable", title: "Edit Blog Content", callback: this.toggleEditMode },
-      { type: "touchable", title: "Manage content", callback: this.fillerFunc },
-      { type: "switch", title: "Offline Mode", callback: this.fillerFunc },
-      { type: "touchable", title: "Edit Metadata", callback: this.fillerFunc },
-      { type: "touchable", title: "Delete Chapter", callback: this.fillerFunc },
-      { type: "switch", title: "Publish Chapter", callback: this.fillerFunc }
+      { type: "touchable", title: this.getToggleEditCta(), callback: this.toggleEditMode },
+      { type: "touchable", title: "Edit Metadata", callback: this.editMetaData },
+      { type: "touchable", title: "Delete Chapter", callback: this.handleDeleteChapter },
+      { type: "switch", title: "Offline Mode", value: this.props.chapter.offline, callback: this.updateOfflineStatus },
+      { type: "switch", title: "Published", value: true, callback: this.fillerFunc }
     ]
+  }
+
+  updateOfflineStatus = async () => {
+    let { chapter } = this.props
+    const { offline } = chapter
+    this.props.editChapterOfflineMode(chapter, !offline)
+
+    if (offline) {
+      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
+    } else {
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+    }
   }
 
   getMenuStyling() {
@@ -151,9 +201,9 @@ class ChapterDispatch extends Component {
 
   dispatchChapter() {
     if (this.state.editMode) {
-      return <ChapterEditor toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
+      return <ChapterEditor navigation={this.props.navigation} />
     } else {
-      return <ChapterShow toggleEditMode={this.toggleEditMode} navigation={this.props.navigation} />
+      return <ChapterShow navigation={this.props.navigation} />
     }
   }
 
@@ -180,7 +230,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     marginBottom: 10,
     paddingRight: 20,
-    height: 60
+    height: 55
   },
   journalAndUserContainer: {
     display: "flex",
