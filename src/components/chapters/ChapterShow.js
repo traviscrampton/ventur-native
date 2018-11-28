@@ -35,8 +35,8 @@ class ChapterShow extends Component {
     this.props.navigation.goBack()
   }
 
-  renderTitleAndDescription() {
-    const { title, description } = this.props.chapter
+  renderTitle() {
+    const { title } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
         <View
@@ -48,9 +48,6 @@ class ChapterShow extends Component {
           }}>
           <Text style={styles.title}>{title}</Text>
           {this.renderEditCta()}
-        </View>
-        <View>
-          <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     )
@@ -99,9 +96,13 @@ class ChapterShow extends Component {
     )
   }
 
-  renderBannerImage() {
+  renderChapterImage() {
     const { bannerImageUrl } = this.props.chapter
-    return <Image style={{ width: Dimensions.get("window").width, height: 200 }} source={{ uri: bannerImageUrl }} />
+    return <Image style={{ width: 100, height: 100, borderRadius: 50, margin: 20 }} source={{ uri: bannerImageUrl }} />
+  }
+
+  renderDivider() {
+    return <View style={{borderBottomWidth: 3, borderBottomColor: "black", width: 90, marginTop: 10, marginLeft: 20, marginBottom: 30}} />
   }
 
   getInputStyling(entry) {
@@ -196,6 +197,7 @@ class ChapterShow extends Component {
   }
 
   renderToggleEdit() {
+    return
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -219,9 +221,10 @@ class ChapterShow extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        {this.renderTitleAndDescription()}
+        {this.renderChapterImage()}
+        {this.renderTitle()}
         {this.renderStatistics()}
-        {this.renderBannerImage()}
+        {this.renderDivider()}
         {this.renderToggleEdit()}
         {this.renderBodyContent()}
       </ScrollView>
@@ -253,9 +256,7 @@ const styles = StyleSheet.create({
   statisticsContainer: {
     display: "flex",
     flexDirection: "row",
-    borderTopWidth: 1,
-    borderTopColor: "#f8f8f8",
-    paddingTop: 10
+    paddingTop: 5
   },
   iconPosition: {
     marginRight: 5

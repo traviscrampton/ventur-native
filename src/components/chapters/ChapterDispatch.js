@@ -1,12 +1,22 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import { StyleSheet, View, Text, Image, TouchableHighlight, ActivityIndicator, Dimensions } from "react-native"
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Dimensions
+} from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
+import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm } from "actions/chapter_form"
-import { Ionicons } from "@expo/vector-icons"
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -25,7 +35,8 @@ class ChapterDispatch extends Component {
     super(props)
 
     this.state = {
-      editMode: false
+      editMode: false,
+      userMenuOpen: false
     }
   }
 
@@ -33,30 +44,85 @@ class ChapterDispatch extends Component {
     this.props.navigation.goBack()
   }
 
+  fillerFunc() {
+    console.log("hey")
+  }
+
+  getChapterUserFormProps() {
+    return [
+      { type: "touchable", title: "Edit Blog Content", callback: this.toggleEditMode },
+      { type: "touchable", title: "Manage content", callback: this.fillerFunc },
+      { type: "switch", title: "Offline Mode", callback: this.fillerFunc },
+      { type: "touchable", title: "Edit Metadata", callback: this.fillerFunc },
+      { type: "touchable", title: "Delete Chapter", callback: this.fillerFunc },
+      { type: "switch", title: "Publish Chapter", callback: this.fillerFunc }
+    ]
+  }
+
+  getMenuStyling() {
+    let styling = { borderWidth: 1, borderColor: "white" }
+    if (this.state.userMenuOpen) {
+      styling = { borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }
+    }
+
+    return styling
+  }
+
+  toggleUserMenuOpen = () => {
+    let menuOpen = this.state.userMenuOpen
+    this.setState({ userMenuOpen: !menuOpen })
+  }
+
   renderChapterNavigation() {
     return (
       <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
+        {this.renderDropDownAndIndicator()}
+      </View>
+    )
+  }
+
+  renderUserMenu() {
+    if (!this.state.userMenuOpen) return
+
+    const options = this.getChapterUserFormProps()
+    return <ChapterUserForm options={options} />
+  }
+
+  renderUserDropDown() {
+    if (this.props.user.id != this.props.currentUser.id) return
+
+    return (
+      <View style={{ position: "relative" }}>
+        <TouchableWithoutFeedback onPress={this.toggleUserMenuOpen}>
+          <View style={[{ paddingTop: 2, width: 40, height: 40 }, this.getMenuStyling()]}>
+            <MaterialCommunityIcons style={{ textAlign: "center" }} name="dots-vertical" size={32} color="#D7D7D7" />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
+  renderDropDownAndIndicator() {
+    return (
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         {this.renderActivityIndicator()}
+        {this.renderUserDropDown()}
       </View>
     )
   }
 
   renderActivityIndicator() {
-    if(!this.props.isUpdating) return
+    if (!this.props.isUpdating) return
 
-    return (
-        <ActivityIndicator size="small" color="#FF8C34" />
-    )
+    return <ActivityIndicator size="small" color="#FF8C34" />
   }
 
-  renderJournalAndUser() {
+  renderJournalName() {
     return (
       <View style={styles.journalAndUserContainer}>
-        <Image style={styles.journalImage} source={{ uri: this.props.journal.miniBannerImageUrl }} />
         <View>
           <Text style={styles.journalTitle}>{this.props.journal.title}</Text>
-          <Text>{this.props.user.fullName}</Text>
         </View>
       </View>
     )
@@ -71,7 +137,7 @@ class ChapterDispatch extends Component {
           onPress={this.navigateBack}>
           <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="black" />
         </TouchableHighlight>
-        {this.renderJournalAndUser()}
+        {this.renderJournalName()}
       </View>
     )
   }
@@ -95,6 +161,7 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}
+        {this.renderUserMenu()}
         {this.dispatchChapter()}
       </View>
     )
@@ -127,7 +194,8 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   journalTitle: {
-    fontFamily: "open-sans-semi"
+    fontFamily: "open-sans-semi",
+    fontSize: 16
   },
   backIconContainer: {
     display: "flex",
