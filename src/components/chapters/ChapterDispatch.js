@@ -84,20 +84,17 @@ class ChapterDispatch extends Component {
     Alert.alert(
       "Are you sure?",
       "Deleting this chapter will erase all images and content",
-      [
-        { text: "Delete Chapter", onPress: this.handleDelete },
-        { text: "Cancel", style: "cancel" }
-      ],
+      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
       { cancelable: true }
     )
   }
 
   handleDelete = async () => {
     this.props.deleteChapter(this.props.chapter, this.navigateBack)
-    if(this.props.chapter.offline) {
+    if (this.props.chapter.offline) {
       await removeChapterFromAsyncStorage(this.props.chapter, this.props.populateOfflineChapters)
     }
-  } 
+  }
 
   getChapterUserFormProps() {
     return [
@@ -114,9 +111,8 @@ class ChapterDispatch extends Component {
     const { offline } = chapter
     await this.props.editChapterOfflineMode(chapter, !offline)
 
-    console.log("UPDATED?", this.props.chapter.offline)
     if (!this.props.chapter.offline) {
-      chapter = Object.assign({}, chapter, { offline: !this.props.chapter.offline})
+      chapter = Object.assign({}, chapter, { offline: !this.props.chapter.offline })
       await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
     } else {
       await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
