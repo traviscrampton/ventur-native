@@ -13,7 +13,7 @@ import {
 } from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
-import { editChapterOfflineMode } from "actions/editor"
+import { editChapterOfflineMode, editChapterPublished, deleteChapter } from "actions/editor"
 import { populateOfflineChapters } from "actions/user"
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
 import ChapterEditor from "components/chapters/ChapterEditor"
@@ -34,6 +34,8 @@ const mapDispatchToProps = dispatch => ({
   resetChapter: dispatch(resetChapter),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
+  deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch),
+  editChapterPublished: (chapter, published) => editChapterPublished(chapter, published, dispatch),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
@@ -78,35 +80,51 @@ class ChapterDispatch extends Component {
     this.props.navigation.navigate("ChapterFormTitle")
   }
 
-  handleDeleteChapter() {
+  openDeleteAlert = () => {
     Alert.alert(
       "Are you sure?",
       "Deleting this chapter will erase all images and content",
-      [{ text: "Delete Chapter", onPress: () => console.log("delete") }, { text: "Cancel", style: "cancel" }],
+      [
+        { text: "Delete Chapter", onPress: this.handleDelete },
+        { text: "Cancel", style: "cancel" }
+      ],
       { cancelable: true }
     )
   }
+
+  handleDelete = async () => {
+    this.props.deleteChapter(this.props.chapter, this.navigateBack)
+    if(this.props.chapter.offline) {
+      await removeChapterFromAsyncStorage(this.props.chapter, this.props.populateOfflineChapters)
+    }
+  } 
 
   getChapterUserFormProps() {
     return [
       { type: "touchable", title: this.getToggleEditCta(), callback: this.toggleEditMode },
       { type: "touchable", title: "Edit Metadata", callback: this.editMetaData },
-      { type: "touchable", title: "Delete Chapter", callback: this.handleDeleteChapter },
+      { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
       { type: "switch", title: "Offline Mode", value: this.props.chapter.offline, callback: this.updateOfflineStatus },
-      { type: "switch", title: "Published", value: true, callback: this.fillerFunc }
+      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus }
     ]
   }
 
   updateOfflineStatus = async () => {
     let { chapter } = this.props
     const { offline } = chapter
-    this.props.editChapterOfflineMode(chapter, !offline)
+    await this.props.editChapterOfflineMode(chapter, !offline)
 
-    if (offline) {
-      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
-    } else {
+    console.log("UPDATED?", this.props.chapter.offline)
+    if (!this.props.chapter.offline) {
+      chapter = Object.assign({}, chapter, { offline: !this.props.chapter.offline})
       await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+    } else {
+      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
     }
+  }
+
+  updatePublishedStatus = async () => {
+    this.props.editChapterPublished(this.props.chapter, !this.props.chapter.published)
   }
 
   getMenuStyling() {

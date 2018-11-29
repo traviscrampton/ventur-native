@@ -65,10 +65,6 @@ export const saveImagesToCameraRoll = async (payload, dispatch) => {
   }
 }
 
-export function saveEntriesToOfflineMode() {
-  console.log("WE OUT HERE SAVIN BIG TIME!")
-}
-
 export function dispatchPopulateOfflineChapters(payload) {
   return (dispatch, getState) => {
     dispatch(populateOfflineChapters(payload))
@@ -129,6 +125,56 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
     })
     .then(data => {
       dispatch(loadChapter(data))
+    })
+}
+
+export const editChapterPublished = async (chapter, published, dispatch) => {
+  const token = await setToken()
+  let params = { id: chapter.id, published: published }
+  fetch(`${API_ROOT}/chapters/${params.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      dispatch(loadChapter(data))
+    })
+}
+
+export const REMOVE_CHAPTER_FROM_STATE = "REMOVE_CHAPTER_FROM_STATE"
+export const removeChapterFromState = (chapter) => {
+  return {
+    type: REMOVE_CHAPTER_FROM_STATE,
+    payload: chapter
+  }
+}
+
+export const deleteChapter = async (chapter, callback, dispatch) => {
+  const token = await setToken()
+  let params = { id: chapter.id }
+  fetch(`${API_ROOT}/chapters/${params.id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      dispatch(removeChapterFromState(chapter))
+      if(chapter.offline) {}
+      // remove from journal
+      // if offline mode remove from offline mode
+      callback()
     })
 }
 

@@ -48,6 +48,7 @@ export const journalQuery = `
 		      readableDate
 		      description
 		      imageUrl
+          published
 		      distance
           blogImageCount
 		    }
