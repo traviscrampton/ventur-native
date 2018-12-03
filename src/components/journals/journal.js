@@ -26,6 +26,7 @@ const mapStateToProps = state => ({
   journal: state.journal.journal,
   user: state.journal.journal.user,
   chapters: state.journal.journal.chapters,
+  chapterForm: state.chapterForm,
   loaded: state.journal.loaded,
   currentUser: state.common.currentUser
 })
@@ -158,7 +159,9 @@ class Journal extends Component {
 
   navigateToChapterForm = () => {
     this.props.updateChapterForm({ journalId: this.props.journal.id })
-    this.props.navigation.navigate("ChapterFormTitle")
+    console.log(this.props.journal.id)
+    this.props.loadChapter(this.props.chapterForm)
+    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
   }
 
   renderCreateChapterCta() {

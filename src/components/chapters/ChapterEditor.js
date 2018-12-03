@@ -11,7 +11,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Dimensions,
-  Switch,
   AsyncStorage,
   TouchableHighlight,
   CameraRoll,
@@ -33,12 +32,20 @@ import {
   storeChapterToOfflineMode,
   populateEntries
 } from "actions/editor"
-import { loadChapter } from "actions/chapter"
+import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
 import InputScrollView from "react-native-input-scroll-view"
+import _ from "lodash"
+import { updateChapterForm } from "actions/chapter_form"
+import DatePickerDropdown from "components/editor/DatePickerDropdown"
 import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
+import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
 import { populateOfflineChapters } from "actions/user"
-import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
+import {
+  persistChapterToAsyncStorage,
+  removeChapterFromAsyncStorage,
+  offlineChapterCreate
+} from "utils/offline_helpers"
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -51,9 +58,9 @@ const mapDispatchToProps = dispatch => ({
   removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
   storeChapterToOfflineMode: payload => dispatch(storeChapterToOfflineMode(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   prepManageContent: payload => dispatch(prepManageContent(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload)),
   saveEditorContent: (entries, chapterId) => saveEditorContent(entries, chapterId, dispatch),
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
@@ -61,6 +68,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
+  chapterForm: state.chapterForm,
   loaded: state.chapter.loaded,
   currentUser: state.common.currentUser,
   entries: state.editor.entries,
@@ -80,7 +88,7 @@ class ChapterEditor extends Component {
     this.state = {
       containerHeight: Dimensions.get("window").height - 105,
       offlineMode: false,
-      imagesNeededOffline: []
+      imagesNeededOffline: [],
     }
   }
 
@@ -114,38 +122,6 @@ class ChapterEditor extends Component {
 
   navigateBack() {
     this.props.navigation.goBack()
-  }
-
-  renderTitleAndDescription() {
-    const { title, description } = this.props.chapter
-    return (
-      <View style={styles.titleAndDescriptionContainer}>
-        <View>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      </View>
-    )
-  }
-
-  renderStatistics() {
-    const { readableDate, distance } = this.props.chapter
-    return (
-      <View style={styles.statsContainer}>
-        <View style={styles.iconsAndText}>
-          <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
-          <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
-        </View>
-        <View style={styles.iconsAndText}>
-          <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
-          <Text style={styles.iconText}>{`${distance} miles`.toUpperCase()}</Text>
-        </View>
-      </View>
-    )
-  }
-
-  renderChapterImage() {
-    const { bannerImageUrl } = this.props.chapter
-    return <Image style={{ width: 100, height: 100, borderRadius: 50, margin: 20 }} source={{ uri: bannerImageUrl }} />
   }
 
   keyboardWillShow(e) {
@@ -376,7 +352,7 @@ class ChapterEditor extends Component {
   }
 
   openCameraRoll = e => {
-    this.props.navigation.navigate("CameraRollContainer", { index: this.props.activeIndex + 1 })
+    this.props.navigation.navigate("CameraRollContainer", { index: this.props.activeIndex + 1, selectSingleItem: false })
   }
 
   openImageCaptionForm(e, index) {
@@ -410,20 +386,8 @@ class ChapterEditor extends Component {
     return <ContentCreator index={index} key={`contentCreator${index}`} />
   }
 
-  renderSwitch() {
-    return
-    return <Switch value={this.props.chapter.offline} onValueChange={this.updateOfflineStatus} />
-  }
-
-  renderChapterMetadata() {
-    return (
-      <View style={styles.marginBottom20}>
-        {this.renderChapterImage()}
-        {this.renderTitleAndDescription()}
-        {this.renderStatistics()}
-        {this.renderSwitch()}
-      </View>
-    )
+  renderChapterForm() {
+    return <ChapterMetaDataForm navigation={this.props.navigation} />
   }
 
   renderEditor() {
@@ -470,7 +434,7 @@ class ChapterEditor extends Component {
           style={styles.positionRelative}
           keyboardOffset={90}
           multilineInputStyle={{ lineHeight: 30 }}>
-          {this.renderChapterMetadata()}
+          {this.renderChapterForm()}
           {this.renderDivider()}
           {this.renderOfflineButton()}
           {this.renderToggleEdit()}
@@ -495,7 +459,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black"
+    color: "black",
+    backgroundColor: "#f8f8f8"
   },
   description: {
     fontSize: 18,
@@ -509,7 +474,8 @@ const styles = StyleSheet.create({
   iconsAndText: {
     display: "flex",
     flexDirection: "row",
-    paddingTop: 5
+    paddingTop: 5,
+    backgroundColor: "#f8f8f8"
   },
   iconPositioning: {
     marginRight: 5
