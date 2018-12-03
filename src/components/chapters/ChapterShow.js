@@ -69,7 +69,7 @@ class ChapterShow extends Component {
   }
 
   renderEditCta() {
-    return 
+    return
     if (this.props.currentUser.id === this.props.user.id) {
       return (
         <TouchableHighlight onPress={this.editMetaData}>
@@ -98,12 +98,29 @@ class ChapterShow extends Component {
   }
 
   renderChapterImage() {
+    let fourthWindowWidth = Dimensions.get("window").width / 4
     const { bannerImageUrl } = this.props.chapter
-    return <Image style={{ width: 100, height: 100, borderRadius: 50, margin: 20 }} source={{ uri: bannerImageUrl }} />
+    return (
+      <Image
+        style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}
+        source={{ uri: bannerImageUrl }}
+      />
+    )
   }
 
   renderDivider() {
-    return <View style={{borderBottomWidth: 3, borderBottomColor: "black", width: 90, marginTop: 10, marginLeft: 20, marginBottom: 30}} />
+    return (
+      <View
+        style={{
+          borderBottomWidth: 3,
+          borderBottomColor: "black",
+          width: 90,
+          marginTop: 10,
+          marginLeft: 20,
+          marginBottom: 30
+        }}
+      />
+    )
   }
 
   getInputStyling(entry) {
