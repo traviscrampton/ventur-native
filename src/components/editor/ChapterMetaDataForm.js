@@ -182,6 +182,7 @@ class ChapterMetaDataForm extends Component {
             style={{
               width: fourthWindowWidth,
               height: fourthWindowWidth,
+              backgroundColor: "#f8f8f8",
               borderColor: "#f8f8f8",
               borderWidth: 1,
               borderRadius: fourthWindowWidth / 2

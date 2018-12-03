@@ -56,7 +56,7 @@ class ChapterDispatch extends Component {
   }
 
   getToggleEditCta() {
-    return this.state.editMode ? "Back to chapter" : "Edit chapter"
+    return this.state.editMode ? "Read Mode" : "Edit Mode"
   }
 
   editMetaData = () => {

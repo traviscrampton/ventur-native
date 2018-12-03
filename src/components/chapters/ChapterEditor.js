@@ -88,7 +88,7 @@ class ChapterEditor extends Component {
     this.state = {
       containerHeight: Dimensions.get("window").height - 105,
       offlineMode: false,
-      imagesNeededOffline: [],
+      imagesNeededOffline: []
     }
   }
 
@@ -352,7 +352,10 @@ class ChapterEditor extends Component {
   }
 
   openCameraRoll = e => {
-    this.props.navigation.navigate("CameraRollContainer", { index: this.props.activeIndex + 1, selectSingleItem: false })
+    this.props.navigation.navigate("CameraRollContainer", {
+      index: this.props.activeIndex + 1,
+      selectSingleItem: false
+    })
   }
 
   openImageCaptionForm(e, index) {
@@ -391,6 +394,8 @@ class ChapterEditor extends Component {
   }
 
   renderEditor() {
+    if (!this.props.chapter.id) return
+      
     return this.props.entries.map((entry, index) => {
       return (
         <View>

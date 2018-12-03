@@ -158,8 +158,14 @@ class Journal extends Component {
   }
 
   navigateToChapterForm = () => {
-    this.props.updateChapterForm({ journalId: this.props.journal.id })
-    console.log(this.props.journal.id)
+    let obj = {
+      id: null,
+      title: "",
+      date: new Date(),
+      distance: 0,
+      journalId: this.props.journal.id
+    }
+    this.props.updateChapterForm(obj)
     this.props.loadChapter(this.props.chapterForm)
     this.props.navigation.navigate("Chapter", { initialChapterForm: true })
   }
