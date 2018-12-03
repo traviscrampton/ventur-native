@@ -46,7 +46,7 @@ class ChapterDispatch extends Component {
 
     this.state = {
       editMode: this.initialChapterForm,
-      userMenuOpen: false, 
+      userMenuOpen: false,
       initialChapterForm: this.initialChapterForm
     }
   }
@@ -146,9 +146,7 @@ class ChapterDispatch extends Component {
   }
 
   renderUserDropDown() {
-    if (!this.state.initialChapterForm) {
-      if (this.props.user.id != this.props.currentUser.id) return
-    }
+    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     return (
       <View style={{ position: "relative" }}>
@@ -202,9 +200,11 @@ class ChapterDispatch extends Component {
 
   toggleEditMode = () => {
     let toggledEditMode = !this.state.editMode
+    let toggledUserMenu = !this.state.userMenuOpen
     this.editMetaData()
     this.setState({
-      editMode: toggledEditMode
+      editMode: toggledEditMode,
+      userMenuOpen: toggledUserMenu
     })
   }
 

@@ -33,7 +33,8 @@ const mapDispatchToProps = dispatch => ({
   startUpdating: payload => dispatch(startUpdating()),
   doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload))
+  loadChapter: payload => dispatch(loadChapter(payload)),
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
 class ChapterMetaDataForm extends Component {

@@ -395,7 +395,7 @@ class ChapterEditor extends Component {
 
   renderEditor() {
     if (!this.props.chapter.id) return
-      
+
     return this.props.entries.map((entry, index) => {
       return (
         <View>
@@ -410,26 +410,6 @@ class ChapterEditor extends Component {
     return { height: Dimensions.get("window").height - 105 }
   }
 
-  renderToggleEdit() {
-    return
-    return (
-      <TouchableHighlight onPress={this.props.toggleEditMode}>
-        <View
-          style={{
-            height: 50,
-            backgroundColor: "#f8f8f8",
-            width: Dimensions.get("window").width,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Text style={{ fontSize: 18 }}>Done Editing</Text>
-        </View>
-      </TouchableHighlight>
-    )
-  }
-
   render() {
     return (
       <View style={([styles.container], this.getContainerSize())}>
@@ -442,7 +422,6 @@ class ChapterEditor extends Component {
           {this.renderChapterForm()}
           {this.renderDivider()}
           {this.renderOfflineButton()}
-          {this.renderToggleEdit()}
           {this.renderEditor()}
         </InputScrollView>
         {this.renderEditorToolbar()}
