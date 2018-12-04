@@ -67,7 +67,7 @@ class ChapterDispatch extends Component {
       title: title,
       distance: distance,
       description: description,
-      journalId: this.props.chapter.journal.id
+      journalId: this.props.chapter.journal.id,
     }
 
     this.props.updateChapterForm(obj)

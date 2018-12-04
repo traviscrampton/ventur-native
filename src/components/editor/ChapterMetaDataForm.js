@@ -55,6 +55,8 @@ class ChapterMetaDataForm extends Component {
   }
 
   uploadImage(img) {
+    this.props.startUpdating()
+
     let imgPost = {
       uri: img.uri,
       name: img.filename,
@@ -87,14 +89,18 @@ class ChapterMetaDataForm extends Component {
     this.props.doneUpdating()
   }
 
-  chapterCreateCallback = async data => {
-    this.props.updateChapterForm({ id: data.id })
-    this.chapterCallback(data)
-  }
-
   persistUpdate = async () => {
     let chapter = _.omit(this.props.chapterForm, "journals")
-    if (false /* if not connected to the internet store offline is true */) {
+    if (
+      false ||
+      isNaN(
+        parseInt(this.props.chapterForm.id)
+      ) /* if not connected to the internet store offline is true or the id is NAN */
+    ) {
+      chapter = Object.assign({}, chapter, {
+        bannerImageUrl: chapter.bannerImage.uri,
+        readableDate: generateReadableDate(chapter.date)
+      })
       this.chapterCallback(chapter)
     } else {
       updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
@@ -157,7 +163,7 @@ class ChapterMetaDataForm extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = Dimensions.get("window").width / 4
-    const { bannerImageUrl } = this.props.chapter
+    let { bannerImageUrl } = this.props.chapter
     return (
       <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>
         <TouchableWithoutFeedback onPress={this.updateImage}>

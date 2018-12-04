@@ -169,6 +169,7 @@ class Journal extends Component {
       id: null,
       title: "",
       date: new Date(),
+      offline: false,
       distance: 0,
       journalId: this.props.journal.id,
       bannerImage: {}

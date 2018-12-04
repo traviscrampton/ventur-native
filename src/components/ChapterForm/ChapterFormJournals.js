@@ -15,7 +15,7 @@ import {
 } from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
-import { offlineChapterCreate, createChapter, updateChapter } from "utils/chapter_form_helper"
+import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
@@ -83,7 +83,7 @@ class ChapterFormJournals extends Component {
       }
     })
 
-    actions.push(NavigationActions.navigate({ routeName: "Chapter", params: {initialChapterForm: true} }))
+    actions.push(NavigationActions.navigate({ routeName: "Chapter", params: { initialChapterForm: true } }))
 
     return {
       index: actions.length - 1,
@@ -93,7 +93,7 @@ class ChapterFormJournals extends Component {
 
   async persistUpdate() {
     if (false /* if not connected to the internet store offline is true */) {
-      let chapter = _.omit(this.props.chapter, "journals")
+      let chapter = _.omit(this.props.chapterForm, "journals")
       this.chapterCallback(chapter)
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }
@@ -122,34 +122,28 @@ class ChapterFormJournals extends Component {
     this.handleRedirect()
   }
 
-  async persistCreate() {
+  persistCreate = async () => {
     if (false /* if not connected to the internet store offline is true */) {
-      const chapter = await offlineChapterCreate(this.props.chapter, this.props.populateOfflineChapters)
+      const chapter = await offlineChapterCreate(this.props.chapterForm, this.props.populateOfflineChapters)
+      let date = new Date()
       this.props.updateChapterForm({
         id: chapter.id,
         journalId: chapter.journalId,
+        date: date,
+        readableDate: generateReadableDate(date),
         journal: this.getSelectedJournal(chapter.journalId),
         user: this.props.currentUser
       })
-      this.props.navigation.navigate("ChapterFormTitle")
+      this.props.loadChapter(this.props.chapterForm)
+      this.handleRedirect()
     } else {
       createChapter(this.props.chapterForm, this.chapterCallback)
     }
   }
 
-  persistAndNavigate = async () => {
-    if (!this.props.journalId) return
-
-    if (this.props.id) {
-      this.persistUpdate()
-    } else {
-      this.persistCreate()
-    }
-  }
-
   renderFormSubmission() {
     return (
-      <TouchableHighlight onPress={this.persistAndNavigate}>
+      <TouchableHighlight onPress={this.persistCreate}>
         <View style={{ borderRadius: 30, marginRight: 20, marginLeft: 20, marginTop: 20, backgroundColor: "white" }}>
           <Text
             style={{
