@@ -148,7 +148,7 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
 }
 
 export const REMOVE_CHAPTER_FROM_STATE = "REMOVE_CHAPTER_FROM_STATE"
-export const removeChapterFromState = (chapter) => {
+export const removeChapterFromState = chapter => {
   return {
     type: REMOVE_CHAPTER_FROM_STATE,
     payload: chapter
@@ -171,7 +171,8 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
     })
     .then(data => {
       dispatch(removeChapterFromState(chapter))
-      if(chapter.offline) {}
+      if (chapter.offline) {
+      }
       // remove from journal
       // if offline mode remove from offline mode
       callback()
@@ -183,10 +184,10 @@ export const dispatchPersist = async (entries, chapter, dispatch) => {
   NetInfo.getConnectionInfo().then(connectionInfo => {
     connectionType = connectionInfo.type
   })
-  if (connectionType === "none" && chapter.offline) {
-    let updatedChapter = { ...chapter, content: entries }
-    let asyncChapter = await persistChapterToAsyncStorage(updatedChapter)
-    dispatch(loadChapter(asyncChapter))
+  if ((connectionType === "none" && chapter.offline) || isNaN(parseInt(chapter.id))) {
+    let updatedChapter = Object.assign({}, chapter, { content: entries })
+    await persistChapterToAsyncStorage(updatedChapter, null)
+    dispatch(loadChapter(updatedChapter))
     dispatch(doneUpdating())
   } else {
     saveEditorContent(entries, chapter, dispatch)

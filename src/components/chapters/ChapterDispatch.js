@@ -11,7 +11,6 @@ import {
   Dimensions,
   Alert
 } from "react-native"
-import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import { editChapterOfflineMode, editChapterPublished, deleteChapter } from "actions/editor"
 import { populateOfflineChapters } from "actions/user"
@@ -43,9 +42,12 @@ class ChapterDispatch extends Component {
   constructor(props) {
     super(props)
 
+    this.initialChapterForm = this.props.navigation.getParam("initialChapterForm", false)
+
     this.state = {
-      editMode: false,
-      userMenuOpen: false
+      editMode: this.initialChapterForm,
+      userMenuOpen: false,
+      initialChapterForm: this.initialChapterForm
     }
   }
 
@@ -53,16 +55,8 @@ class ChapterDispatch extends Component {
     this.props.navigation.goBack()
   }
 
-  fillerFunc() {
-    console.log("hey")
-  }
-
   getToggleEditCta() {
-    if (this.state.editMode) {
-      return "Exit Blog Editor"
-    } else {
-      return "Open Blog Editor"
-    }
+    return this.state.editMode ? "Read Mode" : "Edit Mode"
   }
 
   editMetaData = () => {
@@ -73,11 +67,10 @@ class ChapterDispatch extends Component {
       title: title,
       distance: distance,
       description: description,
-      journalId: this.props.chapter.journal.id
+      journalId: this.props.chapter.journal.id,
     }
 
     this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterFormTitle")
   }
 
   openDeleteAlert = () => {
@@ -99,7 +92,6 @@ class ChapterDispatch extends Component {
   getChapterUserFormProps() {
     return [
       { type: "touchable", title: this.getToggleEditCta(), callback: this.toggleEditMode },
-      { type: "touchable", title: "Edit Metadata", callback: this.editMetaData },
       { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
       { type: "switch", title: "Offline Mode", value: this.props.chapter.offline, callback: this.updateOfflineStatus },
       { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus }
@@ -154,7 +146,7 @@ class ChapterDispatch extends Component {
   }
 
   renderUserDropDown() {
-    if (this.props.user.id != this.props.currentUser.id) return
+    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     return (
       <View style={{ position: "relative" }}>
@@ -208,8 +200,11 @@ class ChapterDispatch extends Component {
 
   toggleEditMode = () => {
     let toggledEditMode = !this.state.editMode
+    let toggledUserMenu = !this.state.userMenuOpen
+    this.editMetaData()
     this.setState({
-      editMode: toggledEditMode
+      editMode: toggledEditMode,
+      userMenuOpen: toggledUserMenu
     })
   }
 

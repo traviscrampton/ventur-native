@@ -28,6 +28,7 @@ import { isSignedIn } from "auth"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
+  "ChapterFormJournals",
   "ChapterFormTitle",
   "ChapterFormDate",
   "ChapterFormDistance",

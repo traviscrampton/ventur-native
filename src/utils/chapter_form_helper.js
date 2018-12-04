@@ -13,6 +13,17 @@ export const offlineChapterCreate = async (chapter, reduxCallback) => {
 }
 
 export const updateChapter = async (id, params, callback) => {
+  let formData = new FormData()
+  formData.append("id", params.id)
+  formData.append("title", params.title)
+  formData.append("distance", params.distance)
+  formData.append("date", new Date(params.date).toUTCString())
+  formData.append("journalId", params.journalId)
+
+  if (params.bannerImage.needsUpload) {
+    formData.append("banner_image", params.bannerImage)
+  }
+
   const token = await setToken()
   fetch(`${API_ROOT}/chapters/${id}`, {
     method: "PUT",
@@ -20,7 +31,7 @@ export const updateChapter = async (id, params, callback) => {
       "Content-Type": "application/json",
       Authorization: token
     },
-    body: JSON.stringify(params)
+    body: formData
   })
     .then(response => {
       return response.json()
@@ -31,6 +42,15 @@ export const updateChapter = async (id, params, callback) => {
 }
 
 export const createChapter = async (params, callback) => {
+  let formData = new FormData()
+  formData.append("id", params.id)
+  formData.append("title", params.title)
+  formData.append("offline", params.offline)
+  formData.append("distance", params.distance)
+  formData.append("journalId", params.journalId)
+  if (params.bannerImage.needsUpload) {
+    formData.append("banner_image", params.bannerImage)
+  }
   const token = await setToken()
   fetch(`${API_ROOT}/chapters`, {
     method: "POST",
@@ -38,7 +58,7 @@ export const createChapter = async (params, callback) => {
       "Content-Type": "application/json",
       Authorization: token
     },
-    body: JSON.stringify(params)
+    body: formData
   })
     .then(response => {
       return response.json()

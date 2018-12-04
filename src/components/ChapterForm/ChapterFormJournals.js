@@ -13,16 +13,19 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
-import { offlineChapterCreate, createChapter, updateChapter } from "utils/chapter_form_helper"
+import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
+import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journals: state.chapterForm.journals,
   id: state.chapterForm.id,
+  chapterForm: state.chapterForm,
   journalId: state.chapterForm.journalId,
   offline: state.chapterForm.offline,
   chapter: state.chapterForm,
@@ -31,6 +34,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  loadChapter: payload => dispatch(loadChapter(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
@@ -38,6 +42,15 @@ class ChapterFormJournals extends Component {
   constructor(props) {
     super(props)
   }
+
+  static CHAPTER_FORM_ROUTES = [
+    "ChapterFormJournals",
+    "ChapterFormTitle",
+    "ChapterFormUpload",
+    "ChapterFormDate",
+    "ChapterFormDistance",
+    "Chapter"
+  ]
 
   isActiveOption(journal) {
     return journal.id == this.props.journalId
@@ -47,9 +60,40 @@ class ChapterFormJournals extends Component {
     this.props.navigation.goBack()
   }
 
+  handleRedirect = () => {
+    const routingInformation = this.getChapterRoutingInformation()
+    const resetAction = StackActions.reset(routingInformation)
+    this.props.navigation.dispatch(resetAction)
+  }
+
+  getChapterRoutingInformation() {
+    let actions = []
+    let obj
+    let { routes } = this.props.navigation.dangerouslyGetParent().state
+
+    routes.forEach(route => {
+      if (!_.includes(ChapterFormJournals.CHAPTER_FORM_ROUTES, route.routeName)) {
+        obj = { routeName: route.routeName }
+
+        if (route.params) {
+          obj["params"] = route.params
+        }
+
+        actions.push(NavigationActions.navigate(obj))
+      }
+    })
+
+    actions.push(NavigationActions.navigate({ routeName: "Chapter", params: { initialChapterForm: true } }))
+
+    return {
+      index: actions.length - 1,
+      actions: actions
+    }
+  }
+
   async persistUpdate() {
     if (false /* if not connected to the internet store offline is true */) {
-      let chapter = _.omit(this.props.chapter, "journals")
+      let chapter = _.omit(this.props.chapterForm, "journals")
       this.chapterCallback(chapter)
     } else {
       let params = { journalId: this.props.journalId, offline: this.props.offline }
@@ -67,43 +111,39 @@ class ChapterFormJournals extends Component {
     if (data.offline) {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
+
     this.props.updateChapterForm({
       id: data.id,
       offline: data.offline,
       journalId: data.journal.id
     })
-    this.props.navigation.navigate("ChapterFormTitle")
+
+    this.props.loadChapter(data)
+    this.handleRedirect()
   }
 
-  async persistCreate() {
+  persistCreate = async () => {
     if (false /* if not connected to the internet store offline is true */) {
-      const chapter = await offlineChapterCreate(this.props.chapter, this.props.populateOfflineChapters)
+      const chapter = await offlineChapterCreate(this.props.chapterForm, this.props.populateOfflineChapters)
+      let date = new Date()
       this.props.updateChapterForm({
         id: chapter.id,
         journalId: chapter.journalId,
+        date: date,
+        readableDate: generateReadableDate(date),
         journal: this.getSelectedJournal(chapter.journalId),
         user: this.props.currentUser
       })
-      this.props.navigation.navigate("ChapterFormTitle")
+      this.props.loadChapter(this.props.chapterForm)
+      this.handleRedirect()
     } else {
-      let params = { journalId: this.props.journalId, offline: this.props.offline }
-      createChapter(params, this.chapterCallback)
-    }
-  }
-
-  persistAndNavigate = async () => {
-    if (!this.props.journalId) return
-
-    if (this.props.id) {
-      this.persistUpdate()
-    } else {
-      this.persistCreate()
+      createChapter(this.props.chapterForm, this.chapterCallback)
     }
   }
 
   renderFormSubmission() {
     return (
-      <TouchableHighlight onPress={this.persistAndNavigate}>
+      <TouchableHighlight onPress={this.persistCreate}>
         <View style={{ borderRadius: 30, marginRight: 20, marginLeft: 20, marginTop: 20, backgroundColor: "white" }}>
           <Text
             style={{

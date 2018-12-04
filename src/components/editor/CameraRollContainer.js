@@ -18,6 +18,8 @@ class CameraRollContainer extends Component {
     super(props)
     this.compileSelectedImages = this.compileSelectedImages.bind(this)
     this.index = this.props.navigation.getParam("index", "NO-ID")
+    this.selectSingleItem = this.props.navigation.getParam("selectSingleItem", false)
+    this.singleItemCallback = this.props.navigation.getParam("singleItemCallback", null)
 
     this.state = {
       selectedImages: []
@@ -29,7 +31,11 @@ class CameraRollContainer extends Component {
       return Object.assign(img, { id: null })
     })
 
-    this.props.addImagesToEntries({ images: selectedImages, index: this.index + 1 })
+    if (this.singleItemCallback) {
+      this.singleItemCallback(selectedImages[0])
+    } else {
+      this.props.addImagesToEntries({ images: selectedImages, index: this.index + 1 })
+    }
     this.props.navigation.goBack()
   }
 
@@ -57,6 +63,7 @@ class CameraRollContainer extends Component {
   renderCameraRollPicker() {
     return (
       <CameraRollPicker
+        selectSingleItem={this.selectSingleItem}
         key="cameraRollPicker"
         selected={this.state.selectedImages}
         callback={this.compileSelectedImages}

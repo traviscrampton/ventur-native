@@ -16,6 +16,7 @@ import {
 import ChapterList from "components/chapters/ChapterList"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { createChapter} from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
@@ -26,6 +27,7 @@ const mapStateToProps = state => ({
   journal: state.journal.journal,
   user: state.journal.journal.user,
   chapters: state.journal.journal.chapters,
+  chapterForm: state.chapterForm,
   loaded: state.journal.loaded,
   currentUser: state.common.currentUser
 })
@@ -156,9 +158,23 @@ class Journal extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
+  chapterCreateCallback = (data) => {
+    this.props.updateChapterForm(data)
+    this.props.loadChapter(data)
+    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
+  }
+
   navigateToChapterForm = () => {
-    this.props.updateChapterForm({ journalId: this.props.journal.id })
-    this.props.navigation.navigate("ChapterFormTitle")
+    let obj = {
+      id: null,
+      title: "",
+      date: new Date(),
+      offline: false,
+      distance: 0,
+      journalId: this.props.journal.id,
+      bannerImage: {}
+    }
+    createChapter(obj, this.chapterCreateCallback)
   }
 
   renderCreateChapterCta() {

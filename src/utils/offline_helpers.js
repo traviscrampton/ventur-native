@@ -20,9 +20,12 @@ export const persistChapterToAsyncStorage = async (chapter, reduxCallBack) => {
     await AsyncStorage.setItem("chapters", stringifiedChapters)
   }
 
-  let refoundChapters = stringifiedChapters
-  refoundChapters = JSON.parse(stringifiedChapters)
-  reduxCallBack([...refoundChapters])
+  if (reduxCallBack) {
+    let refoundChapters = stringifiedChapters
+    refoundChapters = JSON.parse(stringifiedChapters)
+    reduxCallBack([...refoundChapters])
+  }
+
   return chapter
 }
 

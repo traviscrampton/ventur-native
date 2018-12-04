@@ -39,15 +39,6 @@ class ChapterFormDate extends Component {
     this.props.navigation.goBack()
   }
 
-  chapterCallback = async data => {
-    if (data.offline) {
-      await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
-    }
-
-    this.props.updateChapterForm({ date: data.date, readableDate: generateReadableDate(new Date(data.date)) })
-    this.props.navigation.navigate("ChapterFormDistance")
-  }
-
   renderBackButtonHeader() {
     return (
       <View style={{ marginTop: 20, marginLeft: 20 }}>
@@ -77,6 +68,7 @@ class ChapterFormDate extends Component {
     if (typeof this.props.date === "number") {
       date = new Date(this.props.date)
     }
+
     return (
       <View style={{ margin: 20 }}>
         <View style={{ marginBottom: 50 }}>
