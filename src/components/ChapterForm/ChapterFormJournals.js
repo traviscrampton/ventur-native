@@ -13,16 +13,19 @@ import {
   ImageBackground,
   Dimensions
 } from "react-native"
+import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { updateChapterForm } from "actions/chapter_form"
+import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journals: state.chapterForm.journals,
   id: state.chapterForm.id,
+  chapterForm: state.chapterForm,
   journalId: state.chapterForm.journalId,
   offline: state.chapterForm.offline,
   chapter: state.chapterForm,
@@ -31,6 +34,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  loadChapter: payload => dispatch(loadChapter(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
@@ -39,12 +43,52 @@ class ChapterFormJournals extends Component {
     super(props)
   }
 
+  static CHAPTER_FORM_ROUTES = [
+    "ChapterFormJournals",
+    "ChapterFormTitle",
+    "ChapterFormUpload",
+    "ChapterFormDate",
+    "ChapterFormDistance",
+    "Chapter"
+  ]
+
   isActiveOption(journal) {
     return journal.id == this.props.journalId
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
+  }
+
+  handleRedirect = () => {
+    const routingInformation = this.getChapterRoutingInformation()
+    const resetAction = StackActions.reset(routingInformation)
+    this.props.navigation.dispatch(resetAction)
+  }
+
+  getChapterRoutingInformation() {
+    let actions = []
+    let obj
+    let { routes } = this.props.navigation.dangerouslyGetParent().state
+
+    routes.forEach(route => {
+      if (!_.includes(ChapterFormJournals.CHAPTER_FORM_ROUTES, route.routeName)) {
+        obj = { routeName: route.routeName }
+
+        if (route.params) {
+          obj["params"] = route.params
+        }
+
+        actions.push(NavigationActions.navigate(obj))
+      }
+    })
+
+    actions.push(NavigationActions.navigate({ routeName: "Chapter", params: {initialChapterForm: true} }))
+
+    return {
+      index: actions.length - 1,
+      actions: actions
+    }
   }
 
   async persistUpdate() {
@@ -67,12 +111,15 @@ class ChapterFormJournals extends Component {
     if (data.offline) {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
+
     this.props.updateChapterForm({
       id: data.id,
       offline: data.offline,
       journalId: data.journal.id
     })
-    this.props.navigation.navigate("ChapterFormTitle")
+
+    this.props.loadChapter(data)
+    this.handleRedirect()
   }
 
   async persistCreate() {
@@ -86,8 +133,7 @@ class ChapterFormJournals extends Component {
       })
       this.props.navigation.navigate("ChapterFormTitle")
     } else {
-      let params = { journalId: this.props.journalId, offline: this.props.offline }
-      createChapter(params, this.chapterCallback)
+      createChapter(this.props.chapterForm, this.chapterCallback)
     }
   }
 

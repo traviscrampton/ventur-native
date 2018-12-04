@@ -44,14 +44,14 @@ class ChapterMetaDataForm extends Component {
     this.state = {
       datePickerOpen: false
     }
-    this.createOrUpdate = _.debounce(this.createOrUpdate, 1000)
+    this.persistUpdate = _.debounce(this.persistUpdate, 1000)
   }
 
   persistMetadata = async (text, field) => {
     this.props.startUpdating()
     this.props.updateChapterForm({ [field]: text })
 
-    this.createOrUpdate()
+    this.persistUpdate()
   }
 
   uploadImage(img) {
@@ -63,7 +63,7 @@ class ChapterMetaDataForm extends Component {
     }
     this.props.updateChapterForm({ bannerImage: imgPost })
 
-    this.createOrUpdate()
+    this.persistUpdate()
   }
 
   updateImage = () => {
@@ -71,14 +71,6 @@ class ChapterMetaDataForm extends Component {
       selectSingleItem: true,
       singleItemCallback: img => this.uploadImage(img)
     })
-  }
-
-  createOrUpdate() {
-    if (this.props.chapter.id) {
-      this.persistUpdate()
-    } else {
-      this.persistCreate()
-    }
   }
 
   toggleDatePicker = () => {
@@ -98,16 +90,6 @@ class ChapterMetaDataForm extends Component {
   chapterCreateCallback = async data => {
     this.props.updateChapterForm({ id: data.id })
     this.chapterCallback(data)
-  }
-
-  persistCreate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
-      const chapter = await offlineChapterCreate(this.props.chapterForm)
-
-      this.props.updateChapterForm(this.props.chapterForm)
-    } else {
-      createChapter(this.props.chapterForm, this.chapterCreateCallback)
-    }
   }
 
   persistUpdate = async () => {

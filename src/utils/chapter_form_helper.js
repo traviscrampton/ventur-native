@@ -45,10 +45,9 @@ export const createChapter = async (params, callback) => {
   let formData = new FormData()
   formData.append("id", params.id)
   formData.append("title", params.title)
+  formData.append("offline", params.offline)
   formData.append("distance", params.distance)
-  console.log(params.journalId)
   formData.append("journalId", params.journalId)
-
   if (params.bannerImage.needsUpload) {
     formData.append("banner_image", params.bannerImage)
   }
@@ -65,7 +64,6 @@ export const createChapter = async (params, callback) => {
       return response.json()
     })
     .then(data => {
-      console.log("return data")
       callback(data)
     })
 }
