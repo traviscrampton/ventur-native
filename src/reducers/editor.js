@@ -30,7 +30,7 @@ const defaultTextData = {
     }
   ],
   activeIndex: 0,
-  toolbarOptions: ["H1", "text", "QUOTE"],
+  toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
   keyboardShowing: false,
   selectedImages: [],

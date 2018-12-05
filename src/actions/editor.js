@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
+import DropDownHolder from "utils/DropdownHolder"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
@@ -101,11 +102,17 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       return response.json()
     })
     .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
       dispatch(loadChapter(data))
       dispatch(doneUpdating(data))
       if (data.offline) {
         persistChapterToAsyncStorage(data, populateOfflineChapters)
       }
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 
@@ -124,7 +131,13 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
       return response.json()
     })
     .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
       dispatch(loadChapter(data))
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 
@@ -143,7 +156,13 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
       return response.json()
     })
     .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
       dispatch(loadChapter(data))
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 
@@ -170,12 +189,16 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
       return response.json()
     })
     .then(data => {
-      dispatch(removeChapterFromState(chapter))
-      if (chapter.offline) {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
       }
+      dispatch(removeChapterFromState(chapter))
       // remove from journal
       // if offline mode remove from offline mode
       callback()
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 

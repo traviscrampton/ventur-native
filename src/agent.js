@@ -2,6 +2,7 @@ import _superagent from "superagent"
 import superagentPromise from "superagent-promise"
 import request from "superagent"
 import { AsyncStorage } from "react-native"
+import DropDownHolder from "utils/DropdownHolder"
 import { logOut } from "auth"
 
 const ql = require("superagent-graphql")
@@ -36,6 +37,6 @@ export const gql = async (queryString, queryVariables = {}) => {
       if (err.status === 401) {
         return logOut()
       }
-      return err
+      DropDownHolder.alert("error", "Error", err.message)
     })
 }

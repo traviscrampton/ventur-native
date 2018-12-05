@@ -8,10 +8,12 @@ import { getCurrentUser } from "auth"
 import { SET_CURRENT_USER } from "actions/action_types"
 import { INITIAL_APP_LOADED } from "actions/common"
 import thunk from "redux-thunk"
-import { AsyncStorage } from "react-native"
+import { AsyncStorage, View } from "react-native"
 import { RootNavigator } from "navigation"
 import { Ventur } from "navigation"
+import DropdownAlert from "react-native-dropdownalert"
 import { Font } from "expo"
+import DropDownHolder from "utils/DropdownHolder"
 
 const store = createStore(allReducers, applyMiddleware(thunk))
 
@@ -51,9 +53,12 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <Ventur />
-      </Provider>
+      <React.Fragment>
+        <Provider store={store}>
+          <Ventur />
+        </Provider>
+        <DropdownAlert ref={ref => DropDownHolder.setDropDown(ref)} closeInterval={6000} />
+      </React.Fragment>
     )
   }
 }

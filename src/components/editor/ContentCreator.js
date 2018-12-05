@@ -27,11 +27,6 @@ class ContentCreator extends Component {
     this.props.updateActiveCreator(null)
   }
 
-  // <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
-  //   <View style={styles.optionContainer}>
-  //     <Text style={styles.grayText}>Add Image</Text>
-  //   </View>
-  // </TouchableWithoutFeedback>
   renderOptionState() {
     return (
       <View style={styles.optionState}>
@@ -46,7 +41,7 @@ class ContentCreator extends Component {
 
   renderInitialState() {
     return (
-      <TouchableWithoutFeedback onPress={() => this.props.updateActiveCreator(this.props.index)}>
+      <TouchableWithoutFeedback onPress={() => this.createNewEntry(this.props.index + 1)}>
         <View style={styles.initialState} />
       </TouchableWithoutFeedback>
     )
