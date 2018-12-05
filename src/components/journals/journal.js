@@ -16,7 +16,7 @@ import {
 import ChapterList from "components/chapters/ChapterList"
 import { gql } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
-import { createChapter} from "utils/chapter_form_helper"
+import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
@@ -151,14 +151,18 @@ class Journal extends Component {
   }
 
   renderChapters() {
-    return <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
+    return (
+      <View style={{ marginBottom: 100 }}>
+        <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
+      </View>
+    )
   }
 
   isCurrentUsersJournal() {
     return this.props.user.id == this.props.currentUser.id
   }
 
-  chapterCreateCallback = (data) => {
+  chapterCreateCallback = data => {
     this.props.updateChapterForm(data)
     this.props.loadChapter(data)
     this.props.navigation.navigate("Chapter", { initialChapterForm: true })

@@ -244,7 +244,7 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderDivider()}
         {this.renderToggleEdit()}
-        {this.renderBodyContent()}
+        <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
       </ScrollView>
     )
   }

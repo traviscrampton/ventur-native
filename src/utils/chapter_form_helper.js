@@ -1,6 +1,7 @@
 import { AsyncStorage } from "react-native"
 import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
+import DropDownHolder from "utils/DropdownHolder"
 import { persistChapterToAsyncStorage, findChapter } from "utils/offline_helpers"
 
 export const offlineChapterCreate = async (chapter, reduxCallback) => {
@@ -37,7 +38,14 @@ export const updateChapter = async (id, params, callback) => {
       return response.json()
     })
     .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
+      
       callback(data)
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 
@@ -64,7 +72,13 @@ export const createChapter = async (params, callback) => {
       return response.json()
     })
     .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
       callback(data)
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
     })
 }
 

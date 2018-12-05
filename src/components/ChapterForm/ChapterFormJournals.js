@@ -17,7 +17,7 @@ import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
@@ -34,6 +34,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  resetChapterForm: () => dispatch(resetChapterForm()),
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
@@ -41,6 +42,10 @@ const mapDispatchToProps = dispatch => ({
 class ChapterFormJournals extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentDidMount() {
+    this.props.resetChapterForm()
   }
 
   static CHAPTER_FORM_ROUTES = [

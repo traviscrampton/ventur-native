@@ -47,8 +47,6 @@ class EditorToolbar extends Component {
       return <MaterialIcons color={this.isSelectedStyle(option)} name="text-fields" size={24} />
     } else if (option === "QUOTE") {
       return <Entypo name={"quote"} size={24} color={this.isSelectedStyle(option)} />
-    } else {
-      return <Entypo name={"text"} size={24} color={this.isSelectedStyle(option)} />
     }
   }
 
@@ -91,20 +89,16 @@ class EditorToolbar extends Component {
   }
 
   dispatchRender() {
-    if (this.props.keyboardShowing) {
-      return (
-        <React.Fragment>
-          <View style={styles.textEditButtons}>{this.renderTextStyler()}</View>
-          <View>{this.renderAddImageCta()}</View>
-        </React.Fragment>
-      )
-    } else {
-      return this.renderManageContent()
-    }
+    return <React.Fragment />
   }
 
   render() {
-    return <View style={styles.toolbarContainer}>{this.dispatchRender()}</View>
+    return (
+      <View style={styles.toolbarContainer}>
+        <View style={styles.textEditButtons}>{this.renderTextStyler()}</View>
+        <View>{this.renderAddImageCta()}</View>
+      </View>
+    )
   }
 }
 

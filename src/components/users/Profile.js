@@ -24,6 +24,7 @@ import { connect } from "react-redux"
 import { Ionicons, Entypo } from "@expo/vector-icons"
 import { RESET_JOURNAL_TAB } from "actions/action_types"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
+import DropDownHolder from "utils/DropdownHolder"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
 import { setToken, API_ROOT } from "agent"
 
@@ -137,7 +138,7 @@ class Profile extends Component {
 
   renderEditProfile() {
     return (
-      <TouchableWithoutFeedback onPress={() => console.log("HEY WE OUT HERE PRESSIN!")}>
+      <TouchableWithoutFeedback onPress={() => DropDownHolder.alert("error", "Error", "WHAT UP BLOOD")}>
         <View
           style={{
             borderWidth: 1,
@@ -313,11 +314,13 @@ class Profile extends Component {
 
   renderOfflineChapters() {
     return (
-      <ChapterList
-        chapters={this.props.offlineChapters}
-        persistOfflineChapter={this.persistOfflineChapter}
-        handleSelectChapter={this.selectChapter}
-      />
+      <View style={{ marginBottom: 100 }}>
+        <ChapterList
+          chapters={this.props.offlineChapters}
+          persistOfflineChapter={this.persistOfflineChapter}
+          handleSelectChapter={this.selectChapter}
+        />
+      </View>
     )
   }
 

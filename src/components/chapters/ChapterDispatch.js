@@ -18,7 +18,7 @@ import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "uti
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -31,6 +31,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   resetChapter: dispatch(resetChapter),
+  resetChapterForm: dispatch(resetChapterForm),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
   deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch),
@@ -51,10 +52,6 @@ class ChapterDispatch extends Component {
     }
   }
 
-  navigateBack = () => {
-    this.props.navigation.goBack()
-  }
-
   getToggleEditCta() {
     return this.state.editMode ? "Read Mode" : "Edit Mode"
   }
@@ -67,10 +64,14 @@ class ChapterDispatch extends Component {
       title: title,
       distance: distance,
       description: description,
-      journalId: this.props.chapter.journal.id,
+      journalId: this.props.chapter.journal.id
     }
 
     this.props.updateChapterForm(obj)
+  }
+
+  navigateBack = () => {
+    this.props.navigation.goBack()
   }
 
   openDeleteAlert = () => {

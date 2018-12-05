@@ -378,6 +378,8 @@ class ChapterEditor extends Component {
   }
 
   renderEditorToolbar() {
+    if (!this.props.keyboardShowing) return
+
     return (
       <View style={this.getToolbarPositioning()}>
         <EditorToolbar openManageContent={this.openManageContent} openCameraRoll={e => this.openCameraRoll(e)} />
@@ -407,7 +409,11 @@ class ChapterEditor extends Component {
   }
 
   getContainerSize() {
-    return { height: Dimensions.get("window").height - 105 }
+    if (this.props.keyboardShowing) {
+      return { height: Dimensions.get("window").height - 105 }
+    } else {
+      return { height: Dimensions.get("window").height }
+    }
   }
 
   render() {
@@ -422,7 +428,7 @@ class ChapterEditor extends Component {
           {this.renderChapterForm()}
           {this.renderDivider()}
           {this.renderOfflineButton()}
-          {this.renderEditor()}
+          <View style={{ marginBottom: 100 }}>{this.renderEditor()}</View>
         </InputScrollView>
         {this.renderEditorToolbar()}
       </View>
