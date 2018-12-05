@@ -44,7 +44,7 @@ class JournalFeed extends Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={{ backgroundColor: "white"}}>
         <FlatList
           scrollEnabled={true}
           contentContainerStyle={styles.container}

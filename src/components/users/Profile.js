@@ -138,7 +138,7 @@ class Profile extends Component {
 
   renderEditProfile() {
     return (
-      <TouchableWithoutFeedback onPress={() => DropDownHolder.alert('error', 'Error', "WHAT UP BLOOD")}>
+      <TouchableWithoutFeedback onPress={() => DropDownHolder.alert("error", "Error", "WHAT UP BLOOD")}>
         <View
           style={{
             borderWidth: 1,
@@ -314,11 +314,13 @@ class Profile extends Component {
 
   renderOfflineChapters() {
     return (
-      <ChapterList
-        chapters={this.props.offlineChapters}
-        persistOfflineChapter={this.persistOfflineChapter}
-        handleSelectChapter={this.selectChapter}
-      />
+      <View style={{ marginBottom: 100 }}>
+        <ChapterList
+          chapters={this.props.offlineChapters}
+          persistOfflineChapter={this.persistOfflineChapter}
+          handleSelectChapter={this.selectChapter}
+        />
+      </View>
     )
   }
 

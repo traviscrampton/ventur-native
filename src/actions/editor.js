@@ -2,6 +2,7 @@ import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import DropDownHolder from "utils/DropdownHolder"
 import { loadChapter } from "actions/chapter"
+import { resetChapterForm } from "actions/chapter_form"
 import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
@@ -195,6 +196,7 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
       dispatch(removeChapterFromState(chapter))
       // remove from journal
       // if offline mode remove from offline mode
+      dispatch(resetChapterForm())
       callback()
     })
     .catch(err => {
