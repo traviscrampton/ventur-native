@@ -32,7 +32,7 @@ const defaultTextData = {
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
-  keyboardShowing: false,
+  showEditorToolbar: false,
   selectedImages: [],
   activeCaption: "",
   newIndex: null,
@@ -129,7 +129,7 @@ export default (state = defaultTextData, action) => {
     case UPDATE_KEYBOARD_STATE:
       return {
         ...state,
-        keyboardShowing: action.payload
+        showEditorToolbar: action.payload
       }
     case SET_NEXT_INDEX_NULL:
       return {

@@ -78,7 +78,7 @@ const mapStateToProps = state => ({
   cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
-  keyboardShowing: state.editor.keyboardShowing
+  showEditorToolbar: state.editor.showEditorToolbar
 })
 
 class ChapterEditor extends Component {
@@ -125,7 +125,7 @@ class ChapterEditor extends Component {
   }
 
   keyboardWillShow(e) {
-    this.props.updateKeyboardState(true)
+    // this.props.updateKeyboardState(true)
     this.setState({
       containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 105
     })
@@ -330,6 +330,7 @@ class ChapterEditor extends Component {
 
   handleOnFocus(index) {
     const styles = this.props.entries[index].styles
+    this.props.updateKeyboardState(true)
     this.props.updateActiveIndex(index)
     this.props.updateFormatBar(styles)
   }
@@ -351,9 +352,18 @@ class ChapterEditor extends Component {
     )
   }
 
+  getAppropriateIndex() {
+    let activeEntry = this.props.entries[this.props.activeIndex]
+    if (activeEntry.content.length === 0) {
+      return this.props.activeIndex - 1
+    } else {
+      return this.props.activeIndex 
+    }
+  }
+
   openCameraRoll = e => {
     this.props.navigation.navigate("CameraRollContainer", {
-      index: this.props.activeIndex + 1,
+      index: this.getAppropriateIndex(),
       selectSingleItem: false
     })
   }
@@ -370,7 +380,7 @@ class ChapterEditor extends Component {
   }
 
   getToolbarPositioning() {
-    if (this.props.keyboardShowing) {
+    if (this.props.showEditorToolbar) {
       return { width: Dimensions.get("window").width, position: "absolute", top: this.state.containerHeight }
     } else {
       return { width: Dimensions.get("window").width }
@@ -378,7 +388,7 @@ class ChapterEditor extends Component {
   }
 
   renderEditorToolbar() {
-    if (!this.props.keyboardShowing) return
+    if (!this.props.showEditorToolbar) return
 
     return (
       <View style={this.getToolbarPositioning()}>
@@ -409,7 +419,7 @@ class ChapterEditor extends Component {
   }
 
   getContainerSize() {
-    if (this.props.keyboardShowing) {
+    if (this.props.showEditorToolbar) {
       return { height: Dimensions.get("window").height - 105 }
     } else {
       return { height: Dimensions.get("window").height }

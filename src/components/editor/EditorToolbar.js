@@ -58,8 +58,6 @@ class EditorToolbar extends Component {
     }
   }
 
-  handleManageContentPress() {}
-
   renderTextStyler() {
     return this.props.toolbarOptions.map((option, index) => {
       return (
