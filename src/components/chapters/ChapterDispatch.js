@@ -30,8 +30,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: dispatch(resetChapter),
-  resetChapterForm: dispatch(resetChapterForm),
+  resetChapter: () => dispatch(resetChapter),
+  resetChapterForm: () => dispatch(resetChapterForm),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
   deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch),

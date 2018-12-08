@@ -25,8 +25,6 @@ const mapStateToProps = state => ({
 class MyJournals extends Component {
   constructor(props) {
     super(props)
-
-    this.handlePress = this.handlePress.bind(this)
   }
 
   componentWillMount() {
@@ -40,7 +38,7 @@ class MyJournals extends Component {
     })
   }
 
-  handlePress(journalId) {
+  handlePress = (journalId) => {
     this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }

@@ -18,7 +18,7 @@ export const getCurrentUser = async () => {
   }
 }
 
-export const logOut = () => {
+export const logOut = async () => {
   try {
     AsyncStorage.removeItem("JWT")
     AsyncStorage.removeItem("currentUser")

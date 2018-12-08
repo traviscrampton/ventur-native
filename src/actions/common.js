@@ -7,3 +7,16 @@ export function updateCurrentBottomTab(payload) {
 }
 
 export const INITIAL_APP_LOADED = "INITIAL_APP_LOADED"
+export function initialAppLoaded() {
+  return {
+    type: INITIAL_APP_LOADED
+  }
+}
+
+export const SET_CURRENT_USER = "SET_CURRENT_USER"
+export function setCurrentUser(payload) {
+  return {
+    type: SET_CURRENT_USER,
+    payload: payload
+  }
+}

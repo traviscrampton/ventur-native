@@ -21,7 +21,7 @@ import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -39,7 +39,8 @@ const mapDispatchToProps = dispatch => ({
 
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+  updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
 })
 
 const bannerImageWidth = Dimensions.get("window").width
@@ -162,8 +163,25 @@ class Journal extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
+  mungeForChapterForm(data) {
+    return Object.assign(
+      {},
+      {
+        id: data.id,
+        title: data.title,
+        date: data.date,
+        offline: data.offline,
+        distance: data.distance,
+        journalId: data.journal.id,
+        bannerImage: { uri: "" }
+      }
+    )
+  }
+
   chapterCreateCallback = data => {
-    this.props.updateChapterForm(data)
+    let chapterFormData = this.mungeForChapterForm(data)
+    this.props.updateChapterForm(chapterFormData)
+    this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
     this.props.navigation.navigate("Chapter", { initialChapterForm: true })
   }
@@ -176,7 +194,7 @@ class Journal extends Component {
       offline: false,
       distance: 0,
       journalId: this.props.journal.id,
-      bannerImage: {}
+      bannerImage: { uri: "" }
     }
     createChapter(obj, this.chapterCreateCallback)
   }

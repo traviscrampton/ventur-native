@@ -20,11 +20,13 @@ import { userQuery } from "graphql/queries/users"
 import { gql } from "agent"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
+import { setCurrentUser } from "actions/common"
 import { connect } from "react-redux"
 import { Ionicons, Entypo } from "@expo/vector-icons"
 import { RESET_JOURNAL_TAB } from "actions/action_types"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 import DropDownHolder from "utils/DropdownHolder"
+import { logOut } from "auth"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
 import { setToken, API_ROOT } from "agent"
 
@@ -37,6 +39,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   populateUserPage: payload => dispatch(populateUserPage(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  setCurrentUser: payload => dispatch(setCurrentUser(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   resetJournal: () => {
@@ -85,6 +88,11 @@ class Profile extends Component {
     } else {
       return "lightgray"
     }
+  }
+
+  handleLogout = async () =>  {
+    await logOut()
+    this.props.setCurrentUser(null)
   }
 
   handleJournalPress = journalId => {
@@ -138,7 +146,7 @@ class Profile extends Component {
 
   renderEditProfile() {
     return (
-      <TouchableWithoutFeedback onPress={() => DropDownHolder.alert("error", "Error", "WHAT UP BLOOD")}>
+      <TouchableWithoutFeedback onPress={this.handleLogout}>
         <View
           style={{
             borderWidth: 1,
@@ -149,7 +157,7 @@ class Profile extends Component {
             paddingLeft: 10,
             paddingRight: 10
           }}>
-          <Text>Edit Profile</Text>
+          <Text>Log Out</Text>
         </View>
       </TouchableWithoutFeedback>
     )

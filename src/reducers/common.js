@@ -1,5 +1,5 @@
-import { SET_CURRENT_USER, TOGGLE_TAB_BAR } from "actions/action_types"
-import { UPDATE_CURRENT_BOTTOM_TAB, INITIAL_APP_LOADED } from "actions/common"
+import { TOGGLE_TAB_BAR } from "actions/action_types"
+import { SET_CURRENT_USER, UPDATE_CURRENT_BOTTOM_TAB, INITIAL_APP_LOADED } from "actions/common"
 const defaultAppState = {
   currentUser: null,
   hideTabBar: false,
