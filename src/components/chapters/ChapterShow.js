@@ -100,6 +100,7 @@ class ChapterShow extends Component {
   renderChapterImage() {
     let fourthWindowWidth = Dimensions.get("window").width / 4
     const { bannerImageUrl } = this.props.chapter
+    if (!bannerImageUrl) return
     return (
       <Image
         style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}

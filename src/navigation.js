@@ -143,5 +143,3 @@ const BottomNavigator = createBottomTabNavigator(
     tabBarComponent: BottomTabBar
   }
 )
-
-export const Ventur = RootNavigator(isSignedIn())

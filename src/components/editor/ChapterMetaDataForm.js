@@ -48,10 +48,6 @@ class ChapterMetaDataForm extends Component {
     this.persistUpdate = _.debounce(this.persistUpdate, 1000)
   }
 
-  componentDidMount() {
-    console.log("tis", this.props.chapterForm.bannerImage)
-  }
-
   persistMetadata = async (text, field) => {
     this.props.startUpdating()
     this.props.updateChapterForm({ [field]: text })

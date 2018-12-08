@@ -4,6 +4,7 @@ import { connect } from "react-redux"
 import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
 import { loginMutation } from "graphql/mutations/auth"
 import { gql } from "agent"
+import { setCurrentUser } from "actions/common"
 import { storeJWT } from "auth"
 
 const mapStateToProps = state => ({
@@ -20,25 +21,21 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: UPDATE_LOGIN_FORM, key: "password", value: text })
   },
 
-  setCurrentUser: payload => {
-    dispatch({ type: SET_CURRENT_USER, payload: payload })
-  }
+  setCurrentUser: payload => dispatch(setCurrentUser(payload))
 })
 
 class Login extends Component {
   constructor(props) {
     super(props)
-    this.submitForm = this.submitForm.bind(this)
   }
 
-  submitForm() {
+  submitForm = () => {
     const { email, password } = this.props
     gql(loginMutation, { email: email, password: password }).then(res => {
       const { token, user } = res.Login
       let obj = Object.assign({}, { token: token, user: user })
       storeJWT(obj)
       this.props.setCurrentUser(user)
-      this.props.navigation.navigate("BottomNavigator")
     })
   }
 

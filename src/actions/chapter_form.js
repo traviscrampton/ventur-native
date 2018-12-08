@@ -57,8 +57,7 @@ export const getJournalFeedDistance = (getState, journalId, distance) => {
   const allJournals = getState().journalFeed.allJournals
   const foundIndex = allJournals.findIndex(journal => {
     return journal.id == journalId
-  })
-  console.log("foundIndex", foundIndex)
+  })  
 
   if (foundIndex > -1) {
     journal = Object.assign({}, allJournals[foundIndex], { distance: distance })
