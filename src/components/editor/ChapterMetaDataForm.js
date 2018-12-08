@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import { populateOfflineChapters } from "actions/user"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
@@ -34,7 +34,8 @@ const mapDispatchToProps = dispatch => ({
   doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
 })
 
 class ChapterMetaDataForm extends Component {
@@ -45,6 +46,10 @@ class ChapterMetaDataForm extends Component {
       datePickerOpen: false
     }
     this.persistUpdate = _.debounce(this.persistUpdate, 1000)
+  }
+
+  componentDidMount() {
+    console.log("tis", this.props.chapterForm.bannerImage)
   }
 
   persistMetadata = async (text, field) => {
@@ -85,6 +90,7 @@ class ChapterMetaDataForm extends Component {
       await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
     }
 
+    this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
     this.props.doneUpdating()
   }

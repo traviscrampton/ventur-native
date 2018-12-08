@@ -46,7 +46,7 @@ export const journalQuery = `
 		      id
 		      title
 		      readableDate
-		      description
+		      date
 		      imageUrl
           published
 		      distance
