@@ -37,7 +37,7 @@ class HomeLoggedOut extends Component {
     return (
       <View>
         <Text style={{ color: "white", textAlign: "center", fontSize: 8 }}>
-          By tapping sign up, you agree to our privacy policy and service agreement.
+          *By tapping get started, you agree to our privacy policy and service agreement.
         </Text>
       </View>
     )
