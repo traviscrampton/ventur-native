@@ -13,16 +13,6 @@ import Ventur from "components/Ventur"
 const store = createStore(allReducers, applyMiddleware(thunk))
 
 export default class App extends Component {
-  componentWillMount() {
-    Font.loadAsync({
-      "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
-      playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
-      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Regular.ttf"),
-      "open-sans-bold": require("assets/fonts/Open_Sans/OpenSans-Bold.ttf"),
-      "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
-    })
-  }
-
   render() {
     return (
       <React.Fragment>

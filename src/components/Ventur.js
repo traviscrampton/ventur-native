@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { getCurrentUser } from "auth"
 import { initialAppLoaded, setCurrentUser } from "actions/common"
-import thunk from "redux-thunk"
+import { Font } from "expo"
 import { AsyncStorage, View } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
@@ -18,6 +18,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Ventur extends Component {
   componentWillMount() {
+    this.setUpFonts()
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
   }
@@ -42,6 +43,16 @@ class Ventur extends Component {
     } catch (err) {
       this.props.setCurrentUser(null)
     }
+  }
+
+  async setUpFonts() {
+    await Font.loadAsync({
+      "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
+      playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
+      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Regular.ttf"),
+      "open-sans-bold": require("assets/fonts/Open_Sans/OpenSans-Bold.ttf"),
+      "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
+    })
   }
 
   render() {
