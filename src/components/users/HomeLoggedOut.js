@@ -18,6 +18,10 @@ class HomeLoggedOut extends Component {
     this.props.navigation.navigate("Login")
   }
 
+  navigateToSignUp = () => {
+    this.props.navigation.navigate("UserEmailPasswordForm")
+  }
+
   renderTitleAndSubTitle() {
     return (
       <View style={{ marginTop: Dimensions.get("window").height / 7 }}>
@@ -55,7 +59,7 @@ class HomeLoggedOut extends Component {
 
   renderSignUp() {
     return (
-      <TouchableWithoutFeedback onPress={() => console.log("TOUCHABLE WIT FEEDBACK")}>
+      <TouchableWithoutFeedback onPress={this.navigateToSignUp}>
         <LinearGradient
           style={{
             marginTop: 10,

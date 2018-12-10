@@ -113,6 +113,7 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       }
     })
     .catch(err => {
+      dispatch(doneUpdating(data))
       DropDownHolder.alert("error", "Error", err)
     })
 }

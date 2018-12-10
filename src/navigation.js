@@ -23,6 +23,9 @@ import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import ChapterFormDate from "components/ChapterForm/ChapterFormDate"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
+import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
+import UserNameForm from "components/users/UserNameForm"
+import UserAvatarForm from "components/users/UserAvatarForm"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -108,8 +111,11 @@ const ProfileNavigator = createStackNavigator(
 
 const AuthFlow = createStackNavigator(
   {
+    HomeLoggedOut: HomeLoggedOut,
     Login: Login,
-    HomeLoggedOut: HomeLoggedOut
+    UserEmailPasswordForm: UserEmailPasswordForm,
+    UserNameForm: UserNameForm,
+    UserAvatarForm: UserAvatarForm
   },
   {
     initialRouteName: "HomeLoggedOut",
