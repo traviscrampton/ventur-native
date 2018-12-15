@@ -1,34 +1,24 @@
 import React, { Component } from "react"
 import { StyleSheet, Button, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
+import { updateUserForm, populateUserForm } from "actions/user_form"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
-import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
-import { loginMutation } from "graphql/mutations/auth"
-import { gql } from "agent"
-import { setCurrentUser } from "actions/common"
 import DropDownHolder from "utils/DropdownHolder"
-import { storeJWT } from "auth"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-TextInput.defaultProps.selectionColor = "white"
+import { API_ROOT, setToken } from "agent"
 
 const mapStateToProps = state => ({
-  email: state.login.email,
-  password: state.login.password
+  id: state.userForm.id,
+  firstName: state.userForm.firstName,
+  lastName: state.userForm.lastName
 })
 
 const mapDispatchToProps = dispatch => ({
-  emailEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "email", value: text })
-  },
-
-  passwordEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "password", value: text })
-  },
-
-  setCurrentUser: payload => dispatch(setCurrentUser(payload))
+  updateUserForm: payload => dispatch(updateUserForm(payload)),
+  populateUserForm: payload => dispatch(populateUserForm(payload))
 })
 
-class Login extends Component {
+class UserNameForm extends Component {
   constructor(props) {
     super(props)
 
@@ -41,18 +31,35 @@ class Login extends Component {
     this.props.navigation.goBack()
   }
 
-  submitForm = () => {
-    const { email, password } = this.props
-    gql(loginMutation, { email: email, password: password })
-      .then(res => {
-        const { token, user } = res.Login
-        let obj = Object.assign({}, { token: token, user: user })
-        storeJWT(obj)
-        this.props.setCurrentUser(user)
+  submitForm = async () => {
+    const token = await setToken()
+    const params = Object.assign({}, { id: this.props.id, first_name: this.props.firstName, last_name: this.props.lastName })
+    fetch(`${API_ROOT}/users/${params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        if (data.errors) {
+          throw Error(data.errors.join(", "))
+        }
+        this.props.populateUserForm({ id: data.id, firstName: data.firstName, lastName: data.lastName })
+        
+        this.props.navigation.navigate("UserAvatarForm")
       })
       .catch(err => {
-        DropDownHolder.alert("error", "Error", "Either your email or password is incorrect")
+        DropDownHolder.alert("error", "Error", err)
       })
+  }
+
+  handleEntry = (key, text) => {
+    this.props.updateUserForm({ key: key, text: text })
   }
 
   toggleHidePassword = () => {
@@ -76,7 +83,9 @@ class Login extends Component {
   renderFormTitle() {
     return (
       <View>
-        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>Login</Text>
+        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>
+          Who are you?
+        </Text>
       </View>
     )
   }
@@ -84,31 +93,24 @@ class Login extends Component {
   renderForm() {
     return (
       <View style={styles.container}>
-        <Text style={{ color: "white" }}>EMAIL</Text>
+        <Text style={{ color: "white" }}>FIRST NAME</Text>
         <TextInput
+          autoFocus={true}
           style={styles.textInput}
           editable={true}
           autoCapitalize="none"
           maxLength={50}
-          value={this.props.email}
-          onChangeText={text => this.props.emailEntry(text)}
+          value={this.props.firstName}
+          onChangeText={text => this.handleEntry("firstName", text)}
         />
-        <Text style={{ color: "white" }}>PASSWORD</Text>
-        <View style={{ position: "relative", height: 50 }}>
-          <TextInput
-            style={styles.textInput}
-            editable={true}
-            secureTextEntry={this.state.hidePassword}
-            maxLength={50}
-            value={this.props.password}
-            onChangeText={text => this.props.passwordEntry(text)}
-          />
-          <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
-            <View style={{ position: "absolute", right: 0, top: 50 / 4 }}>
-              <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
+        <Text style={{ color: "white" }}>LAST NAME</Text>
+        <TextInput
+          style={styles.textInput}
+          editable={true}
+          maxLength={50}
+          value={this.props.lastName}
+          onChangeText={text => this.handleEntry("lastName", text)}
+        />
         <TouchableWithoutFeedback onPress={this.submitForm}>
           <View
             style={{
@@ -157,4 +159,4 @@ const styles = StyleSheet.create({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login)
+)(UserNameForm)

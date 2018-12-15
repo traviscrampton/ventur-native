@@ -1,34 +1,23 @@
 import React, { Component } from "react"
 import { StyleSheet, Button, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
+import { updateUserForm, populateUserForm } from "actions/user_form"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
-import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
-import { loginMutation } from "graphql/mutations/auth"
-import { gql } from "agent"
-import { setCurrentUser } from "actions/common"
 import DropDownHolder from "utils/DropdownHolder"
-import { storeJWT } from "auth"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-TextInput.defaultProps.selectionColor = "white"
+import { API_ROOT, setToken } from "agent"
 
 const mapStateToProps = state => ({
-  email: state.login.email,
-  password: state.login.password
+  email: state.userForm.email,
+  password: state.userForm.password
 })
 
 const mapDispatchToProps = dispatch => ({
-  emailEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "email", value: text })
-  },
-
-  passwordEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "password", value: text })
-  },
-
-  setCurrentUser: payload => dispatch(setCurrentUser(payload))
+  updateUserForm: payload => dispatch(updateUserForm(payload)),
+  populateUserForm: payload => dispatch(populateUserForm(payload))
 })
 
-class Login extends Component {
+class UserEmailPasswordForm extends Component {
   constructor(props) {
     super(props)
 
@@ -41,18 +30,35 @@ class Login extends Component {
     this.props.navigation.goBack()
   }
 
-  submitForm = () => {
-    const { email, password } = this.props
-    gql(loginMutation, { email: email, password: password })
-      .then(res => {
-        const { token, user } = res.Login
-        let obj = Object.assign({}, { token: token, user: user })
-        storeJWT(obj)
-        this.props.setCurrentUser(user)
+  submitForm = async () => {
+    const token = await setToken()
+    const params = Object.assign({}, { email: this.props.email, password: this.props.password })
+    fetch(`${API_ROOT}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        if (data.errors) {
+          throw Error(data.errors.join(", "))
+        }
+        console.log(data)
+        this.props.populateUserForm({ id: data.id, email: data.email })
+        this.props.navigation.navigate("UserNameForm")
       })
       .catch(err => {
-        DropDownHolder.alert("error", "Error", "Either your email or password is incorrect")
+        DropDownHolder.alert("error", "Error", err)
       })
+  }
+
+  handleEntry = (key, text) => {
+    this.props.updateUserForm({ key: key, text: text })
   }
 
   toggleHidePassword = () => {
@@ -76,7 +82,9 @@ class Login extends Component {
   renderFormTitle() {
     return (
       <View>
-        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>Login</Text>
+        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>
+          Email & Password
+        </Text>
       </View>
     )
   }
@@ -86,12 +94,13 @@ class Login extends Component {
       <View style={styles.container}>
         <Text style={{ color: "white" }}>EMAIL</Text>
         <TextInput
+          autoFocus={true}
           style={styles.textInput}
           editable={true}
           autoCapitalize="none"
           maxLength={50}
           value={this.props.email}
-          onChangeText={text => this.props.emailEntry(text)}
+          onChangeText={text => this.handleEntry("email", text)}
         />
         <Text style={{ color: "white" }}>PASSWORD</Text>
         <View style={{ position: "relative", height: 50 }}>
@@ -101,7 +110,7 @@ class Login extends Component {
             secureTextEntry={this.state.hidePassword}
             maxLength={50}
             value={this.props.password}
-            onChangeText={text => this.props.passwordEntry(text)}
+            onChangeText={text => this.handleEntry("password", text)}
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
             <View style={{ position: "absolute", right: 0, top: 50 / 4 }}>
@@ -157,4 +166,4 @@ const styles = StyleSheet.create({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login)
+)(UserEmailPasswordForm)

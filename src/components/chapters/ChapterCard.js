@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#d3d3d3"
   },
   chapterTitle: {
-    fontFamily: "open-sans-semi",
+    fontFamily: "open-sans-regular",
     color: "black",
     fontSize: 20,
     marginBottom: 10

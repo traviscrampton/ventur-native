@@ -4,7 +4,7 @@ import DropDownHolder from "utils/DropdownHolder"
 import { loadChapter } from "actions/chapter"
 import { resetChapterForm } from "actions/chapter_form"
 import { populateOfflineChapters, dispatch } from "actions/user"
-import { persistChapterToAsyncStorage } from "utils/offline_helpers"
+import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
 
 export function editEntry(payload) {
@@ -113,6 +113,7 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       }
     })
     .catch(err => {
+      dispatch(doneUpdating(data))
       DropDownHolder.alert("error", "Error", err)
     })
 }
@@ -205,11 +206,8 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
 }
 
 export const dispatchPersist = async (entries, chapter, dispatch) => {
-  let connectionType
-  NetInfo.getConnectionInfo().then(connectionInfo => {
-    connectionType = connectionInfo.type
-  })
-  if ((connectionType === "none" && chapter.offline) || isNaN(parseInt(chapter.id))) {
+  let useLocal = await useLocalStorage(chapter.id, chapter.offline)
+  if (useLocal) {
     let updatedChapter = Object.assign({}, chapter, { content: entries })
     await persistChapterToAsyncStorage(updatedChapter, null)
     dispatch(loadChapter(updatedChapter))

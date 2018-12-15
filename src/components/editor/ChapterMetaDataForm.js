@@ -15,7 +15,8 @@ import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
-  offlineChapterCreate
+  offlineChapterCreate,
+  useLocalStorage
 } from "utils/offline_helpers"
 import _ from "lodash"
 import { loadChapter } from "actions/chapter"
@@ -93,12 +94,9 @@ class ChapterMetaDataForm extends Component {
 
   persistUpdate = async () => {
     let chapter = _.omit(this.props.chapterForm, "journals")
-    if (
-      false ||
-      isNaN(
-        parseInt(this.props.chapterForm.id)
-      ) /* if not connected to the internet store offline is true or the id is NAN */
-    ) {
+    let useLocal = await useLocalStorage(chapter.id, chapter.offline)
+
+    if (useLocal) {
       chapter = Object.assign({}, chapter, {
         bannerImageUrl: chapter.bannerImage.uri,
         readableDate: generateReadableDate(chapter.date)
@@ -134,6 +132,7 @@ class ChapterMetaDataForm extends Component {
         <View style={styles.iconsAndText}>
           <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
           <TextInput
+            selectionColor={"#FF8C34"}
             keyboardType={"numeric"}
             selectionColor="white"
             value={distance.toString()}
@@ -153,6 +152,7 @@ class ChapterMetaDataForm extends Component {
         <View>
           <TextInput
             multiline
+            selectionColor={"#FF8C34"}
             placeholder={"Chapter Title"}
             style={styles.title}
             value={title}

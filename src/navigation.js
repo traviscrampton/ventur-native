@@ -4,6 +4,7 @@ import JournalFeed from "components/journals/JournalFeed"
 import MyJournals from "components/journals/MyJournals"
 import Journal from "components/journals/Journal"
 import Login from "components/users/Login"
+import HomeLoggedOut from "components/users/HomeLoggedOut"
 import ContentCreate from "components/modals/ContentCreate"
 import BottomTabBar from "components/shared/BottomTabBar"
 import CameraRollContainer from "components/editor/CameraRollContainer"
@@ -22,6 +23,9 @@ import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
 import ChapterFormDate from "components/ChapterForm/ChapterFormDate"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
+import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
+import UserNameForm from "components/users/UserNameForm"
+import UserAvatarForm from "components/users/UserAvatarForm"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
 
@@ -35,6 +39,7 @@ const NO_FOOTER_SCREENS = [
   "CameraRollContainer",
   "ImageCaptionForm",
   "ManageContent",
+  "Login",
   "JournalFormTitle",
   "JournalFormLocation",
   "JournalFormStatus",
@@ -104,7 +109,34 @@ const ProfileNavigator = createStackNavigator(
   }
 )
 
+const AuthFlow = createStackNavigator(
+  {
+    HomeLoggedOut: HomeLoggedOut,
+    Login: Login,
+    UserEmailPasswordForm: UserEmailPasswordForm,
+    UserNameForm: UserNameForm,
+    UserAvatarForm: UserAvatarForm
+  },
+  {
+    initialRouteName: "HomeLoggedOut",
+    headerMode: "none",
+    headerTransparent: true,
+    headerStyle: {
+      borderBottomWidth: 0
+    }
+  }
+)
+
 JournalFeedNavigator.navigationOptions = ({ navigation }) => {
+  let { routeName } = navigation.state.routes[navigation.state.index]
+  let navigationOptions = {}
+  if (NO_FOOTER_SCREENS.includes(routeName)) {
+    navigationOptions.tabBarVisible = false
+  }
+  return navigationOptions
+}
+
+AuthFlow.navigationOptions = ({ navigation }) => {
   let { routeName } = navigation.state.routes[navigation.state.index]
   let navigationOptions = {}
   if (NO_FOOTER_SCREENS.includes(routeName)) {
@@ -125,11 +157,11 @@ ProfileNavigator.navigationOptions = ({ navigation }) => {
 export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
-      Login: Login,
+      AuthFlow: AuthFlow,
       BottomNavigator: BottomNavigator
     },
     {
-      initialRouteName: signedIn ? "BottomNavigator" : "Login"
+      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
     }
   )
 
