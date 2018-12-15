@@ -47,10 +47,10 @@ class Ventur extends Component {
 
   async setUpFonts() {
     await Font.loadAsync({
-      "open-sans-regular": require("assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
-      playfair: require("assets/fonts/Playfair_Display/PlayfairDisplay-Bold.ttf"),
-      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Regular.ttf"),
-      "open-sans-bold": require("assets/fonts/Open_Sans/OpenSans-Bold.ttf"),
+      "open-sans-regular": require("assets/fonts/Lato/Lato-Regular.ttf"),
+      playfair: require("assets/fonts/Lato/Lato-Bold.ttf"),
+      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
+      "open-sans-bold": require("assets/fonts/Lato/Lato-Black.ttf"),
       "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
     })
   }

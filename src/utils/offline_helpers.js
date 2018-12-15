@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { AsyncStorage } from "react-native"
+import { AsyncStorage, NetInfo } from "react-native"
 
 export const persistChapterToAsyncStorage = async (chapter, reduxCallBack) => {
   let foundIndex
@@ -64,4 +64,18 @@ export const getChapterFromStorage = async chapterId => {
 export const updateOfflineChapters = async (chapter, reduxCallback, oldChapter) => {
   await persistChapterToAsyncStorage(chapter, reduxCallback)
   await removeChapterFromAsyncStorage(oldChapter, reduxCallback)
+}
+
+export const notInternetConnected = async () => {
+  let connectionType
+  NetInfo.getConnectionInfo().then(connectionInfo => {
+    connectionType = connectionInfo.type
+  })
+
+  return connectionType === "none"
+}
+
+export const useLocalStorage = async (chapterId, offline) => {
+  const notConnected = await notInternetConnected()
+  return (notConnected && offline) || isNaN(parseInt(chapterId))
 }

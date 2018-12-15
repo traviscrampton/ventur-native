@@ -16,7 +16,7 @@ import {
 import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
-import { persistChapterToAsyncStorage } from "utils/offline_helpers"
+import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
@@ -97,7 +97,8 @@ class ChapterFormJournals extends Component {
   }
 
   async persistUpdate() {
-    if (false /* if not connected to the internet store offline is true */) {
+    let useLocal = await useLocalStorage(this.props.chapterForm.id, this.props.chapterForm.offline)
+    if (useLocal /* if not connected to the internet store offline is true */) {
       let chapter = _.omit(this.props.chapterForm, "journals")
       this.chapterCallback(chapter)
     } else {
