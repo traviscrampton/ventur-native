@@ -134,6 +134,7 @@ class ChapterMetaDataForm extends Component {
         <View style={styles.iconsAndText}>
           <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
           <TextInput
+          selectionColor={"#FF8C34"}
             keyboardType={"numeric"}
             selectionColor="white"
             value={distance.toString()}
@@ -153,6 +154,7 @@ class ChapterMetaDataForm extends Component {
         <View>
           <TextInput
             multiline
+            selectionColor={"#FF8C34"}
             placeholder={"Chapter Title"}
             style={styles.title}
             value={title}

@@ -6,7 +6,6 @@ import { LinearGradient } from "expo"
 import DropDownHolder from "utils/DropdownHolder"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { API_ROOT, setToken } from "agent"
-TextInput.defaultProps.selectionColor = "white"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,

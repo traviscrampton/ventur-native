@@ -340,6 +340,7 @@ class ChapterEditor extends Component {
       <TextInput
         multiline
         key={index}
+        selectionColor={"#FF8C34"}
         ref={`textInput${index}`}
         style={[styles.textInput, this.getInputStyling(entry)]}
         onChangeText={text => this.handleTextChange(text, index)}

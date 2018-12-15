@@ -20,7 +20,6 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { storeJWT } from "auth"
 import { API_ROOT, setToken, gql } from "agent"
-TextInput.defaultProps.selectionColor = "white"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,
