@@ -330,6 +330,8 @@ class Profile extends Component {
       <View style={{ marginBottom: 100 }}>
         <ChapterList
           chapters={this.props.offlineChapters}
+          user={this.props.user}
+          currentUser={this.props.currentUser}
           persistOfflineChapter={this.persistOfflineChapter}
           handleSelectChapter={this.selectChapter}
         />

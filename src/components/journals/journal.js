@@ -154,7 +154,7 @@ class Journal extends Component {
   renderChapters() {
     return (
       <View style={{ marginBottom: 100 }}>
-        <ChapterList chapters={this.props.chapters} handleSelectChapter={this.requestForChapter} />
+        <ChapterList chapters={this.props.chapters} user={this.props.journal.user} currentUser={this.props.currentUser} handleSelectChapter={this.requestForChapter} />
       </View>
     )
   }

@@ -114,6 +114,10 @@ class ChapterDispatch extends Component {
 
   updatePublishedStatus = async () => {
     this.props.editChapterPublished(this.props.chapter, !this.props.chapter.published)
+    if (this.props.chapter.offline) {
+      let chapter = Object.assign({}, this.props.chapter, { published: !this.props.chapter.published })
+      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
+    }
   }
 
   getMenuStyling() {

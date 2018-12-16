@@ -2,7 +2,7 @@ import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import DropDownHolder from "utils/DropdownHolder"
 import { loadChapter } from "actions/chapter"
-import { resetChapterForm } from "actions/chapter_form"
+import { resetChapterForm, addChapterToJournals } from "actions/chapter_form"
 import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
@@ -162,6 +162,7 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
         throw Error(data.errors.join(", "))
       }
       dispatch(loadChapter(data))
+      dispatch(addChapterToJournals(data))
     })
     .catch(err => {
       DropDownHolder.alert("error", "Error", err)

@@ -4,6 +4,7 @@ import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-ico
 
 const ChapterCard = props => {
   let notOnServer = ""
+  let publishedStatus = ""
   let { imageUrl, title, distance, readableDate, bannerImageUrl } = props
   if (bannerImageUrl) {
     imageUrl = bannerImageUrl
@@ -13,10 +14,15 @@ const ChapterCard = props => {
     notOnServer = <Button title={"Persist"} onPress={() => props.persistOfflineChapter(props.id)} style={{ fontSize: 10, marginTop: -11 }} />
   }
 
+  if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
+    publishedStatus = <Text style={{color: "orange"}}>Draft</Text>
+  }
+
   return (
     <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
         <View>
+          {publishedStatus}
           <Text style={styles.chapterTitle}>{title}</Text>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
