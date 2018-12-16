@@ -63,7 +63,7 @@ class BottomTabBar extends Component {
 
   renderToolbar() {
     return (
-      <View shadowColor="#000" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.outerContainer}>
+      <View shadowColor="#d3d3d3" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           {this.props.navigation.state.routes.map((route, idx) => {
             return this.renderStandardTab(route, idx)

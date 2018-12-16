@@ -16,7 +16,7 @@ import {
 import { StackActions, NavigationActions } from "react-navigation"
 import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
-import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
+import { persistChapterToAsyncStorage, useLocalStorage, notInternetConnected } from "utils/offline_helpers"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
@@ -129,7 +129,8 @@ class ChapterFormJournals extends Component {
   }
 
   persistCreate = async () => {
-    if (false /* if not connected to the internet store offline is true */) {
+    let notConnected = await notInternetConnected()
+    if (notConnected /* if not connected to the internet store offline is true */) {
       const chapter = await offlineChapterCreate(this.props.chapterForm, this.props.populateOfflineChapters)
       let date = new Date()
       this.props.updateChapterForm({
@@ -207,7 +208,7 @@ class ChapterFormJournals extends Component {
   renderJournalOption(journal, index) {
     const isActive = this.isActiveOption(journal)
     return (
-      <TouchableWithoutFeedback onPress={() => this.props.updateChapterForm({ journalId: journal.id })}>
+      <TouchableWithoutFeedback onPress={() => this.props.updateChapterForm({ journalId: journal.id, offline: true })}>
         <View
           style={[
             {

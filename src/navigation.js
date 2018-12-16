@@ -3,7 +3,7 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator }
 import JournalFeed from "components/journals/JournalFeed"
 import MyJournals from "components/journals/MyJournals"
 import Journal from "components/journals/Journal"
-import Login from "components/users/Login"
+import Login from "components/users/login"
 import HomeLoggedOut from "components/users/HomeLoggedOut"
 import ContentCreate from "components/modals/ContentCreate"
 import BottomTabBar from "components/shared/BottomTabBar"
@@ -171,7 +171,7 @@ const BottomNavigator = createBottomTabNavigator(
     Profile: ProfileNavigator
   },
   {
-    initialRouteName: "Explore",
+    initialRouteName: "Profile",
     tabBarComponent: BottomTabBar
   }
 )

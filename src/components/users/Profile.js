@@ -13,11 +13,12 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
-import { Feather } from "@expo/vector-icons"
+import { MaterialIcons, Feather } from "@expo/vector-icons"
 import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
 import { userQuery } from "graphql/queries/users"
 import { gql } from "agent"
+import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { setCurrentUser } from "actions/common"
@@ -52,7 +53,8 @@ class Profile extends Component {
     super(props)
 
     this.state = {
-      activeTab: "offlineChapters"
+      activeTab: "journals",
+      userMenuOpen: false
     }
   }
 
@@ -84,13 +86,11 @@ class Profile extends Component {
 
   isActiveTab(tab) {
     if (this.state.activeTab === tab) {
-      return "#FF8C34"
-    } else {
-      return "lightgray"
+      return { backgroundColor: "#FF8C34", color: "white", borderColor: "#FF8C34" }
     }
   }
 
-  handleLogout = async () =>  {
+  handleLogout = async () => {
     await logOut()
     this.props.setCurrentUser(null)
   }
@@ -98,6 +98,13 @@ class Profile extends Component {
   handleJournalPress = journalId => {
     this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
+  }
+
+  toggleUserMenu = () => {
+    let { userMenuOpen } = this.state
+    this.setState({
+      userMenuOpen: !userMenuOpen
+    })
   }
 
   selectChapter = async chapterId => {
@@ -118,39 +125,28 @@ class Profile extends Component {
     this.props.navigation.navigate("ChapterFormJournals")
   }
 
-  renderHeader() {
-    return (
-      <View
-        style={{
-          height: 60,
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-around",
-          borderBottomWidth: 1,
-          borderBottomColor: "lightgray"
-        }}>
-        <Text>{this.props.user.fullName}</Text>
-      </View>
-    )
-  }
-
   renderUserName() {
     return (
-      <View>
-        <Text>{this.props.user.fullName}</Text>
+      <View style={{ height: Dimensions.get("window").width / 4, display: "flex", flexDirection: "column" }}>
+        <View>
+          <Text style={{ fontFamily: "playfair", fontSize: 22, marginBottom: 5, fontWeight: "bold" }}>
+            Hi {this.props.user.firstName}!
+          </Text>
+        </View>
+        <View>
+          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>Welcome to your content portal!</Text>
+        </View>
       </View>
     )
   }
 
-  renderEditProfile() {
+  renderLogOut() {
     return (
       <TouchableWithoutFeedback onPress={this.handleLogout}>
         <View
           style={{
             borderWidth: 1,
-            borderRadius: 4,
+            borderRadius: 30,
             borderColor: "gray",
             paddingTop: 2.5,
             paddingBottom: 2.5,
@@ -163,68 +159,56 @@ class Profile extends Component {
     )
   }
 
-  renderOfflineChapterStatistics() {
-    return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <View>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{this.props.offlineChapters.length}</Text>
-        </View>
-        <View>
-          <Text style={{ fontSize: 16, color: "gray" }}>Offline Chapters</Text>
-        </View>
-      </View>
-    )
-  }
+  renderProfilePhoto() {
+    let imgDimensions = Dimensions.get("window").width / 4
 
-  renderJournalStatistics() {
-    return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <View>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{this.props.user.journals.length}</Text>
-        </View>
-        <View>
-          <Text style={{ fontSize: 16, color: "gray" }}>Trips</Text>
-        </View>
-      </View>
-    )
-  }
-
-  renderStatistics() {
     return (
       <View
         style={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "66%"
+          width: Dimensions.get("window").width - 30,
+          flexDirection: "row",
+          alignItems: "top"
+          // justifyContent: "space-between"
         }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          {this.renderJournalStatistics()}
-          {this.renderOfflineChapterStatistics()}
-        </View>
-        <View style={{ marginTop: 10 }}>{this.renderEditProfile()}</View>
+        <Image
+          style={{
+            width: imgDimensions,
+            height: imgDimensions,
+            borderRadius: imgDimensions / 2,
+            marginRight: 10,
+            borderWidth: 1,
+            borderColor: "gray"
+          }}
+          source={{ uri: this.props.user.avatarImageUrl }}
+        />
+        <View>{this.renderUserName()}</View>
+        <TouchableWithoutFeedback onPress={this.toggleUserMenu}>
+          <MaterialIcons name="settings" color="#333" size={24} />
+        </TouchableWithoutFeedback>
+        {this.renderDropdown()}
       </View>
     )
   }
 
-  renderProfilePhoto() {
-    return (
-      <View style={{ width: "33%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <Image
-          style={{ width: 90, height: 90, borderRadius: 45, marginBottom: 5, borderWidth: 1, borderColor: "gray" }}
-          source={{ uri: this.props.user.avatarImageUrl }}
-        />
-        <View>{this.renderUserName()}</View>
-      </View>
-    )
+  renderDropdown() {
+    if (!this.state.userMenuOpen) return
+
+    const options = [{ type: "touchable", title: "Log Out", callback: this.handleLogout }]
+    return <ChapterUserForm options={options} styles={{ right: -5, top: 25, width: 100 }} />
   }
 
   renderProfilePhotoAndMetadata() {
     return (
-      <View style={{ marginBottom: 20, padding: 15, backgroundColor: "white" }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View
+        style={{
+          padding: 15,
+          marginTop: 20,
+          backgroundColor: "white",
+          width: Dimensions.get("window").width - 30
+        }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
           {this.renderProfilePhoto()}
-          {this.renderStatistics()}
         </View>
       </View>
     )
@@ -233,35 +217,56 @@ class Profile extends Component {
   renderProfileTabBar() {
     return (
       <View
+        shadowColor="#d3d3d3"
+        shadowOffset={{ width: 0, height: 3 }}
+        shadowOpacity={0.3}
         style={{
           marginBottom: 10,
+          backgroundColor: "white",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          borderTopColor: "lightgray",
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          borderBottomColor: "lightgray",
+          justifyContent: "space-around",
           height: 45
         }}>
         <TouchableWithoutFeedback onPress={() => this.switchActiveTab("journals")}>
-          <View style={{ width: Dimensions.get("window").width / 2 }}>
-            <Ionicons
-              style={{ textAlign: "center" }}
-              name="ios-bicycle"
-              color={this.isActiveTab("journals")}
-              size={25}
-            />
+          <View
+            style={[
+              {
+                borderColor: "#D1D1D1",
+                height: 40,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: Dimensions.get("window").width / 2.2,
+                borderRadius: 30,
+                borderWidth: 1,
+                marginBottom: 5
+              },
+              this.isActiveTab("journals")
+            ]}>
+            <Text style={[{ fontSize: 16 }, this.isActiveTab("journals")]}>MY TRIPS ({this.props.user.journals.length})</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
-          <View style={{ width: Dimensions.get("window").width / 2 }}>
-            <Entypo
-              style={{ textAlign: "center" }}
-              name="tools"
-              color={this.isActiveTab("offlineChapters")}
-              size={22}
-            />
+          <View
+            style={[
+              {
+                borderColor: "#D1D1D1",
+                height: 40,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: Dimensions.get("window").width / 2.2,
+                borderRadius: 30,
+                borderWidth: 1,
+                marginBottom: 5
+              },
+              this.isActiveTab("offlineChapters")
+            ]}>
+            <Text style={[{ fontSize: 16 }, this.isActiveTab("offlineChapters")]}>MY CHAPTERS ({this.props.offlineChapters.length})</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -374,7 +379,7 @@ class Profile extends Component {
             width: 60,
             height: 60,
             borderRadius: 30,
-            bottom: 80,
+            bottom: 17,
             right: 20,
             display: "flex",
             alignItems: "center",
@@ -420,7 +425,7 @@ class Profile extends Component {
             width: 60,
             height: 60,
             borderRadius: 30,
-            bottom: 80,
+            bottom: 17,
             right: 20,
             display: "flex",
             alignItems: "center",
@@ -434,13 +439,10 @@ class Profile extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white", paddingBottom: 60 }}>
-        {this.renderHeader()}
-        <ScrollView style={{ height: "100%" }}>
-          {this.renderProfilePhotoAndMetadata()}
-          {this.renderProfileTabBar()}
-          {this.renderRelatedProfileContent()}
-        </ScrollView>
+      <View style={{ backgroundColor: "white", height: "100%" }}>
+        {this.renderProfilePhotoAndMetadata()}
+        {this.renderProfileTabBar()}
+        <ScrollView>{this.renderRelatedProfileContent()}</ScrollView>
         {this.renderFloatingCreateButton()}
       </View>
     )

@@ -2,7 +2,7 @@ export const userQuery = `
     query user($id: ID) {
       user(id: $id) {
         id
-        fullName
+        firstName
         avatarImageUrl
         journals {
           id

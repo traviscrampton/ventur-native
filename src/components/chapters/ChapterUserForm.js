@@ -66,16 +66,16 @@ class ChapterUserForm extends Component {
   render() {
     return (
       <View
-        style={{
-          position: "absolute",
-          top: 60,
-          borderRadius: 4,
-          right: 20,
-          zIndex: 10,
-          width: 250,
-          backgroundColor: "black",
-          opacity: 0.85
-        }}>
+        style={[{
+                  position: "absolute",
+                  top: 60,
+                  borderRadius: 4,
+                  right: 20,
+                  zIndex: 10,
+                  width: 250,
+                  backgroundColor: "black",
+                  opacity: 0.85
+                }, this.props.styles]}>
         {this.renderChapterOptions()}
       </View>
     )
