@@ -6,7 +6,8 @@ import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image, Dim
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
-  activeCaption: state.editor.activeCaption
+  activeCaption: state.editor.activeCaption,
+  width: state.common.width
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -49,7 +50,7 @@ class ImageCaptionForm extends Component {
 
   renderImage() {
     const image = this.props.entries[this.index]
-    return <Image key="image" style={styles.image} source={{ uri: image.uri }} />
+    return <Image key="image" style={[styles.image, { width: this.props.width }]} source={{ uri: image.uri }} />
   }
 
   updateActiveImageCaption(text) {
@@ -87,7 +88,6 @@ class ImageCaptionForm extends Component {
 
 const styles = StyleSheet.create({
   image: {
-    width: Dimensions.get("window").width,
     height: 250
   },
   textAlignCenter: {

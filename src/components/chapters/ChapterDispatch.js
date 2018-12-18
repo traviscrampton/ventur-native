@@ -26,6 +26,7 @@ const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
+  width: state.common.width,
   isUpdating: state.editor.isUpdating
 })
 
@@ -183,7 +184,7 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text numberOfLines={1} style={styles.journalTitle}>
+          <Text numberOfLines={1} style={[styles.journalTitle, {maxWidth: this.props.width / 1.5}]}>
             {this.props.journal.title}
           </Text>
         </View>
@@ -262,7 +263,6 @@ const styles = StyleSheet.create({
   journalTitle: {
     fontFamily: "open-sans-semi",
     fontSize: 16,
-    maxWidth: Dimensions.get("window").width / 1.5
   },
   backIconContainer: {
     display: "flex",

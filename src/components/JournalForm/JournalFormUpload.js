@@ -21,7 +21,9 @@ import CameraRollPicker from "react-native-camera-roll-picker"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
-  currentRoot: state.common.currentBottomTab
+  currentRoot: state.common.currentBottomTab,
+  height: state.common.height,
+  width: state.common.width
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -133,7 +135,7 @@ class JournalFormLocation extends Component {
         <ImageBackground
           style={{
             height: 350,
-            width: Dimensions.get("window").width,
+            width: this.props.width,
             backgroundColor: "white",
             display: "flex",
             flexDirection: "row",
@@ -167,7 +169,7 @@ class JournalFormLocation extends Component {
             marginLeft: -20,
             marginBottom: 20,
             height: 350,
-            width: Dimensions.get("window").width
+            width: this.props.width
           }}>
           {this.renderCameraPicker()}
         </ScrollView>
@@ -194,7 +196,7 @@ class JournalFormLocation extends Component {
   render() {
     return (
       <View>
-        <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#FF8C34", "#E46545"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#FF8C34", "#E46545"]}>
           {this.renderBackButtonHeader()}
           {this.renderForm()}
         </LinearGradient>

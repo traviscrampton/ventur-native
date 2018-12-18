@@ -29,7 +29,8 @@ const mapStateToProps = state => ({
   journalId: state.chapterForm.journalId,
   offline: state.chapterForm.offline,
   chapter: state.chapterForm,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -45,6 +46,7 @@ class ChapterFormJournals extends Component {
   }
 
   componentDidMount() {
+    Expo.ScreenOrientation.allow("ALL")
     this.props.resetChapterForm()
   }
 
@@ -246,9 +248,9 @@ class ChapterFormJournals extends Component {
   render() {
     return (
       <View>
-        <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#067BC2", "#032D47"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#067BC2", "#032D47"]}>
           {this.renderBackButtonHeader()}
-          <ScrollView bounces="none" style={{ padding: 20, maxHeight: Dimensions.get("window").height * 0.65 }}>
+          <ScrollView bounces="none" style={{ padding: 20, maxHeight: this.props.height * 0.65 }}>
             {this.renderForm()}
           </ScrollView>
           {this.renderFormSubmission()}

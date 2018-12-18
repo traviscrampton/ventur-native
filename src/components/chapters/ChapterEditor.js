@@ -37,10 +37,10 @@ import InputScrollView from "react-native-input-scroll-view"
 import _ from "lodash"
 import { updateChapterForm } from "actions/chapter_form"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
-import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
 import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
 import { populateOfflineChapters } from "actions/user"
+import ContentCreator from "components/editor/ContentCreator"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
@@ -358,7 +358,7 @@ class ChapterEditor extends Component {
     if (activeEntry.content.length === 0) {
       return this.props.activeIndex - 1
     } else {
-      return this.props.activeIndex 
+      return this.props.activeIndex
     }
   }
 

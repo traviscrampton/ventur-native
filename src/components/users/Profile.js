@@ -59,6 +59,7 @@ class Profile extends Component {
   }
 
   componentWillMount() {
+    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getProfilePageData()
     this.getOfflineChapters()
   }
@@ -349,8 +350,8 @@ class Profile extends Component {
           contentContainerStyle={{
             display: "flex",
             backgroundColor: "white",
-            paddingLeft: pad,
-            paddingRight: pad,
+            paddingLeft: 15,
+            paddingRight: 15,
             flexDirection: "row",
             justifyContent: "space-between",
             flexWrap: "wrap"

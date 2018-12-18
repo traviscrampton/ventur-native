@@ -19,7 +19,9 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   journals: state.myJournals.journals,
-  journal: state.journal.journal
+  journal: state.journal.journal,
+  height: state.common.height,
+  width: state.common.width
 })
 
 class MyJournals extends Component {
@@ -38,7 +40,7 @@ class MyJournals extends Component {
     })
   }
 
-  handlePress = (journalId) => {
+  handlePress = journalId => {
     this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }
@@ -74,29 +76,27 @@ class MyJournals extends Component {
   }
 
   render() {
+    console.log("journal", this.props.height, this.props.weight)
+    const pad = this.props.width * 0.035
+
     return (
       <View style={{ position: "relative", height: "100%", backgroundColor: "white" }}>
-        <FlatList
-          scrollEnabled={true}
-          contentContainerStyle={styles.flatListContainer}
-          data={this.props.journals}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <JournalMini {...item} handlePress={this.handlePress} />}
-        />
+        <ScrollView style={[styles.flatListContainer, { paddingLeft: pad, paddingRight: pad }]}>
+          {this.props.journals.map((journal, index) => {
+            return <JournalMini {...journal} height={this.props.height} width={this.props.width} handlePress={this.handlePress} />
+          })}
+        </ScrollView>
         {this.renderCreateJournalCta()}
       </View>
     )
   }
 }
 
-const pad = Dimensions.get("window").width * 0.035
 const styles = StyleSheet.create({
   flatListContainer: {
     display: "flex",
     backgroundColor: "white",
     paddingTop: 20,
-    paddingLeft: pad,
-    paddingRight: pad,
     flexDirection: "row",
     justifyContent: "space-between",
     flexWrap: "wrap"

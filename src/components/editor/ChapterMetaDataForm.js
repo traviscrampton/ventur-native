@@ -6,7 +6,6 @@ import {
   Text,
   TextInput,
   Image,
-  Dimensions,
   DatePickerIOS,
   TouchableWithoutFeedback
 } from "react-native"
@@ -27,7 +26,9 @@ import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
-  chapter: state.chapter.chapter
+  chapter: state.chapter.chapter,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -164,7 +165,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = Dimensions.get("window").width / 4
+    let fourthWindowWidth = this.props.width / 4
     let { bannerImageUrl } = this.props.chapter
     return (
       <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>

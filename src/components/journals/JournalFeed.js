@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, ScrollView, View, Text } from "react-native"
+import { StyleSheet, FlatList, ScrollView, Dimensions, View, Text } from "react-native"
 import { connect } from "react-redux"
 import { gql } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
@@ -19,8 +19,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
   currentUser: state.common.currentUser,
-  width: state.common.width,
-  height: state.common.height
 })
 
 class JournalFeed extends Component {
@@ -30,6 +28,7 @@ class JournalFeed extends Component {
   }
 
   componentWillMount() {
+    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getJournalFeed()
   }
 
@@ -45,15 +44,14 @@ class JournalFeed extends Component {
   }
 
   render() {
-    console.log("from feed", this.props.width, this.props.height)
     return (
       <ScrollView style={{ backgroundColor: "white" }}>
         {this.props.journals.map((journal, index) => {
           return (
             <JournalCard
               {...journal}
-              width={this.props.width}
-              height={this.props.height}
+              width={Dimensions.get("window").width}
+              height={Dimensions.get("window").height}
               handlePress={this.handlePress}
             />
           )

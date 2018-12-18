@@ -45,15 +45,13 @@ const mapDispatchToProps = dispatch => ({
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
 })
 
-// const bannerImageWidth = Dimensions.get("window").width
-// const bannerImageHeight = Dimensions.get("window").height / 3
-
 class Journal extends Component {
   constructor(props) {
     super(props)
   }
 
   componentWillMount() {
+    Expo.ScreenOrientation.allow("ALL")
     this.requestForJournal()
   }
 
@@ -168,7 +166,7 @@ class Journal extends Component {
 
   renderEmptyChapterState() {
     return (
-      <View style={{ width: Dimensions.get("window").width, paddingRight: 20, paddingLeft: 20 }}>
+      <View style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={{ marginBottom: 10 }}>

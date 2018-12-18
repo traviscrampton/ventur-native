@@ -6,7 +6,6 @@ import {
   Text,
   ScrollView,
   Image,
-  Dimensions,
   ImageBackground,
   TouchableHighlight
 } from "react-native"
@@ -18,7 +17,9 @@ const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
   loaded: state.chapter.loaded,
   user: state.chapter.chapter.user,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -98,7 +99,7 @@ class ChapterShow extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = Dimensions.get("window").width / 4
+    let fourthWindowWidth = this.props.width / 4
     const { bannerImageUrl } = this.props.chapter
     if (!bannerImageUrl) return
     return (
@@ -158,14 +159,14 @@ class ChapterShow extends Component {
   }
 
   getImageHeight(aspectRatio) {
-    return aspectRatio * Dimensions.get("window").width
+    return aspectRatio * this.props.width
   }
 
   renderImageEntry(entry, index) {
     return (
       <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
         <ImageBackground
-          style={{ width: Dimensions.get("window").width, height: this.getImageHeight(entry.aspectRatio) }}
+          style={{ width: this.props.width, height: this.getImageHeight(entry.aspectRatio) }}
           source={{ uri: entry.uri }}
         />
         {this.renderImageCaption(entry)}
@@ -225,7 +226,7 @@ class ChapterShow extends Component {
           style={{
             height: 50,
             backgroundColor: "#f8f8f8",
-            width: Dimensions.get("window").width,
+            width: this.props.width,
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -239,7 +240,7 @@ class ChapterShow extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
         {this.renderChapterImage()}
         {this.renderTitle()}
         {this.renderStatistics()}
@@ -254,8 +255,7 @@ class ChapterShow extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    marginBottom: 100,
-    minHeight: Dimensions.get("window").height
+    marginBottom: 100
   },
   titleDescriptionContainer: {
     padding: 20,
