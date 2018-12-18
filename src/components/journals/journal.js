@@ -29,7 +29,9 @@ const mapStateToProps = state => ({
   chapters: state.journal.journal.chapters,
   chapterForm: state.chapterForm,
   loaded: state.journal.loaded,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -43,8 +45,8 @@ const mapDispatchToProps = dispatch => ({
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
 })
 
-const bannerImageWidth = Dimensions.get("window").width
-const bannerImageHeight = Dimensions.get("window").height / 3
+// const bannerImageWidth = Dimensions.get("window").width
+// const bannerImageHeight = Dimensions.get("window").height / 3
 
 class Journal extends Component {
   constructor(props) {
@@ -73,6 +75,16 @@ class Journal extends Component {
 
   navigateBack = () => {
     this.props.navigation.goBack()
+  }
+
+  getBannerHeight() {
+    let { height, width } = this.props
+
+    if (width > height) {
+      return this.props.height / 2
+    } else {
+      return this.props.height / 3
+    }
   }
 
   renderJournalEditForm = () => {
@@ -117,10 +129,13 @@ class Journal extends Component {
   }
 
   renderBannerAndUserImages(journal, user) {
+    let bannerHeight = this.getBannerHeight()
     return (
-      <View style={styles.bannerUserImage}>
-        <ImageBackground style={styles.bannerImage} source={{ uri: journal.cardBannerImageUrl }}>
-          <View style={styles.banner}>
+      <View style={[styles.bannerUserImage, { height: bannerHeight }]}>
+        <ImageBackground
+          style={{ height: bannerHeight, width: this.props.width }}
+          source={{ uri: journal.cardBannerImageUrl }}>
+          <View style={[styles.banner, { width: this.props.width, height: bannerHeight }]}>
             {this.renderNavHeader(user)}
             {this.renderJournalMetadata(journal)}
           </View>
@@ -292,10 +307,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white"
   },
-  bannerImage: {
-    width: bannerImageWidth,
-    height: bannerImageHeight
-  },
   navigationContainer: {
     marginTop: 20,
     display: "flex",
@@ -345,13 +356,10 @@ const styles = StyleSheet.create({
     left: 18
   },
   banner: {
-    width: bannerImageWidth,
-    height: bannerImageHeight,
     backgroundColor: "rgba(0, 0, 0, 0.5)"
   },
   bannerUserImage: {
     position: "relative",
-    height: bannerImageHeight + 10,
     backgroundColor: "white"
   },
   locationContainer: {

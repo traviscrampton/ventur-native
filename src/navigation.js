@@ -18,11 +18,7 @@ import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
 import JournalFormUpload from "components/JournalForm/JournalFormUpload"
 import Profile from "components/users/Profile"
-import ChapterFormDistance from "components/ChapterForm/ChapterFormDistance"
-import ChapterFormTitle from "components/ChapterForm/ChapterFormTitle"
-import ChapterFormDate from "components/ChapterForm/ChapterFormDate"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
-import ChapterFormUpload from "components/ChapterForm/ChapterFormUpload"
 import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
 import UserAvatarForm from "components/users/UserAvatarForm"
@@ -57,10 +53,6 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
-    ChapterFormTitle: ChapterFormTitle,
-    ChapterFormDate: ChapterFormDate,
-    ChapterFormDistance: ChapterFormDistance,
-    ChapterFormUpload: ChapterFormUpload,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
@@ -93,11 +85,6 @@ const ProfileNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ManageContent: ManageContent,
     ChapterFormJournals: ChapterFormJournals,
-    ChapterFormTitle: ChapterFormTitle,
-    ChapterFormDistance: ChapterFormDistance,
-    CameraRollContainer: CameraRollContainer,
-    ChapterFormDate: ChapterFormDate,
-    ChapterFormUpload: ChapterFormUpload
   },
   {
     initialRouteName: "Profile",

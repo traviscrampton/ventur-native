@@ -18,7 +18,9 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  width: state.common.width,
+  height: state.common.height
 })
 
 class JournalFeed extends Component {
@@ -32,7 +34,7 @@ class JournalFeed extends Component {
   }
 
   getJournalFeed() {
-    gql(allJournalsQuery).then((res) => {
+    gql(allJournalsQuery).then(res => {
       this.props.onLoad(res.allJournals)
     })
   }
@@ -43,15 +45,19 @@ class JournalFeed extends Component {
   }
 
   render() {
+    console.log("from feed", this.props.width, this.props.height)
     return (
-      <ScrollView style={{ backgroundColor: "white"}}>
-        <FlatList
-          scrollEnabled={true}
-          contentContainerStyle={styles.container}
-          data={this.props.journals}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <JournalCard {...item} handlePress={this.handlePress} />}
-        />
+      <ScrollView style={{ backgroundColor: "white" }}>
+        {this.props.journals.map((journal, index) => {
+          return (
+            <JournalCard
+              {...journal}
+              width={this.props.width}
+              height={this.props.height}
+              handlePress={this.handlePress}
+            />
+          )
+        })}
       </ScrollView>
     )
   }
@@ -59,8 +65,9 @@ class JournalFeed extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     backgroundColor: "white",
     paddingBottom: 50
   }

@@ -20,3 +20,11 @@ export function setCurrentUser(payload) {
     payload: payload
   }
 }
+
+export const SET_WINDOW_DIMENSIONS = "SET_WINDOW_DIMENSIONS"
+export function setWindowDimensions(payload) {
+  return {
+    type: SET_WINDOW_DIMENSIONS,
+    payload: payload
+  }
+}
