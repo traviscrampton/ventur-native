@@ -183,7 +183,9 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text style={styles.journalTitle}>{this.props.journal.title}</Text>
+          <Text numberOfLines={1} style={styles.journalTitle}>
+            {this.props.journal.title}
+          </Text>
         </View>
       </View>
     )
@@ -259,7 +261,8 @@ const styles = StyleSheet.create({
   },
   journalTitle: {
     fontFamily: "open-sans-semi",
-    fontSize: 16
+    fontSize: 16,
+    maxWidth: Dimensions.get("window").width / 1.5
   },
   backIconContainer: {
     display: "flex",

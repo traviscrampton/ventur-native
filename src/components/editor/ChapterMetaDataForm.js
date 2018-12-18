@@ -134,10 +134,10 @@ class ChapterMetaDataForm extends Component {
           <TextInput
             selectionColor={"#FF8C34"}
             keyboardType={"numeric"}
-            selectionColor="white"
+            maxLength={6}
             value={distance.toString()}
             onChangeText={text => this.persistMetadata(text, "distance")}
-            style={{ paddingRight: 5 }}
+            style={{ textAlign: "right", marginRight: 5, paddingBottom: 2 }}
           />
           <Text style={styles.iconText}>{`MILES`}</Text>
         </View>
@@ -201,6 +201,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0
   },
+  iconPositioning: {
+    marginRight: 5
+  },
   title: {
     fontSize: 28,
     fontFamily: "playfair",
@@ -211,7 +214,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     paddingTop: 5,
-    backgroundColor: "#f8f8f8"
+    backgroundColor: "#f8f8f8",
+    marginBottom: 10,
+    alignItem: "middle"
   },
   iconText: {
     fontFamily: "overpass",

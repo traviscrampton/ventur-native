@@ -263,7 +263,7 @@ class ChapterEditor extends Component {
   }
 
   renderProperUri(entry) {
-    return this.props.chapter.offline ? entry.localUri : entry.uri
+    return entry.uri
   }
 
   downloadToDevice(entry, index) {

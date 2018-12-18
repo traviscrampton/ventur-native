@@ -13,7 +13,7 @@ const JournalMini = props => {
       source={{ uri: props.miniBannerImageUrl }}>
       <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
         <View style={styles.metadataContainer}>
-          <Text style={styles.title}>{props.title}</Text>
+          <Text numberOfLines={2} style={styles.title}>{props.title}</Text>
           <Text style={styles.metadata}>
             {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
           </Text>
@@ -28,7 +28,9 @@ const styles = StyleSheet.create({
     width: imageWidth,
     height: imageWidth,
     marginBottom: pad,
-    position: "relative"
+    position: "relative",
+    paddingRight: 5, 
+    paddingLeft: 5
   },
   borderRadius: {
     borderRadius: 10

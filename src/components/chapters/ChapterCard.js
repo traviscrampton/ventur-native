@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
@@ -23,7 +23,7 @@ const ChapterCard = props => {
       <View style={styles.chapterCardContainer}>
         <View>
           {publishedStatus}
-          <Text style={styles.chapterTitle}>{title}</Text>
+          <Text numberOfLines={1} style={styles.chapterTitle}>{title}</Text>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#d3d3d3"
   },
   chapterTitle: {
+    maxWidth: Dimensions.get('window').width - 140,
     fontFamily: "open-sans-regular",
     color: "black",
     fontSize: 20,

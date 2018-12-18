@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const bannerImageWidth = Dimensions.get("window").width
-const bannerImageHeight = Math.round(bannerImageWidth * 0.65)
+const bannerImageHeight = Dimensions.get('window').height / 3
 
 class Journal extends Component {
   constructor(props) {
@@ -151,7 +151,30 @@ class Journal extends Component {
     return <View>{this.renderBannerAndUserImages(journal, user)}</View>
   }
 
+  renderEmptyChapterState() {
+    return(
+      <View style={{width: Dimensions.get('window').width, paddingRight: 20, paddingLeft: 20}}>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        <View>
+          <View style={{ marginBottom: 10}}>
+            <Text style={{fontSize: 20, color: 'lightgray' }}>No chapters yet</Text>
+          </View>
+          <View style={{ width: Dimensions.get("window").width / 3, marginBottom: 5, height: 15, backgroundColor: "lightgray"}} />
+          <View style={{ width: Dimensions.get("window").width / 5, marginBottom: 5, height: 15, backgroundColor: "lightgray"}} />
+          <View style={{ width: Dimensions.get("window").width / 5, marginBottom: 5, height: 15, backgroundColor: "lightgray"}} />
+        </View>
+        <View style={{width: 80, height: 100, backgroundColor: "lightgray", borderRadius: 4}}/>
+      </View>
+      </View>
+    )
+  }
+
   renderChapters() {
+    if(this.props.chapters.length === 0) {
+      return this.renderEmptyChapterState()
+    }
+
+
     return (
       <View style={{ marginBottom: 100 }}>
         <ChapterList chapters={this.props.chapters} user={this.props.journal.user} currentUser={this.props.currentUser} handleSelectChapter={this.requestForChapter} />
@@ -288,7 +311,7 @@ const styles = StyleSheet.create({
     borderColor: "white"
   },
   stats: {
-    fontFamily: "open-sans-regular",
+    fontFamily: "overpass",
     color: "white"
   },
   backIconPosition: {
