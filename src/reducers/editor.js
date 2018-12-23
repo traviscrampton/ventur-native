@@ -7,7 +7,6 @@ import {
   DELETE_ENTRY,
   UPDATE_ACTIVE_INDEX,
   UPDATE_KEYBOARD_STATE,
-  UPDATE_ACTIVE_CREATOR,
   SET_SELECTED_IMAGES,
   ADD_IMAGES_TO_ENTRIES,
   UPDATE_ACTIVE_IMAGE_CAPTION,
@@ -18,17 +17,11 @@ import {
   REMOVE_ENTRY_FROM_CLONE
 } from "actions/action_types"
 
-import { POPULATE_ENTRIES, DONE_UPDATING, START_UPDATING } from "actions/editor"
+import { POPULATE_ENTRIES, DONE_UPDATING, START_UPDATING, SET_INITIAL_EDITOR_STATE, UPDATE_ACTIVE_CREATOR } from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
-  entries: [
-    {
-      content: "",
-      styles: "",
-      type: "text"
-    }
-  ],
+  entries: [],
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
@@ -162,6 +155,9 @@ export default (state = defaultTextData, action) => {
         ...state,
         entries: action.payload
       }
+
+    case SET_INITIAL_EDITOR_STATE:
+      return defaultTextData
 
     default:
       return state

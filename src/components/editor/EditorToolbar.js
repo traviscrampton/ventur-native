@@ -78,14 +78,6 @@ class EditorToolbar extends Component {
     )
   }
 
-  renderAddImageCta() {
-    return (
-      <TouchableWithoutFeedback onPress={this.props.openCameraRoll}>
-        <Entypo name="image" size={27} color={"black"} />
-      </TouchableWithoutFeedback>
-    )
-  }
-
   dispatchRender() {
     return <React.Fragment />
   }
@@ -94,7 +86,6 @@ class EditorToolbar extends Component {
     return (
       <View style={styles.toolbarContainer}>
         <View style={styles.textEditButtons}>{this.renderTextStyler()}</View>
-        <View>{this.renderAddImageCta()}</View>
       </View>
     )
   }

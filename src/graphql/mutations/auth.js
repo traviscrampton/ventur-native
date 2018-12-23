@@ -5,6 +5,7 @@ export const loginMutation = `
       user {
         id
         fullName
+        canCreate
       }
     }
   }

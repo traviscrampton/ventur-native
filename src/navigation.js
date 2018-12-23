@@ -76,6 +76,7 @@ const ProfileNavigator = createStackNavigator(
     Profile: Profile,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    CameraRollContainer: CameraRollContainer,
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,

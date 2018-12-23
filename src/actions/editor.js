@@ -289,9 +289,10 @@ export function getCameraRollPhotos(payload) {
   }
 }
 
+export const UPDATE_ACTIVE_CREATOR = "UPDATE_ACTIVE_CREATOR"
 export function updateActiveCreator(payload) {
   return {
-    type: "UPDATE_ACTIVE_CREATOR",
+    type: UPDATE_ACTIVE_CREATOR,
     payload: payload
   }
 }
@@ -338,18 +339,18 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
-    if (getState().editor.entries.length === 0) {
-      dispatch(
-        createNewEntry({
-          newIndex: 0,
-          newEntry: {
-            content: "",
-            styles: "",
-            type: "text"
-          }
-        })
-      )
-    }
+    // if (getState().editor.entries.length === 0) {
+    //   dispatch(
+    //     createNewEntry({
+    //       newIndex: 0,
+    //       newEntry: {
+    //         content: "",
+    //         styles: "",
+    //         type: "text"
+    //       }
+    //     })
+    //   )
+    // }
     debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
@@ -399,6 +400,13 @@ export function handleReturnKey(payload) {
     dispatch(createNewEntry(newPayload))
     dispatch(updateActiveIndex(newPayload.newIndex))
     dispatch(updateCursorPosition(0))
+  }
+}
+
+export const SET_INITIAL_EDITOR_STATE = "SET_INITIAL_EDITOR_STATE"
+export function setInitialEditorState(payload) {
+  return {
+    type: "SET_INITIAL_EDITOR_STATE"
   }
 }
 

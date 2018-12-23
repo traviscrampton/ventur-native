@@ -1,16 +1,8 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Image,
-  DatePickerIOS,
-  TouchableWithoutFeedback
-} from "react-native"
+import { StyleSheet, View, Text, TextInput, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
 import { populateOfflineChapters } from "actions/user"
-import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
+import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
@@ -37,7 +29,8 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  resetChapterForm: () => dispatch(resetChapterForm())
 })
 
 class ChapterMetaDataForm extends Component {
@@ -48,6 +41,10 @@ class ChapterMetaDataForm extends Component {
       datePickerOpen: false
     }
     this.persistUpdate = _.debounce(this.persistUpdate, 1000)
+  }
+
+  componentWillUnmount() {
+    this.props.resetChapterForm()
   }
 
   persistMetadata = async (text, field) => {

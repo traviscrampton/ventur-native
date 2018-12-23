@@ -152,6 +152,7 @@ class ChapterDispatch extends Component {
   }
 
   renderUserDropDown() {
+    if (!this.props.currentUser.canCreate) return
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -184,7 +185,7 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text numberOfLines={1} style={[styles.journalTitle, {maxWidth: this.props.width / 1.5}]}>
+          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / 1.5 }]}>
             {this.props.journal.title}
           </Text>
         </View>
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
   },
   journalTitle: {
     fontFamily: "open-sans-semi",
-    fontSize: 16,
+    fontSize: 16
   },
   backIconContainer: {
     display: "flex",
