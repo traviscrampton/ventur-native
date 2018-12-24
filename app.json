@@ -1,5 +1,12 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "name": "Ventur",
+    "version": "1.0.0",
+    "icon": "./ventur_logo.jpeg",
+    "sdkVersion": "27.0.0",
+    "slug": "ventur",
+    "ios": {
+      "bundleIdentifier": "com.ventur.ventur"
+    },
   }
 }
