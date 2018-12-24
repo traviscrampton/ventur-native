@@ -34,7 +34,7 @@ class CameraRollContainer extends Component {
     if (this.singleItemCallback) {
       this.singleItemCallback(selectedImages[0])
     } else {
-      this.props.addImagesToEntries({ images: selectedImages, index: this.index + 1 })
+      this.props.addImagesToEntries({ images: selectedImages, index: this.index })
     }
     this.props.navigation.goBack()
   }

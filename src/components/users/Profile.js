@@ -59,6 +59,7 @@ class Profile extends Component {
   }
 
   componentWillMount() {
+    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getProfilePageData()
     this.getOfflineChapters()
   }
@@ -169,7 +170,6 @@ class Profile extends Component {
           width: Dimensions.get("window").width - 30,
           flexDirection: "row",
           alignItems: "top"
-          // justifyContent: "space-between"
         }}>
         <Image
           style={{
@@ -246,7 +246,9 @@ class Profile extends Component {
               },
               this.isActiveTab("journals")
             ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("journals")]}>MY TRIPS ({this.props.user.journals.length})</Text>
+            <Text style={[{ fontSize: 16 }, this.isActiveTab("journals")]}>
+              MY TRIPS ({this.props.user.journals.length})
+            </Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
@@ -266,7 +268,9 @@ class Profile extends Component {
               },
               this.isActiveTab("offlineChapters")
             ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("offlineChapters")]}>MY CHAPTERS ({this.props.offlineChapters.length})</Text>
+            <Text style={[{ fontSize: 16 }, this.isActiveTab("offlineChapters")]}>
+              MY CHAPTERS ({this.props.offlineChapters.length})
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -349,8 +353,8 @@ class Profile extends Component {
           contentContainerStyle={{
             display: "flex",
             backgroundColor: "white",
-            paddingLeft: pad,
-            paddingRight: pad,
+            paddingLeft: 15,
+            paddingRight: 15,
             flexDirection: "row",
             justifyContent: "space-between",
             flexWrap: "wrap"
@@ -368,6 +372,8 @@ class Profile extends Component {
   }
 
   renderCreateJournalCta() {
+    if (!this.props.currentUser.canCreate) return
+
     return (
       <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
         <View
@@ -414,6 +420,8 @@ class Profile extends Component {
   }
 
   createOfflineChapters() {
+    if (!this.props.currentUser.canCreate) return
+      
     return (
       <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
         <View

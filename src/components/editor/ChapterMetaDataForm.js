@@ -1,17 +1,8 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Image,
-  Dimensions,
-  DatePickerIOS,
-  TouchableWithoutFeedback
-} from "react-native"
+import { StyleSheet, View, Text, TextInput, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
 import { populateOfflineChapters } from "actions/user"
-import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
+import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
@@ -27,7 +18,9 @@ import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
-  chapter: state.chapter.chapter
+  chapter: state.chapter.chapter,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -36,7 +29,8 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  resetChapterForm: () => dispatch(resetChapterForm())
 })
 
 class ChapterMetaDataForm extends Component {
@@ -47,6 +41,10 @@ class ChapterMetaDataForm extends Component {
       datePickerOpen: false
     }
     this.persistUpdate = _.debounce(this.persistUpdate, 1000)
+  }
+
+  componentWillUnmount() {
+    this.props.resetChapterForm()
   }
 
   persistMetadata = async (text, field) => {
@@ -164,7 +162,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = Dimensions.get("window").width / 4
+    let fourthWindowWidth = this.props.width / 4
     let { bannerImageUrl } = this.props.chapter
     return (
       <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>

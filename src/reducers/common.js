@@ -1,10 +1,13 @@
 import { TOGGLE_TAB_BAR } from "actions/action_types"
-import { SET_CURRENT_USER, UPDATE_CURRENT_BOTTOM_TAB, INITIAL_APP_LOADED } from "actions/common"
+import { Dimensions } from "react-native"
+import { SET_CURRENT_USER, UPDATE_CURRENT_BOTTOM_TAB, INITIAL_APP_LOADED, SET_WINDOW_DIMENSIONS } from "actions/common"
 const defaultAppState = {
   currentUser: null,
   hideTabBar: false,
   initialAppLoaded: false,
-  currentBottomTab: "Explore"
+  currentBottomTab: "Explore",
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height
 }
 
 export default (state = defaultAppState, action) => {
@@ -24,6 +27,8 @@ export default (state = defaultAppState, action) => {
         ...state,
         currentBottomTab: action.payload
       }
+    case SET_WINDOW_DIMENSIONS:
+      return Object.assign({}, state, action.payload)
     case INITIAL_APP_LOADED:
       return {
         ...state,

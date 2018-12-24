@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, Image, Dimensions, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({})

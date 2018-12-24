@@ -8,7 +8,6 @@ import {
   TextInput,
   ImageBackground,
   Keyboard,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Dimensions,
   AsyncStorage,
@@ -30,26 +29,29 @@ import {
   saveEditorContent,
   updateEntryState,
   storeChapterToOfflineMode,
-  populateEntries
+  populateEntries,
+  setInitialEditorState
 } from "actions/editor"
 import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
 import InputScrollView from "react-native-input-scroll-view"
 import _ from "lodash"
 import { updateChapterForm } from "actions/chapter_form"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
-import ContentCreator from "components/editor/ContentCreator"
 import EditorToolbar from "components/editor/EditorToolbar"
 import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
 import { populateOfflineChapters } from "actions/user"
+import ContentCreator from "components/editor/ContentCreator"
 import {
   persistChapterToAsyncStorage,
   removeChapterFromAsyncStorage,
-  offlineChapterCreate
+  offlineChapterCreate,
+  notInternetConnected
 } from "utils/offline_helpers"
-import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
+import { FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
+  setInitialEditorState: () => dispatch(setInitialEditorState()),
   updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
   editEntry: payload => dispatch(editEntry(payload)),
   updateEntryState: payload => dispatch(updateEntryState(payload)),
@@ -88,7 +90,8 @@ class ChapterEditor extends Component {
     this.state = {
       containerHeight: Dimensions.get("window").height - 105,
       offlineMode: false,
-      imagesNeededOffline: []
+      imagesNeededOffline: [],
+      noInternet: false
     }
   }
 
@@ -97,8 +100,17 @@ class ChapterEditor extends Component {
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.populateEditor()
+    const noInternet = await notInternetConnected()
+    console.log("noInternet", noInternet)
+    this.setState({
+      noInternet: noInternet
+    })
+  }
+
+  componentWillUnmount() {
+    this.props.setInitialEditorState()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -110,12 +122,7 @@ class ChapterEditor extends Component {
   }
 
   populateEditor = () => {
-    let entries
-    if (!this.props.chapter.content) {
-      entries = [{ type: "text", content: "", styles: "" }]
-    } else {
-      entries = this.props.chapter.content
-    }
+    let entries = this.props.chapter.content ? this.props.chapter.content : []
 
     this.props.populateEntries(entries)
   }
@@ -263,7 +270,7 @@ class ChapterEditor extends Component {
   }
 
   renderProperUri(entry) {
-    return entry.uri
+    return this.state.noInternet ? entry.localUri : entry.uri
   }
 
   downloadToDevice(entry, index) {
@@ -355,18 +362,11 @@ class ChapterEditor extends Component {
 
   getAppropriateIndex() {
     let activeEntry = this.props.entries[this.props.activeIndex]
-    if (activeEntry.content.length === 0) {
+    if (activeEntry.content.length === 0 && this.props.activeIndex !== 0) {
       return this.props.activeIndex - 1
     } else {
-      return this.props.activeIndex 
+      return this.props.activeIndex
     }
-  }
-
-  openCameraRoll = e => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      index: this.getAppropriateIndex(),
-      selectSingleItem: false
-    })
   }
 
   openImageCaptionForm(e, index) {
@@ -393,13 +393,13 @@ class ChapterEditor extends Component {
 
     return (
       <View style={this.getToolbarPositioning()}>
-        <EditorToolbar openManageContent={this.openManageContent} openCameraRoll={e => this.openCameraRoll(e)} />
+        <EditorToolbar openManageContent={this.openManageContent} />
       </View>
     )
   }
 
   renderCreateCta(index) {
-    return <ContentCreator index={index} key={`contentCreator${index}`} />
+    return <ContentCreator index={index} key={`contentCreator${index}`} navigation={this.props.navigation} />
   }
 
   renderChapterForm() {
@@ -412,8 +412,8 @@ class ChapterEditor extends Component {
     return this.props.entries.map((entry, index) => {
       return (
         <View>
-          {this.renderEntry(entry, index)}
           {this.renderCreateCta(index)}
+          {this.renderEntry(entry, index)}
         </View>
       )
     })
@@ -439,7 +439,10 @@ class ChapterEditor extends Component {
           {this.renderChapterForm()}
           {this.renderDivider()}
           {this.renderOfflineButton()}
-          <View style={{ marginBottom: 100 }}>{this.renderEditor()}</View>
+          <View style={{ marginBottom: 100 }}>
+            {this.renderEditor()}
+            {this.renderCreateCta(this.props.entries.length)}
+          </View>
         </InputScrollView>
         {this.renderEditorToolbar()}
       </View>

@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { getCurrentUser } from "auth"
-import { initialAppLoaded, setCurrentUser } from "actions/common"
+import { initialAppLoaded, setCurrentUser, setWindowDimensions } from "actions/common"
 import { Font } from "expo"
-import { AsyncStorage, View } from "react-native"
+import { AsyncStorage, View, Dimensions } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
 
@@ -13,14 +13,25 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   initialAppLoaded: () => dispatch(initialAppLoaded()),
-  setCurrentUser: payload => dispatch(setCurrentUser(payload))
+  setCurrentUser: payload => dispatch(setCurrentUser(payload)),
+  setWindowDimensions: payload => dispatch(setWindowDimensions(payload))
 })
 
 class Ventur extends Component {
   componentWillMount() {
+    this.setupDimensionsListener()
     this.setUpFonts()
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
+  }
+
+  setupDimensionsListener() {
+    Dimensions.addEventListener("change", this.handleDimensionChange)
+  }
+
+  handleDimensionChange = (dim) => {
+    let heightAndWidth = { width: dim.window.width, height: dim.window.height }
+    this.props.setWindowDimensions(heightAndWidth)
   }
 
   async setChaptersForAsyncStorage() {

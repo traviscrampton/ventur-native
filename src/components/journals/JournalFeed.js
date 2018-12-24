@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, ScrollView, View, Text } from "react-native"
+import { StyleSheet, FlatList, ScrollView, Dimensions, View, Text } from "react-native"
 import { connect } from "react-redux"
 import { gql } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
 })
 
 class JournalFeed extends Component {
@@ -28,11 +28,12 @@ class JournalFeed extends Component {
   }
 
   componentWillMount() {
+    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getJournalFeed()
   }
 
   getJournalFeed() {
-    gql(allJournalsQuery).then((res) => {
+    gql(allJournalsQuery).then(res => {
       this.props.onLoad(res.allJournals)
     })
   }
@@ -44,14 +45,17 @@ class JournalFeed extends Component {
 
   render() {
     return (
-      <ScrollView style={{ backgroundColor: "white"}}>
-        <FlatList
-          scrollEnabled={true}
-          contentContainerStyle={styles.container}
-          data={this.props.journals}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <JournalCard {...item} handlePress={this.handlePress} />}
-        />
+      <ScrollView style={{ backgroundColor: "white" }}>
+        {this.props.journals.map((journal, index) => {
+          return (
+            <JournalCard
+              {...journal}
+              width={Dimensions.get("window").width}
+              height={Dimensions.get("window").height}
+              handlePress={this.handlePress}
+            />
+          )
+        })}
       </ScrollView>
     )
   }
@@ -59,8 +63,9 @@ class JournalFeed extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     backgroundColor: "white",
     paddingBottom: 50
   }

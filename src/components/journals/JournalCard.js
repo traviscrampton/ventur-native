@@ -2,9 +2,12 @@ import React from "react"
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
-const imageWidth = Dimensions.get("window").width - 20
-const imageHeight = Math.round(imageWidth * (240 / 350))
+ let imageWidth
+ let imageHeight
 const JournalCard = props => {
+  imageWidth = props.width - 20
+  imageHeight = Math.round(imageWidth * (240 / 350))
+
   return (
     <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
       <View
@@ -12,8 +15,17 @@ const JournalCard = props => {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={styles.card}>
-        <Image style={styles.journalImage} source={{ uri: props.cardBannerImageUrl }} />
+        style={[styles.card, { width: imageWidth, height: imageHeight + 150 }]}>
+        <Image
+          style={[
+            styles.journalImage,
+            {
+              width: imageWidth,
+              height: imageHeight
+            }
+          ]}
+          source={{ uri: props.cardBannerImageUrl }}
+        />
         <View>{tripMetaData(props)}</View>
       </View>
     </TouchableWithoutFeedback>
@@ -28,14 +40,16 @@ const tripMetaData = props => {
           <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="black" />
           <Text style={styles.description}>{props.description}</Text>
         </View>
-        <Text numberOfLines={2} style={styles.title}>{props.title}</Text>
+        <Text numberOfLines={2} style={styles.title}>
+          {props.title}
+        </Text>
       </View>
       <View
         style={{
           marginTop: "auto",
           display: "flex"
         }}>
-        <Text style={{ fontFamily: "overpass"}}>
+        <Text style={{ fontFamily: "overpass" }}>
           {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
         </Text>
       </View>
@@ -45,15 +59,13 @@ const tripMetaData = props => {
 
 const styles = StyleSheet.create({
   card: {
-    width: imageWidth,
     backgroundColor: "white",
-    height: imageHeight + 150,
     marginTop: 20,
+    marginLeft: "auto",
+    marginRight: "auto",
     position: "relative"
   },
   journalImage: {
-    width: imageWidth,
-    height: imageHeight,
     position: "relative"
   },
   metadataContainer: {

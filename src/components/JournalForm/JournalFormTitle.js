@@ -8,8 +8,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   TextInput,
-  ImageBackground,
-  Dimensions
+  ImageBackground
 } from "react-native"
 import { setToken, API_ROOT } from "agent"
 import { createJournal, updateJournalForm } from "actions/journal_form"
@@ -17,7 +16,8 @@ import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
-  title: state.journalForm.title
+  title: state.journalForm.title,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -151,7 +151,7 @@ class JournalFormTitle extends Component {
     // chapters ["#067BC2", "#032D47"]
     return (
       <View>
-        <LinearGradient style={{ height: Dimensions.get("window").height }} colors={["#FF8C34", "#E46545"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#FF8C34", "#E46545"]}>
           {this.renderBackButtonHeader()}
           {this.renderForm()}
         </LinearGradient>

@@ -6,7 +6,16 @@ const ChapterList = props => {
   return (
     <View>
       {props.chapters.map((chapter, index) => {
-        return <ChapterCard {...chapter} user={props.user} currentUser={props.currentUser} key={index} persistOfflineChapter={props.persistOfflineChapter} handleSelectChapter={props.handleSelectChapter} />
+        return (
+          <ChapterCard
+            {...chapter}
+            user={props.user}
+            currentUser={props.currentUser}
+            key={index}
+            persistOfflineChapter={props.persistOfflineChapter}
+            handleSelectChapter={props.handleSelectChapter}
+          />
+        )
       })}
     </View>
   )
