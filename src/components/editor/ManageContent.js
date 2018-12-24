@@ -11,7 +11,7 @@ import {
   StyleSheet,
   View
 } from "react-native"
-import { Header } from "components/editor/Header"
+import { Header } from "components/editor/header"
 import SortableList from "react-native-sortable-list"
 
 const mapStateToProps = state => ({

@@ -5,7 +5,7 @@ import { updateChapterForm } from "actions/chapter_form"
 import { chapterQuery } from "graphql/queries/chapters"
 import { setToken, API_ROOT } from "agent"
 import CameraRollPicker from "react-native-camera-roll-picker"
-import { Header } from "components/editor/Header"
+import { Header } from "components/editor/header"
 import { gql } from "agent"
 import { loadChapter } from "actions/chapter"
 
