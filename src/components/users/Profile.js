@@ -287,6 +287,7 @@ class Profile extends Component {
 
   persistOfflineChapter = async chapterId => {
     const offlineChapter = await getChapterFromStorage(chapterId)
+
     let selectedImage
     const formData = new FormData()
     const token = await setToken()
@@ -304,13 +305,16 @@ class Profile extends Component {
       }
     }
 
+    if (offlineChapter.bannerImage.uri) {
+      formData.append("banner_image", offlineChapter.bannerImage)
+    }
+
     formData.append("title", offlineChapter.title)
     formData.append("status", offlineChapter.status)
     formData.append("journalId", offlineChapter.journalId)
     formData.append("offline", offlineChapter.offline)
     formData.append("date", offlineChapter.date)
     formData.append("distance", offlineChapter.distance)
-    formData.append("banner_image", offlineChapter.bannerImage)
     formData.append("content", JSON.stringify(offlineChapter.content))
 
     fetch(`${API_ROOT}/chapters/upload_offline_chapter`, {
@@ -326,6 +330,9 @@ class Profile extends Component {
       })
       .then(data => {
         updateOfflineChapters(data, this.props.populateOfflineChapters, { id: chapterId })
+      })
+      .catch(err => {
+        console.log("error", err)
       })
   }
 
@@ -372,7 +379,7 @@ class Profile extends Component {
   }
 
   renderCreateJournalCta() {
-   if (!this.props.currentUser.canCreate) return
+    if (!this.props.currentUser.canCreate) return
 
     return (
       <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
@@ -421,7 +428,7 @@ class Profile extends Component {
 
   createOfflineChapters() {
     if (!this.props.currentUser.canCreate) return
-      
+
     return (
       <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
         <View
