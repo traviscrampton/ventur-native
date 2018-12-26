@@ -10,7 +10,7 @@ import {
   Dimensions,
   TouchableWithoutFeedback
 } from "react-native"
-import { updateUserForm, populateUserForm } from "actions/user_form"
+import { updateUserForm, populateUserForm, resetUserForm } from "actions/user_form"
 import { setCurrentUser } from "actions/common"
 import { loginMutation } from "graphql/mutations/auth"
 import { connect } from "react-redux"
@@ -30,7 +30,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateUserForm: payload => dispatch(updateUserForm(payload)),
   populateUserForm: payload => dispatch(populateUserForm(payload)),
-  setCurrentUser: payload => dispatch(setCurrentUser(payload))
+  setCurrentUser: payload => dispatch(setCurrentUser(payload)),
+  resetUserForm: () => dispatch(resetUserForm())
 })
 
 class UserAvatarForm extends Component {
@@ -57,20 +58,24 @@ class UserAvatarForm extends Component {
 
   loginAndReroute = async () => {
     const { email, password } = this.props
-    console.log("password: ", password, email)
     gql(loginMutation, { email: email, password: password })
       .then(res => {
         const { token, user } = res.Login
         let obj = Object.assign({}, { token: token, user: user })
         storeJWT(obj)
         this.props.setCurrentUser(user)
+        this.props.resetUserForm()
       })
       .catch(err => {
-        DropDownHolder.alert("error", "Error", "Someting is wong")
+        DropDownHolder.alert("error", "Error", err)
       })
   }
 
   submitForm = async () => {
+    if (!this.state.selectedImage.uri) {
+      return this.loginAndReroute()
+    }
+
     this.setState({ loading: true })
     const formData = new FormData()
     let { selectedImage } = this.state

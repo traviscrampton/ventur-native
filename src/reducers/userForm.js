@@ -1,4 +1,4 @@
-import { UPDATE_USER_FORM, POPULATE_USER_FORM } from "actions/user_form"
+import { UPDATE_USER_FORM, POPULATE_USER_FORM, RESET_USER_FORM } from "actions/user_form"
 const defaultUserForm = {
   id: null,
   email: "",
@@ -15,6 +15,9 @@ export default (state = defaultUserForm, action) => {
         ...state,
         [action.payload.key]: action.payload.text
       }
+      
+    case RESET_USER_FORM:
+      return defaultUserForm
 
     case POPULATE_USER_FORM:
       return Object.assign({}, state, action.payload)

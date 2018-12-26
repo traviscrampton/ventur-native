@@ -92,6 +92,8 @@ class Profile extends Component {
   }
 
   handleLogout = async () => {
+    await AsyncStorage.setItem("chapters", JSON.stringify([]))
+    await AsyncStorage.setItem("journals", JSON.stringify([]))
     await logOut()
     this.props.setCurrentUser(null)
   }

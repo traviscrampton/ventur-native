@@ -13,3 +13,10 @@ export function populateUserForm(payload) {
     payload: payload
   }
 }
+
+export const RESET_USER_FORM = "RESET_USER_FORM"
+export function resetUserForm(payload) {
+  return {
+    type: RESET_USER_FORM
+  }
+}
