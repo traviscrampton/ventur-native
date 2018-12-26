@@ -30,7 +30,8 @@ const mapStateToProps = state => ({
   offline: state.chapterForm.offline,
   chapter: state.chapterForm,
   currentUser: state.common.currentUser,
-  height: state.common.height
+  height: state.common.height,
+  isOffline: state.common.isOffline
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -131,8 +132,7 @@ class ChapterFormJournals extends Component {
   }
 
   persistCreate = async () => {
-    let notConnected = await notInternetConnected()
-    if (notConnected /* if not connected to the internet store offline is true */) {
+    if (this.props.isOffline /* if not connected to the internet store offline is true */) {
       const chapter = await offlineChapterCreate(this.props.chapterForm, this.props.populateOfflineChapters)
       let date = new Date()
       this.props.updateChapterForm({

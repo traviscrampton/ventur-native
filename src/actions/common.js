@@ -28,3 +28,11 @@ export function setWindowDimensions(payload) {
     payload: payload
   }
 }
+
+export const UPDATE_CONNECTION_TYPE = "UPDATE_CONNECTION_TYPE"
+export function updateConnectionType(payload) {
+  return {
+    type: UPDATE_CONNECTION_TYPE,
+    payload: payload
+  }
+}

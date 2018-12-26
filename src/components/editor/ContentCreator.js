@@ -36,7 +36,7 @@ class ContentCreator extends Component {
   openCameraRoll = e => {
     this.props.navigation.navigate("CameraRollContainer", {
       index: this.props.index,
-      selectSingleItem: false
+      selectSingleItem: true
     })
   }
 

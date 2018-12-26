@@ -1,20 +1,22 @@
 import React, { Component } from "react"
 import { getCurrentUser } from "auth"
-import { initialAppLoaded, setCurrentUser, setWindowDimensions } from "actions/common"
+import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType } from "actions/common"
 import { Font } from "expo"
-import { AsyncStorage, View, Dimensions } from "react-native"
+import { AsyncStorage, View, Dimensions, NetInfo } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
-  appLoaded: state.common.initialAppLoaded
+  appLoaded: state.common.initialAppLoaded,
+  isOffline: state.common.isOffline
 })
 
 const mapDispatchToProps = dispatch => ({
   initialAppLoaded: () => dispatch(initialAppLoaded()),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
-  setWindowDimensions: payload => dispatch(setWindowDimensions(payload))
+  setWindowDimensions: payload => dispatch(setWindowDimensions(payload)),
+  updateConnectionType: payload => dispatch(updateConnectionType(payload))
 })
 
 class Ventur extends Component {
@@ -23,13 +25,24 @@ class Ventur extends Component {
     this.setUpFonts()
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
+    this.setUpConnectionListener()
   }
 
   setupDimensionsListener() {
     Dimensions.addEventListener("change", this.handleDimensionChange)
   }
 
-  handleDimensionChange = (dim) => {
+  setUpConnectionListener() {
+    NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
+  }
+
+  handleConnectionChange = connectionInfo => {
+    let isOffline = connectionInfo.type === "none"
+
+    this.props.updateConnectionType(isOffline)
+  }
+
+  handleDimensionChange = dim => {
     let heightAndWidth = { width: dim.window.width, height: dim.window.height }
     this.props.setWindowDimensions(heightAndWidth)
   }

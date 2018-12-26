@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ventur",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "icon": "./ventur.png",
     "sdkVersion": "27.0.0",
     "slug": "ventur",

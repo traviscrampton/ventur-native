@@ -11,7 +11,7 @@ export function editEntry(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
   }
 }
 
@@ -46,7 +46,7 @@ export function addImagesToEntries(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateImagesState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
   }
 }
 
@@ -206,9 +206,8 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
     })
 }
 
-export const dispatchPersist = async (entries, chapter, dispatch) => {
-  let useLocal = await useLocalStorage(chapter.id, chapter.offline)
-  if (useLocal) {
+export const dispatchPersist = async (entries, chapter, isOffline, dispatch) => {
+  if (isOffline) {
     let updatedChapter = Object.assign({}, chapter, { content: entries })
     await persistChapterToAsyncStorage(updatedChapter, null)
     dispatch(loadChapter(updatedChapter))
@@ -264,7 +263,7 @@ export function updateImageCaption(payload) {
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
   }
 }
 
@@ -339,19 +338,7 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
-    // if (getState().editor.entries.length === 0) {
-    //   dispatch(
-    //     createNewEntry({
-    //       newIndex: 0,
-    //       newEntry: {
-    //         content: "",
-    //         styles: "",
-    //         type: "text"
-    //       }
-    //     })
-    //   )
-    // }
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
+    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
   }
 }
 
@@ -421,4 +408,4 @@ export function populateEntries(payload) {
 export function updateCursorPosition(payload) {
   return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }
-export const debouncePersist = _.debounce(dispatchPersist, 2000)
+export const debouncePersist = _.debounce(dispatchPersist, 4000)

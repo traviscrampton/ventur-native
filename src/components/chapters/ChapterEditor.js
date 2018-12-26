@@ -80,7 +80,8 @@ const mapStateToProps = state => ({
   cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
-  showEditorToolbar: state.editor.showEditorToolbar
+  showEditorToolbar: state.editor.showEditorToolbar,
+  isOffline: state.common.isOffline
 })
 
 class ChapterEditor extends Component {
@@ -90,8 +91,7 @@ class ChapterEditor extends Component {
     this.state = {
       containerHeight: Dimensions.get("window").height - 105,
       offlineMode: false,
-      imagesNeededOffline: [],
-      noInternet: false
+      imagesNeededOffline: []
     }
   }
 
@@ -102,11 +102,6 @@ class ChapterEditor extends Component {
 
   async componentDidMount() {
     this.populateEditor()
-    const noInternet = await notInternetConnected()
-    console.log("noInternet", noInternet)
-    this.setState({
-      noInternet: noInternet
-    })
   }
 
   componentWillUnmount() {
@@ -270,11 +265,11 @@ class ChapterEditor extends Component {
   }
 
   renderProperUri(entry) {
-    return this.state.noInternet ? entry.localUri : entry.uri
+    return this.props.isOffline ? entry.localUri : entry.uri
   }
 
   downloadToDevice(entry, index) {
-    if (!this.state.offlineMode) return
+    if (!this.props.isOffline) return
 
     let image = { entry: entry, index: index }
     let imagesNeededOffline = [...this.state.imagesNeededOffline, image]

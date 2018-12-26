@@ -372,7 +372,7 @@ class Profile extends Component {
   }
 
   renderCreateJournalCta() {
-    if (!this.props.currentUser.canCreate) return
+   if (!this.props.currentUser.canCreate) return
 
     return (
       <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
