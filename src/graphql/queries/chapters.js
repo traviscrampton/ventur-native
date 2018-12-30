@@ -11,6 +11,7 @@ export const chapterQuery = `
         published
         offline
         distance
+        emailSent
         user {
           id
           fullName

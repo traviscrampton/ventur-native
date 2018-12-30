@@ -14,12 +14,15 @@ import {
 import { connect } from "react-redux"
 import { editChapterOfflineMode, editChapterPublished, deleteChapter } from "actions/editor"
 import { populateOfflineChapters } from "actions/user"
+import { loadChapter } from "actions/chapter"
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import DropDownHolder from "utils/DropdownHolder"
+import { setToken, API_ROOT } from "agent"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -37,6 +40,7 @@ const mapDispatchToProps = dispatch => ({
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
   deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch),
   editChapterPublished: (chapter, published) => editChapterPublished(chapter, published, dispatch),
+  loadChapter: chapter => dispatch(loadChapter(chapter)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
 })
 
@@ -91,13 +95,47 @@ class ChapterDispatch extends Component {
     }
   }
 
+  getEmailToggle() {
+    if (this.props.chapter.emailSent) {
+      return "Email Sent"
+    } else {
+      return "Send Email"
+    }
+  }
+
   getChapterUserFormProps() {
     return [
       { type: "touchable", title: this.getToggleEditCta(), callback: this.toggleEditMode },
       { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
       { type: "switch", title: "Offline Mode", value: this.props.chapter.offline, callback: this.updateOfflineStatus },
-      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus }
+      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus },
+      { type: "touchable", title: this.getEmailToggle(), callback: this.sendEmails }
     ]
+  }
+
+  sendEmails = async () => {
+    if (this.props.chapter.emailSent) return
+    const token = await setToken()
+    fetch(`${API_ROOT}/journal_follows/${this.props.chapter.id}/send_chapter_emails`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        if (data.errors) {
+          throw Error(data.errors.join(", "))
+        }
+
+        this.props.loadChapter(data)
+      })
+      .catch(err => {
+        DropDownHolder.alert("error", "Error", err)
+      })
   }
 
   updateOfflineStatus = async () => {
