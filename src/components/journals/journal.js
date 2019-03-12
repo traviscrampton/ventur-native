@@ -14,7 +14,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
-import { gql } from "agent"
+import { gql, get } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
@@ -59,14 +59,14 @@ class Journal extends Component {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
     if (journalId === "NO-ID") return
-    gql(journalQuery, { id: journalId }).then(res => {
-      this.props.onLoad(res.journal)
+    get(`/journals/${journalId}`).then(data => {
+      this.props.onLoad(data.journal)
     })
   }
 
   requestForChapter = chapterId => {
-    gql(chapterQuery, { id: chapterId }).then(res => {
-      this.props.loadChapter(res.chapter)
+    get(`/chapters/${chapterId}`).then(data => {
+      this.props.loadChapter(data.chapter)
       this.props.navigation.navigate("Chapter")
     })
   }
@@ -99,7 +99,7 @@ class Journal extends Component {
   }
 
   renderImageOrEdit(user) {
-    if (user.id === this.props.currentUser.id) {
+    if (user.id == this.props.currentUser.id) {
       return (
         <TouchableHighlight onPress={this.renderJournalEditForm}>
           <View style={{ padding: 20 }}>

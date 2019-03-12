@@ -190,7 +190,6 @@ class ChapterDispatch extends Component {
   }
 
   renderUserDropDown() {
-    if (!this.props.currentUser.canCreate) return
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -220,6 +219,7 @@ class ChapterDispatch extends Component {
   }
 
   renderJournalName() {
+    console.log(this.props.journal.title)
     return (
       <View style={styles.journalAndUserContainer}>
         <View>

@@ -23,6 +23,32 @@ export const setToken = async () => {
   }
 }
 
+export const get = async route => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route
+
+  return fetch(requestRoute, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    }
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logOut()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
+}
+
 export const gql = async (queryString, queryVariables = {}) => {
   const token = await setToken()
   return request
@@ -37,7 +63,7 @@ export const gql = async (queryString, queryVariables = {}) => {
       if (err.status === 401) {
         return logOut()
       }
-      
+
       DropDownHolder.alert("error", "Error", err.message)
     })
 }

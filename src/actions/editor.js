@@ -161,8 +161,9 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
       if (data.errors) {
         throw Error(data.errors.join(", "))
       }
-      dispatch(loadChapter(data))
-      dispatch(addChapterToJournals(data))
+      let chapter = data.chapter
+      dispatch(loadChapter(chapter))
+      dispatch(addChapterToJournals(chapter))
     })
     .catch(err => {
       DropDownHolder.alert("error", "Error", err)

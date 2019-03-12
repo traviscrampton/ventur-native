@@ -64,11 +64,12 @@ class ChapterUserForm extends Component {
   }
 
   render() {
+    
     return (
       <View
         style={[{
                   position: "absolute",
-                  top: 60,
+                  bottom: 50,
                   borderRadius: 4,
                   right: 20,
                   zIndex: 10,

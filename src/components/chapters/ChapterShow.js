@@ -1,16 +1,9 @@
 import React, { Component } from "react"
 import { resetChapter } from "actions/chapter"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight
-} from "react-native"
+import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import EditorDropdown from "components/editor/EditorDropdown"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -71,7 +64,7 @@ class ChapterShow extends Component {
 
   renderEditCta() {
     return
-    if (this.props.currentUser.id === this.props.user.id) {
+    if (this.props.currentUser.id == this.props.user.id) {
       return (
         <TouchableHighlight onPress={this.editMetaData}>
           <View>
@@ -100,12 +93,12 @@ class ChapterShow extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 4
-    const { bannerImageUrl } = this.props.chapter
-    if (!bannerImageUrl) return
+    const { imageUrl } = this.props.chapter
+    if (!imageUrl) return
     return (
       <Image
         style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}
-        source={{ uri: bannerImageUrl }}
+        source={{ uri: imageUrl }}
       />
     )
   }
@@ -238,12 +231,23 @@ class ChapterShow extends Component {
     )
   }
 
+  renderEditorDropdown() {
+    if (this.props.user.id != this.props.currentUser.id) return
+
+    return (
+      <View style={{ alignItems: "flex-end", paddingRight: 20 }}>
+        <EditorDropdown navigation={this.props.navigation} />
+      </View>
+    )
+  }
+
   render() {
     return (
       <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
         {this.renderChapterImage()}
         {this.renderTitle()}
         {this.renderStatistics()}
+        {this.renderEditorDropdown()}
         {this.renderDivider()}
         {this.renderToggleEdit()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>

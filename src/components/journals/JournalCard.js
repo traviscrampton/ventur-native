@@ -24,7 +24,7 @@ const JournalCard = props => {
               height: imageHeight
             }
           ]}
-          source={{ uri: props.cardBannerImageUrl }}
+          source={{ uri: props.cardImageUrl }}
         />
         <View>{tripMetaData(props)}</View>
       </View>
