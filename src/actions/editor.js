@@ -11,7 +11,7 @@ export function editEntry(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -46,7 +46,7 @@ export function addImagesToEntries(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateImagesState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -73,7 +73,7 @@ export function dispatchPopulateOfflineChapters(payload) {
   }
 }
 
-export const saveEditorContent = async (entries, chapter, dispatch) => {
+export const saveEditorContent = async (entries, deletedIds, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
@@ -91,6 +91,10 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
     }
   }
   formData.append("content", JSON.stringify(entries))
+  console.log("saveEdtiorContenet", deletedIds.length)
+  // if (deletedIds.length > 0) {
+  //   formData.append("deletedIds", JSON.stringify(deletedIds))
+  // }
   fetch(`${API_ROOT}/editor_blobs/${chapter.editorBlob.id}`, {
     method: "PUT",
     headers: {
@@ -170,6 +174,24 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
     })
 }
 
+export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
+export const addImageToDeletedIds = imageId => {
+  console.log("addImageTODeletedIds", imageId)
+  return {
+    type: ADD_IMAGE_TO_DELETED_IDS,
+    payload: imageId
+  }
+}
+
+export const RESET_DELETED_IDS = "RESET_DELETED_IDS"
+export const resetDeletedIds = () => {
+  return function(dispatch, getState) {
+    if (getState().editor.deletedIds.length > 0) {
+      dispatch(RESET_DELETED_IDS)
+    }
+  }
+}
+
 export const REMOVE_CHAPTER_FROM_STATE = "REMOVE_CHAPTER_FROM_STATE"
 export const removeChapterFromState = chapter => {
   return {
@@ -207,15 +229,8 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
     })
 }
 
-export const dispatchPersist = async (entries, chapter, isOffline, dispatch) => {
-  if (isOffline) {
-    let updatedChapter = Object.assign({}, chapter, { content: entries })
-    await persistChapterToAsyncStorage(updatedChapter, null)
-    dispatch(loadChapter(updatedChapter))
-    dispatch(doneUpdating())
-  } else {
-    saveEditorContent(entries, chapter, dispatch)
-  }
+export const dispatchPersist = async (entries, deletedIds, chapter, dispatch) => {
+  saveEditorContent(entries, deletedIds, chapter, dispatch)
 }
 
 export function updateManageContentEntries(payload) {
@@ -264,7 +279,7 @@ export function updateImageCaption(payload) {
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -339,7 +354,7 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 

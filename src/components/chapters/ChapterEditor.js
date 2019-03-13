@@ -30,7 +30,8 @@ import {
   updateEntryState,
   storeChapterToOfflineMode,
   populateEntries,
-  setInitialEditorState
+  setInitialEditorState,
+  addImageToDeletedIds
 } from "actions/editor"
 import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
 import InputScrollView from "react-native-input-scroll-view"
@@ -65,7 +66,8 @@ const mapDispatchToProps = dispatch => ({
   populateEntries: payload => dispatch(populateEntries(payload)),
   saveEditorContent: (entries, chapterId) => saveEditorContent(entries, chapterId, dispatch),
   editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
+  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
 })
 
 const mapStateToProps = state => ({
@@ -169,11 +171,18 @@ class ChapterEditor extends Component {
       "Are you sure?",
       "Deleting this image will erase it from this chapter",
       [
-        { text: "Delete Image", onPress: () => this.props.removeEntryAndFocus(index) },
+        { text: "Delete Image", onPress: () => this.deleteImage(index) },
         { text: "Cancel", style: "cancel" }
       ],
       { cancelable: true }
     )
+  }
+
+  deleteImage = (index) => {
+    let imageId = this.props.entries[index].id
+
+    this.props.addImageToDeletedIds(imageId)
+    this.props.removeEntryAndFocus(index)
   }
 
   renderEntry(entry, index) {

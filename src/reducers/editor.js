@@ -17,11 +17,20 @@ import {
   REMOVE_ENTRY_FROM_CLONE
 } from "actions/action_types"
 
-import { POPULATE_ENTRIES, DONE_UPDATING, START_UPDATING, SET_INITIAL_EDITOR_STATE, UPDATE_ACTIVE_CREATOR } from "actions/editor"
+import {
+  POPULATE_ENTRIES,
+  DONE_UPDATING,
+  START_UPDATING,
+  SET_INITIAL_EDITOR_STATE,
+  UPDATE_ACTIVE_CREATOR,
+  ADD_IMAGE_TO_DELETED_IDS,
+  RESET_DELETED_IDS
+} from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [],
+  deletedIds: [],
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
@@ -63,6 +72,18 @@ export default (state = defaultTextData, action) => {
         ...state,
         entriesSortBase: newArray,
         manageContentEntries: newArray
+      }
+
+    case ADD_IMAGE_TO_DELETED_IDS:
+      return {
+        ...state,
+        deletedIds: [...state.deletedIds, action.payload]
+      }
+
+    case RESET_DELETED_IDS:
+      return {
+        ...state,
+        deletedIds: []
       }
 
     case PREP_MANAGE_CONTENT:
