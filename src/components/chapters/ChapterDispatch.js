@@ -20,7 +20,7 @@ import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 import DropDownHolder from "utils/DropdownHolder"
 import { setToken, API_ROOT } from "agent"
 
@@ -203,11 +203,86 @@ class ChapterDispatch extends Component {
     )
   }
 
+  renderCancelAndDoneBtns() {
+    return (
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <View>
+          <TouchableWithoutFeedback onPress={() => console.log("hit hit hit")}>
+            <View
+              style={{
+                backgroundColor: "#fafafa",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 5,
+                borderColor: "#505050",
+                borderWidth: 1,
+                borderRadius: 3,
+                marginRight: 10
+              }}>
+              ><Text style={{ letterSpacing: 1.8 }}>CANCEL</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        <View>
+          <TouchableWithoutFeedback onPress={() => console.log("hit hit hit")}>
+            <View
+              style={{
+                backgroundColor: "#ff8c34",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 5,
+                borderColor: "#ff8c34",
+                borderWidth: 1,
+                borderRadius: 3
+              }}>
+              ><Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+    )
+  }
+
+  renderEditBtn() {
+    return (
+      <View>
+        <TouchableWithoutFeedback onPress={this.toggleEditMode}>
+          <View
+            style={{
+              backgroundColor: "#fafafa",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 5,
+              borderColor: "#505050",
+              borderWidth: 1,
+              borderRadius: 3
+            }}>
+            <Feather name="edit-3" size={12} style={{ marginRight: 3 }} />
+            <Text style={{letterSpacing: 1.8}}>EDIT</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
+  renderEditPortal() {
+    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
+
+    if (this.state.editMode) {
+      return this.renderCancelAndDoneBtns()
+    } else {
+      return this.renderEditBtn()
+    }
+  }
+
   renderDropDownAndIndicator() {
     return (
       <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         {this.renderActivityIndicator()}
-        {this.renderUserDropDown()}
+        {this.renderEditPortal()}
       </View>
     )
   }
@@ -219,7 +294,6 @@ class ChapterDispatch extends Component {
   }
 
   renderJournalName() {
-    console.log(this.props.journal.title)
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
@@ -247,11 +321,9 @@ class ChapterDispatch extends Component {
 
   toggleEditMode = () => {
     let toggledEditMode = !this.state.editMode
-    let toggledUserMenu = !this.state.userMenuOpen
     this.editMetaData()
     this.setState({
-      editMode: toggledEditMode,
-      userMenuOpen: toggledUserMenu
+      editMode: toggledEditMode
     })
   }
 
