@@ -9,7 +9,7 @@ function convertToJson(str) {
 export const LOADED_CHAPTER = "LOADED_CHAPTER"
 export function loadChapter(payload) {
   let chapter = payload
-  chapter.content = convertToJson(payload.content)
+  chapter.editorBlob.content = convertToJson(payload.editorBlob.content)
 
   return {
     type: LOADED_CHAPTER,

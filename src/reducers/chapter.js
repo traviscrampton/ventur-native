@@ -1,7 +1,12 @@
-import {LOADED_CHAPTER, RESET_CHAPTER_TAB} from "actions/chapter"
+import { LOADED_CHAPTER, RESET_CHAPTER_TAB } from "actions/chapter"
 
 const defaultChapterData = {
-  chapter: {},
+  chapter: {
+    editorBlob: {
+      id: null,
+      content: []
+    }
+  },
   loaded: false
 }
 

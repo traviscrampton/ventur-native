@@ -91,7 +91,7 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
     }
   }
   formData.append("content", JSON.stringify(entries))
-  fetch(`${API_ROOT}/chapters/${chapter.id}/update_blog_content`, {
+  fetch(`${API_ROOT}/editor_blobs/${chapter.editorBlob.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "multipart/form-data",
@@ -106,14 +106,14 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       if (data.errors) {
         throw Error(data.errors.join(", "))
       }
-      dispatch(loadChapter(data))
-      dispatch(doneUpdating(data))
-      if (data.offline) {
-        persistChapterToAsyncStorage(data, populateOfflineChapters)
-      }
+      // dispatch(loadChapter(data))
+      dispatch(doneUpdating())
+      // if (data.offline) {
+      //   persistChapterToAsyncStorage(data, populateOfflineChapters)
+      // }
     })
     .catch(err => {
-      dispatch(doneUpdating(data))
+      dispatch(doneUpdating())
       DropDownHolder.alert("error", "Error", err)
     })
 }

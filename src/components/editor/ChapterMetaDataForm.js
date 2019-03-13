@@ -96,7 +96,7 @@ class ChapterMetaDataForm extends Component {
 
     if (useLocal) {
       chapter = Object.assign({}, chapter, {
-        bannerImageUrl: chapter.bannerImage.uri,
+        imageUrl: chapter.bannerImage.uri,
         readableDate: generateReadableDate(chapter.date)
       })
       this.chapterCallback(chapter)
@@ -163,7 +163,7 @@ class ChapterMetaDataForm extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 4
-    let { bannerImageUrl } = this.props.chapter
+    let { imageUrl } = this.props.chapter
     return (
       <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>
         <TouchableWithoutFeedback onPress={this.updateImage}>
@@ -176,7 +176,7 @@ class ChapterMetaDataForm extends Component {
               borderWidth: 1,
               borderRadius: fourthWindowWidth / 2
             }}
-            source={{ uri: bannerImageUrl }}
+            source={{ uri: imageUrl }}
           />
         </TouchableWithoutFeedback>
       </View>

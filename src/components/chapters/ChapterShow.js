@@ -189,7 +189,7 @@ class ChapterShow extends Component {
     )
   }
 
-  renderEntry(entry, index) {
+  renderEntry = (entry, index) => {
     switch (entry.type) {
       case "text":
         return this.renderTextEntry(entry, index)
@@ -201,9 +201,9 @@ class ChapterShow extends Component {
   }
 
   renderBodyContent() {
-    if (!this.props.chapter.content) return
+    if (!this.props.chapter.editorBlob.content) return
 
-    let entries = this.props.chapter.content
+    let entries = this.props.chapter.editorBlob.content
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })

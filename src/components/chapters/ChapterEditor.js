@@ -101,7 +101,7 @@ class ChapterEditor extends Component {
   }
 
   async componentDidMount() {
-    this.populateEditor()
+    // this.populateEditor()
   }
 
   componentWillUnmount() {
@@ -120,10 +120,6 @@ class ChapterEditor extends Component {
     let entries = this.props.chapter.content ? this.props.chapter.content : []
 
     this.props.populateEntries(entries)
-  }
-
-  navigateBack() {
-    this.props.navigation.goBack()
   }
 
   keyboardWillShow(e) {
