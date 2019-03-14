@@ -24,13 +24,16 @@ import {
   SET_INITIAL_EDITOR_STATE,
   UPDATE_ACTIVE_CREATOR,
   ADD_IMAGE_TO_DELETED_IDS,
-  RESET_DELETED_IDS
+  RESET_DELETED_IDS,
+  SET_INITAL_IMAGE_IDS,
+  UPLOAD_IS_IMAGE,
 } from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [],
   deletedIds: [],
+  initialImageIds: [],
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
@@ -40,7 +43,8 @@ const defaultTextData = {
   newIndex: null,
   manageContentEntries: [],
   entriesSortBase: [],
-  isUpdating: false
+  isUpdating: false,
+  uploadIsImage: false
 }
 let newState
 export default (state = defaultTextData, action) => {
@@ -56,6 +60,11 @@ export default (state = defaultTextData, action) => {
         entries: [...state.manageContentEntries],
         manageContentEntries: [],
         entriesSortBase: []
+      }
+    case UPLOAD_IS_IMAGE:
+      return {
+        ...state,
+        uploadIsImage: action.payload
       }
     case UPDATE_MANAGE_CONTENT_ENTRIES:
       return {
@@ -126,6 +135,13 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         isUpdating: false
+      }
+
+    case SET_INITAL_IMAGE_IDS:
+      console.log("set initial", action.payload)
+      return {
+        ...state,
+        initialImageIds: action.payload
       }
 
     case ADD_IMAGES_TO_ENTRIES:

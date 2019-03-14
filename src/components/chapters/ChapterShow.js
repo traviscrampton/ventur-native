@@ -204,6 +204,9 @@ class ChapterShow extends Component {
     if (!this.props.chapter.editorBlob.content) return
 
     let entries = this.props.chapter.editorBlob.content
+    if (!Array.isArray(entries)) {
+      entries = Array.from(entries)
+    }
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })

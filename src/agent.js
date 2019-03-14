@@ -58,7 +58,8 @@ export const put = async (route, params = {}) => {
     headers: {
       "Content-Type": "application/json",
       Authorization: token
-    }
+    },
+    body: JSON.stringify(params)
   })
     .then(response => {
       return response.json()
@@ -79,12 +80,14 @@ export const destroy = async (route, params = {}) => {
   const token = await setToken()
   const requestRoute = API_ROOT + route
 
+  console.log("params", params)
   return fetch(requestRoute, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: token
-    }
+    },
+    body: JSON.stringify(params)
   })
     .then(response => {
       return response.json()

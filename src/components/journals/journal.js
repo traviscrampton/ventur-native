@@ -261,7 +261,7 @@ class Journal extends Component {
   }
 
   renderCreateChapterCta() {
-    if (!this.isCurrentUsersJournal() || !this.props.currentUser.canCreate) return
+    if (!this.isCurrentUsersJournal()) return
     return (
       <TouchableWithoutFeedback onPress={this.navigateToChapterForm}>
         <View

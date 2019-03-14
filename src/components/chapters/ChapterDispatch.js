@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import _ from "lodash"
 import { resetChapter } from "actions/chapter"
 import {
   StyleSheet,
@@ -11,7 +12,7 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { loadChapter } from "actions/chapter"
-import { populateEntries } from "actions/editor"
+import { populateEntries, getInitialImageIds, resetDeletedIds } from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import { updateChapterForm } from "actions/chapter_form"
@@ -21,6 +22,9 @@ import { put, destroy } from "agent"
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
   chapter: state.chapter.chapter,
+  entries: state.editor.entries,
+  initialImageIds: state.editor.initialImageIds,
+  deletedIds: state.editor.deletedIds,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
@@ -30,7 +34,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
-  populateEntries: payload => dispatch(populateEntries(payload))
+  populateEntries: payload => dispatch(populateEntries(payload)),
+  getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
+  resetDeletedIds: () => dispatch(resetDeletedIds())
 })
 
 class ChapterDispatch extends Component {
@@ -49,6 +55,7 @@ class ChapterDispatch extends Component {
     const entries = data.content ? JSON.parse(data.content) : []
 
     this.props.populateEntries(entries)
+    this.props.getInitialImageIds(entries)
     this.editMetaData()
     this.setState({
       editMode: true
@@ -81,9 +88,10 @@ class ChapterDispatch extends Component {
 
   handleDoneButtonPress = () => {
     const { id } = this.props.chapter.editorBlob
-    put(`/editor_blobs/${id}/update_draft_to_final`).then(data => {
+    put(`/editor_blobs/${id}/update_draft_to_final`, { deletedIds: this.props.deletedIds }).then(data => {
       let updatedChapter = Object.assign({}, this.props.chapter, { editorBlob: data })
       this.props.loadChapter(updatedChapter)
+      this.props.resetDeletedIds()
       this.props.populateEntries([])
       this.setState({ editMode: false })
     })
@@ -91,10 +99,30 @@ class ChapterDispatch extends Component {
 
   loseChangesAndUpdate = () => {
     const { id } = this.props.chapter.editorBlob
-    destroy(`/editor_blobs/${id}`).then(data => {
+    const imagesToDelete = this.getImagesToDelete()
+
+    destroy(`/editor_blobs/${id}`, { deletedIds: imagesToDelete }).then(data => {
       this.props.populateEntries([])
+      this.props.resetDeletedIds()
       this.setState({ editMode: false })
     })
+  }
+
+  getImagesToDelete() {
+    const allImageIds = this.getAllImageIds()
+    const { initialImageIds } = this.props
+
+    const diff = _.xor(initialImageIds, allImageIds)
+    return diff
+  }
+
+  getAllImageIds = () => {
+    let entries = this.props.entries
+      .filter(entry => entry.type === "image")
+      .map(entry => {
+        return entry.id
+      })
+    return entries
   }
 
   navigateBack = () => {

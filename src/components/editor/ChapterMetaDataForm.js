@@ -81,10 +81,6 @@ class ChapterMetaDataForm extends Component {
   }
 
   chapterCallback = async data => {
-    if (data.offline) {
-      await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
-    }
-
     this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
     this.props.doneUpdating()
@@ -92,17 +88,7 @@ class ChapterMetaDataForm extends Component {
 
   persistUpdate = async () => {
     let chapter = _.omit(this.props.chapterForm, "journals")
-    let useLocal = await useLocalStorage(chapter.id, chapter.offline)
-
-    if (useLocal) {
-      chapter = Object.assign({}, chapter, {
-        imageUrl: chapter.bannerImage.uri,
-        readableDate: generateReadableDate(chapter.date)
-      })
-      this.chapterCallback(chapter)
-    } else {
-      updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
-    }
+    updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
   }
 
   renderDatePicker() {
