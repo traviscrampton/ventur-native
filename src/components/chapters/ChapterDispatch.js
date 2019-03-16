@@ -17,7 +17,7 @@ import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import { updateChapterForm } from "actions/chapter_form"
 import { Ionicons, Feather } from "@expo/vector-icons"
-import { put, destroy } from "agent"
+import { get, put, destroy } from "agent"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -49,6 +49,12 @@ class ChapterDispatch extends Component {
       editMode: this.initialChapterForm,
       initialChapterForm: this.initialChapterForm
     }
+  }
+
+  componentWillMount() {
+    get(`/chapters/2`).then(data => {
+      this.props.loadChapter(data.chapter)
+    })
   }
 
   populateEditorAndSwitch = data => {
@@ -211,6 +217,7 @@ class ChapterDispatch extends Component {
   }
 
   renderEditPortal() {
+    return 
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     if (this.state.editMode) {
@@ -240,7 +247,7 @@ class ChapterDispatch extends Component {
       <View style={styles.journalAndUserContainer}>
         <View>
           <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / 1.5 }]}>
-            {this.props.journal.title}
+            {/*this.props.journal.title*/}
           </Text>
         </View>
       </View>

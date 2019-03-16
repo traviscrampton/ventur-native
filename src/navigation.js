@@ -144,10 +144,12 @@ export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       AuthFlow: AuthFlow,
-      BottomNavigator: BottomNavigator
+      BottomNavigator: BottomNavigator,
+      ChapterDispatch: ChapterDispatch
     },
     {
-      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
+      initialRouteName: signedIn ? "ChapterDispatch" : "AuthFlow"
+      // initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
     }
   )
 

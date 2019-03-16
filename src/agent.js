@@ -23,9 +23,16 @@ export const setToken = async () => {
   }
 }
 
-export const get = async route => {
+export const encodeQueryString = params => {
+  const keys = Object.keys(params)
+  return keys.length
+    ? "?" + keys.map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&")
+    : ""
+}
+
+export const get = async (route, params = {}) => {
   const token = await setToken()
-  const requestRoute = API_ROOT + route
+  const requestRoute = API_ROOT + route + encodeQueryString(params)
 
   return fetch(requestRoute, {
     method: "GET",

@@ -10,6 +10,7 @@ import chapter from "reducers/chapter"
 import chapterForm from "reducers/chapter_form"
 import user from "reducers/user"
 import userForm from "reducers/userForm"
+import comments from "reducers/comments"
 
 export default combineReducers({
   editor,
@@ -22,5 +23,6 @@ export default combineReducers({
   journalForm,
   journal,
   userForm,
-  chapterForm
+  chapterForm,
+  comments
 })

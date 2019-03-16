@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHi
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
 import EditorDropdown from "components/editor/EditorDropdown"
+import CommentsContainer from "components/Comments/CommentsContainer"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -235,6 +236,7 @@ class ChapterShow extends Component {
   }
 
   renderEditorDropdown() {
+    return
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -242,6 +244,14 @@ class ChapterShow extends Component {
         <EditorDropdown navigation={this.props.navigation} />
       </View>
     )
+  }
+
+  renderCommentContainer() {
+    let commentableProps = Object.assign(
+      {},
+      { commentableId: this.props.chapter.id, commentableType: "chapter", commentCount: this.props.chapter.commentCount }
+    )
+    return <CommentsContainer {...commentableProps} />
   }
 
   render() {
@@ -254,6 +264,7 @@ class ChapterShow extends Component {
         {this.renderDivider()}
         {this.renderToggleEdit()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
+        <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>
     )
   }
