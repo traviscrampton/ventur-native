@@ -24,9 +24,9 @@ class CommentsContainer extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.loadComments()
-    }, 1000)
+    // setTimeout(() => {
+    //   this.loadComments()
+    // }, 1000)
   }
 
   loadComments = async () => {
