@@ -19,6 +19,7 @@ import Profile from "components/users/Profile"
 import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
+import CommentForm from "components/Comments/CommentForm"
 import UserAvatarForm from "components/users/UserAvatarForm"
 import { Text } from "react-native"
 import { isSignedIn } from "auth"
@@ -51,6 +52,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
@@ -76,6 +78,7 @@ const ProfileNavigator = createStackNavigator(
     Profile: Profile,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
@@ -145,11 +148,11 @@ export const RootNavigator = (signedIn = false) =>
     {
       AuthFlow: AuthFlow,
       BottomNavigator: BottomNavigator,
-      ChapterDispatch: ChapterDispatch
+      // ChapterDispatch: ChapterDispatch
     },
     {
-      initialRouteName: signedIn ? "ChapterDispatch" : "AuthFlow"
-      // initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
+      // initialRouteName: signedIn ? "ChapterDispatch" : "AuthFlow"
+      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
     }
   )
 

@@ -249,7 +249,14 @@ class ChapterShow extends Component {
   renderCommentContainer() {
     let commentableProps = Object.assign(
       {},
-      { commentableId: this.props.chapter.id, commentableType: "chapter", commentCount: this.props.chapter.commentCount }
+      {
+        commentableId: this.props.chapter.id,
+        commentableType: "chapter",
+        commentableUser: this.props.chapter.user,
+        commentableTitle: this.props.chapter.title,
+        commentCount: this.props.chapter.commentCount,
+        navigation: this.props.navigation
+      }
     )
     return <CommentsContainer {...commentableProps} />
   }

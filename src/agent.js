@@ -83,6 +83,33 @@ export const put = async (route, params = {}) => {
     })
 }
 
+export const post = async (route, params = {}) => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route
+
+  return fetch(requestRoute, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logout()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
+}
+
 export const destroy = async (route, params = {}) => {
   const token = await setToken()
   const requestRoute = API_ROOT + route

@@ -51,11 +51,11 @@ class ChapterDispatch extends Component {
     }
   }
 
-  componentWillMount() {
-    get(`/chapters/2`).then(data => {
-      this.props.loadChapter(data.chapter)
-    })
-  }
+  // componentWillMount() {
+  //   get(`/chapters/2`).then(data => {
+  //     this.props.loadChapter(data.chapter)
+  //   })
+  // }
 
   populateEditorAndSwitch = data => {
     const entries = data.content ? JSON.parse(data.content) : []

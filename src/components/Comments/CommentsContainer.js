@@ -2,13 +2,16 @@ import React, { Component } from "react"
 import { StyleSheet, FlatList, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { loadComments } from "actions/comments"
+import { populateCommentForm } from "actions/comment_form"
+import CommentsSection from "components/Comments/CommentsSection"
 
 const mapStateToProps = state => ({
   comments: state.comments.comments
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadComments: payload => dispatch(loadComments(payload))
+  loadComments: payload => dispatch(loadComments(payload)),
+  populateCommentForm: payload => dispatch(populateCommentForm(payload))
 })
 
 class CommentsContainer extends Component {
@@ -20,9 +23,15 @@ class CommentsContainer extends Component {
     }
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.loadComments()
+    }, 1000)
+  }
+
   loadComments = async () => {
     const { commentableId, commentableType } = this.props
-    const params = { commentableId: commentableId, commentableType: commentableType }
+    const params = { commentableId, commentableType }
     await this.props.loadComments(params)
 
     this.setState({
@@ -30,8 +39,21 @@ class CommentsContainer extends Component {
     })
   }
 
-  renderCommentsSection() {
-    return <Text>{this.props.comments}</Text>
+  navigateAndPopulateCommentForm = (commentableParams = null, id = null) => {
+    let commentableObj = commentableParams ? commentableParams : this.props
+
+    const { commentableId, commentableType, commentableUser, commentableTitle } = commentableObj
+    const commentable = Object.assign(
+      {},
+      {
+        commentableType,
+        commentableId,
+        commentableUser,
+        commentableTitle
+      }
+    )
+    this.props.populateCommentForm({ id, commentable })
+    this.props.navigation.navigate("CommentForm")
   }
 
   renderCommentsCTA() {
@@ -48,7 +70,7 @@ class CommentsContainer extends Component {
 
   render() {
     if (this.state.showComments) {
-      return this.renderCommentsSection()
+      return <CommentsSection navigateAndPopulateCommentForm={this.navigateAndPopulateCommentForm} />
     } else {
       return this.renderCommentsCTA()
     }
