@@ -23,12 +23,6 @@ class CommentsContainer extends Component {
     }
   }
 
-  componentDidMount() {
-    // setTimeout(() => {
-    //   this.loadComments()
-    // }, 1000)
-  }
-
   loadComments = async () => {
     const { commentableId, commentableType } = this.props
     const params = { commentableId, commentableType }
@@ -70,7 +64,7 @@ class CommentsContainer extends Component {
 
   render() {
     if (this.state.showComments) {
-      return <CommentsSection navigateAndPopulateCommentForm={this.navigateAndPopulateCommentForm} />
+      return <CommentsSection commentableUser={this.props.commentableUser} navigateAndPopulateCommentForm={this.navigateAndPopulateCommentForm} />
     } else {
       return this.renderCommentsCTA()
     }

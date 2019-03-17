@@ -44,11 +44,22 @@ class Comment extends Component {
     )
   }
 
-  handleDeleteComment = () => {
-    this.props.deleteComment(this.props.id)
+  handleDeleteComment = id => {
+    this.props.deleteComment(id)
+  }
+
+  isCurrentUsersComment() {
+    return this.props.currentUser.id == this.props.user.id
+  }
+
+  currentUserOwnsCommentable() {
+    return this.props.currentUser.id == this.props.commentableUser.id
   }
 
   renderEditButton() {
+    return
+    if (this.isCurrentUsersComment()) return
+
     return (
       <View>
         <TouchableWithoutFeedback onPress={() => console.log("hiya")}>
@@ -61,9 +72,11 @@ class Comment extends Component {
   }
 
   renderDeleteButton() {
+    if (!this.isCurrentUsersComment() && !this.currentUserOwnsCommentable()) return
+
     return (
       <View style={{ marginLeft: 5 }}>
-        <TouchableWithoutFeedback onPress={this.handleDeleteComment}>
+        <TouchableWithoutFeedback onPress={() => this.handleDeleteComment(this.props.id)}>
           <View>
             <Text>DELETE</Text>
           </View>
@@ -73,8 +86,6 @@ class Comment extends Component {
   }
 
   renderDeleteEditButtons() {
-    if (false) return
-
     return (
       <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         {this.renderEditButton()}
@@ -134,9 +145,10 @@ class Comment extends Component {
 
   renderSubComments() {
     if (!this.state.showSubComments) return
-
+    let canDelete
     return this.props.subComments.map((subComment, index) => {
-      return <SubComment {...subComment} />
+      canDelete = this.currentUserOwnsCommentable() || this.props.currentUser.id == subComment.user.id
+      return <SubComment {...subComment} canDelete={canDelete} handleDeleteComment={this.handleDeleteComment} />
     })
   }
 
@@ -165,24 +177,37 @@ class Comment extends Component {
 const SubComment = props => {
   const imgDimensions = 35
 
+  deleteCta = (
+    <View>
+      <TouchableWithoutFeedback onPress={() => props.handleDeleteComment(props.id)}>
+        <View>
+          <Text>Delete</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  )
+
   return (
     <View style={{ borderTopWidth: 1, borderTopColor: "#d3d3d3", marginTop: 15, paddingTop: 15, paddingLeft: 20 }}>
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "top" }}>
-        <Image
-          style={{ width: imgDimensions, height: imgDimensions, borderRadius: imgDimensions / 2 }}
-          source={{ uri: props.user.avatarImageUrl }}
-        />
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            height: imgDimensions,
-            paddingLeft: 5
-          }}>
-          <Text>{props.user.fullName}</Text>
-          <Text>{props.readableDate}</Text>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "top" }}>
+          <Image
+            style={{ width: imgDimensions, height: imgDimensions, borderRadius: imgDimensions / 2 }}
+            source={{ uri: props.user.avatarImageUrl }}
+          />
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              height: imgDimensions,
+              paddingLeft: 5
+            }}>
+            <Text>{props.user.fullName}</Text>
+            <Text>{props.readableDate}</Text>
+          </View>
         </View>
+        {props.canDelete ? deleteCta : ""}
       </View>
       <View style={{ marginTop: 20 }}>
         <Text>{props.content}</Text>

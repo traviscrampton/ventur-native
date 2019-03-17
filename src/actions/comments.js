@@ -17,15 +17,15 @@ export function populateComments(payload) {
 }
 
 function filterDeletedComment(comments, data) {
-  let filteredSubComment
-  if (data.commentableType !== "Comment") {
+  let filteredSubComments
+  if (data.commentable_type !== "Comment") {
     return comments.filter(comment => {
       return comment.id !== data.id
     })
   } else {
     return comments.map((comment, index) => {
       filteredSubComments = comment.subComments.filter(subComment => {
-        subComment.id !== data.id
+        return subComment.id !== data.id
       })
       comment.subComments = filteredSubComments
       return comment

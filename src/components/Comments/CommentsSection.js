@@ -19,7 +19,7 @@ class CommentsSection extends Component {
     this.props.navigateAndPopulateCommentForm()
   }
 
-  replyToComment = (comment) => {
+  replyToComment = comment => {
     const params = {
       commentableType: "comment",
       commentableId: comment.id,
@@ -58,7 +58,7 @@ class CommentsSection extends Component {
 
   renderComments() {
     return this.props.comments.map((comment, index) => {
-      return <Comment {...comment} replyToComment={this.replyToComment} />
+      return <Comment {...comment} commentableUser={this.props.commentableUser} replyToComment={this.replyToComment} />
     })
   }
 
