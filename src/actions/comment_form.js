@@ -4,7 +4,6 @@ import { populateComments } from "actions/comments"
 
 export const POPULATE_COMMENT_FORM = "POPULATE_COMMENT_FORM"
 export function populateCommentForm(payload) {
-  console.log("payload in the action", payload)
   return {
     type: POPULATE_COMMENT_FORM,
     payload: payload

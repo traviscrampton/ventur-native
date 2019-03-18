@@ -450,4 +450,4 @@ export function populateEntries(payload) {
 export function updateCursorPosition(payload) {
   return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }
-export const debouncePersist = _.debounce(dispatchPersist, 4000)
+export const debouncePersist = _.debounce(dispatchPersist, 2000)

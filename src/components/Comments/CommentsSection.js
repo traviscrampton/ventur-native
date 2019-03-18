@@ -5,7 +5,8 @@ import Comment from "components/Comments/Comment"
 const CycleTouringLogo = require("assets/images/cycletouringlogo.png")
 
 const mapStateToProps = state => ({
-  comments: state.comments.comments
+  comments: state.comments.comments,
+  currentUserAvatarImageUrl: state.common.currentUser.avatarImageUrl
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -33,7 +34,16 @@ class CommentsSection extends Component {
     this.props.navigateAndPopulateCommentForm(params)
   }
 
+  getAvatarUrl() {
+    if (this.props.currentUserAvatarImageUrl) {
+      return { uri: this.props.currentUserAvatarImageUrl }
+    } else {
+      return CycleTouringLogo
+    }
+  }
+
   renderCommentCta = () => {
+    const avatarUrl = this.getAvatarUrl()
     return (
       <View style={{ backgroundColor: "white", marginBottom: 20, borderWidth: 1, borderColor: "#d3d3d3" }}>
         <TouchableWithoutFeedback onPress={this.navigateToCommentForm}>
@@ -47,7 +57,7 @@ class CommentsSection extends Component {
                 borderColor: "#d3d3d3",
                 borderRadius: 35 / 2
               }}
-              source={CycleTouringLogo}
+              source={avatarUrl}
             />
             <Text style={{ color: "#d3d3d3" }}>Write a comment</Text>
           </View>
@@ -71,7 +81,7 @@ class CommentsSection extends Component {
             padding: 20,
             paddingBottom: 10
           }}>
-          <Text>Comments</Text>
+          <Text style={{ fontFamily: "open-sans-regular" }}>Comments</Text>
         </View>
         {this.renderCommentCta()}
         <View

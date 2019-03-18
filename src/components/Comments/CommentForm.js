@@ -56,12 +56,12 @@ class CommentForm extends Component {
         }}>
         <TouchableWithoutFeedback onPress={this.handleCancelAndNavigate}>
           <View>
-            <Text>Cancel</Text>
+            <Text style={{ fontFamily: "open-sans-regular" }}>Cancel</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.handleCommentPersistance}>
           <View>
-            <Text>Post</Text>
+            <Text style={{ fontFamily: "open-sans-regular" }}>Post</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -82,8 +82,10 @@ class CommentForm extends Component {
           backgroundColor: "white",
           padding: 10
         }}>
-        <Text style={{ fontWeight: "bold", marginBottom: 5 }}>{this.props.commentable.commentableTitle}</Text>
-        <Text>By: {this.props.commentable.commentableUser.fullName}</Text>
+        <Text style={{ fontWeight: "bold", marginBottom: 5, fontFamily: "open-sans-regular" }}>
+          {this.props.commentable.commentableTitle}
+        </Text>
+        <Text style={{ fontFamily: "open-sans-regular" }}>By: {this.props.commentable.commentableUser.fullName}</Text>
       </View>
     )
   }
@@ -94,7 +96,7 @@ class CommentForm extends Component {
         <TextInput
           multiline
           autoFocus
-          style={{ fontSize: 16 }}
+          style={{ fontSize: 16, fontFamily: "open-sans-regular" }}
           selectionColor={"#FF8C34"}
           onChangeText={text => this.props.updateCommentContent(text)}
           value={this.props.content}

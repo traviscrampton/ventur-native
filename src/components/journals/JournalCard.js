@@ -50,7 +50,7 @@ const tripMetaData = props => {
           display: "flex"
         }}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
+          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
         </Text>
       </View>
     </View>

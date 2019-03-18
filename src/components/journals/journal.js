@@ -153,7 +153,7 @@ class Journal extends Component {
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
         <View>
-          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} miles`.toUpperCase()}</Text>
+          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
         </View>
       </View>
     )

@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { StyleSheet, FlatList, View, Image, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { deleteComment } from "actions/comments"
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
@@ -27,23 +28,6 @@ class Comment extends Component {
     })
   }
 
-  renderRepliesCta() {
-    const subCommentCount = this.props.subComments.length
-    if (subCommentCount === 0) {
-      return <View />
-    }
-
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.toggleSubComments}>
-          <View>
-            <Text>Replies ({subCommentCount})</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
   handleDeleteComment = id => {
     this.props.deleteComment(id)
   }
@@ -56,15 +40,20 @@ class Comment extends Component {
     return this.props.currentUser.id == this.props.commentableUser.id
   }
 
-  renderEditButton() {
-    return
-    if (this.isCurrentUsersComment()) return
+  renderRepliesCta() {
+    const subCommentCount = this.props.subComments.length
+    if (subCommentCount === 0) {
+      return <View />
+    }
+
+    const chevron = this.state.showSubComments ? "chevron-up" : "chevron-down"
 
     return (
       <View>
-        <TouchableWithoutFeedback onPress={() => console.log("hiya")}>
-          <View>
-            <Text>EDIT</Text>
+        <TouchableWithoutFeedback onPress={this.toggleSubComments}>
+          <View style={styles.flexRow}>
+            <Text style={styles.repliesCtaText}>Replies ({subCommentCount})</Text>
+            <MaterialCommunityIcons style={{ paddingTop: 2 }} name={chevron} size={18} color={"rgba(0,0,0,.65)"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -78,7 +67,7 @@ class Comment extends Component {
       <View style={{ marginLeft: 5 }}>
         <TouchableWithoutFeedback onPress={() => this.handleDeleteComment(this.props.id)}>
           <View>
-            <Text>DELETE</Text>
+            <MaterialIcons name="delete" size={16} color="rgba(0,0,0,.65)" />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -86,33 +75,17 @@ class Comment extends Component {
   }
 
   renderDeleteEditButtons() {
-    return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        {this.renderEditButton()}
-        {this.renderDeleteButton()}
-      </View>
-    )
+    return <View style={styles.flexRow}>{this.renderDeleteButton()}</View>
   }
 
   renderUserSection() {
-    const imgDimensions = 35
     return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "top" }}>
-          <Image
-            style={{ width: imgDimensions, height: imgDimensions, borderRadius: imgDimensions / 2 }}
-            source={{ uri: this.props.user.avatarImageUrl }}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: imgDimensions,
-              paddingLeft: 5
-            }}>
-            <Text>{this.props.user.fullName}</Text>
-            <Text>{this.props.readableDate}</Text>
+      <View style={styles.userSectionContainer}>
+        <View style={styles.imageAndUser}>
+          <Image style={styles.image} source={{ uri: this.props.user.avatarImageUrl }} />
+          <View style={styles.userAndDate}>
+            <Text style={styles.userFullName}>{this.props.user.fullName}</Text>
+            <Text style={styles.commentDate}>{this.props.readableDate}</Text>
           </View>
         </View>
         {this.renderDeleteEditButtons()}
@@ -123,19 +96,20 @@ class Comment extends Component {
   renderCommentContent() {
     return (
       <View style={{ marginTop: 20 }}>
-        <Text>{this.props.content}</Text>
+        <Text style={styles.commentContent}>{this.props.content}</Text>
       </View>
     )
   }
 
   renderCommentInterractions() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
+      <View style={styles.commentInteractionContainer}>
         {this.renderRepliesCta()}
         <View>
           <TouchableWithoutFeedback onPress={() => this.props.replyToComment(this.props)}>
-            <View>
-              <Text>Reply</Text>
+            <View style={styles.flexRow}>
+              <MaterialIcons name="reply" size={14} color={"rgba(0,0,0,.65)"} />
+              <Text style={styles.replyCta}>Reply</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -154,17 +128,7 @@ class Comment extends Component {
 
   render() {
     return (
-      <View
-        style={{
-          backgroundColor: "white",
-          borderRadius: 2,
-          marginBottom: 20,
-          padding: 20,
-          borderTopColor: "#d3d3d3",
-          borderBottomColor: "#d3d3d3",
-          borderTopWidth: 1,
-          borderBottomWidth: 1
-        }}>
+      <View style={styles.container}>
         {this.renderUserSection()}
         {this.renderCommentContent()}
         {this.renderCommentInterractions()}
@@ -181,30 +145,20 @@ const SubComment = props => {
     <View>
       <TouchableWithoutFeedback onPress={() => props.handleDeleteComment(props.id)}>
         <View>
-          <Text>Delete</Text>
+          <MaterialIcons name="delete" size={16} color="rgba(0,0,0,.65)" />
         </View>
       </TouchableWithoutFeedback>
     </View>
   )
 
   return (
-    <View style={{ borderTopWidth: 1, borderTopColor: "#d3d3d3", marginTop: 15, paddingTop: 15, paddingLeft: 20 }}>
-      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "top" }}>
-          <Image
-            style={{ width: imgDimensions, height: imgDimensions, borderRadius: imgDimensions / 2 }}
-            source={{ uri: props.user.avatarImageUrl }}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: imgDimensions,
-              paddingLeft: 5
-            }}>
-            <Text>{props.user.fullName}</Text>
-            <Text>{props.readableDate}</Text>
+    <View style={styles.subCommentContainer}>
+      <View style={styles.userContentAndCta}>
+        <View style={styles.imageAndUser}>
+          <Image style={styles.image} source={{ uri: props.user.avatarImageUrl }} />
+          <View style={styles.userAndDate}>
+            <Text style={styles.userFullName}>{props.user.fullName}</Text>
+            <Text style={styles.commentDate}>{props.readableDate}</Text>
           </View>
         </View>
         {props.canDelete ? deleteCta : ""}
@@ -216,7 +170,91 @@ const SubComment = props => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    borderRadius: 2,
+    marginBottom: 20,
+    padding: 20,
+    borderTopColor: "#d3d3d3",
+    borderBottomColor: "#d3d3d3",
+    borderTopWidth: 1,
+    borderBottomWidth: 1
+  },
+  flexRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  repliesCtaText: {
+    fontSize: 14,
+    color: "rgba(0,0,0,.65)",
+    marginRight: 2,
+    fontFamily: "open-sans-regular"
+  },
+  userSectionContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  imageAndUser: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "top"
+  },
+  image: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5
+  },
+  userAndDate: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: 35,
+    padding: 5,
+    paddingTop: 2
+  },
+  userFullName: {
+    fontSize: 12,
+    color: "#323941",
+    fontFamily: "open-sans-bold"
+  },
+  commentDate: {
+    fontSize: 12,
+    fontFamily: "open-sans-regular",
+    color: "rgba(0,0,0,.65)"
+  },
+  commentContent: {
+    fontSize: 16,
+    fontFamily: "open-sans-regular"
+  },
+  commentInteractionContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20
+  },
+  replyCta: {
+    marginLeft: 2,
+    color: "rgba(0,0,0,.65)",
+    fontFamily: "open-sans-regular"
+  },
+  subCommentContainer: {
+    borderTopWidth: 1,
+    borderTopColor: "#d3d3d3",
+    marginTop: 15,
+    paddingTop: 15,
+    paddingLeft: 20
+  },
+  userContentAndCta: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }
+})
 
 export default connect(
   mapStateToProps,

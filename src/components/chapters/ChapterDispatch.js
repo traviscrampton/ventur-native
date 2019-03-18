@@ -93,6 +93,8 @@ class ChapterDispatch extends Component {
   }
 
   handleDoneButtonPress = () => {
+    if (this.props.isUpdating) return
+
     const { id } = this.props.chapter.editorBlob
     put(`/editor_blobs/${id}/update_draft_to_final`, { deletedIds: this.props.deletedIds }).then(data => {
       let updatedChapter = Object.assign({}, this.props.chapter, { editorBlob: data })
@@ -152,6 +154,11 @@ class ChapterDispatch extends Component {
   }
 
   renderCancelAndDoneBtns() {
+    const doneContent = this.props.isUpdating ? (
+      <ActivityIndicator size="small" color="white" />
+    ) : (
+      <Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
+    )
     return (
       <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         <View>
@@ -162,11 +169,14 @@ class ChapterDispatch extends Component {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                padding: 5,
+                justifyContent: "center",
                 borderColor: "#505050",
                 borderWidth: 1,
                 borderRadius: 3,
-                marginRight: 10
+                marginRight: 10,
+                paddingLeft: 5,
+                paddingRight: 5,
+                height: 30
               }}>
               ><Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
             </View>
@@ -180,12 +190,14 @@ class ChapterDispatch extends Component {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                padding: 5,
+                justifyContent: "center",
                 borderColor: "#ff8c34",
                 borderWidth: 1,
-                borderRadius: 3
+                borderRadius: 3,
+                minWidth: 70,
+                height: 30
               }}>
-              ><Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
+              >{doneContent}
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -217,7 +229,6 @@ class ChapterDispatch extends Component {
   }
 
   renderEditPortal() {
-    return 
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
     if (this.state.editMode) {
@@ -229,17 +240,8 @@ class ChapterDispatch extends Component {
 
   renderIndicatorAndEditPortal() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        {this.renderActivityIndicator()}
-        {this.renderEditPortal()}
-      </View>
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>{this.renderEditPortal()}</View>
     )
-  }
-
-  renderActivityIndicator() {
-    if (!this.props.isUpdating) return
-
-    return <ActivityIndicator size="small" color="#FF8C34" />
   }
 
   renderJournalName() {
@@ -247,7 +249,7 @@ class ChapterDispatch extends Component {
       <View style={styles.journalAndUserContainer}>
         <View>
           <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / 1.5 }]}>
-            {/*this.props.journal.title*/}
+            {this.props.journal.title}
           </Text>
         </View>
       </View>

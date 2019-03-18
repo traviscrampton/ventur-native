@@ -13,7 +13,8 @@ import {
   AsyncStorage,
   TouchableHighlight,
   CameraRoll,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native"
 import { connect } from "react-redux"
 import {
@@ -83,7 +84,8 @@ const mapStateToProps = state => ({
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
   showEditorToolbar: state.editor.showEditorToolbar,
-  isOffline: state.common.isOffline
+  isOffline: state.common.isOffline,
+  uploadIsImage: state.editor.uploadIsImage
 })
 
 class ChapterEditor extends Component {
@@ -170,15 +172,12 @@ class ChapterEditor extends Component {
     Alert.alert(
       "Are you sure?",
       "Deleting this image will erase it from this chapter",
-      [
-        { text: "Delete Image", onPress: () => this.deleteImage(index) },
-        { text: "Cancel", style: "cancel" }
-      ],
+      [{ text: "Delete Image", onPress: () => this.deleteImage(index) }, { text: "Cancel", style: "cancel" }],
       { cancelable: true }
     )
   }
 
-  deleteImage = (index) => {
+  deleteImage = index => {
     let imageId = this.props.entries[index].id
 
     this.props.addImageToDeletedIds(imageId)
@@ -196,7 +195,23 @@ class ChapterEditor extends Component {
     }
   }
 
-  renderOpacCover(index, imageHeight) {
+  renderImageLoadingCover(index, imageHeight) {
+    return (
+      <View
+        style={[
+          styles.opacCover,
+          { height: imageHeight, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }
+        ]}>
+        <ActivityIndicator size="large" color="orange" />
+      </View>
+    )
+  }
+
+  renderOpacCover(index, imageHeight, image) {
+    if (this.props.uploadIsImage && !image.id) {
+      return this.renderImageLoadingCover(index, imageHeight)
+    }
+
     if (index !== this.props.activeIndex) return
 
     return (
@@ -316,7 +331,7 @@ class ChapterEditor extends Component {
               style={{ width: Dimensions.get("window").width, height: imageHeight }}
               source={{ uri: this.renderProperUri(entry) }}
               onError={() => this.downloadToDevice(entry, index)}>
-              {this.renderOpacCover(index, imageHeight)}
+              {this.renderOpacCover(index, imageHeight, entry)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
           </View>

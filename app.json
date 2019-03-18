@@ -6,6 +6,7 @@
     "sdkVersion": "27.0.0",
     "slug": "ventur",
     "ios": {
+      "supportsTablet": true,
       "bundleIdentifier": "com.ventur.documenter"
     },
   }

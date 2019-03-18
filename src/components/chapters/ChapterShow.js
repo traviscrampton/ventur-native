@@ -86,7 +86,7 @@ class ChapterShow extends Component {
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
-          <Text style={styles.statisticsText}>{`${distance} miles`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${distance} kilometers`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -213,30 +213,7 @@ class ChapterShow extends Component {
     })
   }
 
-  renderToggleEdit() {
-    return
-    if (this.props.user.id != this.props.currentUser.id) return
-
-    return (
-      <TouchableHighlight onPress={this.props.toggleEditMode}>
-        <View
-          style={{
-            height: 50,
-            backgroundColor: "#f8f8f8",
-            width: this.props.width,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Text style={{ fontSize: 18 }}>Edit Content</Text>
-        </View>
-      </TouchableHighlight>
-    )
-  }
-
   renderEditorDropdown() {
-    return
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
@@ -269,7 +246,6 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderEditorDropdown()}
         {this.renderDivider()}
-        {this.renderToggleEdit()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>

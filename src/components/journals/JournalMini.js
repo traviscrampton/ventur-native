@@ -15,7 +15,7 @@ const JournalMini = props => {
         <View style={styles.metadataContainer}>
           <Text numberOfLines={2} style={styles.title}>{props.title}</Text>
           <Text style={styles.metadata}>
-            {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
+            {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
           </Text>
         </View>
       </TouchableWithoutFeedback>

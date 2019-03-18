@@ -123,7 +123,7 @@ class ChapterMetaDataForm extends Component {
             onChangeText={text => this.persistMetadata(text, "distance")}
             style={{ textAlign: "right", marginRight: 5, paddingBottom: 2 }}
           />
-          <Text style={styles.iconText}>{`MILES`}</Text>
+          <Text style={styles.iconText}>KILOMETERS</Text>
         </View>
       </View>
     )
