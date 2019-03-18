@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Image, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { deleteComment } from "actions/comments"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"

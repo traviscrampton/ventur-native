@@ -1,11 +1,9 @@
 import React, { Component } from "react"
 import {
-  StyleSheet,
   ScrollView,
   View,
   Dimensions,
   Text,
-  Image,
   TextInput,
   TouchableWithoutFeedback
 } from "react-native"

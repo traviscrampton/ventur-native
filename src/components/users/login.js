@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, Button, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
 import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { Feather } from "@expo/vector-icons"
 import { myJournalsQuery } from "graphql/queries/journals"
@@ -76,14 +76,20 @@ class MyJournals extends Component {
   }
 
   render() {
-    console.log("journal", this.props.height, this.props.weight)
     const pad = this.props.width * 0.035
 
     return (
       <View style={{ position: "relative", height: "100%", backgroundColor: "white" }}>
         <ScrollView style={[styles.flatListContainer, { paddingLeft: pad, paddingRight: pad }]}>
           {this.props.journals.map((journal, index) => {
-            return <JournalMini {...journal} height={this.props.height} width={this.props.width} handlePress={this.handlePress} />
+            return (
+              <JournalMini
+                {...journal}
+                height={this.props.height}
+                width={this.props.width}
+                handlePress={this.handlePress}
+              />
+            )
           })}
         </ScrollView>
         {this.renderCreateJournalCta()}

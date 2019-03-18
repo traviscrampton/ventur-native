@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 import { updateManageContentEntries, updateEntriesOrder, removeEntryFromClone } from "actions/editor"
 import {
   Text,
-  FlatList,
   TouchableWithoutFeedback,
   ImageBackground,
   Image,

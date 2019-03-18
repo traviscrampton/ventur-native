@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { loadComments } from "actions/comments"
 import { populateCommentForm } from "actions/comment_form"

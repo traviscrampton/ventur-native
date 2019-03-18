@@ -7,9 +7,9 @@ import {
   Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  ActivityIndicator,
   Alert
 } from "react-native"
+import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
 import { loadChapter } from "actions/chapter"
 import { populateEntries, getInitialImageIds, resetDeletedIds } from "actions/editor"
@@ -50,12 +50,6 @@ class ChapterDispatch extends Component {
       initialChapterForm: this.initialChapterForm
     }
   }
-
-  // componentWillMount() {
-  //   get(`/chapters/2`).then(data => {
-  //     this.props.loadChapter(data.chapter)
-  //   })
-  // }
 
   populateEditorAndSwitch = data => {
     const entries = data.content ? JSON.parse(data.content) : []
@@ -155,7 +149,7 @@ class ChapterDispatch extends Component {
 
   renderCancelAndDoneBtns() {
     const doneContent = this.props.isUpdating ? (
-      <ActivityIndicator size="small" color="white" />
+      <MaterialIndicator size={18} color="white" />
     ) : (
       <Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
     )

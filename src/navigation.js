@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
 import JournalFeed from "components/journals/JournalFeed"
-import MyJournals from "components/journals/MyJournals"
 import Journal from "components/journals/journal"
 import Login from "components/users/login"
 import HomeLoggedOut from "components/users/HomeLoggedOut"
@@ -10,7 +9,6 @@ import CameraRollContainer from "components/editor/CameraRollContainer"
 import ImageCaptionForm from "components/editor/ImageCaptionForm"
 import ChapterDispatch from "components/chapters/ChapterDispatch"
 import ManageContent from "components/editor/ManageContent"
-import BannerImagePicker from "components/journals/BannerImagePicker"
 import JournalFormTitle from "components/JournalForm/JournalFormTitle"
 import JournalFormLocation from "components/JournalForm/JournalFormLocation"
 import JournalFormStatus from "components/JournalForm/JournalFormStatus"
@@ -21,8 +19,6 @@ import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
 import CommentForm from "components/Comments/CommentForm"
 import UserAvatarForm from "components/users/UserAvatarForm"
-import { Text } from "react-native"
-import { isSignedIn } from "auth"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -40,12 +36,6 @@ const NO_FOOTER_SCREENS = [
   "JournalFormStatus",
   "JournalFormUpload"
 ]
-
-const signedIn = async () => {
-  await isSignedIn().then(res => {
-    return res
-  })
-}
 
 const JournalFeedNavigator = createStackNavigator(
   {
@@ -86,7 +76,7 @@ const ProfileNavigator = createStackNavigator(
     ImageCaptionForm: ImageCaptionForm,
     JournalFormUpload: JournalFormUpload,
     ManageContent: ManageContent,
-    ChapterFormJournals: ChapterFormJournals,
+    ChapterFormJournals: ChapterFormJournals
   },
   {
     initialRouteName: "Profile",
@@ -147,7 +137,7 @@ export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       AuthFlow: AuthFlow,
-      BottomNavigator: BottomNavigator,
+      BottomNavigator: BottomNavigator
       // ChapterDispatch: ChapterDispatch
     },
     {

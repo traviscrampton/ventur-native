@@ -6,17 +6,14 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableWithoutFeedback,
   TouchableHighlight,
-  TextInput,
   ActivityIndicator,
   ImageBackground,
-  Dimensions,
   ScrollView
 } from "react-native"
-import { updateJournalForm, endOfForm, addJournalEverywhere, resetJournalForm } from "actions/journal_form"
+import { addJournalEverywhere, resetJournalForm } from "actions/journal_form"
 import { setToken, API_ROOT } from "agent"
-import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 
 const mapStateToProps = state => ({
@@ -27,8 +24,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  endOfForm: () => dispatch(endOfForm()),
   addJournalEverywhere: payload => dispatch(addJournalEverywhere(payload)),
   resetJournalForm: () => dispatch(resetJournalForm())
 })

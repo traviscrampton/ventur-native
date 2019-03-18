@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import { resetChapter } from "actions/chapter"
 import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
@@ -17,7 +16,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: dispatch(resetChapter),
   updateChapterForm: payload => dispatch(updateChapterForm(payload))
 })
 

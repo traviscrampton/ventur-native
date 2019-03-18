@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { StackActions, NavigationActions } from "react-navigation"
-import { updateChapterForm } from "actions/chapter_form"
 import { chapterQuery } from "graphql/queries/chapters"
 import { setToken, API_ROOT } from "agent"
 import CameraRollPicker from "react-native-camera-roll-picker"
@@ -14,7 +13,6 @@ const mapStateToProps = state => ({
   currentRoot: state.common.currentBottomTab
 })
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateJournalForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload))
 })
 

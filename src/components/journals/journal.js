@@ -1,7 +1,5 @@
 import React, { Component } from "react"
-import { journalQuery, journalGearItems } from "graphql/queries/journals"
 import { Feather } from "@expo/vector-icons"
-import { chapterQuery } from "graphql/queries/chapters"
 import {
   StyleSheet,
   View,
@@ -14,7 +12,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
-import { gql, get } from "agent"
+import { get } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"

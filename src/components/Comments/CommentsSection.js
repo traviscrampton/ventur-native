@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, View, Dimensions, Text, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import Comment from "components/Comments/Comment"
 const CycleTouringLogo = require("assets/images/cycletouringlogo.png")

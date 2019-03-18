@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import { resetChapter } from "actions/chapter"
 import {
   StyleSheet,
   View,
@@ -11,11 +10,10 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   AsyncStorage,
-  TouchableHighlight,
   CameraRoll,
-  Alert,
-  ActivityIndicator
+  Alert
 } from "react-native"
+import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
 import {
   editEntry,
@@ -24,12 +22,9 @@ import {
   removeEntryAndFocus,
   updateActiveImageCaption,
   setNextIndexNull,
-  editChapterOfflineMode,
   prepManageContent,
   updateKeyboardState,
-  saveEditorContent,
   updateEntryState,
-  storeChapterToOfflineMode,
   populateEntries,
   setInitialEditorState,
   addImageToDeletedIds
@@ -37,7 +32,6 @@ import {
 import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
 import InputScrollView from "react-native-input-scroll-view"
 import _ from "lodash"
-import { updateChapterForm } from "actions/chapter_form"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
 import EditorToolbar from "components/editor/EditorToolbar"
 import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
@@ -60,13 +54,9 @@ const mapDispatchToProps = dispatch => ({
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateKeyboardState: payload => dispatch(updateKeyboardState(payload)),
   removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
-  storeChapterToOfflineMode: payload => dispatch(storeChapterToOfflineMode(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
-  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   prepManageContent: payload => dispatch(prepManageContent(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
-  saveEditorContent: (entries, chapterId) => saveEditorContent(entries, chapterId, dispatch),
-  editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
 })
@@ -127,9 +117,8 @@ class ChapterEditor extends Component {
   }
 
   keyboardWillShow(e) {
-    // this.props.updateKeyboardState(true)
     this.setState({
-      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 105
+      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 84
     })
   }
 
@@ -202,7 +191,7 @@ class ChapterEditor extends Component {
           styles.opacCover,
           { height: imageHeight, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }
         ]}>
-        <ActivityIndicator size="large" color="orange" />
+        <MaterialIndicator size={40} color="#ff8c34" />
       </View>
     )
   }
@@ -246,34 +235,6 @@ class ChapterEditor extends Component {
     await persistChapterToAsyncStorage(this.props.chapter)
   }
 
-  async saveImagesToCameraRoll() {
-    for (let img of this.state.imagesNeededOffline) {
-      await CameraRoll.saveToCameraRoll(img.entry.uri, "photo").then(uri => {
-        entry = Object.assign(img.entry, { localUri: uri })
-        this.props.updateEntryState({ entry: img.entry, index: img.index })
-      })
-    }
-  }
-
-  actuallyDownload = async () => {
-    await this.saveImagesToCameraRoll()
-    await this.props.saveEditorContent(this.props.entries, this.props.chapter.id)
-    this.persistChapterToLocalStorage()
-    this.setState({
-      imagesNeededOffline: []
-    })
-  }
-
-  downloadButton() {
-    return (
-      <TouchableWithoutFeedback onPress={this.actuallyDownload}>
-        <View style={{ height: 60, backgroundColor: "orange" }}>
-          <Text>download {this.state.imagesNeededOffline.length} images</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
   commenceDownloadtoDeviceButton() {
     return (
       <TouchableWithoutFeedback onPress={this.commenceDownloadtoDevice}>
@@ -297,12 +258,6 @@ class ChapterEditor extends Component {
     this.setState({
       imagesNeededOffline: imagesNeededOffline
     })
-  }
-
-  renderOfflineButton() {
-    if (!this.props.chapter.offline || this.state.imagesNeededOffline.length === 0) return
-
-    return this.downloadButton()
   }
 
   renderDivider() {
@@ -361,6 +316,7 @@ class ChapterEditor extends Component {
     return (
       <TextInput
         multiline
+        editable={!this.props.uploadIsImage}
         key={index}
         selectionColor={"#FF8C34"}
         ref={`textInput${index}`}
@@ -453,7 +409,6 @@ class ChapterEditor extends Component {
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterForm()}
           {this.renderDivider()}
-          {this.renderOfflineButton()}
           <View style={{ marginBottom: 100 }}>
             {this.renderEditor()}
             {this.renderCreateCta(this.props.entries.length)}

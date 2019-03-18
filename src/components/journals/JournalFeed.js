@@ -1,9 +1,8 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, ScrollView, Dimensions, View, Text } from "react-native"
+import { StyleSheet, ScrollView, Dimensions } from "react-native"
 import { connect } from "react-redux"
-import { gql, get } from "agent"
+import { get } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
-import { allJournalsQuery } from "graphql/queries/journals"
 import JournalCard from "components/journals/JournalCard"
 
 const mapDispatchToProps = dispatch => ({
@@ -37,7 +36,7 @@ class JournalFeed extends Component {
     })
   }
 
-  handlePress = (journalId) => {
+  handlePress = journalId => {
     this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }

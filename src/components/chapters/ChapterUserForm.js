@@ -1,8 +1,6 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, Image, Switch, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Switch, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm } from "actions/chapter_form"
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({})
 

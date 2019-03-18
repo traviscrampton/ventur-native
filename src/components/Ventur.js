@@ -1,8 +1,7 @@
 import React, { Component } from "react"
-import { getCurrentUser } from "auth"
 import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType } from "actions/common"
 import { Font } from "expo"
-import { AsyncStorage, View, Dimensions, NetInfo, StatusBar } from "react-native"
+import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
 

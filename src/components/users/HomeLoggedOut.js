@@ -1,9 +1,8 @@
 import React, { Component } from "react"
-import { StyleSheet, TouchableWithoutFeedback, View, Text, TextInput, ImageBackground, Dimensions } from "react-native"
+import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 const GabeBolivia = require("assets/images/Gabe_in_Bolivia.jpg")
-import { setCurrentUser } from "actions/common"
 
 const mapStateToProps = state => ({})
 

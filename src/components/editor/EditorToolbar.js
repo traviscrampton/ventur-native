@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { updateFormatBar, editEntry } from "actions/editor"
 import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
-import { MaterialIcons, Entypo, EvilIcons } from "@expo/vector-icons"
+import { MaterialIcons, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,

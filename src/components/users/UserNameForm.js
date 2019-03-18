@@ -1,10 +1,10 @@
 import React, { Component } from "react"
-import { StyleSheet, Button, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
 import { updateUserForm, populateUserForm } from "actions/user_form"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
 import DropDownHolder from "utils/DropdownHolder"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 import { API_ROOT, setToken } from "agent"
 
 const mapStateToProps = state => ({
@@ -33,7 +33,10 @@ class UserNameForm extends Component {
 
   submitForm = async () => {
     const token = await setToken()
-    const params = Object.assign({}, { id: this.props.id, first_name: this.props.firstName, last_name: this.props.lastName })
+    const params = Object.assign(
+      {},
+      { id: this.props.id, first_name: this.props.firstName, last_name: this.props.lastName }
+    )
     fetch(`${API_ROOT}/users/${params.id}`, {
       method: "PUT",
       headers: {
@@ -50,7 +53,7 @@ class UserNameForm extends Component {
           throw Error(data.errors.join(", "))
         }
         this.props.populateUserForm({ id: data.id, firstName: data.firstName, lastName: data.lastName })
-        
+
         this.props.navigation.navigate("UserAvatarForm")
       })
       .catch(err => {

@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import {
   StyleSheet,
-  Button,
   View,
   Text,
   TextInput,
@@ -16,7 +15,7 @@ import { loginMutation } from "graphql/mutations/auth"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
 import DropDownHolder from "utils/DropdownHolder"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { storeJWT } from "auth"
 import { API_ROOT, setToken, gql } from "agent"

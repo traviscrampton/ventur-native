@@ -1,19 +1,12 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import { StyleSheet, View, Text, TextInput, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
-import { populateOfflineChapters } from "actions/user"
+import { StyleSheet, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
 import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
-import {
-  persistChapterToAsyncStorage,
-  removeChapterFromAsyncStorage,
-  offlineChapterCreate,
-  useLocalStorage
-} from "utils/offline_helpers"
 import _ from "lodash"
 import { loadChapter } from "actions/chapter"
-import { updateChapter, generateReadableDate, createChapter } from "utils/chapter_form_helper"
+import { updateChapter } from "utils/chapter_form_helper"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
-import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
@@ -28,7 +21,6 @@ const mapDispatchToProps = dispatch => ({
   doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   resetChapterForm: () => dispatch(resetChapterForm())
 })
