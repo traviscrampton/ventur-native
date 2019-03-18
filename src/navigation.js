@@ -138,10 +138,8 @@ export const RootNavigator = (signedIn = false) =>
     {
       AuthFlow: AuthFlow,
       BottomNavigator: BottomNavigator
-      // ChapterDispatch: ChapterDispatch
     },
     {
-      // initialRouteName: signedIn ? "ChapterDispatch" : "AuthFlow"
       initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
     }
   )
@@ -152,7 +150,7 @@ const BottomNavigator = createBottomTabNavigator(
     Profile: ProfileNavigator
   },
   {
-    initialRouteName: "Profile",
+    initialRouteName: "Explore",
     tabBarComponent: BottomTabBar
   }
 )
