@@ -9,7 +9,7 @@ const JournalMini = props => {
     <ImageBackground
       style={styles.imageBackground}
       imageStyle={styles.borderRadius}
-      source={{ uri: props.miniBannerImageUrl }}>
+      source={{ uri: props.cardBannerImageUrl }}>
       <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
         <View style={styles.metadataContainer}>
           <Text numberOfLines={2} style={styles.title}>

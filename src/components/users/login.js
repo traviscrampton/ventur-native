@@ -1,10 +1,10 @@
 import React, { Component } from "react"
+import _ from "lodash"
 import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
 import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "actions/action_types"
-import { loginMutation } from "graphql/mutations/auth"
-import { gql } from "agent"
+import { post } from "agent"
 import { setCurrentUser } from "actions/common"
 import DropDownHolder from "utils/DropdownHolder"
 import { storeJWT } from "auth"
@@ -43,16 +43,11 @@ class Login extends Component {
 
   submitForm = () => {
     const { email, password } = this.props
-    gql(loginMutation, { email: email, password: password })
-      .then(res => {
-        const { token, user } = res.Login
-        let obj = Object.assign({}, { token: token, user: user })
-        storeJWT(obj)
-        this.props.setCurrentUser(user)
-      })
-      .catch(err => {
-        DropDownHolder.alert("error", "Error", "Either your email or password is incorrect")
-      })
+
+    post("/users/login", { email, password }).then(login => {
+      storeJWT(login)
+      this.props.setCurrentUser(login.user)
+    })
   }
 
   toggleHidePassword = () => {

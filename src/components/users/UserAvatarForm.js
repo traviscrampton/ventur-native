@@ -11,14 +11,13 @@ import {
 } from "react-native"
 import { updateUserForm, populateUserForm, resetUserForm } from "actions/user_form"
 import { setCurrentUser } from "actions/common"
-import { loginMutation } from "graphql/mutations/auth"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
 import DropDownHolder from "utils/DropdownHolder"
 import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { storeJWT } from "auth"
-import { API_ROOT, setToken, gql } from "agent"
+import { API_ROOT, setToken } from "agent"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,
@@ -57,17 +56,12 @@ class UserAvatarForm extends Component {
 
   loginAndReroute = async () => {
     const { email, password } = this.props
-    gql(loginMutation, { email: email, password: password })
-      .then(res => {
-        const { token, user } = res.Login
-        let obj = Object.assign({}, { token: token, user: user })
-        storeJWT(obj)
-        this.props.setCurrentUser(user)
-        this.props.resetUserForm()
-      })
-      .catch(err => {
-        DropDownHolder.alert("error", "Error", err)
-      })
+
+    post("/users/login", { email, password }).then(login => {
+      storeJWT(login)
+      this.props.setCurrentUser(login.user)
+      this.props.resetUserForm()
+    })
   }
 
   submitForm = async () => {
