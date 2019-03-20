@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({})
@@ -26,7 +26,14 @@ class DatePickerDropdown extends Component {
 
   renderConfirmOptions() {
     return (
-      <View style={{paddingBottom: 10, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+      <View
+        style={{
+          paddingBottom: 10,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-end"
+        }}>
         <TouchableWithoutFeedback onPress={this.props.toggleDatePicker}>
           <View style={{ marginRight: 10 }}>
             <Text>Cancel</Text>

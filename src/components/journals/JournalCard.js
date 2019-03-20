@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
  let imageWidth
@@ -24,7 +24,7 @@ const JournalCard = props => {
               height: imageHeight
             }
           ]}
-          source={{ uri: props.cardBannerImageUrl }}
+          source={{ uri: props.cardImageUrl }}
         />
         <View>{tripMetaData(props)}</View>
       </View>
@@ -50,7 +50,7 @@ const tripMetaData = props => {
           display: "flex"
         }}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
+          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
         </Text>
       </View>
     </View>

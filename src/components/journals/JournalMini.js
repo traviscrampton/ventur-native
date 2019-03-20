@@ -4,18 +4,19 @@ import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback, Dime
 const pad = Dimensions.get("window").width * 0.04
 const imageGaps = Dimensions.get("window").width * 0.11
 const imageWidth = (Dimensions.get("window").width - imageGaps) / 2
-const imageHeight = Math.round(imageWidth * (240 / 350))
 const JournalMini = props => {
   return (
     <ImageBackground
       style={styles.imageBackground}
       imageStyle={styles.borderRadius}
-      source={{ uri: props.miniBannerImageUrl }}>
+      source={{ uri: props.cardBannerImageUrl }}>
       <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
         <View style={styles.metadataContainer}>
-          <Text numberOfLines={2} style={styles.title}>{props.title}</Text>
+          <Text numberOfLines={2} style={styles.title}>
+            {props.title}
+          </Text>
           <Text style={styles.metadata}>
-            {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} miles`.toUpperCase()}
+            {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
           </Text>
         </View>
       </TouchableWithoutFeedback>
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     height: imageWidth,
     marginBottom: pad,
     position: "relative",
-    paddingRight: 5, 
+    paddingRight: 5,
     paddingLeft: 5
   },
   borderRadius: {

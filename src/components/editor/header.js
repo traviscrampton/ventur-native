@@ -1,6 +1,5 @@
 import React, { Component } from "react"
-import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "actions/editor"
-import { Text, TouchableWithoutFeedback, TextInput, StyleSheet, View, Image } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 
 export const Header = props => {
   return (

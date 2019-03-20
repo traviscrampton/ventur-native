@@ -8,7 +8,7 @@ export const mungeChapter = chapter => {
       title: chapter.title,
       readableDate: chapter.readableDate,
       date: chapter.date,
-      imageUrl: chapter.bannerImageUrl,
+      imageUrl: chapter.imageUrl,
       published: chapter.published,
       distance: chapter.distance,
       blogImageCount: chapter.blogImageCount

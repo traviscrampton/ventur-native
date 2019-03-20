@@ -11,7 +11,7 @@ export function editEntry(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -42,19 +42,32 @@ export function updateImagesState(payload) {
   }
 }
 
-export function addImagesToEntries(payload) {
+export const UPLOAD_IS_IMAGE = "UPLOAD_IS_IMAGE"
+export const uploadIsImage = isImage => {
+  return {
+    type: UPLOAD_IS_IMAGE,
+    payload: isImage
+  }
+}
+
+export const startImageUploading = () => {
   return function(dispatch, getState) {
     dispatch(startUpdating())
+    dispatch(uploadIsImage(true))
+  }
+}
+
+export function addImagesToEntries(payload) {
+  return function(dispatch, getState) {
+    dispatch(startImageUploading())
     dispatch(updateImagesState(payload))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
   }
 }
 
 export function storeChapterToOfflineMode(payload) {
   return (dispatch, getState) => {
     saveImagesToCameraRoll(payload, dispatch)
-
-    // debouncePersist(getState().editor.entries, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -73,7 +86,33 @@ export function dispatchPopulateOfflineChapters(payload) {
   }
 }
 
-export const saveEditorContent = async (entries, chapter, dispatch) => {
+export const SET_INITAL_IMAGE_IDS = "SET_INITAL_IMAGE_IDS"
+export const setInitalImageIds = ids => {
+  return {
+    type: SET_INITAL_IMAGE_IDS,
+    payload: ids
+  }
+}
+
+export const RESET_DELETED_IDS = "RESET_DELETED_IDS"
+export const resetDeletedIds = () => {
+  return {
+    type: RESET_DELETED_IDS
+  }
+}
+
+export const getInitialImageIds = entries => {
+  return function(dispatch, getState) {
+    let imageIds = entries
+      .filter(entry => entry.type === "image" && entry.id)
+      .map(entry => {
+        return entry.id
+      })
+    dispatch(setInitalImageIds(imageIds))
+  }
+}
+
+export const saveEditorContent = async (entries, imageUpload, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
@@ -91,7 +130,7 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
     }
   }
   formData.append("content", JSON.stringify(entries))
-  fetch(`${API_ROOT}/chapters/${chapter.id}/update_blog_content`, {
+  fetch(`${API_ROOT}/editor_blobs/${chapter.editorBlob.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "multipart/form-data",
@@ -106,14 +145,14 @@ export const saveEditorContent = async (entries, chapter, dispatch) => {
       if (data.errors) {
         throw Error(data.errors.join(", "))
       }
-      dispatch(loadChapter(data))
-      dispatch(doneUpdating(data))
-      if (data.offline) {
-        persistChapterToAsyncStorage(data, populateOfflineChapters)
+      if (imageUpload) {
+        dispatch(populateEntries(JSON.parse(data.content)))
+        dispatch(uploadIsImage(false))
       }
+      dispatch(doneUpdating())
     })
     .catch(err => {
-      dispatch(doneUpdating(data))
+      dispatch(doneUpdating())
       DropDownHolder.alert("error", "Error", err)
     })
 }
@@ -161,12 +200,22 @@ export const editChapterPublished = async (chapter, published, dispatch) => {
       if (data.errors) {
         throw Error(data.errors.join(", "))
       }
-      dispatch(loadChapter(data))
-      dispatch(addChapterToJournals(data))
+      let chapter = data.chapter
+      dispatch(loadChapter(chapter))
+      dispatch(addChapterToJournals(chapter))
     })
     .catch(err => {
       DropDownHolder.alert("error", "Error", err)
     })
+}
+
+export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
+export const addImageToDeletedIds = imageId => {
+  console.log("addImageTODeletedIds", imageId)
+  return {
+    type: ADD_IMAGE_TO_DELETED_IDS,
+    payload: imageId
+  }
 }
 
 export const REMOVE_CHAPTER_FROM_STATE = "REMOVE_CHAPTER_FROM_STATE"
@@ -206,15 +255,8 @@ export const deleteChapter = async (chapter, callback, dispatch) => {
     })
 }
 
-export const dispatchPersist = async (entries, chapter, isOffline, dispatch) => {
-  if (isOffline) {
-    let updatedChapter = Object.assign({}, chapter, { content: entries })
-    await persistChapterToAsyncStorage(updatedChapter, null)
-    dispatch(loadChapter(updatedChapter))
-    dispatch(doneUpdating())
-  } else {
-    saveEditorContent(entries, chapter, dispatch)
-  }
+export const dispatchPersist = async (entries, imageUpload, chapter, dispatch) => {
+  saveEditorContent(entries, imageUpload, chapter, dispatch)
 }
 
 export function updateManageContentEntries(payload) {
@@ -263,7 +305,7 @@ export function updateImageCaption(payload) {
     dispatch(editEntry(payload))
     dispatch(updateActiveImageCaption(""))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -338,7 +380,7 @@ export function removeEntryAndFocus(payload) {
     dispatch(startUpdating())
     dispatch(deleteEntry(payload))
     dispatch(updateActiveIndex(null))
-    debouncePersist(getState().editor.entries, getState().chapter.chapter, getState().common.isOffline, dispatch)
+    debouncePersist(getState().editor.entries, getState().editor.deletedIds, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -408,4 +450,4 @@ export function populateEntries(payload) {
 export function updateCursorPosition(payload) {
   return { type: "UPDATE_CURSOR_POSITION", payload: payload }
 }
-export const debouncePersist = _.debounce(dispatchPersist, 4000)
+export const debouncePersist = _.debounce(dispatchPersist, 2000)

@@ -1,7 +1,5 @@
 import React, { Component } from "react"
-import { journalQuery, journalGearItems } from "graphql/queries/journals"
 import { Feather } from "@expo/vector-icons"
-import { chapterQuery } from "graphql/queries/chapters"
 import {
   StyleSheet,
   View,
@@ -14,7 +12,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
-import { gql } from "agent"
+import { get } from "agent"
 import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
@@ -59,14 +57,14 @@ class Journal extends Component {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
     if (journalId === "NO-ID") return
-    gql(journalQuery, { id: journalId }).then(res => {
-      this.props.onLoad(res.journal)
+    get(`/journals/${journalId}`).then(data => {
+      this.props.onLoad(data.journal)
     })
   }
 
   requestForChapter = chapterId => {
-    gql(chapterQuery, { id: chapterId }).then(res => {
-      this.props.loadChapter(res.chapter)
+    get(`/chapters/${chapterId}`).then(data => {
+      this.props.loadChapter(data.chapter)
       this.props.navigation.navigate("Chapter")
     })
   }
@@ -99,7 +97,7 @@ class Journal extends Component {
   }
 
   renderImageOrEdit(user) {
-    if (user.id === this.props.currentUser.id) {
+    if (user.id == this.props.currentUser.id) {
       return (
         <TouchableHighlight onPress={this.renderJournalEditForm}>
           <View style={{ padding: 20 }}>
@@ -153,7 +151,7 @@ class Journal extends Component {
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
         <View>
-          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} miles`.toUpperCase()}</Text>
+          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -261,7 +259,7 @@ class Journal extends Component {
   }
 
   renderCreateChapterCta() {
-    if (!this.isCurrentUsersJournal() || !this.props.currentUser.canCreate) return
+    if (!this.isCurrentUsersJournal()) return
     return (
       <TouchableWithoutFeedback onPress={this.navigateToChapterForm}>
         <View

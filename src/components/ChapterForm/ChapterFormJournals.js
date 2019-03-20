@@ -3,24 +3,19 @@ import _ from "lodash"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import {
-  StyleSheet,
   View,
   ScrollView,
   Text,
   TouchableWithoutFeedback,
   TouchableHighlight,
-  TextInput,
-  ImageBackground,
-  Dimensions
 } from "react-native"
 import { StackActions, NavigationActions } from "react-navigation"
-import { setToken, API_ROOT } from "agent"
 import { offlineChapterCreate, generateReadableDate, createChapter, updateChapter } from "utils/chapter_form_helper"
-import { persistChapterToAsyncStorage, useLocalStorage, notInternetConnected } from "utils/offline_helpers"
+import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { populateOfflineChapters } from "actions/user"
-import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   journals: state.chapterForm.journals,

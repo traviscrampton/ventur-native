@@ -1,18 +1,10 @@
 import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableHighlight,
-  TextInput,
-  ImageBackground
-} from "react-native"
+import { StyleSheet, View, Text, TouchableHighlight, TextInput } from "react-native"
 import { setToken, API_ROOT } from "agent"
-import { createJournal, updateJournalForm } from "actions/journal_form"
-import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { updateJournalForm } from "actions/journal_form"
+import { Ionicons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,

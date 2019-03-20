@@ -17,11 +17,23 @@ import {
   REMOVE_ENTRY_FROM_CLONE
 } from "actions/action_types"
 
-import { POPULATE_ENTRIES, DONE_UPDATING, START_UPDATING, SET_INITIAL_EDITOR_STATE, UPDATE_ACTIVE_CREATOR } from "actions/editor"
+import {
+  POPULATE_ENTRIES,
+  DONE_UPDATING,
+  START_UPDATING,
+  SET_INITIAL_EDITOR_STATE,
+  UPDATE_ACTIVE_CREATOR,
+  ADD_IMAGE_TO_DELETED_IDS,
+  RESET_DELETED_IDS,
+  SET_INITAL_IMAGE_IDS,
+  UPLOAD_IS_IMAGE
+} from "actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [],
+  deletedIds: [],
+  initialImageIds: [],
   activeIndex: 0,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
@@ -31,7 +43,8 @@ const defaultTextData = {
   newIndex: null,
   manageContentEntries: [],
   entriesSortBase: [],
-  isUpdating: false
+  isUpdating: false,
+  uploadIsImage: false
 }
 let newState
 export default (state = defaultTextData, action) => {
@@ -48,6 +61,11 @@ export default (state = defaultTextData, action) => {
         manageContentEntries: [],
         entriesSortBase: []
       }
+    case UPLOAD_IS_IMAGE:
+      return {
+        ...state,
+        uploadIsImage: action.payload
+      }
     case UPDATE_MANAGE_CONTENT_ENTRIES:
       return {
         ...state,
@@ -63,6 +81,18 @@ export default (state = defaultTextData, action) => {
         ...state,
         entriesSortBase: newArray,
         manageContentEntries: newArray
+      }
+
+    case ADD_IMAGE_TO_DELETED_IDS:
+      return {
+        ...state,
+        deletedIds: [...state.deletedIds, action.payload]
+      }
+
+    case RESET_DELETED_IDS:
+      return {
+        ...state,
+        deletedIds: []
       }
 
     case PREP_MANAGE_CONTENT:
@@ -105,6 +135,12 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         isUpdating: false
+      }
+
+    case SET_INITAL_IMAGE_IDS:
+      return {
+        ...state,
+        initialImageIds: action.payload
       }
 
     case ADD_IMAGES_TO_ENTRIES:

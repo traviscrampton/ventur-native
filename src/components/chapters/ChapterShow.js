@@ -1,16 +1,9 @@
 import React, { Component } from "react"
-import { resetChapter } from "actions/chapter"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight
-} from "react-native"
+import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import EditorDropdown from "components/editor/EditorDropdown"
+import CommentsContainer from "components/Comments/CommentsContainer"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -23,7 +16,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: dispatch(resetChapter),
   updateChapterForm: payload => dispatch(updateChapterForm(payload))
 })
 
@@ -71,7 +63,7 @@ class ChapterShow extends Component {
 
   renderEditCta() {
     return
-    if (this.props.currentUser.id === this.props.user.id) {
+    if (this.props.currentUser.id == this.props.user.id) {
       return (
         <TouchableHighlight onPress={this.editMetaData}>
           <View>
@@ -92,7 +84,7 @@ class ChapterShow extends Component {
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
-          <Text style={styles.statisticsText}>{`${distance} miles`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${distance} kilometers`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -100,12 +92,12 @@ class ChapterShow extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 4
-    const { bannerImageUrl } = this.props.chapter
-    if (!bannerImageUrl) return
+    const { imageUrl } = this.props.chapter
+    if (!imageUrl) return
     return (
       <Image
         style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}
-        source={{ uri: bannerImageUrl }}
+        source={{ uri: imageUrl }}
       />
     )
   }
@@ -196,7 +188,7 @@ class ChapterShow extends Component {
     )
   }
 
-  renderEntry(entry, index) {
+  renderEntry = (entry, index) => {
     switch (entry.type) {
       case "text":
         return this.renderTextEntry(entry, index)
@@ -208,34 +200,40 @@ class ChapterShow extends Component {
   }
 
   renderBodyContent() {
-    if (!this.props.chapter.content) return
+    if (!this.props.chapter.editorBlob.content) return
 
-    let entries = this.props.chapter.content
+    let entries = this.props.chapter.editorBlob.content
+    if (!Array.isArray(entries)) {
+      entries = Array.from(entries)
+    }
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })
   }
 
-  renderToggleEdit() {
-    return
+  renderEditorDropdown() {
     if (this.props.user.id != this.props.currentUser.id) return
 
     return (
-      <TouchableHighlight onPress={this.props.toggleEditMode}>
-        <View
-          style={{
-            height: 50,
-            backgroundColor: "#f8f8f8",
-            width: this.props.width,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Text style={{ fontSize: 18 }}>Edit Content</Text>
-        </View>
-      </TouchableHighlight>
+      <View style={{ alignItems: "flex-end", paddingRight: 20 }}>
+        <EditorDropdown navigation={this.props.navigation} />
+      </View>
     )
+  }
+
+  renderCommentContainer() {
+    let commentableProps = Object.assign(
+      {},
+      {
+        commentableId: this.props.chapter.id,
+        commentableType: "chapter",
+        commentableUser: this.props.chapter.user,
+        commentableTitle: this.props.chapter.title,
+        commentCount: this.props.chapter.commentCount,
+        navigation: this.props.navigation
+      }
+    )
+    return <CommentsContainer {...commentableProps} />
   }
 
   render() {
@@ -244,9 +242,10 @@ class ChapterShow extends Component {
         {this.renderChapterImage()}
         {this.renderTitle()}
         {this.renderStatistics()}
+        {this.renderEditorDropdown()}
         {this.renderDivider()}
-        {this.renderToggleEdit()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
+        <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>
     )
   }

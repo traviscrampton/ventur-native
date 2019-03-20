@@ -42,7 +42,7 @@ export const updateChapter = async (id, params, callback) => {
         throw Error(data.errors.join(", "))
       }
       
-      callback(data)
+      callback(data.chapter)
     })
     .catch(err => {
       DropDownHolder.alert("error", "Error", err)
@@ -75,7 +75,7 @@ export const createChapter = async (params, callback) => {
       if (data.errors) {
         throw Error(data.errors.join(", "))
       }
-      callback(data)
+      callback(data.chapter)
     })
     .catch(err => {
       DropDownHolder.alert("error", "Error", err)

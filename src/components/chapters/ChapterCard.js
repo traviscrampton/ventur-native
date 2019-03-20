@@ -31,7 +31,7 @@ const ChapterCard = props => {
             </View>
             <View style={styles.individualIconTextContainer}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
-              <Text style={styles.textStats}>{`${distance} miles`.toUpperCase()}</Text>
+              <Text style={styles.textStats}>{`${distance} kilometers`.toUpperCase()}</Text>
             </View>
             <View style={styles.individualIconTextContainer}>
               <Feather style={styles.iconMargin} name="camera" size={16} />

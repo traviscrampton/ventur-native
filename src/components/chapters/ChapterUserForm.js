@@ -1,8 +1,6 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, Image, Switch, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, Switch, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm } from "actions/chapter_form"
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({})
 
@@ -64,11 +62,12 @@ class ChapterUserForm extends Component {
   }
 
   render() {
+    
     return (
       <View
         style={[{
                   position: "absolute",
-                  top: 60,
+                  bottom: 50,
                   borderRadius: 4,
                   right: 20,
                   zIndex: 10,

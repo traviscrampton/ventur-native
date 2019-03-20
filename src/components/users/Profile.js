@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import { resetChapter } from "actions/chapter"
 import {
   StyleSheet,
   View,
@@ -9,24 +8,20 @@ import {
   FlatList,
   AsyncStorage,
   Dimensions,
-  ImageBackground,
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
 import { populateUserPage, populateOfflineChapters } from "actions/user"
 import JournalMini from "components/journals/JournalMini"
-import { userQuery } from "graphql/queries/users"
-import { gql } from "agent"
+import { get } from "agent"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { setCurrentUser } from "actions/common"
 import { connect } from "react-redux"
-import { Ionicons, Entypo } from "@expo/vector-icons"
 import { RESET_JOURNAL_TAB } from "actions/action_types"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
-import DropDownHolder from "utils/DropdownHolder"
 import { logOut } from "auth"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
 import { setToken, API_ROOT } from "agent"
@@ -65,12 +60,11 @@ class Profile extends Component {
   }
 
   getProfilePageData() {
-    if (this.props.currentUser) {
-      gql(userQuery, { id: this.props.currentUser.id }).then(res => {
-        this.props.populateUserPage(res.user)
-        addJournalsToAsyncStorage(res.user.journals)
-      })
-    }
+    get(`/users/${this.props.currentUser.id}`).then(res => {
+      const { user } = res
+      this.props.populateUserPage(user)
+      addJournalsToAsyncStorage(user.journals)
+    })
   }
 
   async getOfflineChapters() {
@@ -381,8 +375,6 @@ class Profile extends Component {
   }
 
   renderCreateJournalCta() {
-    if (!this.props.currentUser.canCreate) return
-
     return (
       <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
         <View

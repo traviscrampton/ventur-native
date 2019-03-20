@@ -1,32 +1,30 @@
 import React, { Component } from "react"
+import _ from "lodash"
 import { resetChapter } from "actions/chapter"
 import {
   StyleSheet,
   View,
   Text,
-  Image,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  ActivityIndicator,
-  Dimensions,
   Alert
 } from "react-native"
+import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
-import { editChapterOfflineMode, editChapterPublished, deleteChapter } from "actions/editor"
-import { populateOfflineChapters } from "actions/user"
 import { loadChapter } from "actions/chapter"
-import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
+import { populateEntries, getInitialImageIds, resetDeletedIds } from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
-import ChapterUserForm from "components/chapters/ChapterUserForm"
-import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import DropDownHolder from "utils/DropdownHolder"
-import { setToken, API_ROOT } from "agent"
+import { updateChapterForm } from "actions/chapter_form"
+import { Ionicons, Feather } from "@expo/vector-icons"
+import { get, put, destroy } from "agent"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
   chapter: state.chapter.chapter,
+  entries: state.editor.entries,
+  initialImageIds: state.editor.initialImageIds,
+  deletedIds: state.editor.deletedIds,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
@@ -34,14 +32,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resetChapter: () => dispatch(resetChapter),
-  resetChapterForm: () => dispatch(resetChapterForm),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  editChapterOfflineMode: (chapter, offline) => editChapterOfflineMode(chapter, offline, dispatch),
-  deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch),
-  editChapterPublished: (chapter, published) => editChapterPublished(chapter, published, dispatch),
-  loadChapter: chapter => dispatch(loadChapter(chapter)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload))
+  loadChapter: payload => dispatch(loadChapter(payload)),
+  populateEntries: payload => dispatch(populateEntries(payload)),
+  getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
+  resetDeletedIds: () => dispatch(resetDeletedIds())
 })
 
 class ChapterDispatch extends Component {
@@ -52,171 +47,195 @@ class ChapterDispatch extends Component {
 
     this.state = {
       editMode: this.initialChapterForm,
-      userMenuOpen: false,
       initialChapterForm: this.initialChapterForm
     }
   }
 
-  getToggleEditCta() {
-    return this.state.editMode ? "Read Mode" : "Edit Mode"
+  populateEditorAndSwitch = data => {
+    const entries = data.content ? JSON.parse(data.content) : []
+
+    this.props.populateEntries(entries)
+    this.props.getInitialImageIds(entries)
+    this.editMetaData()
+    this.setState({
+      editMode: true
+    })
   }
 
   editMetaData = () => {
-    let { id, title, distance, description } = this.props.chapter
+    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
 
     let obj = {
       id: id,
       title: title,
       distance: distance,
       description: description,
-      journalId: this.props.chapter.journal.id
+      imageUrl: imageUrl,
+      journalId: journal.id
     }
 
     this.props.updateChapterForm(obj)
+  }
+
+  handleCancelButtonPress = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your blog changes",
+      [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
+  }
+
+  handleDoneButtonPress = () => {
+    if (this.props.isUpdating) return
+
+    const { id } = this.props.chapter.editorBlob
+    put(`/editor_blobs/${id}/update_draft_to_final`, { deletedIds: this.props.deletedIds }).then(data => {
+      let updatedChapter = Object.assign({}, this.props.chapter, { editorBlob: data })
+      this.props.loadChapter(updatedChapter)
+      this.props.resetDeletedIds()
+      this.props.populateEntries([])
+      this.setState({ editMode: false })
+    })
+  }
+
+  loseChangesAndUpdate = () => {
+    const { id } = this.props.chapter.editorBlob
+    const imagesToDelete = this.getImagesToDelete()
+
+    destroy(`/editor_blobs/${id}`, { deletedIds: imagesToDelete }).then(data => {
+      this.props.populateEntries([])
+      this.props.resetDeletedIds()
+      this.setState({ editMode: false })
+    })
+  }
+
+  getImagesToDelete() {
+    const allImageIds = this.getAllImageIds()
+    const { initialImageIds } = this.props
+
+    const diff = _.xor(initialImageIds, allImageIds)
+    return diff
+  }
+
+  getAllImageIds = () => {
+    let entries = this.props.entries
+      .filter(entry => entry.type === "image")
+      .map(entry => {
+        return entry.id
+      })
+    return entries
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
   }
 
-  openDeleteAlert = () => {
-    Alert.alert(
-      "Are you sure?",
-      "Deleting this chapter will erase all images and content",
-      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
-      { cancelable: true }
-    )
-  }
-
-  handleDelete = async () => {
-    this.props.deleteChapter(this.props.chapter, this.navigateBack)
-    if (this.props.chapter.offline) {
-      await removeChapterFromAsyncStorage(this.props.chapter, this.props.populateOfflineChapters)
-    }
-  }
-
-  getEmailToggle() {
-    if (this.props.chapter.emailSent) {
-      return "Email Sent"
-    } else {
-      return "Send Email"
-    }
-  }
-
-  getChapterUserFormProps() {
-    return [
-      { type: "touchable", title: this.getToggleEditCta(), callback: this.toggleEditMode },
-      { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
-      { type: "switch", title: "Offline Mode", value: this.props.chapter.offline, callback: this.updateOfflineStatus },
-      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus },
-      { type: "touchable", title: this.getEmailToggle(), callback: this.sendEmails }
-    ]
-  }
-
-  sendEmails = async () => {
-    if (this.props.chapter.emailSent) return
-    const token = await setToken()
-    fetch(`${API_ROOT}/journal_follows/${this.props.chapter.id}/send_chapter_emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token
-      }
+  getDraftContentAndEdit = () => {
+    const { id } = this.props.chapter.editorBlob
+    put(`/editor_blobs/${id}/update_final_to_draft`).then(data => {
+      this.populateEditorAndSwitch(data)
     })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        if (data.errors) {
-          throw Error(data.errors.join(", "))
-        }
-
-        this.props.loadChapter(data)
-      })
-      .catch(err => {
-        DropDownHolder.alert("error", "Error", err)
-      })
-  }
-
-  updateOfflineStatus = async () => {
-    let { chapter } = this.props
-    const { offline } = chapter
-    await this.props.editChapterOfflineMode(chapter, !offline)
-
-    if (!this.props.chapter.offline) {
-      chapter = Object.assign({}, chapter, { offline: !this.props.chapter.offline })
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
-    } else {
-      await removeChapterFromAsyncStorage(chapter, this.props.populateOfflineChapters)
-    }
-  }
-
-  updatePublishedStatus = async () => {
-    this.props.editChapterPublished(this.props.chapter, !this.props.chapter.published)
-    if (this.props.chapter.offline) {
-      let chapter = Object.assign({}, this.props.chapter, { published: !this.props.chapter.published })
-      await persistChapterToAsyncStorage(chapter, this.props.populateOfflineChapters)
-    }
-  }
-
-  getMenuStyling() {
-    let styling = { borderWidth: 1, borderColor: "white" }
-    if (this.state.userMenuOpen) {
-      styling = { borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }
-    }
-
-    return styling
-  }
-
-  toggleUserMenuOpen = () => {
-    let menuOpen = this.state.userMenuOpen
-    this.setState({ userMenuOpen: !menuOpen })
   }
 
   renderChapterNavigation() {
     return (
       <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
-        {this.renderDropDownAndIndicator()}
+        {this.renderIndicatorAndEditPortal()}
       </View>
     )
   }
 
-  renderUserMenu() {
-    if (!this.state.userMenuOpen) return
-
-    const options = this.getChapterUserFormProps()
-    return <ChapterUserForm options={options} />
+  renderCancelAndDoneBtns() {
+    const doneContent = this.props.isUpdating ? (
+      <MaterialIndicator size={18} color="white" />
+    ) : (
+      <Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
+    )
+    return (
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <View>
+          <TouchableWithoutFeedback onPress={this.handleCancelButtonPress}>
+            <View
+              style={{
+                backgroundColor: "#fafafa",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderColor: "#505050",
+                borderWidth: 1,
+                borderRadius: 3,
+                marginRight: 10,
+                paddingLeft: 5,
+                paddingRight: 5,
+                height: 30
+              }}>
+              ><Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        <View>
+          <TouchableWithoutFeedback onPress={this.handleDoneButtonPress}>
+            <View
+              style={{
+                backgroundColor: "#ff8c34",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderColor: "#ff8c34",
+                borderWidth: 1,
+                borderRadius: 3,
+                minWidth: 70,
+                height: 30
+              }}>
+              >{doneContent}
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+    )
   }
 
-  renderUserDropDown() {
-    if (!this.props.currentUser.canCreate) return
-    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
-
+  renderEditBtn() {
     return (
-      <View style={{ position: "relative" }}>
-        <TouchableWithoutFeedback onPress={this.toggleUserMenuOpen}>
-          <View style={[{ paddingTop: 2, width: 40, height: 40 }, this.getMenuStyling()]}>
-            <MaterialCommunityIcons style={{ textAlign: "center" }} name="dots-vertical" size={32} color="#D7D7D7" />
+      <View>
+        <TouchableWithoutFeedback onPress={this.getDraftContentAndEdit}>
+          <View
+            style={{
+              backgroundColor: "#fafafa",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 5,
+              borderColor: "#505050",
+              borderWidth: 1,
+              borderRadius: 3
+            }}>
+            <Feather name="edit-3" size={12} color="#505050" style={{ marginRight: 3 }} />
+            <Text style={{ letterSpacing: 1.8, color: "#505050" }}>EDIT</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
   }
 
-  renderDropDownAndIndicator() {
-    return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        {this.renderActivityIndicator()}
-        {this.renderUserDropDown()}
-      </View>
-    )
+  renderEditPortal() {
+    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
+
+    if (this.state.editMode) {
+      return this.renderCancelAndDoneBtns()
+    } else {
+      return this.renderEditBtn()
+    }
   }
 
-  renderActivityIndicator() {
-    if (!this.props.isUpdating) return
-
-    return <ActivityIndicator size="small" color="#FF8C34" />
+  renderIndicatorAndEditPortal() {
+    return (
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>{this.renderEditPortal()}</View>
+    )
   }
 
   renderJournalName() {
@@ -245,16 +264,6 @@ class ChapterDispatch extends Component {
     )
   }
 
-  toggleEditMode = () => {
-    let toggledEditMode = !this.state.editMode
-    let toggledUserMenu = !this.state.userMenuOpen
-    this.editMetaData()
-    this.setState({
-      editMode: toggledEditMode,
-      userMenuOpen: toggledUserMenu
-    })
-  }
-
   dispatchChapter() {
     if (this.state.editMode) {
       return <ChapterEditor navigation={this.props.navigation} />
@@ -267,7 +276,6 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}
-        {this.renderUserMenu()}
         {this.dispatchChapter()}
       </View>
     )
@@ -283,10 +291,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 20,
-    marginBottom: 10,
     paddingRight: 20,
-    height: 55
+    height: 45,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f8f8f8"
   },
   journalAndUserContainer: {
     display: "flex",

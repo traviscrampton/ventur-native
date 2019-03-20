@@ -5,7 +5,8 @@ import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 import { MaterialIcons, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  activeContentCreator: state.editor.activeContentCreator
+  activeContentCreator: state.editor.activeContentCreator,
+  uploadIsImage: state.editor.uploadIsImage
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -41,6 +42,8 @@ class ContentCreator extends Component {
   }
 
   updateActiveCreator = () => {
+    if (this.props.uploadIsImage) return
+
     this.props.updateActiveCreator(this.props.index)
   }
 

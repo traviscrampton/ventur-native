@@ -6,8 +6,8 @@ import DropDownHolder from "utils/DropdownHolder"
 import { logOut } from "auth"
 
 const ql = require("superagent-graphql")
-export const API_ROOT = "http://192.168.2.12:3000"
-// export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
+// export const API_ROOT = "http://192.168.2.12:3000"
+export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
 const responseBody = res => res.body.data
 
@@ -21,6 +21,121 @@ export const setToken = async () => {
   } catch (err) {
     return null
   }
+}
+
+export const encodeQueryString = params => {
+  const keys = Object.keys(params)
+  return keys.length
+    ? "?" + keys.map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&")
+    : ""
+}
+
+export const get = async (route, params = {}) => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route + encodeQueryString(params)
+
+  return fetch(requestRoute, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    }
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logOut()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
+}
+
+export const put = async (route, params = {}) => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route
+
+  return fetch(requestRoute, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logout()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
+}
+
+export const post = async (route, params = {}) => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route
+
+  return fetch(requestRoute, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logout()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
+}
+
+export const destroy = async (route, params = {}) => {
+  const token = await setToken()
+  const requestRoute = API_ROOT + route
+
+  console.log("params", params)
+  return fetch(requestRoute, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(params)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logout()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
 }
 
 export const gql = async (queryString, queryVariables = {}) => {
@@ -37,7 +152,7 @@ export const gql = async (queryString, queryVariables = {}) => {
       if (err.status === 401) {
         return logOut()
       }
-      
+
       DropDownHolder.alert("error", "Error", err.message)
     })
 }

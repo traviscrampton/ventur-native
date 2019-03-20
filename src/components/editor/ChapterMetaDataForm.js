@@ -1,19 +1,12 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import { StyleSheet, View, Text, TextInput, Image, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
-import { populateOfflineChapters } from "actions/user"
+import { StyleSheet, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
 import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
-import {
-  persistChapterToAsyncStorage,
-  removeChapterFromAsyncStorage,
-  offlineChapterCreate,
-  useLocalStorage
-} from "utils/offline_helpers"
 import _ from "lodash"
 import { loadChapter } from "actions/chapter"
-import { updateChapter, generateReadableDate, createChapter } from "utils/chapter_form_helper"
+import { updateChapter } from "utils/chapter_form_helper"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
-import { MaterialCommunityIcons, MaterialIcons, FontAwesome } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
@@ -28,7 +21,6 @@ const mapDispatchToProps = dispatch => ({
   doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   resetChapterForm: () => dispatch(resetChapterForm())
 })
@@ -81,10 +73,6 @@ class ChapterMetaDataForm extends Component {
   }
 
   chapterCallback = async data => {
-    if (data.offline) {
-      await persistChapterToAsyncStorage(data, this.props.populateOfflineChapters)
-    }
-
     this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
     this.props.doneUpdating()
@@ -92,17 +80,7 @@ class ChapterMetaDataForm extends Component {
 
   persistUpdate = async () => {
     let chapter = _.omit(this.props.chapterForm, "journals")
-    let useLocal = await useLocalStorage(chapter.id, chapter.offline)
-
-    if (useLocal) {
-      chapter = Object.assign({}, chapter, {
-        bannerImageUrl: chapter.bannerImage.uri,
-        readableDate: generateReadableDate(chapter.date)
-      })
-      this.chapterCallback(chapter)
-    } else {
-      updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
-    }
+    updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
   }
 
   renderDatePicker() {
@@ -137,7 +115,7 @@ class ChapterMetaDataForm extends Component {
             onChangeText={text => this.persistMetadata(text, "distance")}
             style={{ textAlign: "right", marginRight: 5, paddingBottom: 2 }}
           />
-          <Text style={styles.iconText}>{`MILES`}</Text>
+          <Text style={styles.iconText}>KILOMETERS</Text>
         </View>
       </View>
     )
@@ -163,7 +141,7 @@ class ChapterMetaDataForm extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 4
-    let { bannerImageUrl } = this.props.chapter
+    let { imageUrl } = this.props.chapter
     return (
       <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>
         <TouchableWithoutFeedback onPress={this.updateImage}>
@@ -176,7 +154,7 @@ class ChapterMetaDataForm extends Component {
               borderWidth: 1,
               borderRadius: fourthWindowWidth / 2
             }}
-            source={{ uri: bannerImageUrl }}
+            source={{ uri: imageUrl }}
           />
         </TouchableWithoutFeedback>
       </View>

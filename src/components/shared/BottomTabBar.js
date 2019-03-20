@@ -4,7 +4,6 @@ import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
 import { updateCurrentBottomTab } from "actions/common"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
 
-
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar
 })
@@ -63,7 +62,11 @@ class BottomTabBar extends Component {
 
   renderToolbar() {
     return (
-      <View shadowColor="#d3d3d3" shadowOffset={{ width: 0, height: 1 }} shadowOpacity={0.7} style={styles.outerContainer}>
+      <View
+        shadowColor="#d3d3d3"
+        shadowOffset={{ width: 0, height: 1 }}
+        shadowOpacity={0.7}
+        style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           {this.props.navigation.state.routes.map((route, idx) => {
             return this.renderStandardTab(route, idx)

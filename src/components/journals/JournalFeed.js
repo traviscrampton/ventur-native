@@ -1,9 +1,8 @@
 import React, { Component } from "react"
-import { StyleSheet, FlatList, ScrollView, Dimensions, View, Text } from "react-native"
+import { StyleSheet, ScrollView, Dimensions } from "react-native"
 import { connect } from "react-redux"
-import { gql } from "agent"
+import { get } from "agent"
 import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
-import { allJournalsQuery } from "graphql/queries/journals"
 import JournalCard from "components/journals/JournalCard"
 
 const mapDispatchToProps = dispatch => ({
@@ -18,13 +17,12 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
-  currentUser: state.common.currentUser,
+  currentUser: state.common.currentUser
 })
 
 class JournalFeed extends Component {
   constructor(props) {
     super(props)
-    this.handlePress = this.handlePress.bind(this)
   }
 
   componentWillMount() {
@@ -32,13 +30,13 @@ class JournalFeed extends Component {
     this.getJournalFeed()
   }
 
-  getJournalFeed() {
-    gql(allJournalsQuery).then(res => {
-      this.props.onLoad(res.allJournals)
+  async getJournalFeed() {
+    get("/journals").then(data => {
+      this.props.onLoad(data.journals)
     })
   }
 
-  handlePress(journalId) {
+  handlePress = journalId => {
     this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }
