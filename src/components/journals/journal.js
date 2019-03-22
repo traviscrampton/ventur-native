@@ -13,7 +13,7 @@ import {
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { get } from "agent"
-import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { loadSingleJournal } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
@@ -33,14 +33,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: payload => {
-    dispatch({ type: SINGLE_JOURNAL_LOADED, payload })
-  },
-
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  loadSingleJournal: payload => dispatch(loadSingleJournal(payload))
 })
 
 class Journal extends Component {
@@ -57,9 +54,7 @@ class Journal extends Component {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
     if (journalId === "NO-ID") return
-    get(`/journals/${journalId}`).then(data => {
-      this.props.onLoad(data.journal)
-    })
+    this.props.loadSingleJournal(journalId)
   }
 
   requestForChapter = chapterId => {
@@ -79,7 +74,7 @@ class Journal extends Component {
     if (width > height) {
       return this.props.height / 2
     } else {
-      return this.props.height / 3
+      return this.props.height / 4
     }
   }
 

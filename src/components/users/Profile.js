@@ -18,9 +18,9 @@ import { get } from "agent"
 import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
+import { loadSingleJournal, resetJournalShow } from "actions/journals"
 import { setCurrentUser } from "actions/common"
 import { connect } from "react-redux"
-import { RESET_JOURNAL_TAB } from "actions/action_types"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 import { logOut } from "auth"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
@@ -38,9 +38,8 @@ const mapDispatchToProps = dispatch => ({
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  resetJournal: () => {
-    dispatch({ type: RESET_JOURNAL_TAB })
-  }
+  loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
+  resetJournalShow: () => dispatch(resetJournalShow())
 })
 
 class Profile extends Component {
@@ -93,7 +92,6 @@ class Profile extends Component {
   }
 
   handleJournalPress = journalId => {
-    this.props.resetJournal()
     this.props.navigation.navigate("Journal", { journalId })
   }
 
@@ -371,6 +369,7 @@ class Profile extends Component {
   }
 
   navigateToJournalForm = () => {
+    this.props.resetJournalShow()
     this.props.navigation.navigate("JournalFormTitle")
   }
 

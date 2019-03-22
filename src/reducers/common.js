@@ -5,8 +5,11 @@ import {
   UPDATE_CURRENT_BOTTOM_TAB,
   INITIAL_APP_LOADED,
   SET_WINDOW_DIMENSIONS,
-  UPDATE_CONNECTION_TYPE
+  UPDATE_CONNECTION_TYPE,
+  SET_LOADING_TRUE,
+  SET_LOADING_FALSE
 } from "actions/common"
+
 const defaultAppState = {
   currentUser: null,
   hideTabBar: false,
@@ -14,7 +17,8 @@ const defaultAppState = {
   currentBottomTab: "Explore",
   width: Dimensions.get("window").width,
   height: Dimensions.get("window").height,
-  isOffline: true
+  isOffline: false,
+  isLoading: false
 }
 
 export default (state = defaultAppState, action) => {
@@ -41,11 +45,20 @@ export default (state = defaultAppState, action) => {
         ...state,
         initialAppLoaded: true
       }
-
     case UPDATE_CONNECTION_TYPE:
       return {
         ...state,
         isOffline: action.payload
+      }
+    case SET_LOADING_TRUE:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case SET_LOADING_FALSE:
+      return {
+        ...state,
+        isLoading: false
       }
     default:
       return state

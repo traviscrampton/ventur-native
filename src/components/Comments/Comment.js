@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback, Alert } from "react-native"
 import { connect } from "react-redux"
 import { deleteComment } from "actions/comments"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
@@ -29,7 +29,11 @@ class Comment extends Component {
   }
 
   handleDeleteComment = id => {
-    this.props.deleteComment(id)
+    Alert.alert(
+      "Are you sure?",
+      [{ text: "Delete Comment", onPress: () => this.props.deleteComment(id) }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
   }
 
   isCurrentUsersComment() {

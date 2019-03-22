@@ -2,17 +2,12 @@ import React, { Component } from "react"
 import { StyleSheet, ScrollView, Dimensions } from "react-native"
 import { connect } from "react-redux"
 import { get } from "agent"
-import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
+import { loadJournalFeed, resetJournalShow } from "actions/journals"
 import JournalCard from "components/journals/JournalCard"
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: payload => {
-    dispatch({ type: JOURNAL_FEED_LOADED, payload })
-  },
-
-  resetJournal: () => {
-    dispatch({ type: RESET_JOURNAL_TAB })
-  }
+  loadJournalFeed: () => dispatch(loadJournalFeed()),
+  resetJournalShow: () => dispatch(resetJournalShow())
 })
 
 const mapStateToProps = state => ({
@@ -27,17 +22,11 @@ class JournalFeed extends Component {
 
   componentWillMount() {
     Expo.ScreenOrientation.allow("PORTRAIT_UP")
-    this.getJournalFeed()
-  }
-
-  async getJournalFeed() {
-    get("/journals").then(data => {
-      this.props.onLoad(data.journals)
-    })
+    this.props.loadJournalFeed()
   }
 
   handlePress = journalId => {
-    this.props.resetJournal()
+    this.props.resetJournalShow()
     this.props.navigation.navigate("Journal", { journalId })
   }
 
