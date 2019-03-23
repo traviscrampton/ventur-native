@@ -28,6 +28,7 @@
     "react-native": "~0.55.2",
     "react-native-camera-roll-picker": "^1.2.3",
     "react-native-dropdownalert": "^3.7.1",
+    "react-native-floating-action": "^1.14.2",
     "react-native-indicators": "^0.13.0",
     "react-native-input-scroll-view": "^1.7.0",
     "react-native-keyboard-aware-scroll-view": "^0.6.0",

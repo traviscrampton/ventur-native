@@ -19,6 +19,7 @@ import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
 import CommentForm from "components/Comments/CommentForm"
 import UserAvatarForm from "components/users/UserAvatarForm"
+import MapContainer from "components/Maps/MapContainer"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -34,7 +35,8 @@ const NO_FOOTER_SCREENS = [
   "JournalFormTitle",
   "JournalFormLocation",
   "JournalFormStatus",
-  "JournalFormUpload"
+  "JournalFormUpload",
+  "MapContainer"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -49,6 +51,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
+    MapContainer: MapContainer,
     JournalFormUpload: JournalFormUpload
   },
   {
@@ -75,6 +78,7 @@ const ProfileNavigator = createStackNavigator(
     JournalFormStatus: JournalFormStatus,
     ImageCaptionForm: ImageCaptionForm,
     JournalFormUpload: JournalFormUpload,
+    MapContainer: MapContainer,
     ManageContent: ManageContent,
     ChapterFormJournals: ChapterFormJournals
   },

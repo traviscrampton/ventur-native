@@ -1,10 +1,19 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHighlight } from "react-native"
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  ImageBackground,
+  TouchableHighlight,
+  TouchableWithoutFeedback
+} from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
 import EditorDropdown from "components/editor/EditorDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -59,6 +68,22 @@ class ChapterShow extends Component {
 
     this.props.updateChapterForm(obj)
     this.props.navigation.navigate("ChapterFormTitle")
+  }
+
+  navigateToMap = () => {
+    this.props.navigation.navigate("MapContainer")
+  }
+
+  renderMapIconCta() {
+    return (
+      <TouchableWithoutFeedback onPress={this.navigateToMap}>
+        <View style={{ marginRight: 20, display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <View style={{ padding: 7, marginRight: 2, borderWidth: 2, borderRadius: "50%" }}>
+            <Feather name="map" size={25} color="black" />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    )
   }
 
   renderEditCta() {
@@ -239,7 +264,10 @@ class ChapterShow extends Component {
   render() {
     return (
       <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
-        {this.renderChapterImage()}
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          {this.renderChapterImage()}
+          {this.renderMapIconCta()}
+        </View>
         {this.renderTitle()}
         {this.renderStatistics()}
         {this.renderEditorDropdown()}
