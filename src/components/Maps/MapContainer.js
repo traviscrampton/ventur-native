@@ -11,6 +11,13 @@ const mapDispatchToProps = dispatch => ({})
 const mapStateToProps = state => ({})
 
 class MapContainer extends Component {
+  // Goals here.
+  // 1. make ability to overwrite work
+  // 2. Make sure that it uses google maps
+  // 3. Give it ability to set ratios and position.
+  // 3. set up server to take data
+  // 4. set up endpoint
+  // 5. Make request to server converting to base 64
   constructor(props) {
     super(props)
 
