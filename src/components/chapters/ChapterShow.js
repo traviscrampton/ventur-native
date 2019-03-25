@@ -11,6 +11,7 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import { loadChapterMap } from "actions/route_editor"
 import EditorDropdown from "components/editor/EditorDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
@@ -25,7 +26,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload))
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  loadChapterMap: payload => (dispatch(loadChapterMap(payload)))
 })
 
 class ChapterShow extends Component {
@@ -71,6 +73,7 @@ class ChapterShow extends Component {
   }
 
   navigateToMap = () => {
+    this.props.loadChapterMap(this.props.chapter.cycleRouteId)
     this.props.navigation.navigate("MapContainer")
   }
 

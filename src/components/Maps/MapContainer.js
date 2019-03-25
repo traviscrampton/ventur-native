@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
@@ -21,12 +21,12 @@ const mapStateToProps = state => ({
   positionMode: state.routeEditor.positionMode,
   polylines: state.routeEditor.polylines,
   initialRegion: state.routeEditor.initialRegion,
-  isDrawing: state.routeEditor.isDrawing
+  isDrawing: state.routeEditor.isDrawing,
+  isLoading: state.common.isLoading
 })
 
 class MapContainer extends Component {
   // Goals here.
-  // 2. Make sure that it uses google maps --> super buggy for now. Punting.
   // 3. Give it ability to set ratios and position.
   // 3. set up server to take data
   // 4. set up endpoint
@@ -119,6 +119,10 @@ class MapContainer extends Component {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return <Text>LOADING...</Text>
+    }
+
     return (
       <View style={{ position: "relative", flex: 1 }}>
         <View

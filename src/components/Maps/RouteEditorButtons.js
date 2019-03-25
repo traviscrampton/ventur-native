@@ -5,12 +5,13 @@ import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { toggleDrawMode, togglePositionMode, setShownIndex } from "actions/route_editor"
+import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute } from "actions/route_editor"
 
 const mapDispatchToProps = dispatch => ({
   toggleDrawMode: () => dispatch(toggleDrawMode()),
   togglePositionMode: () => dispatch(togglePositionMode()),
-  setShownIndex: payload => dispatch(setShownIndex(payload))
+  setShownIndex: payload => dispatch(setShownIndex(payload)),
+  persistRoute: () => dispatch(persistRoute())
 })
 
 const mapStateToProps = state => ({
@@ -20,6 +21,7 @@ const mapStateToProps = state => ({
   positionMode: state.routeEditor.positionMode,
   polylines: state.routeEditor.polylines,
   initialRegion: state.routeEditor.initialRegion,
+  initialPolylineLength: state.routeEditor.initialPolylineLength,
   isDrawing: state.routeEditor.isDrawing
 })
 
@@ -29,20 +31,18 @@ class RouteEditorButtons extends Component {
   }
 
   dontRenderUndoButton() {
-    if (!this.props.drawMode) return true
-    if (this.props.shownIndex === 0) return true
-
-    if (this.props.shownIndex === 1) {
-      return this.props.polylines[1].length === 0
-    }
+    const { initialPolylineLength, shownIndex } = this.props
+    if (!this.props.drawMode || shownIndex === 0) return true
+    if (shownIndex < initialPolylineLength) return true
 
     return false
   }
 
   dontRenderRedoButton() {
+    const { shownIndex, polylines } = this.props
     if (!this.props.drawMode) return true
-
-    if (this.props.shownIndex === this.props.polylines.length - 1) {
+    if (polylines[shownIndex + 1] && polylines[shownIndex + 1].length === 0) return true
+    if (shownIndex === polylines.length - 1) {
       return true
     }
 
@@ -57,7 +57,8 @@ class RouteEditorButtons extends Component {
       skip += 1
     }
 
-    this.props.setShownIndex(shownIndex - skip)
+    let newIndex = shownIndex - skip < 0 ? 0 : shownIndex - skip
+    this.props.setShownIndex(newIndex)
   }
 
   handleRedoPress = () => {
@@ -125,7 +126,8 @@ class RouteEditorButtons extends Component {
   }
 
   isInitialRoute() {
-    return this.props.shownIndex === 1 && this.props.polylines[1].length === 0
+    // && this.props.polylines[1].length === 0
+    return this.props.shownIndex === 1
   }
 
   renderDrawButton() {
@@ -165,7 +167,7 @@ class RouteEditorButtons extends Component {
 
     return (
       <View>
-        <TouchableWithoutFeedback onPress={() => console.log("WAT")}>
+        <TouchableWithoutFeedback onPress={this.props.persistRoute}>
           <View
             style={[
               {
