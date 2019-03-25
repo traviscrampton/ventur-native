@@ -4,31 +4,35 @@ import { StyleSheet, View, TouchableWithoutFeedback, Dimensions } from "react-na
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
+import RouteEditorButtons from "components/Maps/RouteEditorButtons"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { setIsDrawing, drawLine, setupNextDraw } from "actions/route_editor"
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  setIsDrawing: payload => dispatch(setIsDrawing(payload)),
+  drawLine: payload => dispatch(drawLine(payload)),
+  setupNextDraw: () => dispatch(setupNextDraw()),
+})
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  polylineEditor: state.routeEditor.polylineEditor,
+  drawMode: state.routeEditor.drawMode,
+  shownIndex: state.routeEditor.shownIndex,
+  positionMode: state.routeEditor.positionMode,
+  polylines: state.routeEditor.polylines,
+  initialRegion: state.routeEditor.initialRegion,
+  isDrawing: state.routeEditor.isDrawing
+})
 
 class MapContainer extends Component {
   // Goals here.
-  // 1. make ability to overwrite work
-  // 2. Make sure that it uses google maps
+  // 2. Make sure that it uses google maps --> super buggy for now. Punting.
   // 3. Give it ability to set ratios and position.
   // 3. set up server to take data
   // 4. set up endpoint
   // 5. Make request to server converting to base 64
   constructor(props) {
     super(props)
-
-    this.state = {
-      polylineEditor: false,
-      drawMode: false,
-      shownIndex: 1,
-      positionMode: false,
-      polylines: [[], []],
-      isDrawing: false
-    }
   }
 
   static MAP_EDITOR_ACTIONS = [
@@ -46,205 +50,37 @@ class MapContainer extends Component {
     }
   ]
 
-  updateMapMode = name => {
-    const newState = Object.assign({}, this.state, { [name]: true })
-    this.setState(newState)
-  }
-
   onPanDrag = e => {
-    if (!this.state.drawMode || !this.state.isDrawing) return
-    // here we need to draw a new route the index is positioned differently.  
-    const { polylines } = this.state
-    let newPolylines
-    const lastPolylineIndex = polylines.length - 1
-    const lastPolylineArray = polylines[lastPolylineIndex]
-    const updatedPolyLineCoordinates = Object.assign([], lastPolylineArray, {
-      [lastPolylineArray.length]: e.nativeEvent.coordinate
-    })
-    newPolylines = Object.assign([], polylines, { [lastPolylineIndex]: updatedPolyLineCoordinates })
-    this.setState({ polylines: newPolylines, shownIndex: lastPolylineIndex })
+    if (!this.props.drawMode || !this.props.isDrawing) return
+    this.props.drawLine(e.nativeEvent.coordinate)
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
   }
 
-  toggleDrawMode = () => {
-    const { drawMode } = this.state
-    this.setState({
-      drawMode: !drawMode
-    })
-  }
-
   handleOnMoveResponder = () => {
-    if (!this.state.drawMode) return
+    if (!this.props.drawMode) return
 
-    if (!this.state.isDrawing) {
-      this.setState({ isDrawing: true })
+    if (!this.props.isDrawing) {
+      this.props.setIsDrawing(true)
     }
 
     return true
   }
 
   handleOnReleaseResponder = () => {
-    if (!this.state.drawMode) return
+    if (!this.props.drawMode) return
 
-    const newPolylines = [...this.state.polylines, []]
-    this.setState({ isDrawing: false, polylines: newPolylines, shownIndex: this.state.polylines.length })
+    this.props.setupNextDraw()
   }
 
-  dontRenderUndoButton() {
-    if (!this.state.drawMode) return true
-    if (this.state.shownIndex === 0) return true
-
-    if (this.state.shownIndex === 1) {
-      return this.state.polylines[1].length === 0
-    }
-
-    return false
+  isInitialRoute() {
+    return this.props.shownIndex === 1 && this.props.polylines[1].length === 0
   }
 
-  dontRenderRedoButton() {
-    if (!this.state.drawMode) return true
-
-    if (this.state.shownIndex === this.state.polylines.length - 1) {
-      return true
-    } 
-    
-  
-    return false
-  }
-
-  handleUndoPress = () => {
-    const { shownIndex } = this.state
-    let skip = 1
-
-    if (this.state.polylines[shownIndex].length === 0) {
-      skip += 1
-    }
-
-    this.setState({
-      shownIndex: shownIndex - skip
-    })
-  }
-
-  handleRedoPress = () => {
-    const { shownIndex } = this.state
-    let skip = 1
-
-    if (this.state.polylines[shownIndex].length === 0) {
-      skip += 1
-    }
-
-    this.setState({
-      shownIndex: shownIndex + 1
-    })
-  }
-
-  renderUndoButton() {
-    if (this.dontRenderUndoButton()) return
-
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.handleUndoPress}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%"
-              }
-            ]}>
-            <Ionicons name="ios-undo" size={25} color={"black"} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
-  renderRedoButton() {
-    if (this.dontRenderRedoButton()) return
-
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.handleRedoPress}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginLeft: 10
-              }
-            ]}>
-            <Ionicons name="ios-redo" size={25} color={"black"} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
-  renderDrawButton() {
-    if (!this.state.polylineEditor) return
-
-    const { drawMode } = this.state
-    const buttonBackground = drawMode ? { backgroundColor: "#FF8C34" } : {}
-    const pencilColor = drawMode ? "white" : "#FF8C34"
-
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.toggleDrawMode}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 50,
-                width: 50,
-                marginLeft: 10,
-                borderRadius: "50%"
-              },
-              buttonBackground
-            ]}>
-            <MaterialIcons name="edit" size={30} color={pencilColor} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
-  renderPolylineEditorButtons() {
-    if (!this.state.polylineEditor) return
-
-    return (
-      <View
-        style={{
-          position: "absolute",
-          right: 20,
-          top: 20,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end"
-        }}>
-        {this.renderUndoButton()}
-        {this.renderRedoButton()}
-        {this.renderDrawButton()}
-      </View>
-    )
+  handleRegionChange(e) {
+    if (!this.props.positionMode) return
   }
 
   renderFloatingBackButton() {
@@ -252,7 +88,7 @@ class MapContainer extends Component {
       <View
         style={{
           position: "absolute",
-          top: 20,
+          top: 60,
           left: 20,
           backgroundColor: "white",
           borderRadius: "50%"
@@ -275,10 +111,10 @@ class MapContainer extends Component {
   }
 
   renderPolylines() {
-    return this.state.polylines.map((coordinates, index) => {
-      if (index > this.state.shownIndex) return
+    return this.props.polylines.map((coordinates, index) => {
+      if (index > this.props.shownIndex) return
 
-      return <MapView.Polyline coordinates={coordinates} strokeWidth={2} strokeColor="#FF8C34" />
+      return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF8C34" />
     })
   }
 
@@ -290,30 +126,29 @@ class MapContainer extends Component {
           onResponderRelease={this.handleOnReleaseResponder}
           style={{ flex: 1 }}>
           <MapView
+            // provider={MapView.PROVIDER_GOOGLE}
+            onRegionChangeComplete={e => this.handleRegionChange(e)}
             style={{ flex: 1, zIndex: -1 }}
-            scrollEnabled={!this.state.drawMode}
+            scrollEnabled={!this.props.drawMode}
             onPanDrag={e => this.onPanDrag(e)}
-            initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.03
-            }}>
+            initialRegion={this.props.initialRegion}>
             {this.renderPolylines()}
           </MapView>
         </View>
-        {this.renderPolylineEditorButtons()}
-        <FloatingAction
-          ref={ref => {
-            this.floatingAction = ref
-          }}
-          actions={MapContainer.MAP_EDITOR_ACTIONS}
-          onPressItem={this.updateMapMode}
-        />
+        {this.renderFloatingBackButton()}
+        <RouteEditorButtons />
       </View>
     )
   }
 }
+
+// <FloatingAction
+// ref={ref => {
+// this.floatingAction = ref
+// }}
+// actions={MapContainer.MAP_EDITOR_ACTIONS}
+// onPressItem={this.updateMapMode}
+// />
 
 const styles = StyleSheet.create({
   container: {
