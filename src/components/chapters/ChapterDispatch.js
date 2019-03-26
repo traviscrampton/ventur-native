@@ -11,8 +11,8 @@ import {
 } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
-import { loadChapter } from "actions/chapter"
-import { populateEntries, getInitialImageIds, resetDeletedIds } from "actions/editor"
+import { loadChapter, setEditMode } from "actions/chapter"
+import { populateEntries, getInitialImageIds, resetDeletedIds, doneEditingAndPersist, loseChangesAndUpdate } from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import { updateChapterForm } from "actions/chapter_form"
@@ -30,7 +30,8 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   width: state.common.width,
   isUpdating: state.editor.isUpdating,
-  isLoading: state.common.isLoading
+  isLoading: state.common.isLoading,
+  editMode: state.chapter.editMode
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -38,7 +39,10 @@ const mapDispatchToProps = dispatch => ({
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
   getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
-  resetDeletedIds: () => dispatch(resetDeletedIds())
+  resetDeletedIds: () => dispatch(resetDeletedIds()),
+  doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
+  setEditMode: (payload) => dispatch(setEditMode(payload)),
+  loseChangesAndUpdate: (payload) => dispatch(loseChangesAndUpdate(payload)),
 })
 
 class ChapterDispatch extends Component {
@@ -48,9 +52,13 @@ class ChapterDispatch extends Component {
     this.initialChapterForm = this.props.navigation.getParam("initialChapterForm", false)
 
     this.state = {
-      editMode: this.initialChapterForm,
       initialChapterForm: this.initialChapterForm
     }
+  }
+
+  componentWillMount() {
+    if (!this.state.initialChapterForm) return
+    this.props.setEditMode(true)  
   }
 
   populateEditorAndSwitch = data => {
@@ -59,9 +67,10 @@ class ChapterDispatch extends Component {
     this.props.populateEntries(entries)
     this.props.getInitialImageIds(entries)
     this.editMetaData()
-    this.setState({
-      editMode: true
-    })
+    this.props.setEditMode(true)
+    // this.setState({
+    //   editMode: true
+    // })
   }
 
   editMetaData = () => {
@@ -90,26 +99,20 @@ class ChapterDispatch extends Component {
 
   handleDoneButtonPress = () => {
     if (this.props.isUpdating) return
-
-    const { id } = this.props.chapter.editorBlob
-    put(`/editor_blobs/${id}/update_draft_to_final`, { deletedIds: this.props.deletedIds }).then(data => {
-      let updatedChapter = Object.assign({}, this.props.chapter, { editorBlob: data })
-      this.props.loadChapter(updatedChapter)
-      this.props.resetDeletedIds()
-      this.props.populateEntries([])
-      this.setState({ editMode: false })
-    })
+    this.props.doneEditingAndPersist()
   }
 
   loseChangesAndUpdate = () => {
     const { id } = this.props.chapter.editorBlob
-    const imagesToDelete = this.getImagesToDelete()
+    const deletedIds = this.getImagesToDelete()
+    const payload = Object.assign({}, { id, deletedIds })
+    this.props.loseChangesAndUpdate(payload)
 
-    destroy(`/editor_blobs/${id}`, { deletedIds: imagesToDelete }).then(data => {
-      this.props.populateEntries([])
-      this.props.resetDeletedIds()
-      this.setState({ editMode: false })
-    })
+    // destroy(`/editor_blobs/${id}`, { deletedIds: imagesToDelete }).then(data => {
+    //   this.props.populateEntries([])
+    //   this.props.resetDeletedIds()
+    //   this.setState({ editMode: false })
+    // })
   }
 
   getImagesToDelete() {
@@ -227,7 +230,7 @@ class ChapterDispatch extends Component {
   renderEditPortal() {
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
-    if (this.state.editMode) {
+    if (this.props.editMode) {
       return this.renderCancelAndDoneBtns()
     } else {
       return this.renderEditBtn()
@@ -267,7 +270,7 @@ class ChapterDispatch extends Component {
   }
 
   dispatchChapter() {
-    if (this.state.editMode) {
+    if (this.props.editMode) {
       return <ChapterEditor navigation={this.props.navigation} />
     } else {
       return <ChapterShow navigation={this.props.navigation} />

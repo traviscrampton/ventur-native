@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import DropDownHolder from "utils/DropdownHolder"
-import { loadChapter } from "actions/chapter"
+import { loadChapter, setEditMode } from "actions/chapter"
 import { resetChapterForm, addChapterToJournals } from "actions/chapter_form"
 import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
@@ -9,9 +9,9 @@ import { CameraRoll, NetInfo } from "react-native"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
-    dispatch(startUpdating())
+    // dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
+    // debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
   }
 }
 
@@ -20,6 +20,107 @@ export function updateEntryState(payload) {
     type: "EDIT_ENTRY",
     payload: payload
   }
+}
+
+export function loseChangesAndUpdate(payload) {
+  return function(dispatch, getState) {
+    dispatch(startUpdating())
+    console.log("just id", payload.id, payload.deletedIds)
+    updateBackToDraft(payload.id, payload.deletedIds, dispatch)
+  }
+}
+
+export const updateBackToDraft = async (id, deletedIds, dispatch) => {
+  let selectedImage
+  const formData = new FormData()
+  const token = await setToken()
+  
+
+  if (deletedIds && deletedIds.length > 0) {
+    formData.append("deletedIds", JSON.stringify(deletedIds))
+  }
+
+  console.log("BEFORE GRAND FATCH")
+
+  fetch(`${API_ROOT}/editor_blobs/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
+
+      console.log("IN DA RESPONSE")
+
+      dispatch(setEditMode(false))
+      console.log("SET EDIT MODE FALSE")
+
+      dispatch(resetDeletedIds())
+      dispatch(populateEntries([]))
+      dispatch(doneUpdating())
+    })
+    .catch(err => {
+      dispatch(doneUpdating())
+      DropDownHolder.alert("error", "Error", err)
+    })
+}
+
+export function doneEditingAndPersist() {
+  return function(dispatch, getState) {
+    dispatch(startUpdating())
+    const { entries, deletedIds } = getState().editor
+    const { chapter } = getState().chapter
+    finalizeDraft(chapter.editorBlob.id, entries, deletedIds, chapter, dispatch)
+  }
+}
+
+export const finalizeDraft = async (id, entries, deletedIds, chapter, dispatch) => {
+  let selectedImage
+  const formData = new FormData()
+  const token = await setToken()
+  if (deletedIds.length > 0) {
+    formData.append("deletedIds", deletedIds)
+  }
+
+  formData.append("content", JSON.stringify(entries))
+  fetch(`${API_ROOT}/editor_blobs/${id}/update_blob_done`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
+
+      let updatedChapter = Object.assign({}, chapter, {
+        editorBlob: { id: data.id, content: JSON.parse(data.content) }
+      })
+
+      dispatch(loadChapter(updatedChapter))
+      dispatch(resetDeletedIds())
+      dispatch(setEditMode(false))
+      dispatch(populateEntries([]))
+      dispatch(doneUpdating())
+    })
+    .catch(err => {
+      dispatch(doneUpdating())
+      DropDownHolder.alert("error", "Error", err)
+    })
 }
 
 export function updateImagesState(payload) {
