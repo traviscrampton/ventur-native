@@ -28,8 +28,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadRouteEditor: payload => (dispatch(loadRouteEditor(payload))),
-  loadRouteViewer: payload => (dispatch(loadRouteViewer(payload)))
+  loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
+  loadRouteViewer: payload => dispatch(loadRouteViewer(payload))
 })
 
 class ChapterShow extends Component {
@@ -46,12 +46,15 @@ class ChapterShow extends Component {
     return (
       <View style={styles.titleDescriptionContainer}>
         <View
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center"
-          }}>
+          style={[
+            {
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center"
+            },
+            { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
+          ]}>
           <Text style={styles.title}>{title}</Text>
           {this.renderMapIconNoImage()}
         </View>
@@ -100,14 +103,14 @@ class ChapterShow extends Component {
   }
 
   renderMapIconWithImage() {
-    if(!this.props.chapter.imageUrl) return
+    if (!this.props.chapter.imageUrl) return
 
-    return this.renderMapIconCta()  
+    return this.renderMapIconCta()
   }
 
   renderMapIconNoImage() {
     if (this.props.chapter.imageUrl) return
-    
+
     return this.renderMapIconCta()
   }
 
@@ -243,6 +246,7 @@ class ChapterShow extends Component {
     if (!Array.isArray(entries)) {
       entries = Array.from(entries)
     }
+
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })

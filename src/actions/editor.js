@@ -25,7 +25,6 @@ export function updateEntryState(payload) {
 export function loseChangesAndUpdate(payload) {
   return function(dispatch, getState) {
     dispatch(startUpdating())
-    console.log("just id", payload.id, payload.deletedIds)
     updateBackToDraft(payload.id, payload.deletedIds, dispatch)
   }
 }
@@ -34,13 +33,10 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
-  
 
   if (deletedIds && deletedIds.length > 0) {
     formData.append("deletedIds", JSON.stringify(deletedIds))
   }
-
-  console.log("BEFORE GRAND FATCH")
 
   fetch(`${API_ROOT}/editor_blobs/${id}`, {
     method: "DELETE",
@@ -58,11 +54,7 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
         throw Error(data.errors.join(", "))
       }
 
-      console.log("IN DA RESPONSE")
-
       dispatch(setEditMode(false))
-      console.log("SET EDIT MODE FALSE")
-
       dispatch(resetDeletedIds())
       dispatch(populateEntries([]))
       dispatch(doneUpdating())
@@ -87,7 +79,7 @@ export const finalizeDraft = async (id, entries, deletedIds, chapter, dispatch) 
   const formData = new FormData()
   const token = await setToken()
   if (deletedIds.length > 0) {
-    formData.append("deletedIds", deletedIds)
+    formData.append("deletedIds", JSON.stringify(deletedIds))
   }
 
   formData.append("content", JSON.stringify(entries))
