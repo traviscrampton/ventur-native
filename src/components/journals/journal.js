@@ -16,7 +16,7 @@ import { get } from "agent"
 import { loadSingleJournal, requestForChapter } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
-import { loadChapter } from "actions/chapter"
+import { loadChapter, resetChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
@@ -40,7 +40,8 @@ const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
-  loadSingleJournal: payload => dispatch(loadSingleJournal(payload))
+  loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
+  resetChapter: () => dispatch(resetChapter())
 })
 
 class Journal extends Component {
@@ -61,12 +62,9 @@ class Journal extends Component {
   }
 
   requestForChapter = chapterId => {
+    this.props.resetChapter()
     this.props.navigation.navigate("Chapter")
     this.props.requestForChapter(chapterId)
-    // get(`/chapters/${chapterId}`).then(data => {
-    //   this.props.loadChapter(data.chapter)
-    //   this.props.navigation.navigate("Chapter")
-    // })
   }
 
   navigateBack = () => {
