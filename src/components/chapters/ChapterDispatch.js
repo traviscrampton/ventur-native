@@ -257,7 +257,7 @@ class ChapterDispatch extends Component {
           underlayColor="rgba(111, 111, 111, 0.5)"
           style={styles.backButton}
           onPress={this.navigateBack}>
-          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="black" />
+          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="#323941" />
         </TouchableHighlight>
         {this.renderJournalName()}
       </View>

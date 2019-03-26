@@ -72,7 +72,7 @@ class ChapterUserForm extends Component {
                   right: 20,
                   zIndex: 10,
                   width: 250,
-                  backgroundColor: "black",
+                  backgroundColor: "#323941",
                   opacity: 0.85
                 }, this.props.styles]}>
         {this.renderChapterOptions()}

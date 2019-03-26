@@ -5,7 +5,13 @@ import {
   SET_IS_DRAWING,
   DRAW_POLYLINE,
   SET_NEXT_DRAW,
-  POPULATE_MAP
+  POPULATE_MAP,
+  UPDATE_REGION_COORDINATES,
+  SAVING_MAP_BEGIN,
+  SAVING_MAP_END,
+  ERASE_TOTAL_ROUTE,
+  UPDATE_INITIAL_REGION,
+  DEFAULT_ROUTE_EDTIOR
 } from "actions/route_editor"
 
 const defaultRouteData = {
@@ -14,16 +20,12 @@ const defaultRouteData = {
   drawMode: false,
   shownIndex: 1,
   positionMode: false,
-  polylines: [[]],
-
-  initialRegion: {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.03,
-    longitudeDelta: 0.03
-  },
+  polylines: [[], []],
+  initialRegion: {},
+  changedRegion: {},
   initialPolylineLength: 1,
-  isDrawing: false
+  isDrawing: false,
+  isSaving: false
 }
 
 export default (state = defaultRouteData, action) => {
@@ -32,10 +34,37 @@ export default (state = defaultRouteData, action) => {
       return {
         ...state,
         initialRegion: action.payload.initialRegion,
+        changedRegion: action.payload.initialRegion,
         polylines: action.payload.polylines,
         id: action.payload.id,
         shownIndex: action.payload.polylines.length - 1,
         initialPolylineLength: action.payload.polylines.length - 2
+      }
+
+    case ERASE_TOTAL_ROUTE:
+      return {
+        ...state,
+        polylines: defaultRouteData.polylines,
+        initialPolylineLength: defaultRouteData.initialPolylineLength,
+        shownIndex: defaultRouteData.shownIndex
+      }
+
+    case SAVING_MAP_BEGIN:
+      return {
+        ...state,
+        isSaving: true
+      }
+
+    case SAVING_MAP_END:
+      return {
+        ...state,
+        isSaving: false
+      }
+
+    case UPDATE_REGION_COORDINATES:
+      return {
+        ...state,
+        changedRegion: action.payload
       }
 
     case SET_SHOWN_INDEX:
@@ -68,7 +97,14 @@ export default (state = defaultRouteData, action) => {
     case SET_DRAW_MODE:
       return {
         ...state,
-        drawMode: action.payload
+        drawMode: action.payload,
+        positionMode: false
+      }
+
+    case UPDATE_INITIAL_REGION:
+      return {
+        ...state,
+        initialRegion: { ...state.changedRegion }
       }
 
     case SET_POSITION_MODE:
@@ -76,6 +112,9 @@ export default (state = defaultRouteData, action) => {
         ...state,
         positionMode: action.payload
       }
+
+    case DEFAULT_ROUTE_EDTIOR:
+      return defaultRouteData
 
     default:
       return state

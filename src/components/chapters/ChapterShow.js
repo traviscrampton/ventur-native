@@ -82,7 +82,7 @@ class ChapterShow extends Component {
       <TouchableWithoutFeedback onPress={this.navigateToMap}>
         <View style={{ marginRight: 20, display: "flex", flexDirection: "row", alignItems: "center" }}>
           <View style={{ padding: 7, marginRight: 2, borderWidth: 2, borderRadius: "50%" }}>
-            <Feather name="map" size={25} color="black" />
+            <Feather name="map" size={25} color="#323941" />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -135,7 +135,7 @@ class ChapterShow extends Component {
       <View
         style={{
           borderBottomWidth: 3,
-          borderBottomColor: "black",
+          borderBottomColor: "#323941",
           width: 90,
           marginTop: 10,
           marginLeft: 20,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black"
+    color: "#323941"
   },
   description: {
     fontSize: 18,

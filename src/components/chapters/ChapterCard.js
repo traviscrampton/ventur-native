@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   chapterTitle: {
     maxWidth: Dimensions.get('window').width - 140,
     fontFamily: "open-sans-regular",
-    color: "black",
+    color: "#323941",
     fontSize: 20,
     marginBottom: 10
   },

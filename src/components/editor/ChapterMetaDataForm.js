@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black",
+    color: "#323941",
     backgroundColor: "#f8f8f8"
   },
   iconsAndText: {

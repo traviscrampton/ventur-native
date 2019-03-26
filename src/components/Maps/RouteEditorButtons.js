@@ -5,13 +5,15 @@ import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute } from "actions/route_editor"
+import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "actions/route_editor"
+import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({
   toggleDrawMode: () => dispatch(toggleDrawMode()),
   togglePositionMode: () => dispatch(togglePositionMode()),
   setShownIndex: payload => dispatch(setShownIndex(payload)),
-  persistRoute: () => dispatch(persistRoute())
+  persistRoute: () => dispatch(persistRoute()),
+  eraseRoute: () => dispatch(eraseRoute())
 })
 
 const mapStateToProps = state => ({
@@ -22,7 +24,8 @@ const mapStateToProps = state => ({
   polylines: state.routeEditor.polylines,
   initialRegion: state.routeEditor.initialRegion,
   initialPolylineLength: state.routeEditor.initialPolylineLength,
-  isDrawing: state.routeEditor.isDrawing
+  isDrawing: state.routeEditor.isDrawing,
+  isSaving: state.routeEditor.isSaving
 })
 
 class RouteEditorButtons extends Component {
@@ -32,6 +35,7 @@ class RouteEditorButtons extends Component {
 
   dontRenderUndoButton() {
     const { initialPolylineLength, shownIndex } = this.props
+    if (this.props.polylines.length === 2 && this.props.polylines[1].length === 0) return true
     if (!this.props.drawMode || shownIndex === 0) return true
     if (shownIndex < initialPolylineLength) return true
 
@@ -41,6 +45,8 @@ class RouteEditorButtons extends Component {
   dontRenderRedoButton() {
     const { shownIndex, polylines } = this.props
     if (!this.props.drawMode) return true
+      console.log(polylines.length, polylines[1].length)
+    if (polylines.length === 2 && polylines[1].length === 0) return true
     if (polylines[shownIndex + 1] && polylines[shownIndex + 1].length === 0) return true
     if (shownIndex === polylines.length - 1) {
       return true
@@ -91,7 +97,7 @@ class RouteEditorButtons extends Component {
                 borderRadius: "50%"
               }
             ]}>
-            <Ionicons name="ios-undo" size={25} color={"black"} />
+            <Ionicons name="ios-undo" size={25} color={"#323941"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -118,7 +124,7 @@ class RouteEditorButtons extends Component {
                 marginLeft: 10
               }
             ]}>
-            <Ionicons name="ios-redo" size={25} color={"black"} />
+            <Ionicons name="ios-redo" size={25} color={"#323941"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -126,12 +132,15 @@ class RouteEditorButtons extends Component {
   }
 
   isInitialRoute() {
-    // && this.props.polylines[1].length === 0
-    return this.props.shownIndex === 1
+    return this.props.polylines.length > this.props.initialPolylineLength
+  }
+
+  eraseRoute = async () => {
+    this.props.eraseRoute()
   }
 
   renderDrawButton() {
-    if (!this.props.polylineEditor) return
+    if (!this.props.polylineEditor || this.props.positionMode) return
 
     const { drawMode } = this.props
     const buttonBackground = drawMode ? { backgroundColor: "#FF8C34" } : {}
@@ -163,7 +172,12 @@ class RouteEditorButtons extends Component {
   }
 
   renderSaveButton() {
-    if (this.props.drawMode || this.isInitialRoute()) return
+    if (this.props.drawMode || this.props.positionMode) return
+    let icon = this.props.isSaving ? (
+      <MaterialIndicator size={25} color="#FF8C34" />
+    ) : (
+      <MaterialIcons name="save" size={25} color={"#323941"} />
+    )
 
     return (
       <View>
@@ -182,34 +196,7 @@ class RouteEditorButtons extends Component {
                 marginBottom: 10
               }
             ]}>
-            <MaterialIcons name="save" size={25} color={"black"} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
-  renderDeleteButton() {
-    if (this.props.drawMode || this.isInitialRoute()) return
-
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={() => console.log("DELETE!")}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginBottom: 10
-              }
-            ]}>
-            <MaterialIcons name="delete" size={25} color={"black"} />
+            {icon}
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -219,8 +206,8 @@ class RouteEditorButtons extends Component {
   renderCropButton() {
     if (this.props.drawMode) return
     const { positionMode } = this.props
-    const backgroundColor = positionMode ? "blue" : "white"
-    const iconColor = positionMode ? "white" : "blue"
+    const backgroundColor = positionMode ? "#067BC2" : "white"
+    const iconColor = positionMode ? "white" : "#067BC2"
 
     return (
       <View>
@@ -246,8 +233,33 @@ class RouteEditorButtons extends Component {
     )
   }
 
+  renderEraseButton() {
+    if (this.props.positionMode) return
+
+    return (
+      <View style={{ position: "absolute", bottom: 30, right: 30 }}>
+        <TouchableWithoutFeedback onPress={() => this.eraseRoute()}>
+          <View
+            style={{
+              height: 35,
+              width: 35,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+              borderRadius: "50%"
+            }}>
+            <MaterialIcons name="delete" size={25} color={"#323941"} />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
   render() {
     if (!this.props.polylineEditor) return
+    const cropPosition = this.props.positionMode ? { top: 60 } : {}
 
     return (
       <React.Fragment>
@@ -266,19 +278,22 @@ class RouteEditorButtons extends Component {
           {this.renderDrawButton()}
         </View>
         <View
-          style={{
-            position: "absolute",
-            right: 30,
-            top: 120,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-end"
-          }}>
+          style={[
+            {
+              position: "absolute",
+              right: 30,
+              top: 120,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "flex-end"
+            },
+            cropPosition
+          ]}>
           >{this.renderSaveButton()}
-          {this.renderDeleteButton()}
           {this.renderCropButton()}
         </View>
+        {this.renderEraseButton()}
       </React.Fragment>
     )
   }

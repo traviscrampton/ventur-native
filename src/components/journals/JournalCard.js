@@ -37,7 +37,7 @@ const tripMetaData = props => {
     <View style={styles.metadataContainer}>
       <View style={styles.marginBottomAuto}>
         <View style={styles.iconTextContainer}>
-          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="black" />
+          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
           <Text style={styles.description}>{props.description}</Text>
         </View>
         <Text numberOfLines={2} style={styles.title}>
@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     marginBottom: 10,
-    fontFamily: "playfair"
+    fontFamily: "playfair",
+    color: "#323941"
   },
   marginBottomAuto: {
     marginBottom: "auto"

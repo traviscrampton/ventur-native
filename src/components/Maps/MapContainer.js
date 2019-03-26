@@ -6,12 +6,24 @@ import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import RouteEditorButtons from "components/Maps/RouteEditorButtons"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { setIsDrawing, drawLine, setupNextDraw } from "actions/route_editor"
+import { MaterialIndicator } from "react-native-indicators"
+import {
+  setIsDrawing,
+  drawLine,
+  setupNextDraw,
+  persistCoordinates,
+  updateRegionCoordinates,
+  defaultRouteEditor
+} from "actions/route_editor"
+import { LoadingScreen } from "components/shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
   drawLine: payload => dispatch(drawLine(payload)),
   setupNextDraw: () => dispatch(setupNextDraw()),
+  persistCoordinates: () => dispatch(persistCoordinates()),
+  defaultRouteEditor: () => dispatch(defaultRouteEditor()),
+  updateRegionCoordinates: coordinates => dispatch(updateRegionCoordinates(coordinates))
 })
 
 const mapStateToProps = state => ({
@@ -22,15 +34,12 @@ const mapStateToProps = state => ({
   polylines: state.routeEditor.polylines,
   initialRegion: state.routeEditor.initialRegion,
   isDrawing: state.routeEditor.isDrawing,
-  isLoading: state.common.isLoading
+  isLoading: state.common.isLoading,
+  isSaving: state.routeEditor.isSaving,
+  changedRegion: state.routeEditor.changedRegion
 })
 
 class MapContainer extends Component {
-  // Goals here.
-  // 3. Give it ability to set ratios and position.
-  // 3. set up server to take data
-  // 4. set up endpoint
-  // 5. Make request to server converting to base 64
   constructor(props) {
     super(props)
   }
@@ -56,6 +65,7 @@ class MapContainer extends Component {
   }
 
   navigateBack = () => {
+    this.props.defaultRouteEditor()
     this.props.navigation.goBack()
   }
 
@@ -75,12 +85,54 @@ class MapContainer extends Component {
     this.props.setupNextDraw()
   }
 
-  isInitialRoute() {
-    return this.props.shownIndex === 1 && this.props.polylines[1].length === 0
+  async handleRegionChange(coordinates) {
+    this.props.updateRegionCoordinates(coordinates)
   }
 
-  handleRegionChange(e) {
+  isChangedRegionDifferent() {
+    return JSON.stringify(this.props.initialRegion) === JSON.stringify(this.props.changedRegion)
+  }
+
+  renderSavingButton() {
     if (!this.props.positionMode) return
+    let buttonContent
+
+    if (this.props.isSaving) {
+      buttonContent = <MaterialIndicator size={20} color="#FF8C34" />
+    } else if (this.isChangedRegionDifferent()) {
+      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVED</Text>
+    } else {
+      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVE POSITION</Text>
+    }
+
+    return (
+      <View
+        style={{
+          position: "absolute",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          bottom: 30,
+          width: Dimensions.get("window").width
+        }}>
+        <TouchableWithoutFeedback onPress={this.props.persistCoordinates}>
+          <View
+            style={{
+              width: Dimensions.get("window").width / 2,
+              borderRadius: 30,
+              height: 40,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white"
+            }}>
+            {buttonContent}
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
   }
 
   renderFloatingBackButton() {
@@ -120,7 +172,7 @@ class MapContainer extends Component {
 
   render() {
     if (this.props.isLoading) {
-      return <Text>LOADING...</Text>
+      return <LoadingScreen />
     }
 
     return (
@@ -130,7 +182,6 @@ class MapContainer extends Component {
           onResponderRelease={this.handleOnReleaseResponder}
           style={{ flex: 1 }}>
           <MapView
-            // provider={MapView.PROVIDER_GOOGLE}
             onRegionChangeComplete={e => this.handleRegionChange(e)}
             style={{ flex: 1, zIndex: -1 }}
             scrollEnabled={!this.props.drawMode}
@@ -141,18 +192,11 @@ class MapContainer extends Component {
         </View>
         {this.renderFloatingBackButton()}
         <RouteEditorButtons />
+        {this.renderSavingButton()}
       </View>
     )
   }
 }
-
-// <FloatingAction
-// ref={ref => {
-// this.floatingAction = ref
-// }}
-// actions={MapContainer.MAP_EDITOR_ACTIONS}
-// onPressItem={this.updateMapMode}
-// />
 
 const styles = StyleSheet.create({
   container: {

@@ -1,5 +1,5 @@
 import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import { get, put } from "agent"
+import { get, put, destroy } from "agent"
 import base64 from "react-native-base64"
 
 export const POPULATE_MAP = "POPULATE_MAP"
@@ -10,14 +10,83 @@ export function populateMap(payload) {
   }
 }
 
+export const UPDATE_INITIAL_REGION = "UPDATE_INITIAL_REGION"
+export function updateInitialRegion() {
+  return {
+    type: UPDATE_INITIAL_REGION
+  }
+}
+
+export const ERASE_TOTAL_ROUTE = "ERASE_TOTAL_ROUTE"
+export function eraseRoute() {
+  return {
+    type: ERASE_TOTAL_ROUTE
+  }
+}
+
+export const SAVING_MAP_BEGIN = "SAVING_MAP_BEGIN"
+export function savingMapBegin() {
+  return {
+    type: SAVING_MAP_BEGIN
+  }
+}
+
+export const SAVING_MAP_END = "SAVING_MAP_END"
+export function savingMapEnd() {
+  return {
+    type: SAVING_MAP_END
+  }
+}
+
+export const DEFAULT_ROUTE_EDTIOR = "DEFAULT_ROUTE_EDTIOR"
+export function defaultRouteEditor() {
+  return {
+    type: DEFAULT_ROUTE_EDTIOR
+  }
+}
+
 export function persistRoute() {
   return function(dispatch, getState) {
-    let { id, polylines } = getState().routeEditor
+    dispatch(savingMapBegin())
+    let { id, polylines, shownIndex } = getState().routeEditor
+
+    if (shownIndex !== polylines.length - 1) {
+      polylines.length = shownIndex + 1
+      polylines = [...polylines, []]
+    }
+
     polylines = base64.encode(JSON.stringify(polylines))
     let params = Object.assign({}, { polylines })
     put(`/cycle_routes/${id}`, params).then(res => {
-      console.log("SUCCESS!")
+      const newPolylines = JSON.parse(base64.decode(res.cycleRoute.polylines))
+
+      dispatch(drawPolyline({ polylines: newPolylines, shownIndex: newPolylines.length - 1 }))
+      dispatch(savingMapEnd())
     })
+  }
+}
+
+export function persistCoordinates() {
+  return function(dispatch, getState) {
+    dispatch(savingMapBegin())
+    let { id, changedRegion } = getState().routeEditor
+    let { latitude, longitude, longitudeDelta, latitudeDelta } = changedRegion
+    let params = Object.assign(
+      {},
+      { latitude: latitude, longitude: longitude, longitude_delta: longitudeDelta, latitude_delta: latitudeDelta }
+    )
+    put(`/cycle_routes/${id}`, params).then(res => {
+      dispatch(updateInitialRegion())
+      dispatch(savingMapEnd())
+    })
+  }
+}
+
+export const UPDATE_REGION_COORDINATES = "UPDATE_REGION_COORDINATES"
+export function updateRegionCoordinates(coordinates) {
+  return {
+    type: UPDATE_REGION_COORDINATES,
+    payload: coordinates
   }
 }
 
@@ -119,7 +188,6 @@ export function loadChapterMap(cycleRouteId) {
     get(`/cycle_routes/${cycleRouteId}`).then(res => {
       let { cycleRoute } = res
       let polylines = cycleRoute.polylines.length === 0 ? [[], []] : JSON.parse(base64.decode(cycleRoute.polylines))
-      console.log(polylines, polylines.length)
       cycleRoute = Object.assign({}, cycleRoute, { polylines })
       dispatch(populateMap(cycleRoute))
       dispatch(setLoadingFalse())

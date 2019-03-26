@@ -265,7 +265,7 @@ class ChapterEditor extends Component {
       <View
         style={{
           borderBottomWidth: 3,
-          borderBottomColor: "black",
+          borderBottomColor: "#323941",
           width: 90,
           marginTop: 10,
           marginLeft: 20,
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black",
+    color: "#323941",
     backgroundColor: "#f8f8f8"
   },
   description: {
