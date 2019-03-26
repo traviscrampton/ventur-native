@@ -182,7 +182,7 @@ export function drawLine(coordinate) {
   }
 }
 
-export function loadChapterMap(cycleRouteId) {
+export function loadRouteEditor(cycleRouteId) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
     get(`/cycle_routes/${cycleRouteId}`).then(res => {

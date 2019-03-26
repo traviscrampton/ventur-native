@@ -4,7 +4,6 @@ import { Font } from "expo"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
-import MapContainer from "components/Maps/MapContainer"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,

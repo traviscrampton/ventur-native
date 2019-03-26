@@ -13,6 +13,7 @@ import userForm from "reducers/userForm"
 import comments from "reducers/comments"
 import commentForm from "reducers/comment_form"
 import routeEditor from "reducers/route_editor"
+import routeViewer from "reducers/route_viewer"
 
 export default combineReducers({
   editor,
@@ -28,5 +29,6 @@ export default combineReducers({
   chapterForm,
   comments,
   commentForm,
+  routeViewer,
   routeEditor
 })

@@ -39,25 +39,10 @@ const mapStateToProps = state => ({
   changedRegion: state.routeEditor.changedRegion
 })
 
-class MapContainer extends Component {
+class RouteEditor extends Component {
   constructor(props) {
     super(props)
   }
-
-  static MAP_EDITOR_ACTIONS = [
-    {
-      text: "Draw Route",
-      icon: "",
-      name: "polylineEditor",
-      position: 2
-    },
-    {
-      text: "Position Map",
-      icon: "",
-      name: "positionMode",
-      position: 1
-    }
-  ]
 
   onPanDrag = e => {
     if (!this.props.drawMode || !this.props.isDrawing) return
@@ -211,4 +196,4 @@ const styles = StyleSheet.create({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MapContainer)
+)(RouteEditor)

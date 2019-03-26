@@ -11,7 +11,8 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
-import { loadChapterMap } from "actions/route_editor"
+import { loadRouteEditor } from "actions/route_editor"
+import { loadRouteViewer } from "actions/route_viewer"
 import EditorDropdown from "components/editor/EditorDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
@@ -27,7 +28,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadChapterMap: payload => (dispatch(loadChapterMap(payload)))
+  loadRouteEditor: payload => (dispatch(loadRouteEditor(payload))),
+  loadRouteViewer: payload => (dispatch(loadRouteViewer(payload)))
 })
 
 class ChapterShow extends Component {
@@ -72,9 +74,17 @@ class ChapterShow extends Component {
     this.props.navigation.navigate("ChapterFormTitle")
   }
 
-  navigateToMap = () => {
-    this.props.loadChapterMap(this.props.chapter.cycleRouteId)
-    this.props.navigation.navigate("MapContainer")
+  navigateToMap = async () => {
+    const { cycleRouteId } = this.props.chapter
+
+    if (this.props.currentUser.id == this.props.chapter.user.id) {
+      console.log("onClick!", cycleRouteId)
+      this.props.loadRouteEditor(cycleRouteId)
+      this.props.navigation.navigate("RouteEditor")
+    } else {
+      this.props.loadRouteViewer(cycleRouteId)
+      this.props.navigation.navigate("RouteViewer")
+    }
   }
 
   renderMapIconCta() {
