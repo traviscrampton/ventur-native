@@ -13,13 +13,14 @@ import {
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { get } from "agent"
-import { loadSingleJournal } from "actions/journals"
+import { loadSingleJournal, requestForChapter } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter } from "actions/chapter"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -29,7 +30,8 @@ const mapStateToProps = state => ({
   loaded: state.journal.loaded,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  isLoading: state.common.isLoading
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -37,6 +39,7 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload))
 })
 
@@ -58,10 +61,12 @@ class Journal extends Component {
   }
 
   requestForChapter = chapterId => {
-    get(`/chapters/${chapterId}`).then(data => {
-      this.props.loadChapter(data.chapter)
-      this.props.navigation.navigate("Chapter")
-    })
+    this.props.navigation.navigate("Chapter")
+    this.props.requestForChapter(chapterId)
+    // get(`/chapters/${chapterId}`).then(data => {
+    //   this.props.loadChapter(data.chapter)
+    //   this.props.navigation.navigate("Chapter")
+    // })
   }
 
   navigateBack = () => {
@@ -281,7 +286,10 @@ class Journal extends Component {
   }
 
   render() {
-    if (!this.props.loaded) return null
+    if (!this.props.loaded) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>

@@ -18,6 +18,7 @@ import ChapterShow from "components/chapters/ChapterShow"
 import { updateChapterForm } from "actions/chapter_form"
 import { Ionicons, Feather } from "@expo/vector-icons"
 import { get, put, destroy } from "agent"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -28,7 +29,8 @@ const mapStateToProps = state => ({
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  isUpdating: state.editor.isUpdating
+  isUpdating: state.editor.isUpdating,
+  isLoading: state.common.isLoading
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -273,6 +275,10 @@ class ChapterDispatch extends Component {
   }
 
   render() {
+    if (!this.props.chapter.id) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}

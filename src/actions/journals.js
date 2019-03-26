@@ -1,5 +1,6 @@
 import { get } from "agent"
 import { setLoadingTrue, setLoadingFalse } from "actions/common"
+import { loadChapter, resetChapter } from "actions/chapter"
 
 export const JOURNAL_FEED_LOADED = "JOURNAL_FEED_LOADED"
 export const SINGLE_JOURNAL_LOADED = "SINGLE_JOURNAL_LOADED"
@@ -21,11 +22,8 @@ export function populateSingleJournal(payload) {
 
 export function loadSingleJournal(journalId) {
   return function(dispatch, getState) {
-    dispatch(setLoadingTrue())
-    
     get(`/journals/${journalId}`).then(data => {
       dispatch(populateSingleJournal(data.journal))
-      dispatch(setLoadingFalse())
     })
   }
 }
@@ -35,6 +33,17 @@ export function populateJournalFeed(payload) {
   return {
     type: POPULATE_JOURNAL_FEED,
     payload: payload
+  }
+}
+
+export function requestForChapter(chapterId) {
+  return function(dispatch, getState) {
+    dispatch(setLoadingTrue())
+    dispatch(resetChapter())
+    get(`/chapters/${chapterId}`).then(res => {
+      dispatch(loadChapter(res.chapter))
+      dispatch(setLoadingFalse())
+    })
   }
 }
 

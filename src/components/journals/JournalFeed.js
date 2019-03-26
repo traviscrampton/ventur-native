@@ -4,6 +4,7 @@ import { connect } from "react-redux"
 import { get } from "agent"
 import { loadJournalFeed, resetJournalShow } from "actions/journals"
 import JournalCard from "components/journals/JournalCard"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),
@@ -12,7 +13,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  isLoading: state.common.isLoading
 })
 
 class JournalFeed extends Component {
@@ -31,6 +33,10 @@ class JournalFeed extends Component {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return <LoadingScreen />
+    }
+
     return (
       <ScrollView style={{ backgroundColor: "white" }}>
         {this.props.journals.map((journal, index) => {

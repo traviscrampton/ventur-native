@@ -2,10 +2,12 @@ import { LOADED_CHAPTER, RESET_CHAPTER_TAB } from "actions/chapter"
 
 const defaultChapterData = {
   chapter: {
+    journal: {},
     editorBlob: {
       id: null,
       content: []
-    }
+    },
+    user: {}
   },
   loaded: false
 }

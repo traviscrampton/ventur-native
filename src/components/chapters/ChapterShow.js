@@ -53,7 +53,7 @@ class ChapterShow extends Component {
             alignItems: "center"
           }}>
           <Text style={styles.title}>{title}</Text>
-          {this.renderEditCta()}
+          {this.renderMapIconNoImage()}
         </View>
       </View>
     )
@@ -99,17 +99,16 @@ class ChapterShow extends Component {
     )
   }
 
-  renderEditCta() {
-    return
-    if (this.props.currentUser.id == this.props.user.id) {
-      return (
-        <TouchableHighlight onPress={this.editMetaData}>
-          <View>
-            <Text>EDIT</Text>
-          </View>
-        </TouchableHighlight>
-      )
-    }
+  renderMapIconWithImage() {
+    if(!this.props.chapter.imageUrl) return
+
+    return this.renderMapIconCta()  
+  }
+
+  renderMapIconNoImage() {
+    if (this.props.chapter.imageUrl) return
+    
+    return this.renderMapIconCta()
   }
 
   renderStatistics() {
@@ -279,7 +278,7 @@ class ChapterShow extends Component {
       <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           {this.renderChapterImage()}
-          {this.renderMapIconCta()}
+          {this.renderMapIconWithImage()}
         </View>
         {this.renderTitle()}
         {this.renderStatistics()}

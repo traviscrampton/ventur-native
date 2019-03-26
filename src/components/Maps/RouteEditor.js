@@ -15,7 +15,7 @@ import {
   updateRegionCoordinates,
   defaultRouteEditor
 } from "actions/route_editor"
-import { LoadingScreen } from "components/shared/LoadingScreen"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
