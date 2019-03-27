@@ -11,6 +11,7 @@ import {
   SAVING_MAP_END,
   ERASE_TOTAL_ROUTE,
   UPDATE_INITIAL_REGION,
+  UPDATE_STARTING_POLYLINES,
   DEFAULT_ROUTE_EDTIOR
 } from "actions/route_editor"
 import { POPULATE_ID } from "actions/journal_route"
@@ -21,6 +22,7 @@ const defaultRouteData = {
   drawMode: false,
   shownIndex: 1,
   positionMode: false,
+  startingPolylines: [[], []],
   polylines: [[], []],
   previousPolylines: [[], []],
   initialRegion: {},
@@ -38,6 +40,7 @@ export default (state = defaultRouteData, action) => {
         initialRegion: action.payload.initialRegion,
         changedRegion: action.payload.initialRegion,
         polylines: action.payload.polylines,
+        startingPolylines: action.payload.polylines,
         previousPolylines: action.payload.previousPolylines,
         id: action.payload.id,
         shownIndex: action.payload.polylines.length - 1,
@@ -63,6 +66,12 @@ export default (state = defaultRouteData, action) => {
         ...state,
         isSaving: false
       }
+
+    case UPDATE_STARTING_POLYLINES:
+      return {
+        ...state,
+        startingPolylines: [...state.polylines]
+      }  
 
     case UPDATE_REGION_COORDINATES:
       return {

@@ -14,7 +14,7 @@ import {
 } from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { Ionicons, Feather } from "@expo/vector-icons"
 import { get, put, destroy } from "agent"
 import LoadingScreen from "components/shared/LoadingScreen"
@@ -42,7 +42,8 @@ const mapDispatchToProps = dispatch => ({
   doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
   setEditMode: payload => dispatch(setEditMode(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
-  resetChapter: () => dispatch(resetChapter())
+  resetChapter: () => dispatch(resetChapter()),
+  resetChapterForm: () => dispatch(resetChapterForm())
 })
 
 class ChapterDispatch extends Component {
@@ -103,6 +104,7 @@ class ChapterDispatch extends Component {
   handleDoneButtonPress = () => {
     if (this.props.isUpdating) return
     this.props.doneEditingAndPersist()
+    this.props.resetChapterForm()
   }
 
   loseChangesAndUpdate = () => {
@@ -110,6 +112,7 @@ class ChapterDispatch extends Component {
     const deletedIds = this.getImagesToDelete()
     const payload = Object.assign({}, { id, deletedIds })
     this.props.loseChangesAndUpdate(payload)
+    this.props.resetChapterForm()
   }
 
   getImagesToDelete() {
@@ -240,12 +243,12 @@ class ChapterDispatch extends Component {
   }
 
   renderJournalName() {
-    let maxWidthDivider = this.props.editMode ? 3 : 1.5
+    let buttonsWidth = this.props.editMode ? 250 : 160
 
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / maxWidthDivider }]}>
+          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width - buttonsWidth }]}>
             {this.props.journal.title}
           </Text>
         </View>

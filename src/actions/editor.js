@@ -9,9 +9,7 @@ import { CameraRoll, NetInfo } from "react-native"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
-    // dispatch(startUpdating())
     dispatch(updateEntryState(payload))
-    // debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
   }
 }
 

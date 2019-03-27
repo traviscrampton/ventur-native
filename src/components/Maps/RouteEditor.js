@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
+import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
@@ -37,7 +37,8 @@ const mapStateToProps = state => ({
   isDrawing: state.routeEditor.isDrawing,
   isLoading: state.common.isLoading,
   isSaving: state.routeEditor.isSaving,
-  changedRegion: state.routeEditor.changedRegion
+  changedRegion: state.routeEditor.changedRegion,
+  startingPolylines: state.routeEditor.startingPolylines
 })
 
 class RouteEditor extends Component {
@@ -48,6 +49,19 @@ class RouteEditor extends Component {
   onPanDrag = e => {
     if (!this.props.drawMode || !this.props.isDrawing) return
     this.props.drawLine(e.nativeEvent.coordinate)
+  }
+
+  checkForSaveAndNavigateBack = () => {
+    if (this.isSaved()) {
+      this.navigateBack()
+    } else {
+      Alert.alert(
+        "Are you sure?",
+        "You have unsaved changes",
+        [{ text: "Continue Unsaved", onPress: () => this.navigateBack() }, { text: "Cancel", style: "cancel" }],
+        { cancelable: true }
+      )
+    }
   }
 
   navigateBack = () => {
@@ -63,6 +77,12 @@ class RouteEditor extends Component {
     }
 
     return true
+  }
+
+  isSaved() {
+    let { polylines, startingPolylines, shownIndex } = this.props
+
+    return JSON.stringify(polylines) === JSON.stringify(startingPolylines)
   }
 
   handleOnReleaseResponder = () => {
@@ -135,7 +155,7 @@ class RouteEditor extends Component {
           backgroundColor: "white",
           borderRadius: "50%"
         }}>
-        <TouchableWithoutFeedback onPress={this.navigateBack}>
+        <TouchableWithoutFeedback onPress={this.checkForSaveAndNavigateBack}>
           <View
             style={{
               height: 40,

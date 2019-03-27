@@ -19,23 +19,27 @@ import ChapterUserForm from "components/chapters/ChapterUserForm"
 import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { loadSingleJournal, resetJournalShow } from "actions/journals"
-import { setCurrentUser } from "actions/common"
+import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "actions/common"
 import { connect } from "react-redux"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 import { logOut } from "auth"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
 import { setToken, API_ROOT } from "agent"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   user: state.user.user,
-  offlineChapters: state.user.offlineChapters
+  offlineChapters: state.user.offlineChapters,
+  isLoading: state.common.isLoading
 })
 
 const mapDispatchToProps = dispatch => ({
   populateUserPage: payload => dispatch(populateUserPage(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
+  setLoadingTrue: () => dispatch(setLoadingTrue()),
+  setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
@@ -53,6 +57,7 @@ class Profile extends Component {
   }
 
   componentWillMount() {
+    this.props.setLoadingTrue()
     Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getProfilePageData()
     this.getOfflineChapters()
@@ -63,6 +68,7 @@ class Profile extends Component {
       const { user } = res
       this.props.populateUserPage(user)
       addJournalsToAsyncStorage(user.journals)
+      this.props.setLoadingFalse()
     })
   }
 
@@ -448,6 +454,10 @@ class Profile extends Component {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={{ backgroundColor: "white", height: "100%" }}>
         {this.renderProfilePhotoAndMetadata()}

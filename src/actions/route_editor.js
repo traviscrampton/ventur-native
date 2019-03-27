@@ -61,6 +61,7 @@ export function persistRoute() {
       const newPolylines = JSON.parse(base64.decode(res.cycleRoute.polylines))
 
       dispatch(drawPolyline({ polylines: newPolylines, shownIndex: newPolylines.length - 1 }))
+      dispatch(updateStartingPolylines())
       dispatch(savingMapEnd())
     })
   }
@@ -159,6 +160,13 @@ export function setupNextDraw() {
 
     const payload = Object.assign({}, { isDrawing: false, polylines: newPolylines, shownIndex: polylines.length })
     dispatch(setNextDraw(payload))
+  }
+}
+
+export const UPDATE_STARTING_POLYLINES = "UPDATE_STARTING_POLYLINES"
+export function updateStartingPolylines() {
+  return {
+    type: UPDATE_STARTING_POLYLINES
   }
 }
 

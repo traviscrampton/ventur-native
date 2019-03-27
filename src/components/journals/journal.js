@@ -13,7 +13,7 @@ import {
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { get } from "agent"
-import { loadSingleJournal, requestForChapter } from "actions/journals"
+import { loadSingleJournal, requestForChapter, resetJournalShow } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter, resetChapter } from "actions/chapter"
@@ -45,7 +45,8 @@ const mapDispatchToProps = dispatch => ({
   resetChapter: () => dispatch(resetChapter()),
   setLoadingTrue: () => dispatch(setLoadingTrue()),
   setLoadingFalse: () => dispatch(setLoadingFalse()),
-  loadJournalMap: id => dispatch(loadJournalMap(id))
+  loadJournalMap: id => dispatch(loadJournalMap(id)),
+  resetJournalShow: () => dispatch(resetJournalShow())
 })
 
 class Journal extends Component {
@@ -73,6 +74,7 @@ class Journal extends Component {
 
   navigateBack = () => {
     this.props.navigation.goBack()
+    setTimeout(this.props.resetJournalShow, 300)
   }
 
   getBannerHeight() {
@@ -168,7 +170,9 @@ class Journal extends Component {
         <View style={styles.statsAndMapContainer}>
           <View>
             <View>
-              <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
+              <Text style={styles.stats}>
+                {`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}
+              </Text>
             </View>
             <View>
               <Text style={styles.stats}>FOLLOWERS: {this.props.journal.journalFollowsCount}</Text>
@@ -180,7 +184,7 @@ class Journal extends Component {
                 <Feather name="map" size={20} color="white" />
               </View>
             </TouchableWithoutFeedback>
-          </View>  
+          </View>
         </View>
       </View>
     )
@@ -364,7 +368,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 10,
+    marginTop: 10
   },
   journalHeader: {
     fontSize: 26,
