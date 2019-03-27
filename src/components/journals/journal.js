@@ -17,6 +17,7 @@ import { loadSingleJournal, requestForChapter } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter, resetChapter } from "actions/chapter"
+import { loadJournalMap } from "actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
@@ -41,7 +42,8 @@ const mapDispatchToProps = dispatch => ({
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
-  resetChapter: () => dispatch(resetChapter())
+  resetChapter: () => dispatch(resetChapter()),
+  loadJournalMap: id => dispatch(loadJournalMap(id))
 })
 
 class Journal extends Component {
@@ -81,6 +83,11 @@ class Journal extends Component {
     }
   }
 
+  navigateToMap = () => {
+    this.props.navigation.navigate("JournalRoute")
+    this.props.loadJournalMap(this.props.journal.id)
+  }
+
   renderJournalEditForm = () => {
     const { id, title, description, status } = this.props.journal
     let obj = {
@@ -92,6 +99,16 @@ class Journal extends Component {
 
     this.props.updateJournalForm(obj)
     this.props.navigation.navigate("JournalFormTitle")
+  }
+
+  renderCountries() {
+    return this.props.journal.countries.map((country, index) => {
+      if (this.props.journal.countries.length - 1 !== index) {
+        country += ", "
+      }
+
+      return <Text style={styles.journalDescription}>{country}</Text>
+    })
   }
 
   renderImageOrEdit(user) {
@@ -144,12 +161,19 @@ class Journal extends Component {
         <View style={styles.titleSubTitleContainer}>
           <View style={styles.locationContainer}>
             <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
-            <Text style={styles.journalDescription}>{journal.description}</Text>
+            {this.renderCountries()}
           </View>
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
         <View>
           <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
+        </View>
+        <View>
+          <TouchableWithoutFeedback onPress={this.navigateToMap}>
+            <View>
+              <Text>MAP</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     )
@@ -333,7 +357,8 @@ const styles = StyleSheet.create({
   journalDescription: {
     fontSize: 14,
     fontFamily: "open-sans-regular",
-    color: "white"
+    color: "white",
+    marginRight: 5
   },
   userImage: {
     width: 50,

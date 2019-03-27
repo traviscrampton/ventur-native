@@ -81,7 +81,6 @@ class ChapterShow extends Component {
     const { cycleRouteId } = this.props.chapter
 
     if (this.props.currentUser.id == this.props.chapter.user.id) {
-      console.log("onClick!", cycleRouteId)
       this.props.loadRouteEditor(cycleRouteId)
       this.props.navigation.navigate("RouteEditor")
     } else {

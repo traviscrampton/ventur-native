@@ -185,10 +185,11 @@ export function drawLine(coordinate) {
 export function loadRouteEditor(cycleRouteId) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
-    get(`/cycle_routes/${cycleRouteId}`).then(res => {
+    get(`/cycle_routes/${cycleRouteId}/editor_show`).then(res => {
       let { cycleRoute } = res
       let polylines = cycleRoute.polylines.length === 0 ? [[], []] : JSON.parse(base64.decode(cycleRoute.polylines))
-      cycleRoute = Object.assign({}, cycleRoute, { polylines })
+      let previousPolylines = cycleRoute.previousPolylines.length === 0 ? [[]] : JSON.parse(base64.decode(cycleRoute.previousPolylines))
+      cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines })
       dispatch(populateMap(cycleRoute))
       dispatch(setLoadingFalse())
     })

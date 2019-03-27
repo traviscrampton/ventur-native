@@ -45,7 +45,6 @@ class RouteEditorButtons extends Component {
   dontRenderRedoButton() {
     const { shownIndex, polylines } = this.props
     if (!this.props.drawMode) return true
-      console.log(polylines.length, polylines[1].length)
     if (polylines.length === 2 && polylines[1].length === 0) return true
     if (polylines[shownIndex + 1] && polylines[shownIndex + 1].length === 0) return true
     if (shownIndex === polylines.length - 1) {

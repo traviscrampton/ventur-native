@@ -13,6 +13,7 @@ import {
   UPDATE_INITIAL_REGION,
   DEFAULT_ROUTE_EDTIOR
 } from "actions/route_editor"
+import { POPULATE_ID } from "actions/journal_route"
 
 const defaultRouteData = {
   id: null,
@@ -21,6 +22,7 @@ const defaultRouteData = {
   shownIndex: 1,
   positionMode: false,
   polylines: [[], []],
+  previousPolylines: [[], []],
   initialRegion: {},
   changedRegion: {},
   initialPolylineLength: 1,
@@ -36,6 +38,7 @@ export default (state = defaultRouteData, action) => {
         initialRegion: action.payload.initialRegion,
         changedRegion: action.payload.initialRegion,
         polylines: action.payload.polylines,
+        previousPolylines: action.payload.previousPolylines,
         id: action.payload.id,
         shownIndex: action.payload.polylines.length - 1,
         initialPolylineLength: action.payload.polylines.length - 2
@@ -105,6 +108,11 @@ export default (state = defaultRouteData, action) => {
       return {
         ...state,
         initialRegion: { ...state.changedRegion }
+      }
+    case POPULATE_ID:
+      return {
+        ...state,
+        id: action.payload
       }
 
     case SET_POSITION_MODE:

@@ -32,6 +32,7 @@ const mapStateToProps = state => ({
   shownIndex: state.routeEditor.shownIndex,
   positionMode: state.routeEditor.positionMode,
   polylines: state.routeEditor.polylines,
+  previousPolylines: state.routeEditor.previousPolylines,
   initialRegion: state.routeEditor.initialRegion,
   isDrawing: state.routeEditor.isDrawing,
   isLoading: state.common.isLoading,
@@ -155,6 +156,12 @@ class RouteEditor extends Component {
     })
   }
 
+  renderPreviousPolylines() {
+    return this.props.previousPolylines.map((coordinates, index) => {
+      return <MapView.Polyline style={{ zIndex: 9 }} coordinates={coordinates} strokeWidth={2} strokeColor="#067BC2" />
+    })
+  }
+
   render() {
     if (this.props.isLoading) {
       return <LoadingScreen />
@@ -172,6 +179,7 @@ class RouteEditor extends Component {
             scrollEnabled={!this.props.drawMode}
             onPanDrag={e => this.onPanDrag(e)}
             initialRegion={this.props.initialRegion}>
+            {this.renderPreviousPolylines()}
             {this.renderPolylines()}
           </MapView>
         </View>

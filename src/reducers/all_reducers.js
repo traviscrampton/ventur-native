@@ -14,6 +14,7 @@ import comments from "reducers/comments"
 import commentForm from "reducers/comment_form"
 import routeEditor from "reducers/route_editor"
 import routeViewer from "reducers/route_viewer"
+import journalRoute from "reducers/journal_route"
 
 export default combineReducers({
   editor,
@@ -30,5 +31,6 @@ export default combineReducers({
   comments,
   commentForm,
   routeViewer,
-  routeEditor
+  routeEditor,
+  journalRoute
 })

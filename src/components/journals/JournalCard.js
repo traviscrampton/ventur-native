@@ -2,8 +2,44 @@ import React from "react"
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
- let imageWidth
- let imageHeight
+let imageWidth
+let imageHeight
+
+const countries = names => {
+  return names.map((name, index) => {
+    if (index !== names.length - 1) {
+      name += ","
+    }
+
+    return <Text style={styles.countryName}>{name}</Text>
+  })
+}
+
+const tripMetaData = props => {
+  return (
+    <View style={styles.metadataContainer}>
+      <View style={styles.marginBottomAuto}>
+        <View style={styles.iconTextContainer}>
+          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
+          <View style={styles.countries}>{countries(props.countries)}</View>
+        </View>
+        <Text numberOfLines={2} style={styles.title}>
+          {props.title}
+        </Text>
+      </View>
+      <View
+        style={{
+          marginTop: "auto",
+          display: "flex"
+        }}>
+        <Text style={{ fontFamily: "overpass" }}>
+          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
+        </Text>
+      </View>
+    </View>
+  )
+}
+
 const JournalCard = props => {
   imageWidth = props.width - 20
   imageHeight = Math.round(imageWidth * (240 / 350))
@@ -29,31 +65,6 @@ const JournalCard = props => {
         <View>{tripMetaData(props)}</View>
       </View>
     </TouchableWithoutFeedback>
-  )
-}
-
-const tripMetaData = props => {
-  return (
-    <View style={styles.metadataContainer}>
-      <View style={styles.marginBottomAuto}>
-        <View style={styles.iconTextContainer}>
-          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
-          <Text style={styles.description}>{props.description}</Text>
-        </View>
-        <Text numberOfLines={2} style={styles.title}>
-          {props.title}
-        </Text>
-      </View>
-      <View
-        style={{
-          marginTop: "auto",
-          display: "flex"
-        }}>
-        <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
-        </Text>
-      </View>
-    </View>
   )
 }
 
@@ -90,8 +101,14 @@ const styles = StyleSheet.create({
   iconPosition: {
     marginRight: 5
   },
-  description: {
-    fontFamily: "open-sans-regular"
+  countries: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  countryName: {
+    fontFamily: "open-sans-regular",
+    marginRight: 5
   }
 })
 
