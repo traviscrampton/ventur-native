@@ -31,6 +31,7 @@ class Comment extends Component {
   handleDeleteComment = id => {
     Alert.alert(
       "Are you sure?",
+      "This comment will be deleted",
       [{ text: "Delete Comment", onPress: () => this.props.deleteComment(id) }, { text: "Cancel", style: "cancel" }],
       { cancelable: true }
     )

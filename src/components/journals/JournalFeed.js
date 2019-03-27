@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, ScrollView, Dimensions, View } from "react-native"
 import { connect } from "react-redux"
 import { get } from "agent"
 import { loadJournalFeed, resetJournalShow } from "actions/journals"
@@ -38,7 +38,7 @@ class JournalFeed extends Component {
     }
 
     return (
-      <ScrollView style={{ backgroundColor: "white" }}>
+      <ScrollView style={{ backgroundColor: "white", paddingBottom: 20 }}>
         {this.props.journals.map((journal, index) => {
           return (
             <JournalCard
@@ -49,6 +49,7 @@ class JournalFeed extends Component {
             />
           )
         })}
+        <View style={{marginBottom: 60}}/>
       </ScrollView>
     )
   }

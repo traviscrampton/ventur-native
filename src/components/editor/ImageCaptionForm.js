@@ -7,7 +7,8 @@ import { Text, TextInput, StyleSheet, View, Image } from "react-native"
 const mapStateToProps = state => ({
   entries: state.editor.entries,
   activeCaption: state.editor.activeCaption,
-  width: state.common.width
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -60,12 +61,13 @@ class ImageCaptionForm extends Component {
   renderForm() {
     return (
       <View key="captionForm">
-        <View>
-          <Text>{this.props.activeCaption.length}/200</Text>
+        <View style={{ padding: 20 }}>
+          <Text style={{fontWeight: "bold"}}>{this.props.activeCaption.length} / 200</Text>
         </View>
         <TextInput
           autoFocus
           multiline
+          selectionColor={"#FF8C34"}
           style={styles.textAlignCenter}
           value={this.props.activeCaption}
           maxLength={200}
@@ -77,11 +79,11 @@ class ImageCaptionForm extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <View style={{ backgroundColor: "white", height: this.props.height }}>
         {this.renderHeader()}
         {this.renderImage()}
         {this.renderForm()}
-      </React.Fragment>
+      </View>
     )
   }
 }
@@ -91,6 +93,7 @@ const styles = StyleSheet.create({
     height: 250
   },
   textAlignCenter: {
+    padding: 20,
     textAlign: "center"
   }
 })

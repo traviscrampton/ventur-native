@@ -30,9 +30,11 @@ export const setChapterToJournalChapter = (journal, newChapter) => {
     chapters = [...journal.chapters, chapter]
   }
 
+  const sortedChapters = _.sortBy(chapters, "date")
+
   return {
     journalId: journal.id,
-    chapters: _.sortBy(chapters, "date"),
+    chapters: sortedChapters,
     distance: newChapter.journal.distance
   }
 }
@@ -82,6 +84,7 @@ export function addChapterToJournals(payload) {
     let journal = getState().journal.journal
     if (journal && journal.id == payload.journal.id) {
       let chaptersAndDistance = setChapterToJournalChapter(journal, payload)
+
       dispatch(pushChapterToJournal(chaptersAndDistance))
       let updatedFeed = getJournalFeedDistance(getState, chaptersAndDistance.journalId, chaptersAndDistance.distance)
       dispatch(updateFeedDistance(updatedFeed))

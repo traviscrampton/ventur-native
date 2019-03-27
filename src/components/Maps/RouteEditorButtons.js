@@ -81,7 +81,7 @@ class RouteEditorButtons extends Component {
     if (this.dontRenderUndoButton()) return
 
     return (
-      <View>
+      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.handleUndoPress}>
           <View
             style={[
@@ -107,7 +107,7 @@ class RouteEditorButtons extends Component {
     if (this.dontRenderRedoButton()) return
 
     return (
-      <View>
+      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.handleRedoPress}>
           <View
             style={[
@@ -146,7 +146,7 @@ class RouteEditorButtons extends Component {
     const pencilColor = drawMode ? "white" : "#FF8C34"
 
     return (
-      <View>
+      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.props.toggleDrawMode}>
           <View
             style={[
@@ -179,7 +179,7 @@ class RouteEditorButtons extends Component {
     )
 
     return (
-      <View>
+      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.props.persistRoute}>
           <View
             style={[
@@ -209,7 +209,10 @@ class RouteEditorButtons extends Component {
     const iconColor = positionMode ? "white" : "#067BC2"
 
     return (
-      <View>
+      <View shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.props.togglePositionMode}>
           <View
             style={[
@@ -236,7 +239,10 @@ class RouteEditorButtons extends Component {
     if (this.props.positionMode) return
 
     return (
-      <View style={{ position: "absolute", bottom: 30, right: 30 }}>
+      <View shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2} style={{ position: "absolute", bottom: 30, right: 30 }}>
         <TouchableWithoutFeedback onPress={() => this.eraseRoute()}>
           <View
             style={{
@@ -280,7 +286,7 @@ class RouteEditorButtons extends Component {
           style={[
             {
               position: "absolute",
-              right: 30,
+              right: 28,
               top: 120,
               display: "flex",
               flexDirection: "column",

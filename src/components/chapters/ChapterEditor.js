@@ -94,10 +94,6 @@ class ChapterEditor extends Component {
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
 
-  async componentDidMount() {
-    // this.populateEditor()
-  }
-
   componentWillUnmount() {
     this.props.setInitialEditorState()
   }

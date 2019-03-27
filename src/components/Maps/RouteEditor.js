@@ -124,6 +124,10 @@ class RouteEditor extends Component {
   renderFloatingBackButton() {
     return (
       <View
+        shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
         style={{
           position: "absolute",
           top: 60,
@@ -139,7 +143,9 @@ class RouteEditor extends Component {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              paddingRight: 2,
+              paddingTop: 1
             }}>
             <Ionicons name="ios-arrow-back" size={30} />
           </View>

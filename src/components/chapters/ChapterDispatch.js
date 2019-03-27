@@ -63,6 +63,9 @@ class ChapterDispatch extends Component {
 
   populateEditorAndSwitch = content => {
     let entries = content
+    if (entries === null) {
+      entries = []
+    }
     if (!Array.isArray(content)) {
       entries = Array.from(entries)
     }
@@ -237,10 +240,12 @@ class ChapterDispatch extends Component {
   }
 
   renderJournalName() {
+    let maxWidthDivider = this.props.editMode ? 3 : 1.5
+
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / 1.5 }]}>
+          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / maxWidthDivider }]}>
             {this.props.journal.title}
           </Text>
         </View>

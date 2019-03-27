@@ -140,19 +140,38 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = this.props.width / 4
+    let fourthWindowWidth = this.props.width / 2.5
     let { imageUrl } = this.props.chapter
+
     return (
-      <View style={{ position: "relative", margin: 20, height: fourthWindowWidth, width: fourthWindowWidth }}>
+      <View style={{ position: "relative", marginBottom: 20, height: fourthWindowWidth, width: this.props.width }}>
+        <View
+          style={{
+            position: "absolute",
+            borderColor: "#323941",
+            borderRadius: "50%",
+            borderWidth: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "white",
+            width: 50,
+            height: 50,
+            bottom: 20,
+            right: 20,
+            zIndex: 10
+          }}>
+          <TouchableWithoutFeedback onPress={this.updateImage}>
+            <MaterialIcons name="cloud-upload" color="#323941" size={30} />
+          </TouchableWithoutFeedback>
+        </View>
         <TouchableWithoutFeedback onPress={this.updateImage}>
           <Image
             style={{
-              width: fourthWindowWidth,
+              width: this.props.width,
               height: fourthWindowWidth,
-              backgroundColor: "#f8f8f8",
-              borderColor: "#f8f8f8",
-              borderWidth: 1,
-              borderRadius: fourthWindowWidth / 2
+              backgroundColor: "#f8f8f8"
             }}
             source={{ uri: imageUrl }}
           />

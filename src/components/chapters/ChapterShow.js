@@ -56,7 +56,6 @@ class ChapterShow extends Component {
             { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
           ]}>
           <Text style={styles.title}>{title}</Text>
-          {this.renderMapIconNoImage()}
         </View>
       </View>
     )
@@ -92,8 +91,8 @@ class ChapterShow extends Component {
   renderMapIconCta() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToMap}>
-        <View style={{ marginRight: 20, display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <View style={{ padding: 7, marginRight: 2, borderWidth: 2, borderRadius: "50%" }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <View>
             <Feather name="map" size={25} color="#323941" />
           </View>
         </View>
@@ -130,12 +129,12 @@ class ChapterShow extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = this.props.width / 4
+    let fourthWindowWidth = this.props.width / 2.5
     const { imageUrl } = this.props.chapter
     if (!imageUrl) return
     return (
       <Image
-        style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}
+        style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
         source={{ uri: imageUrl }}
       />
     )
@@ -251,12 +250,27 @@ class ChapterShow extends Component {
     })
   }
 
-  renderEditorDropdown() {
-    if (this.props.user.id != this.props.currentUser.id) return
+  renderChapterMenu() {
+    if (this.props.user.id != this.props.currentUser.id) {
+      return <View />
+    }
 
+    return <EditorDropdown navigation={this.props.navigation} />
+  }
+
+  renderEditorDropdown() {
     return (
-      <View style={{ alignItems: "flex-end", paddingRight: 20 }}>
-        <EditorDropdown navigation={this.props.navigation} />
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: 20,
+          paddingLeft: 20,
+          marginBottom: 5
+        }}>
+        {this.renderMapIconCta()}
+        {this.renderChapterMenu()}
       </View>
     )
   }

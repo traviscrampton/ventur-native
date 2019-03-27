@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
 let imageWidth
@@ -29,11 +29,13 @@ const tripMetaData = props => {
       </View>
       <View
         style={{
-          marginTop: "auto",
+          marginTop: 20,
           display: "flex"
         }}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
+          {`${props.status} ${"\u2022"} ${props.distance} KM ${"\u2022"} ${
+            props.journalFollowsCount
+          } followers`.toUpperCase()}
         </Text>
       </View>
     </View>
@@ -46,23 +48,21 @@ const JournalCard = props => {
 
   return (
     <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
-      <View
-        shadowColor="gray"
-        shadowOffset={{ width: 0, height: 0 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}
-        style={[styles.card, { width: imageWidth, height: imageHeight + 150 }]}>
-        <Image
-          style={[
-            styles.journalImage,
-            {
-              width: imageWidth,
-              height: imageHeight
-            }
-          ]}
-          source={{ uri: props.cardImageUrl }}
-        />
-        <View>{tripMetaData(props)}</View>
+      <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
+        <View style={[styles.card, { width: imageWidth, borderRadius: 10, overflow: "hidden" }]}>
+          <ImageBackground
+            style={[
+              styles.journalImage,
+              {
+                width: imageWidth,
+                height: imageHeight,
+                borderRadius: 10
+              }
+            ]}
+            source={{ uri: props.cardImageUrl }}
+          />
+          <View>{tripMetaData(props)}</View>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   )
@@ -81,11 +81,17 @@ const styles = StyleSheet.create({
   },
   metadataContainer: {
     padding: 10,
+    borderColor: "#d3d3d3",
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    backgroundColor: "white"
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     marginBottom: 10,
     fontFamily: "playfair",
     color: "#323941"
@@ -99,12 +105,14 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   iconPosition: {
-    marginRight: 5
+    marginRight: 5,
+    paddingBottom: 2
   },
   countries: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 5
   },
   countryName: {
     fontFamily: "open-sans-regular",

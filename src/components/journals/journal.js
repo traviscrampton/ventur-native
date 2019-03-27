@@ -17,6 +17,7 @@ import { loadSingleJournal, requestForChapter } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter, resetChapter } from "actions/chapter"
+import { setLoadingTrue, setLoadingFalse } from "actions/common"
 import { loadJournalMap } from "actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
@@ -31,8 +32,7 @@ const mapStateToProps = state => ({
   loaded: state.journal.loaded,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  height: state.common.height,
-  isLoading: state.common.isLoading
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -43,6 +43,8 @@ const mapDispatchToProps = dispatch => ({
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
+  setLoadingTrue: () => dispatch(setLoadingTrue()),
+  setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadJournalMap: id => dispatch(loadJournalMap(id))
 })
 
@@ -142,11 +144,9 @@ class Journal extends Component {
   renderBannerAndUserImages(journal, user) {
     let bannerHeight = this.getBannerHeight()
     return (
-      <View style={[styles.bannerUserImage, { height: bannerHeight }]}>
-        <ImageBackground
-          style={{ height: bannerHeight, width: this.props.width }}
-          source={{ uri: journal.cardBannerImageUrl }}>
-          <View style={[styles.banner, { width: this.props.width, height: bannerHeight }]}>
+      <View style={[styles.bannerUserImage]}>
+        <ImageBackground style={{ width: this.props.width }} source={{ uri: journal.cardBannerImageUrl }}>
+          <View style={[styles.banner, { width: this.props.width }]}>
             {this.renderNavHeader(user)}
             {this.renderJournalMetadata(journal)}
           </View>
@@ -165,15 +165,22 @@ class Journal extends Component {
           </View>
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
-        <View>
-          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
-        </View>
-        <View>
-          <TouchableWithoutFeedback onPress={this.navigateToMap}>
+        <View style={styles.statsAndMapContainer}>
+          <View>
             <View>
-              <Text>MAP</Text>
+              <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
             </View>
-          </TouchableWithoutFeedback>
+            <View>
+              <Text style={styles.stats}>FOLLOWERS: {this.props.journal.journalFollowsCount}</Text>
+            </View>
+          </View>
+          <View>
+            <TouchableWithoutFeedback onPress={this.navigateToMap}>
+              <View>
+                <Feather name="map" size={20} color="white" />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>  
         </View>
       </View>
     )
@@ -264,7 +271,7 @@ class Journal extends Component {
     this.props.updateChapterForm(chapterFormData)
     this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
-    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
+    this.props.setLoadingFalse()
   }
 
   navigateToChapterForm = () => {
@@ -277,6 +284,8 @@ class Journal extends Component {
       journalId: this.props.journal.id,
       bannerImage: { uri: "" }
     }
+    this.props.setLoadingTrue()
+    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
     createChapter(obj, this.chapterCreateCallback)
   }
 
@@ -333,7 +342,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 10
   },
   backButton: {
     padding: 20,
@@ -349,8 +359,15 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginTop: "auto"
   },
+  statsAndMapContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
   journalHeader: {
-    fontSize: 28,
+    fontSize: 26,
     fontFamily: "playfair",
     color: "white"
   },
@@ -387,7 +404,8 @@ const styles = StyleSheet.create({
   locationContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 5
   },
   iconPosition: { marginRight: 5 }
 })
