@@ -83,7 +83,7 @@ class ChapterEditor extends Component {
     super(props)
 
     this.state = {
-      containerHeight: Dimensions.get("window").height - 105,
+      containerHeight: Dimensions.get("window").height - 80,
       offlineMode: false,
       imagesNeededOffline: []
     }
@@ -388,7 +388,7 @@ class ChapterEditor extends Component {
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: Dimensions.get("window").height - 105 }
+      return { height: Dimensions.get("window").height - 80 }
     } else {
       return { height: Dimensions.get("window").height }
     }
