@@ -30,7 +30,8 @@ const mapStateToProps = state => ({
   width: state.common.width,
   isUpdating: state.editor.isUpdating,
   isLoading: state.common.isLoading,
-  editMode: state.chapter.editMode
+  editMode: state.chapter.editMode,
+  initialEntries: state.editor.initialEntries
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -92,13 +93,21 @@ class ChapterDispatch extends Component {
     this.props.updateChapterForm(obj)
   }
 
+  editorIsSaved() {
+    return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
+  }
+
   handleCancelButtonPress = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all your blog changes",
-      [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
-      { cancelable: true }
-    )
+    if (this.editorIsSaved()) {
+      this.loseChangesAndUpdate()
+    } else {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your blog changes",
+        [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+        { cancelable: true }
+      )
+    }
   }
 
   handleDoneButtonPress = () => {

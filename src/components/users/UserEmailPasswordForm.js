@@ -48,7 +48,7 @@ class UserEmailPasswordForm extends Component {
         if (data.errors) {
           throw Error(data.errors.join(", "))
         }
-        this.props.populateUserForm({ id: data.id, email: data.email })
+        this.props.populateUserForm({ id: data.user.id, email: data.user.email })
         this.props.navigation.navigate("UserNameForm")
       })
       .catch(err => {
