@@ -84,7 +84,7 @@ class Ventur extends Component {
 
     if (!this.props.appLoaded) {
       return null
-    }
+    } 
 
     return (
       <React.Fragment>

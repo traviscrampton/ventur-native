@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { storeJWT } from "auth"
 import { API_ROOT, setToken } from "agent"
+import { post } from "agent"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,

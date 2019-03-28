@@ -1,23 +1,20 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, ScrollView, Dimensions, View } from "react-native"
 import { connect } from "react-redux"
 import { get } from "agent"
-import { JOURNAL_FEED_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
+import { loadJournalFeed, resetJournalShow } from "actions/journals"
 import JournalCard from "components/journals/JournalCard"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: payload => {
-    dispatch({ type: JOURNAL_FEED_LOADED, payload })
-  },
-
-  resetJournal: () => {
-    dispatch({ type: RESET_JOURNAL_TAB })
-  }
+  loadJournalFeed: () => dispatch(loadJournalFeed()),
+  resetJournalShow: () => dispatch(resetJournalShow())
 })
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
-  currentUser: state.common.currentUser
+  currentUser: state.common.currentUser,
+  isLoading: state.common.isLoading
 })
 
 class JournalFeed extends Component {
@@ -27,23 +24,21 @@ class JournalFeed extends Component {
 
   componentWillMount() {
     Expo.ScreenOrientation.allow("PORTRAIT_UP")
-    this.getJournalFeed()
-  }
-
-  async getJournalFeed() {
-    get("/journals").then(data => {
-      this.props.onLoad(data.journals)
-    })
+    this.props.loadJournalFeed()
   }
 
   handlePress = journalId => {
-    this.props.resetJournal()
+    this.props.resetJournalShow()
     this.props.navigation.navigate("Journal", { journalId })
   }
 
   render() {
+    if (this.props.isLoading) {
+      return <LoadingScreen />
+    }
+
     return (
-      <ScrollView style={{ backgroundColor: "white" }}>
+      <ScrollView style={{ backgroundColor: "white", paddingBottom: 20 }}>
         {this.props.journals.map((journal, index) => {
           return (
             <JournalCard
@@ -54,6 +49,7 @@ class JournalFeed extends Component {
             />
           )
         })}
+        <View style={{marginBottom: 60}}/>
       </ScrollView>
     )
   }

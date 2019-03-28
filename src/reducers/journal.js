@@ -1,4 +1,4 @@
-import { SINGLE_JOURNAL_LOADED, RESET_JOURNAL_TAB } from "actions/action_types"
+import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB } from "actions/journals"
 import { REMOVE_CHAPTER_FROM_STATE } from "actions/editor"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "actions/chapter_form"
 
@@ -13,7 +13,7 @@ const defaultJournalData = {
 
 export default (state = defaultJournalData, action) => {
   switch (action.type) {
-    case SINGLE_JOURNAL_LOADED:
+    case POPULATE_SINGLE_JOURNAL:
       return {
         ...state,
         journal: action.payload,

@@ -1,13 +1,16 @@
-import { LOADED_CHAPTER, RESET_CHAPTER_TAB } from "actions/chapter"
+import { LOADED_CHAPTER, RESET_CHAPTER, SET_EDIT_MODE } from "actions/chapter"
 
 const defaultChapterData = {
   chapter: {
+    journal: {},
     editorBlob: {
       id: null,
       content: []
-    }
+    },
+    user: {}
   },
-  loaded: false
+  loaded: false,
+  editMode: false
 }
 
 export default (state = defaultChapterData, action) => {
@@ -18,7 +21,12 @@ export default (state = defaultChapterData, action) => {
         chapter: action.payload,
         loaded: true
       }
-    case RESET_CHAPTER_TAB:
+    case SET_EDIT_MODE:
+      return {
+        ...state,
+        editMode: action.payload
+      }
+    case RESET_CHAPTER:
       return defaultChapterData
     default:
       return state

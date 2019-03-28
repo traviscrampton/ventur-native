@@ -1,10 +1,21 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Text, ScrollView, Image, ImageBackground, TouchableHighlight } from "react-native"
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  ImageBackground,
+  TouchableHighlight,
+  TouchableWithoutFeedback
+} from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import { loadRouteEditor } from "actions/route_editor"
+import { loadRouteViewer } from "actions/route_viewer"
 import EditorDropdown from "components/editor/EditorDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -16,7 +27,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload))
+  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
+  loadRouteViewer: payload => dispatch(loadRouteViewer(payload))
 })
 
 class ChapterShow extends Component {
@@ -33,14 +46,16 @@ class ChapterShow extends Component {
     return (
       <View style={styles.titleDescriptionContainer}>
         <View
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center"
-          }}>
+          style={[
+            {
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center"
+            },
+            { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
+          ]}>
           <Text style={styles.title}>{title}</Text>
-          {this.renderEditCta()}
         </View>
       </View>
     )
@@ -61,17 +76,40 @@ class ChapterShow extends Component {
     this.props.navigation.navigate("ChapterFormTitle")
   }
 
-  renderEditCta() {
-    return
-    if (this.props.currentUser.id == this.props.user.id) {
-      return (
-        <TouchableHighlight onPress={this.editMetaData}>
-          <View>
-            <Text>EDIT</Text>
-          </View>
-        </TouchableHighlight>
-      )
+  navigateToMap = async () => {
+    const { cycleRouteId } = this.props.chapter
+
+    if (this.props.currentUser.id == this.props.chapter.user.id) {
+      this.props.loadRouteEditor(cycleRouteId)
+      this.props.navigation.navigate("RouteEditor")
+    } else {
+      this.props.loadRouteViewer(cycleRouteId)
+      this.props.navigation.navigate("RouteViewer")
     }
+  }
+
+  renderMapIconCta() {
+    return (
+      <TouchableWithoutFeedback onPress={this.navigateToMap}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <View>
+            <Feather name="map" size={25} color="#323941" />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderMapIconWithImage() {
+    if (!this.props.chapter.imageUrl) return
+
+    return this.renderMapIconCta()
+  }
+
+  renderMapIconNoImage() {
+    if (this.props.chapter.imageUrl) return
+
+    return this.renderMapIconCta()
   }
 
   renderStatistics() {
@@ -91,12 +129,12 @@ class ChapterShow extends Component {
   }
 
   renderChapterImage() {
-    let fourthWindowWidth = this.props.width / 4
+    let fourthWindowWidth = this.props.width / 2.5
     const { imageUrl } = this.props.chapter
     if (!imageUrl) return
     return (
       <Image
-        style={{ width: fourthWindowWidth, height: fourthWindowWidth, borderRadius: fourthWindowWidth / 2, margin: 20 }}
+        style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
         source={{ uri: imageUrl }}
       />
     )
@@ -107,7 +145,7 @@ class ChapterShow extends Component {
       <View
         style={{
           borderBottomWidth: 3,
-          borderBottomColor: "black",
+          borderBottomColor: "#323941",
           width: 90,
           marginTop: 10,
           marginLeft: 20,
@@ -206,17 +244,33 @@ class ChapterShow extends Component {
     if (!Array.isArray(entries)) {
       entries = Array.from(entries)
     }
+
     return entries.map((entry, index) => {
       return this.renderEntry(entry, index)
     })
   }
 
-  renderEditorDropdown() {
-    if (this.props.user.id != this.props.currentUser.id) return
+  renderChapterMenu() {
+    if (this.props.user.id != this.props.currentUser.id) {
+      return <View />
+    }
 
+    return <EditorDropdown navigation={this.props.navigation} />
+  }
+
+  renderEditorDropdown() {
     return (
-      <View style={{ alignItems: "flex-end", paddingRight: 20 }}>
-        <EditorDropdown navigation={this.props.navigation} />
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: 20,
+          paddingLeft: 20,
+          marginBottom: 5
+        }}>
+        {this.renderMapIconCta()}
+        {this.renderChapterMenu()}
       </View>
     )
   }
@@ -239,7 +293,10 @@ class ChapterShow extends Component {
   render() {
     return (
       <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
-        {this.renderChapterImage()}
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          {this.renderChapterImage()}
+          {this.renderMapIconWithImage()}
+        </View>
         {this.renderTitle()}
         {this.renderStatistics()}
         {this.renderEditorDropdown()}
@@ -264,7 +321,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black"
+    color: "#323941"
   },
   description: {
     fontSize: 18,

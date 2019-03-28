@@ -1,23 +1,23 @@
 import React, { Component } from "react"
 import _ from "lodash"
 import { resetChapter } from "actions/chapter"
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Alert
-} from "react-native"
+import { StyleSheet, View, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
-import { loadChapter } from "actions/chapter"
-import { populateEntries, getInitialImageIds, resetDeletedIds } from "actions/editor"
+import { loadChapter, setEditMode } from "actions/chapter"
+import {
+  populateEntries,
+  getInitialImageIds,
+  resetDeletedIds,
+  doneEditingAndPersist,
+  loseChangesAndUpdate
+} from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
-import { updateChapterForm } from "actions/chapter_form"
+import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
 import { Ionicons, Feather } from "@expo/vector-icons"
 import { get, put, destroy } from "agent"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -28,7 +28,10 @@ const mapStateToProps = state => ({
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  isUpdating: state.editor.isUpdating
+  isUpdating: state.editor.isUpdating,
+  isLoading: state.common.isLoading,
+  editMode: state.chapter.editMode,
+  initialEntries: state.editor.initialEntries
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -36,7 +39,12 @@ const mapDispatchToProps = dispatch => ({
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
   getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
-  resetDeletedIds: () => dispatch(resetDeletedIds())
+  resetDeletedIds: () => dispatch(resetDeletedIds()),
+  doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
+  setEditMode: payload => dispatch(setEditMode(payload)),
+  loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
+  resetChapter: () => dispatch(resetChapter()),
+  resetChapterForm: () => dispatch(resetChapterForm())
 })
 
 class ChapterDispatch extends Component {
@@ -46,20 +54,28 @@ class ChapterDispatch extends Component {
     this.initialChapterForm = this.props.navigation.getParam("initialChapterForm", false)
 
     this.state = {
-      editMode: this.initialChapterForm,
       initialChapterForm: this.initialChapterForm
     }
   }
 
-  populateEditorAndSwitch = data => {
-    const entries = data.content ? JSON.parse(data.content) : []
+  componentWillMount() {
+    if (!this.state.initialChapterForm) return
+    this.props.setEditMode(true)
+  }
+
+  populateEditorAndSwitch = content => {
+    let entries = content
+    if (entries === null) {
+      entries = []
+    }
+    if (!Array.isArray(content)) {
+      entries = Array.from(entries)
+    }
 
     this.props.populateEntries(entries)
     this.props.getInitialImageIds(entries)
     this.editMetaData()
-    this.setState({
-      editMode: true
-    })
+    this.props.setEditMode(true)
   }
 
   editMetaData = () => {
@@ -77,37 +93,35 @@ class ChapterDispatch extends Component {
     this.props.updateChapterForm(obj)
   }
 
+  editorIsSaved() {
+    return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
+  }
+
   handleCancelButtonPress = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all your blog changes",
-      [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
-      { cancelable: true }
-    )
+    if (this.editorIsSaved()) {
+      this.loseChangesAndUpdate()
+    } else {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your blog changes",
+        [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+        { cancelable: true }
+      )
+    }
   }
 
   handleDoneButtonPress = () => {
     if (this.props.isUpdating) return
-
-    const { id } = this.props.chapter.editorBlob
-    put(`/editor_blobs/${id}/update_draft_to_final`, { deletedIds: this.props.deletedIds }).then(data => {
-      let updatedChapter = Object.assign({}, this.props.chapter, { editorBlob: data })
-      this.props.loadChapter(updatedChapter)
-      this.props.resetDeletedIds()
-      this.props.populateEntries([])
-      this.setState({ editMode: false })
-    })
+    this.props.doneEditingAndPersist()
+    this.props.resetChapterForm()
   }
 
   loseChangesAndUpdate = () => {
     const { id } = this.props.chapter.editorBlob
-    const imagesToDelete = this.getImagesToDelete()
-
-    destroy(`/editor_blobs/${id}`, { deletedIds: imagesToDelete }).then(data => {
-      this.props.populateEntries([])
-      this.props.resetDeletedIds()
-      this.setState({ editMode: false })
-    })
+    const deletedIds = this.getImagesToDelete()
+    const payload = Object.assign({}, { id, deletedIds })
+    this.props.loseChangesAndUpdate(payload)
+    this.props.resetChapterForm()
   }
 
   getImagesToDelete() {
@@ -128,14 +142,13 @@ class ChapterDispatch extends Component {
   }
 
   navigateBack = () => {
+    this.props.resetChapter()
     this.props.navigation.goBack()
   }
 
   getDraftContentAndEdit = () => {
-    const { id } = this.props.chapter.editorBlob
-    put(`/editor_blobs/${id}/update_final_to_draft`).then(data => {
-      this.populateEditorAndSwitch(data)
-    })
+    const { content } = this.props.chapter.editorBlob
+    this.populateEditorAndSwitch(content)
   }
 
   renderChapterNavigation() {
@@ -225,7 +238,7 @@ class ChapterDispatch extends Component {
   renderEditPortal() {
     if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
-    if (this.state.editMode) {
+    if (this.props.editMode) {
       return this.renderCancelAndDoneBtns()
     } else {
       return this.renderEditBtn()
@@ -239,10 +252,12 @@ class ChapterDispatch extends Component {
   }
 
   renderJournalName() {
+    let buttonsWidth = this.props.editMode ? 250 : 160
+
     return (
       <View style={styles.journalAndUserContainer}>
         <View>
-          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width / 1.5 }]}>
+          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width - buttonsWidth }]}>
             {this.props.journal.title}
           </Text>
         </View>
@@ -257,7 +272,7 @@ class ChapterDispatch extends Component {
           underlayColor="rgba(111, 111, 111, 0.5)"
           style={styles.backButton}
           onPress={this.navigateBack}>
-          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="black" />
+          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="#323941" />
         </TouchableHighlight>
         {this.renderJournalName()}
       </View>
@@ -265,7 +280,7 @@ class ChapterDispatch extends Component {
   }
 
   dispatchChapter() {
-    if (this.state.editMode) {
+    if (this.props.editMode) {
       return <ChapterEditor navigation={this.props.navigation} />
     } else {
       return <ChapterShow navigation={this.props.navigation} />
@@ -273,6 +288,10 @@ class ChapterDispatch extends Component {
   }
 
   render() {
+    if (!this.props.chapter.id) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}

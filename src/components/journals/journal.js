@@ -13,13 +13,16 @@ import {
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { get } from "agent"
-import { SINGLE_JOURNAL_LOADED } from "actions/action_types"
+import { loadSingleJournal, requestForChapter, resetJournalShow } from "actions/journals"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
-import { loadChapter } from "actions/chapter"
+import { loadChapter, resetChapter } from "actions/chapter"
+import { setLoadingTrue, setLoadingFalse } from "actions/common"
+import { loadJournalMap } from "actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
+import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -33,14 +36,17 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: payload => {
-    dispatch({ type: SINGLE_JOURNAL_LOADED, payload })
-  },
-
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload))
+  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  requestForChapter: payload => dispatch(requestForChapter(payload)),
+  loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
+  resetChapter: () => dispatch(resetChapter()),
+  setLoadingTrue: () => dispatch(setLoadingTrue()),
+  setLoadingFalse: () => dispatch(setLoadingFalse()),
+  loadJournalMap: id => dispatch(loadJournalMap(id)),
+  resetJournalShow: () => dispatch(resetJournalShow())
 })
 
 class Journal extends Component {
@@ -57,20 +63,18 @@ class Journal extends Component {
     let journalId = this.props.navigation.getParam("journalId", "NO-ID")
 
     if (journalId === "NO-ID") return
-    get(`/journals/${journalId}`).then(data => {
-      this.props.onLoad(data.journal)
-    })
+    this.props.loadSingleJournal(journalId)
   }
 
   requestForChapter = chapterId => {
-    get(`/chapters/${chapterId}`).then(data => {
-      this.props.loadChapter(data.chapter)
-      this.props.navigation.navigate("Chapter")
-    })
+    this.props.resetChapter()
+    this.props.navigation.navigate("Chapter")
+    this.props.requestForChapter(chapterId)
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
+    setTimeout(this.props.resetJournalShow, 300)
   }
 
   getBannerHeight() {
@@ -79,8 +83,13 @@ class Journal extends Component {
     if (width > height) {
       return this.props.height / 2
     } else {
-      return this.props.height / 3
+      return this.props.height / 4
     }
+  }
+
+  navigateToMap = () => {
+    this.props.navigation.navigate("JournalRoute")
+    this.props.loadJournalMap(this.props.journal.id)
   }
 
   renderJournalEditForm = () => {
@@ -94,6 +103,16 @@ class Journal extends Component {
 
     this.props.updateJournalForm(obj)
     this.props.navigation.navigate("JournalFormTitle")
+  }
+
+  renderCountries() {
+    return this.props.journal.countries.map((country, index) => {
+      if (this.props.journal.countries.length - 1 !== index) {
+        country += ", "
+      }
+
+      return <Text style={styles.journalDescription}>{country}</Text>
+    })
   }
 
   renderImageOrEdit(user) {
@@ -127,11 +146,9 @@ class Journal extends Component {
   renderBannerAndUserImages(journal, user) {
     let bannerHeight = this.getBannerHeight()
     return (
-      <View style={[styles.bannerUserImage, { height: bannerHeight }]}>
-        <ImageBackground
-          style={{ height: bannerHeight, width: this.props.width }}
-          source={{ uri: journal.cardBannerImageUrl }}>
-          <View style={[styles.banner, { width: this.props.width, height: bannerHeight }]}>
+      <View style={[styles.bannerUserImage]}>
+        <ImageBackground style={{ width: this.props.width }} source={{ uri: journal.cardBannerImageUrl }}>
+          <View style={[styles.banner, { width: this.props.width }]}>
             {this.renderNavHeader(user)}
             {this.renderJournalMetadata(journal)}
           </View>
@@ -146,12 +163,28 @@ class Journal extends Component {
         <View style={styles.titleSubTitleContainer}>
           <View style={styles.locationContainer}>
             <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
-            <Text style={styles.journalDescription}>{journal.description}</Text>
+            {this.renderCountries()}
           </View>
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
-        <View>
-          <Text style={styles.stats}>{`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}</Text>
+        <View style={styles.statsAndMapContainer}>
+          <View>
+            <View>
+              <Text style={styles.stats}>
+                {`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.stats}>FOLLOWERS: {this.props.journal.journalFollowsCount}</Text>
+            </View>
+          </View>
+          <View>
+            <TouchableWithoutFeedback onPress={this.navigateToMap}>
+              <View>
+                <Feather name="map" size={20} color="white" />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </View>
     )
@@ -242,7 +275,7 @@ class Journal extends Component {
     this.props.updateChapterForm(chapterFormData)
     this.props.addChapterToJournals(data)
     this.props.loadChapter(data)
-    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
+    this.props.setLoadingFalse()
   }
 
   navigateToChapterForm = () => {
@@ -255,6 +288,8 @@ class Journal extends Component {
       journalId: this.props.journal.id,
       bannerImage: { uri: "" }
     }
+    this.props.setLoadingTrue()
+    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
     createChapter(obj, this.chapterCreateCallback)
   }
 
@@ -286,7 +321,10 @@ class Journal extends Component {
   }
 
   render() {
-    if (!this.props.loaded) return null
+    if (!this.props.loaded) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>
@@ -308,7 +346,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 10
   },
   backButton: {
     padding: 20,
@@ -324,15 +363,23 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginTop: "auto"
   },
+  statsAndMapContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10
+  },
   journalHeader: {
-    fontSize: 28,
+    fontSize: 26,
     fontFamily: "playfair",
     color: "white"
   },
   journalDescription: {
     fontSize: 14,
     fontFamily: "open-sans-regular",
-    color: "white"
+    color: "white",
+    marginRight: 5
   },
   userImage: {
     width: 50,
@@ -361,7 +408,8 @@ const styles = StyleSheet.create({
   locationContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 5
   },
   iconPosition: { marginRight: 5 }
 })

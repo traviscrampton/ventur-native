@@ -51,6 +51,8 @@ export function createComment() {
     const { commentable, content } = getState().commentForm
     const { comments } = getState().comments
 
+    if (content.length === 0) return
+
     const params = {
       commentableType: commentable.commentableType,
       commentableId: commentable.commentableId,

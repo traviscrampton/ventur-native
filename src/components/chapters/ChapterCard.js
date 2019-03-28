@@ -5,10 +5,7 @@ import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-ico
 const ChapterCard = props => {
   let notOnServer = ""
   let publishedStatus = ""
-  let { imageUrl, title, distance, readableDate, bannerImageUrl } = props
-  if (bannerImageUrl) {
-    imageUrl = bannerImageUrl
-  }
+  let { imageUrl, title, distance, readableDate } = props
 
   if (isNaN(parseInt(props.id))) {
     notOnServer = <Button title={"Persist"} onPress={() => props.persistOfflineChapter(props.id)} style={{ fontSize: 10, marginTop: -11 }} />
@@ -64,7 +61,7 @@ const styles = StyleSheet.create({
   chapterTitle: {
     maxWidth: Dimensions.get('window').width - 140,
     fontFamily: "open-sans-regular",
-    color: "black",
+    color: "#323941",
     fontSize: 20,
     marginBottom: 10
   },

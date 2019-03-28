@@ -9,8 +9,6 @@ const ql = require("superagent-graphql")
 // export const API_ROOT = "http://192.168.2.12:3000"
 export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
-const responseBody = res => res.body.data
-
 export const setToken = async () => {
   let token
   try {

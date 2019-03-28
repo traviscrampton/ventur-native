@@ -32,6 +32,7 @@ import {
 const defaultTextData = {
   activeAttribute: "",
   entries: [],
+  initialEntries: [],
   deletedIds: [],
   initialImageIds: [],
   activeIndex: 0,
@@ -189,7 +190,8 @@ export default (state = defaultTextData, action) => {
     case POPULATE_ENTRIES:
       return {
         ...state,
-        entries: action.payload
+        entries: action.payload,
+        initialEntries: action.payload
       }
 
     case SET_INITIAL_EDITOR_STATE:

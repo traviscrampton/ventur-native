@@ -83,7 +83,7 @@ class ChapterEditor extends Component {
     super(props)
 
     this.state = {
-      containerHeight: Dimensions.get("window").height - 105,
+      containerHeight: Dimensions.get("window").height - 80,
       offlineMode: false,
       imagesNeededOffline: []
     }
@@ -92,10 +92,6 @@ class ChapterEditor extends Component {
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
-  }
-
-  async componentDidMount() {
-    // this.populateEditor()
   }
 
   componentWillUnmount() {
@@ -265,7 +261,7 @@ class ChapterEditor extends Component {
       <View
         style={{
           borderBottomWidth: 3,
-          borderBottomColor: "black",
+          borderBottomColor: "#323941",
           width: 90,
           marginTop: 10,
           marginLeft: 20,
@@ -392,7 +388,7 @@ class ChapterEditor extends Component {
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: Dimensions.get("window").height - 105 }
+      return { height: Dimensions.get("window").height - 80 }
     } else {
       return { height: Dimensions.get("window").height }
     }
@@ -433,7 +429,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "playfair",
-    color: "black",
+    color: "#323941",
     backgroundColor: "#f8f8f8"
   },
   description: {

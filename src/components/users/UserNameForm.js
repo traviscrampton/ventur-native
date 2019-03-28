@@ -52,7 +52,7 @@ class UserNameForm extends Component {
         if (data.errors) {
           throw Error(data.errors.join(", "))
         }
-        this.props.populateUserForm({ id: data.id, firstName: data.firstName, lastName: data.lastName })
+        this.props.populateUserForm({ id: data.user.id, firstName: data.user.firstName, lastName: data.user.lastName })
 
         this.props.navigation.navigate("UserAvatarForm")
       })
