@@ -7,6 +7,7 @@ import thunk from "redux-thunk"
 import { AsyncStorage, View } from "react-native"
 import DropdownAlert from "react-native-dropdownalert"
 import { Font } from "expo"
+import { registerRootComponent } from 'expo';
 import DropDownHolder from "utils/DropdownHolder"
 import Ventur from "components/Ventur"
 
@@ -24,3 +25,5 @@ export default class App extends Component {
     )
   }
 }
+
+registerRootComponent(App);

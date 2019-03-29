@@ -185,7 +185,7 @@ class ChapterDispatch extends Component {
                 paddingRight: 5,
                 height: 30
               }}>
-              ><Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
+              <Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -204,7 +204,7 @@ class ChapterDispatch extends Component {
                 minWidth: 70,
                 height: 30
               }}>
-              >{doneContent}
+              {doneContent}
             </View>
           </TouchableWithoutFeedback>
         </View>

@@ -10,12 +10,12 @@
     "react-test-renderer": "16.3.1",
     "redux-devtools-extension": "^2.13.5"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
+    "start": "expo start",
+    "eject": "expo eject",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "test": "jest",
     "react-devtool": "react-devtools"
   },
@@ -23,9 +23,9 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^27.0.1",
-    "react": "16.3.1",
-    "react-native": "~0.55.2",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "expo": "^31.0.0",
+    "react": "16.5.0",
     "react-native-base64": "0.0.2",
     "react-native-camera-roll-picker": "^1.2.3",
     "react-native-dropdownalert": "^3.7.1",

@@ -209,10 +209,7 @@ class RouteEditorButtons extends Component {
     const iconColor = positionMode ? "white" : "#067BC2"
 
     return (
-      <View shadowColor="#323941"
-        shadowOffset={{ width: 0, height: 0 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}>
+      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.props.togglePositionMode}>
           <View
             style={[
@@ -239,10 +236,12 @@ class RouteEditorButtons extends Component {
     if (this.props.positionMode) return
 
     return (
-      <View shadowColor="#323941"
+      <View
+        shadowColor="#323941"
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
-        shadowRadius={2} style={{ position: "absolute", bottom: 30, right: 30 }}>
+        shadowRadius={2}
+        style={{ position: "absolute", bottom: 30, right: 30 }}>
         <TouchableWithoutFeedback onPress={() => this.eraseRoute()}>
           <View
             style={{
@@ -295,7 +294,7 @@ class RouteEditorButtons extends Component {
             },
             cropPosition
           ]}>
-          >{this.renderSaveButton()}
+          {this.renderSaveButton()}
           {this.renderCropButton()}
         </View>
         {this.renderEraseButton()}

@@ -3,13 +3,8 @@ import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeed
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
 const ChapterCard = props => {
-  let notOnServer = ""
-  let publishedStatus = ""
+  let publishedStatus
   let { imageUrl, title, distance, readableDate } = props
-
-  if (isNaN(parseInt(props.id))) {
-    notOnServer = <Button title={"Persist"} onPress={() => props.persistOfflineChapter(props.id)} style={{ fontSize: 10, marginTop: -11 }} />
-  }
 
   if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
     publishedStatus = <Text style={{color: "orange"}}>Draft</Text>
@@ -34,7 +29,6 @@ const ChapterCard = props => {
               <Feather style={styles.iconMargin} name="camera" size={16} />
               <Text style={styles.textStats}>{props.blogImageCount} Photos</Text>
             </View>
-            {notOnServer}
           </View>
         </View>
         <View>

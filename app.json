@@ -3,8 +3,9 @@
     "name": "Ventur",
     "version": "1.0.5",
     "icon": "./ventur.png",
-    "sdkVersion": "32.0.0",
+    "sdkVersion": "31.0.0",
     "slug": "ventur",
+    "entryPoint": "./App.js",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ventur.documenter"
