@@ -3,7 +3,7 @@
     "name": "Ventur",
     "version": "1.0.5",
     "icon": "./ventur.png",
-    "sdkVersion": "27.0.0",
+    "sdkVersion": "32.0.0",
     "slug": "ventur",
     "ios": {
       "supportsTablet": true,
