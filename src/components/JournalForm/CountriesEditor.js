@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
-import { setToken, API_ROOT } from "agent"
+import { get } from "agent"
 import { updateJournalForm } from "actions/journal_form"
 import { Ionicons } from "@expo/vector-icons"
 
@@ -15,18 +15,19 @@ class CountriesEditor extends Component {
     super(props)
 
     this.state = {
-      searchResultCountries: [
-        { id: 1, name: "New Zealand" },
-        { id: 2, name: "United States" },
-        { id: 3, name: "Australia" },
-        { id: 4, name: "South Africa" },
-        { id: 5, name: "China" }
-      ]
+      searchText: "",
+      searchResultCountries: []
     }
   }
 
   handleTextChange = text => {
-    console.log("here comes the text", text)
+    this.setState({ searchText: text }, this.searchForCountries)
+  }
+
+  searchForCountries() {
+    get("/countries/search_countries", { name: this.state.searchText }).then(res => {
+      this.setState({ searchResultCountries: res.countries })
+    })
   }
 
   renderSearchBar() {
@@ -36,7 +37,7 @@ class CountriesEditor extends Component {
           style={{ borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 5, padding: 5, fontSize: 18 }}
           autoFocus
           placeholder={"Type to find country"}
-          onChange={text => this.handleTextChange(text)}
+          onChangeText={text => this.handleTextChange(text)}
         />
       </View>
     )
@@ -53,7 +54,7 @@ class CountriesEditor extends Component {
   }
 
   renderSearchResults() {
-    if (this.state.searchResultCountries.length < 1) return
+    if (this.state.searchText.length < 1 || this.state.searchResultCountries.lengty < 1) return
 
     return (
       <View style={{ borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 5, marginTop: 5 }}>
