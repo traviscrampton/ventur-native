@@ -405,7 +405,7 @@ class ChapterEditor extends Component {
           multilineInputStyle={{ lineHeight: 30 }}>
           {this.renderChapterForm()}
           {this.renderDivider()}
-          <View style={{ marginBottom: 100 }}>
+          <View>
             {this.renderEditor()}
             {this.renderCreateCta(this.props.entries.length)}
           </View>
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   positionRelative: {
-    position: "relative"
+    position: "relative",
   },
   captionPadding: {
     paddingLeft: 20,

@@ -18,6 +18,7 @@ import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
 import CommentForm from "components/Comments/CommentForm"
+import JournalForm from "components/JournalForm/JournalForm"
 import UserAvatarForm from "components/users/UserAvatarForm"
 import RouteEditor from "components/Maps/RouteEditor"
 import RouteViewer from "components/Maps/RouteViewer"
@@ -40,7 +41,8 @@ const NO_FOOTER_SCREENS = [
   "JournalFormUpload",
   "RouteEditor",
   "RouteViewer",
-  "JournalRoute"
+  "JournalRoute",
+  "JournalForm"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -52,6 +54,7 @@ const JournalFeedNavigator = createStackNavigator(
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
+    JournalForm: JournalForm,
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
@@ -84,6 +87,7 @@ const ProfileNavigator = createStackNavigator(
     JournalFormStatus: JournalFormStatus,
     ImageCaptionForm: ImageCaptionForm,
     JournalFormUpload: JournalFormUpload,
+    JournalForm: JournalForm,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
@@ -149,10 +153,10 @@ export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       AuthFlow: AuthFlow,
-      BottomNavigator: BottomNavigator
+      JournalForm: JournalForm
     },
     {
-      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
+      initialRouteName: signedIn ? "JournalForm" : "AuthFlow"
     }
   )
 
