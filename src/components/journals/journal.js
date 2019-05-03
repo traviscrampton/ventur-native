@@ -93,25 +93,29 @@ class Journal extends Component {
   }
 
   renderJournalEditForm = () => {
-    const { id, title, description, status } = this.props.journal
-    let obj = {
-      id: id,
-      title: title,
-      description: description,
-      status: status
-    }
+    const { id, title, description, status, countries } = this.props.journal
+    const payload = Object.assign(
+      {},
+      {
+        id,
+        title,
+        description,
+        status,
+        includedCountries: countries
+      }
+    )
 
-    this.props.updateJournalForm(obj)
-    this.props.navigation.navigate("JournalFormTitle")
+    this.props.updateJournalForm(payload)
+    this.props.navigation.navigate("JournalForm")
   }
 
   renderCountries() {
     return this.props.journal.countries.map((country, index) => {
       if (this.props.journal.countries.length - 1 !== index) {
-        country += ", "
+        country.name += ", "
       }
 
-      return <Text style={styles.journalDescription}>{country}</Text>
+      return <Text style={styles.journalDescription}>{country.name}</Text>
     })
   }
 

@@ -157,10 +157,10 @@ export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       AuthFlow: AuthFlow,
-      CountriesEditor: CountriesEditor
+      BottomNavigator: BottomNavigator
     },
     {
-      initialRouteName: signedIn ? "CountriesEditor" : "AuthFlow"
+      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
     }
   )
 

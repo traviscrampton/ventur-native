@@ -1,12 +1,12 @@
 import { UPDATE_JOURNAL_FORM, RESET_JOURNAL_FORM } from "actions/journal_form"
 
 const defaultJournalFormData = {
-  id: null,
-  bannerImage: { uri: "" },
+  id: null,  
   title: "",
   description: "",
   status: "not_started",
-  stage: "draft"
+  distanceType: "kilometers",
+  includedCountries: []
 }
 
 export default (state = defaultJournalFormData, action) => {

@@ -376,7 +376,7 @@ class Profile extends Component {
 
   navigateToJournalForm = () => {
     this.props.resetJournalShow()
-    this.props.navigation.navigate("JournalFormTitle")
+    this.props.navigation.navigate("JournalForm")
   }
 
   renderCreateJournalCta() {
