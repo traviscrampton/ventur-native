@@ -7,7 +7,9 @@ import { logOut } from "auth"
 
 const ql = require("superagent-graphql")
 // export const API_ROOT = "http://192.168.2.12:3000"
-export const API_ROOT = "http://localhost:3000"
+// export const API_ROOT = "http://0.0.0.0:3000"
+export const API_ROOT = "http://192.168.0.37:3000"
+// export const API_ROOT = "http://localhost:3000"
 // export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
 export const setToken = async () => {
@@ -113,7 +115,6 @@ export const destroy = async (route, params = {}) => {
   const token = await setToken()
   const requestRoute = API_ROOT + route
 
-  console.log("params", params)
   return fetch(requestRoute, {
     method: "DELETE",
     headers: {

@@ -1,3 +1,34 @@
+import { post, put } from "agent"
+import { populateSingleJournal } from "actions/journals"
+
+export function persistJournal(navigationCallBack) {
+  return function(dispatch, getState) {
+    const { journalForm } = getState()
+    if (journalForm.id) {
+      persistJournalPut(journalForm, dispatch, navigationCallBack)
+    } else {
+      persistJournalPost(journalForm, dispatch, navigationCallBack)
+    }
+  }
+}
+
+export const persistJournalPost = async (params, dispatch, navigationCallBack) => {
+  const res = await post("/journals", params)
+  const payload = Object.assign({}, { id: res.id })
+
+  dispatch(updateJournalForm(payload))
+  navigationCallBack()
+  dispatch(resetJournalForm())
+}
+
+export const persistJournalPut = async (params, dispatch, navigationCallBack) => {
+  const journal = await put(`/journals/${params.id}`, params)
+
+  dispatch(populateSingleJournal(journal))
+  navigationCallBack()
+  dispatch(resetJournalForm())
+}
+
 export const UPDATE_JOURNAL_FORM = "UPDATE_JOURNAL_FORM"
 export function updateJournalForm(payload) {
   return {

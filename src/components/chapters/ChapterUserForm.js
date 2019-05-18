@@ -12,6 +12,7 @@ class ChapterUserForm extends Component {
   }
 
   renderTouchableOption(option, index) {
+    console.log("callback!!!", option.callback)
     return (
       <TouchableWithoutFeedback onPress={option.callback} key={option.title}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>

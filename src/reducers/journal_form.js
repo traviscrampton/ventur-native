@@ -12,6 +12,7 @@ const defaultJournalFormData = {
 export default (state = defaultJournalFormData, action) => {
   switch (action.type) {
     case UPDATE_JOURNAL_FORM:
+      console.log("in reducer", action.payload)
       return Object.assign({}, state, action.payload)
     case RESET_JOURNAL_FORM:
       return defaultJournalFormData

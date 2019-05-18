@@ -7,15 +7,19 @@ import {
   Image,
   ImageBackground,
   TouchableHighlight,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import { sendEmails } from "actions/chapter"
 import { loadRouteEditor } from "actions/route_editor"
 import { loadRouteViewer } from "actions/route_viewer"
-import EditorDropdown from "components/editor/EditorDropdown"
+import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
+import { editChapterPublished, deleteChapter } from "actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
+import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -29,7 +33,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
-  loadRouteViewer: payload => dispatch(loadRouteViewer(payload))
+  loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
+  sendEmails: payload => dispatch(sendEmails(payload)),
+  editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
+  deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
 })
 
 class ChapterShow extends Component {
@@ -37,8 +44,56 @@ class ChapterShow extends Component {
     super(props)
   }
 
-  navigateBack() {
+  navigateBack = () => {
     this.props.navigation.goBack()
+  }
+
+  openDeleteAlert = () => {
+    Alert.alert(
+      "Are you sure?",
+      "Deleting this chapter will erase all images and content",
+      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
+  }
+
+  handleDelete = async () => {
+    this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
+  }
+
+  sendEmails = async () => {
+    if (this.props.chapter.emailSent) return
+
+    this.props.sendEmails(this.props.chapter.id)
+  }
+
+  getEmailToggle() {
+    if (this.props.chapter.emailSent) {
+      return "Email Sent"
+    } else {
+      return "Send Email"
+    }
+  }
+
+  getChapterUserFormProps() {
+    let optionsProps = [
+      { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
+      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus }
+    ]
+
+    if (this.props.chapter.published) {
+      const emailOption = { type: "touchable", title: this.getEmailToggle(), callback: this.sendEmails }
+      optionsProps.push(emailOption)
+    }
+
+    return optionsProps
+  }
+
+  updatePublishedStatus = async () => {
+    const {
+      chapter: { id, published }
+    } = this.props
+    this.props.editChapterPublished(id, !published)
   }
 
   renderTitle() {
@@ -254,11 +309,11 @@ class ChapterShow extends Component {
     if (this.props.user.id != this.props.currentUser.id) {
       return <View />
     }
-
-    return <EditorDropdown navigation={this.props.navigation} />
+    const options = this.getChapterUserFormProps()
+    return <ThreeDotDropdown options={options} />
   }
 
-  renderEditorDropdown() {
+  renderThreeDotDropdown() {
     return (
       <View
         style={{
@@ -299,7 +354,7 @@ class ChapterShow extends Component {
         </View>
         {this.renderTitle()}
         {this.renderStatistics()}
-        {this.renderEditorDropdown()}
+        {this.renderThreeDotDropdown()}
         {this.renderDivider()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>

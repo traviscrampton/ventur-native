@@ -1,5 +1,5 @@
 import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB } from "actions/journals"
-import { REMOVE_CHAPTER_FROM_STATE } from "actions/editor"
+import { REMOVE_CHAPTER_FROM_STATE } from "actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "actions/chapter_form"
 
 const defaultJournalData = {

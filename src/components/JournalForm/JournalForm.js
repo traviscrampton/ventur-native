@@ -2,9 +2,10 @@ import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { Header } from "components/editor/header"
+import { StackActions, NavigationActions } from "react-navigation"
 import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
 import { setToken, API_ROOT } from "agent"
-import { updateJournalForm, resetJournalForm } from "actions/journal_form"
+import { updateJournalForm, resetJournalForm, persistJournal } from "actions/journal_form"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -12,12 +13,14 @@ const mapStateToProps = state => ({
   description: state.journalForm.description,
   status: state.journalForm.status,
   includedCountries: state.journalForm.includedCountries,
-  distanceType: state.journalForm.distanceType
+  distanceType: state.journalForm.distanceType,
+  currentRoot: state.common.currentBottomTab
 })
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  resetJournalForm: () => dispatch(resetJournalForm())
+  resetJournalForm: () => dispatch(resetJournalForm()),
+  persistJournal: callback => dispatch(persistJournal(callback))
 })
 
 class JournalForm extends Component {
@@ -31,6 +34,30 @@ class JournalForm extends Component {
   updateJournalForm = (key, value) => {
     const payload = Object.assign({}, { [key]: value })
     this.props.updateJournalForm(payload)
+  }
+
+  getFirstRoute() {
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
+    } else if (this.props.currentRoot === "Explore") {
+      return "JournalFeed"
+    }
+  }
+
+  saveJournal = () => {
+    this.props.persistJournal(this.navigateToJournal)
+  }
+
+  navigateToJournal = () => {
+    const journalId = this.props.id
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
+        NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
 
   handleGoBack = () => {
