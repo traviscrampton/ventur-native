@@ -5,17 +5,11 @@ import { StyleSheet, View, Text, TouchableHighlight, TouchableWithoutFeedback, A
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
 import { loadChapter, setEditMode } from "actions/chapter"
-import {
-  populateEntries,
-  getInitialImageIds,
-  resetDeletedIds,
-  doneEditingAndPersist,
-  loseChangesAndUpdate
-} from "actions/editor"
+import { populateEntries, getInitialImageIds, loseChangesAndUpdate } from "actions/editor"
 import ChapterEditor from "components/chapters/ChapterEditor"
 import ChapterShow from "components/chapters/ChapterShow"
 import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
-import { Ionicons, Feather } from "@expo/vector-icons"
+import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons"
 import { get, put, destroy } from "agent"
 import LoadingScreen from "components/shared/LoadingScreen"
 
@@ -39,8 +33,6 @@ const mapDispatchToProps = dispatch => ({
   loadChapter: payload => dispatch(loadChapter(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
   getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
-  resetDeletedIds: () => dispatch(resetDeletedIds()),
-  doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
   setEditMode: payload => dispatch(setEditMode(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   resetChapter: () => dispatch(resetChapter()),
@@ -51,7 +43,7 @@ class ChapterDispatch extends Component {
   constructor(props) {
     super(props)
 
-    this.initialChapterForm = this.props.navigation.getParam("initialChapterForm", false)
+    // this.initialChapterForm = this.props.navigation.getParam("initialChapterForm", false)
 
     this.state = {
       initialChapterForm: this.initialChapterForm
@@ -59,8 +51,8 @@ class ChapterDispatch extends Component {
   }
 
   componentWillMount() {
-    if (!this.state.initialChapterForm) return
-    this.props.setEditMode(true)
+    // if (!this.state.initialChapterForm) return
+    // this.props.setEditMode(true)
   }
 
   populateEditorAndSwitch = content => {
@@ -74,184 +66,190 @@ class ChapterDispatch extends Component {
 
     this.props.populateEntries(entries)
     this.props.getInitialImageIds(entries)
-    this.editMetaData()
-    this.props.setEditMode(true)
+    // this.editMetaData()
+    // this.props.setEditMode(true)
   }
 
-  editMetaData = () => {
-    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
-    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
+  // editMetaData = () => {
+  //   let { id, title, distance, description, journal, imageUrl } = this.props.chapter
+  //   let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
 
-    let obj = {
-      id: id,
-      title: title,
-      distance: distanceAmount,
-      description: description,
-      readableDistanceType: distance.readableDistanceType,
-      imageUrl: imageUrl,
-      journalId: journal.id
-    }
+  //   let obj = {
+  //     id: id,
+  //     title: title,
+  //     distance: distanceAmount,
+  //     description: description,
+  //     readableDistanceType: distance.readableDistanceType,
+  //     imageUrl: imageUrl,
+  //     journalId: journal.id
+  //   }
 
-    this.props.updateChapterForm(obj)
-  }
+  //   this.props.updateChapterForm(obj)
+  // }
 
-  editorIsSaved() {
-    return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
-  }
+  // editorIsSaved() {
+  //   return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
+  // }
 
-  handleCancelButtonPress = () => {
-    if (this.editorIsSaved()) {
-      this.loseChangesAndUpdate()
-    } else {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all your blog changes",
-        [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
-        { cancelable: true }
-      )
-    }
-  }
+  // handleCancelButtonPress = () => {
+  //   if (this.editorIsSaved()) {
+  //     this.loseChangesAndUpdate()
+  //   } else {
+  //     Alert.alert(
+  //       "Are you sure?",
+  //       "You will lose all your blog changes",
+  //       [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+  //       { cancelable: true }
+  //     )
+  //   }
+  // }
 
-  handleDoneButtonPress = () => {
-    if (this.props.isUpdating) return
-    this.props.doneEditingAndPersist()
-    this.props.resetChapterForm()
-  }
+  // handleDoneButtonPress = () => {
+  //   if (this.props.isUpdating) return
+  //   this.props.doneEditingAndPersist()
+  //   this.props.resetChapterForm()
+  // }
 
-  loseChangesAndUpdate = () => {
-    const { id } = this.props.chapter.editorBlob
-    const deletedIds = this.getImagesToDelete()
-    const payload = Object.assign({}, { id, deletedIds })
-    this.props.loseChangesAndUpdate(payload)
-    this.props.resetChapterForm()
-  }
+  // loseChangesAndUpdate = () => {
+  //   const { id } = this.props.chapter.editorBlob
+  //   const deletedIds = this.getImagesToDelete()
+  //   const payload = Object.assign({}, { id, deletedIds })
+  //   this.props.loseChangesAndUpdate(payload)
+  //   this.props.resetChapterForm()
+  // }
 
-  getImagesToDelete() {
-    const allImageIds = this.getAllImageIds()
-    const { initialImageIds } = this.props
+  // getImagesToDelete() {
+  //   const allImageIds = this.getAllImageIds()
+  //   const { initialImageIds } = this.props
 
-    const diff = _.xor(initialImageIds, allImageIds)
-    return diff
-  }
+  //   const diff = _.xor(initialImageIds, allImageIds)
+  //   return diff
+  // }
 
-  getAllImageIds = () => {
-    let entries = this.props.entries
-      .filter(entry => entry.type === "image")
-      .map(entry => {
-        return entry.id
-      })
-    return entries
-  }
+  // getAllImageIds = () => {
+  //   let entries = this.props.entries
+  //     .filter(entry => entry.type === "image")
+  //     .map(entry => {
+  //       return entry.id
+  //     })
+  //   return entries
+  // }
 
   navigateBack = () => {
     this.props.resetChapter()
     this.props.navigation.goBack()
   }
 
-  getDraftContentAndEdit = () => {
+  navigateToEditor = () => {
     const { content } = this.props.chapter.editorBlob
     this.populateEditorAndSwitch(content)
+    this.props.navigation.navigate("ChapterEditor")
   }
+
+  // getDraftContentAndEdit = () => {
+  //   const { content } = this.props.chapter.editorBlob
+  //   this.populateEditorAndSwitch(content)
+  // }
 
   renderChapterNavigation() {
     return (
       <View style={styles.chapterNavigationContainer}>
         {this.renderBackIcon()}
-        {this.renderIndicatorAndEditPortal()}
+        {/*this.renderIndicatorAndEditPortal()*/}
       </View>
     )
   }
 
-  renderCancelAndDoneBtns() {
-    const doneContent = this.props.isUpdating ? (
-      <MaterialIndicator size={18} color="white" />
-    ) : (
-      <Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
-    )
-    return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        <View>
-          <TouchableWithoutFeedback onPress={this.handleCancelButtonPress}>
-            <View
-              style={{
-                backgroundColor: "#fafafa",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderColor: "#505050",
-                borderWidth: 1,
-                borderRadius: 3,
-                marginRight: 10,
-                paddingLeft: 5,
-                paddingRight: 5,
-                height: 30
-              }}>
-              <Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-        <View>
-          <TouchableWithoutFeedback onPress={this.handleDoneButtonPress}>
-            <View
-              style={{
-                backgroundColor: "#ff8c34",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderColor: "#ff8c34",
-                borderWidth: 1,
-                borderRadius: 3,
-                minWidth: 70,
-                height: 30
-              }}>
-              {doneContent}
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </View>
-    )
-  }
+  // renderCancelAndDoneBtns() {
+  //   const doneContent = this.props.isUpdating ? (
+  //     <MaterialIndicator size={18} color="white" />
+  //   ) : (
+  //     <Text style={{ color: "white", letterSpacing: 1.8 }}>DONE</Text>
+  //   )
+  //   return (
+  //     <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+  //       <View>
+  //         <TouchableWithoutFeedback onPress={this.handleCancelButtonPress}>
+  //           <View
+  //             style={{
+  //               backgroundColor: "#fafafa",
+  //               display: "flex",
+  //               flexDirection: "row",
+  //               alignItems: "center",
+  //               justifyContent: "center",
+  //               borderColor: "#505050",
+  //               borderWidth: 1,
+  //               borderRadius: 3,
+  //               marginRight: 10,
+  //               paddingLeft: 5,
+  //               paddingRight: 5,
+  //               height: 30
+  //             }}>
+  //             <Text style={{ color: "#505050", letterSpacing: 1.8 }}>CANCEL</Text>
+  //           </View>
+  //         </TouchableWithoutFeedback>
+  //       </View>
+  //       <View>
+  //         <TouchableWithoutFeedback onPress={this.handleDoneButtonPress}>
+  //           <View
+  //             style={{
+  //               backgroundColor: "#ff8c34",
+  //               display: "flex",
+  //               flexDirection: "row",
+  //               alignItems: "center",
+  //               justifyContent: "center",
+  //               borderColor: "#ff8c34",
+  //               borderWidth: 1,
+  //               borderRadius: 3,
+  //               minWidth: 70,
+  //               height: 30
+  //             }}>
+  //             {doneContent}
+  //           </View>
+  //         </TouchableWithoutFeedback>
+  //       </View>
+  //     </View>
+  //   )
+  // }
 
-  renderEditBtn() {
-    return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.getDraftContentAndEdit}>
-          <View
-            style={{
-              backgroundColor: "#fafafa",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 5,
-              borderColor: "#505050",
-              borderWidth: 1,
-              borderRadius: 3
-            }}>
-            <Feather name="edit-3" size={12} color="#505050" style={{ marginRight: 3 }} />
-            <Text style={{ letterSpacing: 1.8, color: "#505050" }}>EDIT</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
+  // renderEditBtn() {
+  //   return (
+  //     <View>
+  //       <TouchableWithoutFeedback onPress={this.getDraftContentAndEdit}>
+  //         <View
+  //           style={{
+  //             backgroundColor: "#fafafa",
+  //             display: "flex",
+  //             flexDirection: "row",
+  //             alignItems: "center",
+  //             padding: 5,
+  //             borderColor: "#505050",
+  //             borderWidth: 1,
+  //             borderRadius: 3
+  //           }}>
+  //           <Feather name="edit-3" size={12} color="#505050" style={{ marginRight: 3 }} />
+  //           <Text style={{ letterSpacing: 1.8, color: "#505050" }}>EDIT</Text>
+  //         </View>
+  //       </TouchableWithoutFeedback>
+  //     </View>
+  //   )
+  // }
 
-  renderEditPortal() {
-    if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
+  // renderEditPortal() {
+  //   if (!this.state.initialChapterForm && this.props.user.id != this.props.currentUser.id) return
 
-    if (this.props.editMode) {
-      return this.renderCancelAndDoneBtns()
-    } else {
-      return this.renderEditBtn()
-    }
-  }
+  //   if (this.props.editMode) {
+  //     return this.renderCancelAndDoneBtns()
+  //   } else {
+  //     return this.renderEditBtn()
+  //   }
+  // }
 
-  renderIndicatorAndEditPortal() {
-    return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>{this.renderEditPortal()}</View>
-    )
-  }
+  // renderIndicatorAndEditPortal() {
+  //   return (
+  //     <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>{this.renderEditPortal()}</View>
+  //   )
+  // }
 
   renderJournalName() {
     let buttonsWidth = this.props.editMode ? 250 : 160
@@ -282,11 +280,37 @@ class ChapterDispatch extends Component {
   }
 
   dispatchChapter() {
-    if (this.props.editMode) {
-      return <ChapterEditor navigation={this.props.navigation} />
-    } else {
-      return <ChapterShow navigation={this.props.navigation} />
-    }
+    // if (this.props.editMode) {
+    //   return <ChapterEditor navigation={this.props.navigation} />
+    // } else {
+    //   return <ChapterShow navigation={this.props.navigation} />
+    // }
+  }
+
+  renderEditorFloatingButton() {
+    return (
+      <TouchableWithoutFeedback onPress={this.navigateToEditor}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 1, height: 1 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            position: "absolute",
+            backgroundColor: "#067BC2",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            bottom: 30,
+            right: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <MaterialIcons name="edit" size={32} color="white" />
+        </View>
+      </TouchableWithoutFeedback>
+    )
   }
 
   render() {
@@ -297,7 +321,8 @@ class ChapterDispatch extends Component {
     return (
       <View style={styles.chapterDispatchContainer}>
         {this.renderChapterNavigation()}
-        {this.dispatchChapter()}
+        <ChapterShow navigation={this.props.navigation} />
+        {this.renderEditorFloatingButton()}
       </View>
     )
   }
@@ -305,7 +330,9 @@ class ChapterDispatch extends Component {
 
 const styles = StyleSheet.create({
   chapterDispatchContainer: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    position: "relative",
+    height: "100%"
   },
   chapterNavigationContainer: {
     display: "flex",

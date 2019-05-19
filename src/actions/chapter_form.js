@@ -1,4 +1,7 @@
 import _ from "lodash"
+import { setToken, API_ROOT } from "agent"
+import { loadChapter } from "actions/chapter"
+import { doneUpdating } from "actions/editor"
 
 export const mungeChapter = chapter => {
   return Object.assign(
@@ -14,6 +17,87 @@ export const mungeChapter = chapter => {
       blogImageCount: chapter.blogImageCount
     }
   )
+}
+
+export const updateChapter = async (params, callback, dispatch) => {
+  let formData = new FormData()
+  let { id, title, distance, date, journalId, bannerImage } = params
+
+  formData.append("id", id)
+  formData.append("title", title)
+  formData.append("distance", distance)
+  formData.append("date", new Date(date).toUTCString())
+  formData.append("journalId", journalId)
+
+  if (bannerImage.needsUpload) {
+    formData.append("banner_image", bannerImage)
+  }
+
+  const token = await setToken()
+  fetch(`${API_ROOT}/chapters/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
+      let { chapter } = data
+      dispatch(addChapterToJournals(chapter))
+      dispatch(loadChapter(chapter))
+      dispatch(doneUpdating())
+      callback()
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
+    })
+}
+
+export const createChapter = async (params, callback, dispatch) => {
+  let formData = new FormData()
+  let { title, distance, date, journalId, bannerImage } = params
+
+  formData.append("title", title)
+  formData.append("distance", distance)
+  formData.append("date", new Date(date).toUTCString())
+  formData.append("journalId", journalId)
+
+  if (bannerImage.needsUpload) {
+    formData.append("banner_image", bannerImage)
+  }
+
+  const token = await setToken()
+  fetch(`${API_ROOT}/chapters`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.errors) {
+        throw Error(data.errors.join(", "))
+      }
+      let { chapter } = data
+      dispatch(addChapterToJournals(chapter))
+      dispatch(loadChapter(chapter))
+      dispatch(doneUpdating())
+      callback()
+    })
+    .catch(err => {
+      DropDownHolder.alert("error", "Error", err)
+    })
 }
 
 export const setChapterToJournalChapter = (journal, newChapter) => {
@@ -59,7 +143,7 @@ export const getJournalFeedDistance = (getState, journalId, distance) => {
   const allJournals = getState().journalFeed.allJournals
   const foundIndex = allJournals.findIndex(journal => {
     return journal.id == journalId
-  })  
+  })
 
   if (foundIndex > -1) {
     journal = Object.assign({}, allJournals[foundIndex], { distance: distance })
@@ -84,7 +168,6 @@ export function addChapterToJournals(payload) {
     let journal = getState().journal.journal
     if (journal && journal.id == payload.journal.id) {
       let chaptersAndDistance = setChapterToJournalChapter(journal, payload)
-
       dispatch(pushChapterToJournal(chaptersAndDistance))
       let updatedFeed = getJournalFeedDistance(getState, chaptersAndDistance.journalId, chaptersAndDistance.distance)
       dispatch(updateFeedDistance(updatedFeed))

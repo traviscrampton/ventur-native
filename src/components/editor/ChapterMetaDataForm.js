@@ -1,11 +1,14 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import { StyleSheet, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, ScrollView, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
 import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
+import { StackActions, NavigationActions } from "react-navigation"
 import _ from "lodash"
 import { loadChapter } from "actions/chapter"
-import { updateChapter } from "utils/chapter_form_helper"
+import { updateChapter, createChapter } from "actions/chapter_form"
+import { Header } from "components/editor/header"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
+import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 import { generateReadableDate } from "utils/chapter_form_helper"
@@ -14,7 +17,9 @@ const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
   chapter: state.chapter.chapter,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  isUpdating: state.editor.isUpdating,
+  currentRoot: state.common.currentBottomTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -23,7 +28,9 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
-  resetChapterForm: () => dispatch(resetChapterForm())
+  resetChapterForm: () => dispatch(resetChapterForm()),
+  updateChapter: (params, callback) => dispatch(updateChapter(params, callback, dispatch)),
+  createChapter: (params, callback) => dispatch(createChapter(params, callback, dispatch))
 })
 
 class ChapterMetaDataForm extends Component {
@@ -33,7 +40,6 @@ class ChapterMetaDataForm extends Component {
     this.state = {
       datePickerOpen: false
     }
-    this.persistUpdate = _.debounce(this.persistUpdate, 1000)
   }
 
   componentWillUnmount() {
@@ -41,24 +47,22 @@ class ChapterMetaDataForm extends Component {
   }
 
   persistMetadata = async (text, field) => {
-    // this.props.startUpdating()
     this.props.updateChapterForm({ [field]: text })
+  }
 
-    // this.persistUpdate()
+  handleGoBack = () => {
+    this.props.navigation.goBack()
   }
 
   uploadImage(img) {
-    this.props.startUpdating()
-
     let imgPost = {
       uri: img.uri,
       name: img.filename,
       type: "multipart/form-data",
       needsUpload: true
     }
-    this.props.updateChapterForm({ bannerImage: imgPost })
 
-    this.persistUpdate()
+    this.props.updateChapterForm({ bannerImage: imgPost })
   }
 
   updateImage = () => {
@@ -73,19 +77,44 @@ class ChapterMetaDataForm extends Component {
     this.setState({ datePickerOpen: !datePickerOpen })
   }
 
-  chapterCallback = async data => {
-    this.props.addChapterToJournals(data)
-    this.props.loadChapter(data)
-    this.props.doneUpdating()
+  chapterCallback = async () => {
+    this.navigateToChapter()
   }
 
   persistUpdate = async () => {
-    let chapter = _.omit(this.props.chapterForm, "journals")
-    updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
+    this.props.startUpdating()
+    let { id } = this.props.chapterForm
+
+    if (id) {
+      this.props.updateChapter(this.props.chapterForm, this.chapterCallback)
+    } else {
+      this.props.createChapter(this.props.chapterForm, this.chapterCallback)
+    }
   }
 
   focusDistanceTextInput = () => {
     this.distanceTextInput.focus()
+  }
+
+  getFirstRoute() {
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
+    } else if (this.props.currentRoot === "Explore") {
+      return "JournalFeed"
+    }
+  }
+
+  navigateToChapter = () => {
+    const { journalId, id } = this.props.chapterForm
+    const resetAction = StackActions.reset({
+      index: 2,
+      actions: [
+        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
+        NavigationActions.navigate({ routeName: "Journal", params: { journalId } }),
+        NavigationActions.navigate({ routeName: "Chapter" })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
 
   renderDatePicker() {
@@ -157,9 +186,34 @@ class ChapterMetaDataForm extends Component {
     )
   }
 
+  renderHeader() {
+    const headerProps = Object.assign(
+      {},
+      {
+        goBackCta: "Cancel",
+        handleGoBack: this.handleGoBack,
+        centerCta: "",
+        handleConfirm: this.persistUpdate,
+        confirmCta: "Save"
+      }
+    )
+    return <Header key="header" {...headerProps} />
+  }
+
+  renderLoadingSpinner(fourthWindowWidth) {
+    if (this.props.isUpdating && this.props.chapterForm.bannerImage.needsUpload) {
+      return (
+        <View style={{ position: "absolute", zIndex: 200, width: this.props.width, top: fourthWindowWidth / 3 }}>
+          <MaterialIndicator size={40} color="#ff8c34" />
+        </View>
+      )
+    }
+  }
+
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 2.5
-    let { imageUrl } = this.props.chapter
+    let { uri } = this.props.chapterForm.bannerImage
+    const spinner = this.renderLoadingSpinner(fourthWindowWidth)
 
     return (
       <View style={{ position: "relative", marginBottom: 20, height: fourthWindowWidth, width: this.props.width }}>
@@ -184,6 +238,7 @@ class ChapterMetaDataForm extends Component {
             <MaterialIcons name="cloud-upload" color="#323941" size={30} />
           </TouchableWithoutFeedback>
         </View>
+        {spinner}
         <TouchableWithoutFeedback onPress={this.updateImage}>
           <Image
             style={{
@@ -191,7 +246,7 @@ class ChapterMetaDataForm extends Component {
               height: fourthWindowWidth,
               backgroundColor: "#f8f8f8"
             }}
-            source={{ uri: imageUrl }}
+            source={{ uri: uri }}
           />
         </TouchableWithoutFeedback>
       </View>
@@ -201,9 +256,12 @@ class ChapterMetaDataForm extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderChapterImage()}
-        {this.renderTitleAndDescription()}
-        {this.renderStatistics()}
+        {this.renderHeader()}
+        <ScrollView>
+          {this.renderChapterImage()}
+          {this.renderTitleAndDescription()}
+          {this.renderStatistics()}
+        </ScrollView>
       </View>
     )
   }

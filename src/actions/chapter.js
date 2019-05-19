@@ -29,7 +29,6 @@ export function resetChapter() {
 
 export const editChapterPublished = async (chapterId, published, dispatch) => {
   const data = await put(`/chapters/${chapterId}`, { published })
-  console.log("DATA", data)
 
   dispatch(loadChapter(data.chapter))
   dispatch(addChapterToJournals(data.chapter))

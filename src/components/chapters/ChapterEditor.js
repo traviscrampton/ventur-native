@@ -23,25 +23,17 @@ import {
   setNextIndexNull,
   prepManageContent,
   updateKeyboardState,
-  updateEntryState,
   populateEntries,
   setInitialEditorState,
-  addImageToDeletedIds
+  addImageToDeletedIds,
+  doneEditingAndPersist,
+  loseChangesAndUpdate
 } from "actions/editor"
-import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
+import { Header } from "components/editor/header"
 import InputScrollView from "react-native-input-scroll-view"
 import _ from "lodash"
-import DatePickerDropdown from "components/editor/DatePickerDropdown"
 import EditorToolbar from "components/editor/EditorToolbar"
-import { updateChapter, generateReadableDate } from "utils/chapter_form_helper"
-import { populateOfflineChapters } from "actions/user"
 import ContentCreator from "components/editor/ContentCreator"
-import {
-  persistChapterToAsyncStorage,
-  removeChapterFromAsyncStorage,
-  offlineChapterCreate,
-  notInternetConnected
-} from "utils/offline_helpers"
 import { FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -49,14 +41,14 @@ const mapDispatchToProps = dispatch => ({
   setInitialEditorState: () => dispatch(setInitialEditorState()),
   updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
   editEntry: payload => dispatch(editEntry(payload)),
-  updateEntryState: payload => dispatch(updateEntryState(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateKeyboardState: payload => dispatch(updateKeyboardState(payload)),
   removeEntryAndFocus: payload => dispatch(removeEntryAndFocus(payload)),
   setNextIndexNull: payload => dispatch(setNextIndexNull(payload)),
   prepManageContent: payload => dispatch(prepManageContent(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
+  loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
+  doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
   addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
 })
 
@@ -69,9 +61,11 @@ const mapStateToProps = state => ({
   activeAttribute: state.editor.activeAttribute,
   focusedEntryIndex: state.editor.focusedEntryIndex,
   activeIndex: state.editor.activeIndex,
+  initialImageIds: state.editor.initialImageIds,
   cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
+  initialEntries: state.editor.initialEntries,
   showEditorToolbar: state.editor.showEditorToolbar,
   isOffline: state.common.isOffline,
   uploadIsImage: state.editor.uploadIsImage
@@ -113,7 +107,7 @@ class ChapterEditor extends Component {
 
   keyboardWillShow(e) {
     this.setState({
-      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 84
+      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 40
     })
   }
 
@@ -220,54 +214,21 @@ class ChapterEditor extends Component {
     return aspectRatio * Dimensions.get("window").width
   }
 
-  commenceDownloadtoDevice = () => {
-    this.setState({
-      offlineMode: true
-    })
+  getAllImageIds = () => {
+    let entries = this.props.entries
+      .filter(entry => entry.type === "image")
+      .map(entry => {
+        return entry.id
+      })
+    return entries
   }
 
-  async persistChapterToLocalStorage() {
-    await persistChapterToAsyncStorage(this.props.chapter)
-  }
+  getImagesToDelete() {
+    const allImageIds = this.getAllImageIds()
+    const { initialImageIds } = this.props
 
-  commenceDownloadtoDeviceButton() {
-    return (
-      <TouchableWithoutFeedback onPress={this.commenceDownloadtoDevice}>
-        <View style={{ height: 60, backgroundColor: "red" }}>
-          <Text>download to device</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
-  renderProperUri(entry) {
-    return this.props.isOffline ? entry.localUri : entry.uri
-  }
-
-  downloadToDevice(entry, index) {
-    if (!this.props.isOffline) return
-
-    let image = { entry: entry, index: index }
-    let imagesNeededOffline = [...this.state.imagesNeededOffline, image]
-
-    this.setState({
-      imagesNeededOffline: imagesNeededOffline
-    })
-  }
-
-  renderDivider() {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 3,
-          borderBottomColor: "#323941",
-          width: 90,
-          marginTop: 10,
-          marginLeft: 20,
-          marginBottom: 30
-        }}
-      />
-    )
+    const diff = _.xor(initialImageIds, allImageIds)
+    return diff
   }
 
   renderAsImage(entry, index) {
@@ -279,8 +240,7 @@ class ChapterEditor extends Component {
           <View>
             <ImageBackground
               style={{ width: Dimensions.get("window").width, height: imageHeight }}
-              source={{ uri: this.renderProperUri(entry) }}
-              onError={() => this.downloadToDevice(entry, index)}>
+              source={{ uri: entry.uri }}>
               {this.renderOpacCover(index, imageHeight, entry)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
@@ -307,6 +267,24 @@ class ChapterEditor extends Component {
     this.props.updateFormatBar(styles)
   }
 
+  navigateBack = () => {
+    this.props.navigation.goBack()
+  }
+
+  renderHeader() {
+    const headerProps = Object.assign(
+      {},
+      {
+        goBackCta: "Cancel",
+        handleGoBack: this.handleCancelButtonPress,
+        centerCta: "",
+        handleConfirm: this.handleDoneButtonPress,
+        confirmCta: "Save"
+      }
+    )
+    return <Header key="header" {...headerProps} />
+  }
+
   renderAsTextInput(entry, index) {
     return (
       <TextInput
@@ -326,12 +304,34 @@ class ChapterEditor extends Component {
     )
   }
 
-  getAppropriateIndex() {
-    let activeEntry = this.props.entries[this.props.activeIndex]
-    if (activeEntry.content.length === 0 && this.props.activeIndex !== 0) {
-      return this.props.activeIndex - 1
+  handleDoneButtonPress = () => {
+    if (this.props.isUpdating) return
+    this.props.doneEditingAndPersist()
+    this.navigateBack()
+  }
+
+  loseChangesAndUpdate = () => {
+    const { id } = this.props.chapter.editorBlob
+    const deletedIds = this.getImagesToDelete()
+    const payload = Object.assign({}, { id, deletedIds })
+    this.props.loseChangesAndUpdate(payload)
+    this.navigateBack()
+  }
+
+  editorIsSaved() {
+    return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
+  }
+
+  handleCancelButtonPress = () => {
+    if (this.editorIsSaved()) {
+      this.loseChangesAndUpdate()
     } else {
-      return this.props.activeIndex
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your blog changes",
+        [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+        { cancelable: true }
+      )
     }
   }
 
@@ -368,10 +368,6 @@ class ChapterEditor extends Component {
     return <ContentCreator index={index} key={`contentCreator${index}`} navigation={this.props.navigation} />
   }
 
-  renderChapterForm() {
-    return <ChapterMetaDataForm navigation={this.props.navigation} />
-  }
-
   renderEditor() {
     if (!this.props.chapter.id) return
 
@@ -387,7 +383,7 @@ class ChapterEditor extends Component {
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: Dimensions.get("window").height - 80 }
+      return { height: Dimensions.get("window").height - 40 }
     } else {
       return { height: Dimensions.get("window").height }
     }
@@ -395,21 +391,22 @@ class ChapterEditor extends Component {
 
   render() {
     return (
-      <View style={([styles.container], this.getContainerSize())}>
-        <InputScrollView
-          useAnimatedScrollView={true}
-          bounces={true}
-          style={styles.positionRelative}
-          keyboardOffset={90}
-          multilineInputStyle={{ lineHeight: 30 }}>
-          {this.renderChapterForm()}
-          {this.renderDivider()}
-          <View>
-            {this.renderEditor()}
-            {this.renderCreateCta(this.props.entries.length)}
-          </View>
-        </InputScrollView>
-        {this.renderEditorToolbar()}
+      <View style={{ backgroundColor: "white" }}>
+        <View style={([styles.container], this.getContainerSize())}>
+          {this.renderHeader()}
+          <InputScrollView
+            useAnimatedScrollView={true}
+            bounces={true}
+            style={styles.positionRelative}
+            keyboardOffset={90}
+            multilineInputStyle={{ lineHeight: 30 }}>
+            <View>
+              {this.renderEditor()}
+              {this.renderCreateCta(this.props.entries.length)}
+            </View>
+          </InputScrollView>
+          {this.renderEditorToolbar()}
+        </View>
       </View>
     )
   }
@@ -417,6 +414,7 @@ class ChapterEditor extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     marginBottom: 0,
     position: "relative"
   },
@@ -440,23 +438,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0
   },
-  iconsAndText: {
-    display: "flex",
-    flexDirection: "row",
-    paddingTop: 5,
-    backgroundColor: "#f8f8f8"
-  },
-  iconPositioning: {
-    marginRight: 5
-  },
-  iconText: {
-    fontFamily: "overpass",
-    fontSize: 14
-  },
-  bannerImage: {
-    width: Dimensions.get("window").width,
-    height: 200
-  },
   headerText: {
     fontFamily: "playfair",
     fontSize: 22
@@ -477,6 +458,7 @@ const styles = StyleSheet.create({
   },
   positionRelative: {
     position: "relative",
+    backgroundColor: "white"
   },
   captionPadding: {
     paddingLeft: 20,

@@ -69,7 +69,9 @@ class ChapterShow extends Component {
         distance: distanceAmount,
         description: description,
         readableDistanceType: distance.readableDistanceType,
-        imageUrl: imageUrl,
+        bannerImage: {
+          uri: imageUrl
+        },
         journalId: journal.id
       }
     )
@@ -358,6 +360,7 @@ class ChapterShow extends Component {
     const options = this.getChapterUserFormProps()
     return (
       <ThreeDotDropdown
+        menuPosition={"below"}
         options={options}
         openMenuStyling={{ borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }}
       />
@@ -407,7 +410,7 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
-        <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
+        <View style={{ marginBottom: 100, minHeight: 200 }}>{this.renderBodyContent()}</View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>
     )

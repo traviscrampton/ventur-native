@@ -23,14 +23,15 @@ export const Header = props => {
 
 const styles = StyleSheet.create({
   container: {
+    height: 45,
     display: "flex",
-    height: 60,
-    backgroundColor: "white",
-    alignItems: "center",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 20,
+    paddingLeft: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f8f8f8"
   }
 })

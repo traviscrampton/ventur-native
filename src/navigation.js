@@ -25,6 +25,7 @@ import RouteEditor from "components/Maps/RouteEditor"
 import RouteViewer from "components/Maps/RouteViewer"
 import JournalRoute from "components/Maps/JournalRoute"
 import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
+import ChapterEditor from "components/chapters/ChapterEditor"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -46,6 +47,7 @@ const NO_FOOTER_SCREENS = [
   "JournalRoute",
   "JournalForm",
   "CountriesEditor",
+  "ChapterEditor",
   "ChapterMetaDataForm"
 ]
 
@@ -67,7 +69,8 @@ const JournalFeedNavigator = createStackNavigator(
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
-    JournalFormUpload: JournalFormUpload
+    JournalFormUpload: JournalFormUpload,
+    ChapterEditor: ChapterEditor,
   },
   {
     initialRouteName: "JournalFeed",
@@ -100,7 +103,8 @@ const ProfileNavigator = createStackNavigator(
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
     ManageContent: ManageContent,
-    ChapterFormJournals: ChapterFormJournals
+    ChapterFormJournals: ChapterFormJournals,
+    ChapterEditor: ChapterEditor,
   },
   {
     initialRouteName: "Profile",

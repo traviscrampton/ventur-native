@@ -345,42 +345,22 @@ class Journal extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
-  mungeForChapterForm(data) {
-    return Object.assign(
+  navigateToChapterForm = () => {
+    let chapterForm = Object.assign(
       {},
       {
-        id: data.id,
-        title: data.title,
-        date: data.date,
-        offline: data.offline,
-        distance: data.distance,
-        journalId: data.journal.id,
+        id: null,
+        title: "",
+        date: new Date(),
+        distance: 0,
+        readableDistanceType: this.props.journal.distance.readableDistanceType,
+        journalId: this.props.journal.id,
         bannerImage: { uri: "" }
       }
     )
-  }
 
-  chapterCreateCallback = data => {
-    let chapterFormData = this.mungeForChapterForm(data)
-    this.props.updateChapterForm(chapterFormData)
-    this.props.addChapterToJournals(data)
-    this.props.loadChapter(data)
-    this.props.setLoadingFalse()
-  }
-
-  navigateToChapterForm = () => {
-    let obj = {
-      id: null,
-      title: "",
-      date: new Date(),
-      offline: false,
-      distance: 0,
-      journalId: this.props.journal.id,
-      bannerImage: { uri: "" }
-    }
-    this.props.setLoadingTrue()
-    this.props.navigation.navigate("Chapter", { initialChapterForm: true })
-    createChapter(obj, this.chapterCreateCallback)
+    this.props.updateChapterForm(chapterForm)
+    this.props.navigation.navigate("ChapterMetaDataForm")
   }
 
   renderCreateChapterCta() {
