@@ -24,6 +24,7 @@ import UserAvatarForm from "components/users/UserAvatarForm"
 import RouteEditor from "components/Maps/RouteEditor"
 import RouteViewer from "components/Maps/RouteViewer"
 import JournalRoute from "components/Maps/JournalRoute"
+import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -44,7 +45,8 @@ const NO_FOOTER_SCREENS = [
   "RouteViewer",
   "JournalRoute",
   "JournalForm",
-  "CountriesEditor"
+  "CountriesEditor",
+  "ChapterMetaDataForm"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -52,6 +54,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
@@ -83,6 +86,7 @@ const ProfileNavigator = createStackNavigator(
     Profile: Profile,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     JournalFormTitle: JournalFormTitle,

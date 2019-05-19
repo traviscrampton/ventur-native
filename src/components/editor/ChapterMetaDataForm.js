@@ -8,6 +8,7 @@ import { updateChapter } from "utils/chapter_form_helper"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
+import { generateReadableDate } from "utils/chapter_form_helper"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
@@ -40,10 +41,10 @@ class ChapterMetaDataForm extends Component {
   }
 
   persistMetadata = async (text, field) => {
-    this.props.startUpdating()
+    // this.props.startUpdating()
     this.props.updateChapterForm({ [field]: text })
 
-    this.persistUpdate()
+    // this.persistUpdate()
   }
 
   uploadImage(img) {
@@ -83,11 +84,16 @@ class ChapterMetaDataForm extends Component {
     updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
   }
 
+  focusDistanceTextInput = () => {
+    this.distanceTextInput.focus()
+  }
+
   renderDatePicker() {
     if (!this.state.datePickerOpen) return
+
     return (
       <DatePickerDropdown
-        date={this.props.chapter.date}
+        date={this.props.chapterForm.date}
         toggleDatePicker={this.toggleDatePicker}
         persistMetadata={date => this.persistMetadata(date, "date")}
       />
@@ -95,28 +101,40 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderStatistics() {
-    const { distance } = this.props.chapterForm
+    const { distance, readableDistanceType } = this.props.chapterForm
+    let readableDate = generateReadableDate(this.props.chapterForm.date)
+
     return (
       <View style={styles.statsContainer}>
         <TouchableWithoutFeedback onPress={this.toggleDatePicker}>
           <View style={styles.iconsAndText}>
             <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
-            <Text style={styles.iconText}>{`${this.props.chapter.readableDate}`.toUpperCase()}</Text>
+            <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
           </View>
         </TouchableWithoutFeedback>
         {this.renderDatePicker()}
-        <View style={styles.iconsAndText}>
-          <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
-          <TextInput
-            selectionColor={"#FF8C34"}
-            keyboardType={"numeric"}
-            maxLength={6}
-            value={distance.toString()}
-            onChangeText={text => this.persistMetadata(text, "distance")}
-            style={{ textAlign: "right", marginRight: 5, paddingBottom: 2 }}
-          />
-          <Text style={styles.iconText}>KILOMETERS</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={() => this.focusDistanceTextInput()}>
+          <View style={styles.iconsAndText}>
+            <MaterialIcons
+              style={styles.iconPositioning}
+              name="directions-bike"
+              style={styles.iconPositioning}
+              size={18}
+            />
+            <TextInput
+              selectionColor={"#FF8C34"}
+              ref={input => {
+                this.distanceTextInput = input
+              }}
+              keyboardType={"numeric"}
+              maxLength={6}
+              value={distance.toString()}
+              onChangeText={text => this.persistMetadata(text, "distance")}
+              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6 }}
+            />
+            <Text style={styles.iconText}>{`${readableDistanceType}`.toUpperCase()}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     )
   }
@@ -182,7 +200,7 @@ class ChapterMetaDataForm extends Component {
 
   render() {
     return (
-      <View style={styles.marginBottom20}>
+      <View style={styles.container}>
         {this.renderChapterImage()}
         {this.renderTitleAndDescription()}
         {this.renderStatistics()}
@@ -192,30 +210,43 @@ class ChapterMetaDataForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    backgroundColor: "white"
+  },
   statsContainer: {
     padding: 20,
     paddingTop: 0
   },
   iconPositioning: {
-    marginRight: 5
+    marginRight: 5,
+    paddingBottom: 2
   },
   title: {
     fontSize: 28,
     fontFamily: "playfair",
     color: "#323941",
-    backgroundColor: "#f8f8f8"
+    borderColor: "#d3d3d3",
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "white",
+    padding: 5
   },
   iconsAndText: {
     display: "flex",
     flexDirection: "row",
-    paddingTop: 5,
-    backgroundColor: "#f8f8f8",
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5,
+    backgroundColor: "white",
     marginBottom: 10,
-    alignItem: "middle"
+    alignItems: "center",
+    paddingBottom: 3
   },
   iconText: {
     fontFamily: "overpass",
-    fontSize: 14
+    fontSize: 20
   },
   titleAndDescriptionContainer: {
     padding: 20,

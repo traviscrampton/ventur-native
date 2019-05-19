@@ -80,12 +80,14 @@ class ChapterDispatch extends Component {
 
   editMetaData = () => {
     let { id, title, distance, description, journal, imageUrl } = this.props.chapter
+    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
 
     let obj = {
       id: id,
       title: title,
-      distance: distance,
+      distance: distanceAmount,
       description: description,
+      readableDistanceType: distance.readableDistanceType,
       imageUrl: imageUrl,
       journalId: journal.id
     }

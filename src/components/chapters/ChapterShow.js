@@ -57,6 +57,27 @@ class ChapterShow extends Component {
     )
   }
 
+  navigateToChapterForm = () => {
+    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
+    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
+
+    let obj = Object.assign(
+      {},
+      {
+        id: id,
+        title: title,
+        distance: distanceAmount,
+        description: description,
+        readableDistanceType: distance.readableDistanceType,
+        imageUrl: imageUrl,
+        journalId: journal.id
+      }
+    )
+
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterMetaDataForm")
+  }
+
   handleDelete = async () => {
     this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
   }
@@ -77,6 +98,13 @@ class ChapterShow extends Component {
 
   getChapterUserFormProps() {
     let optionsProps = [
+      {
+        type: "touchable",
+        iconName: "edit",
+        title: "Edit Metadata",
+        callback: this.navigateToChapterForm,
+        closeMenuOnClick: true
+      },
       {
         type: "touchable",
         iconName: "delete",
@@ -146,21 +174,6 @@ class ChapterShow extends Component {
       default:
         return ""
     }
-  }
-
-  editMetaData = () => {
-    let { id, title, distance, description } = this.props.chapter
-
-    let obj = {
-      id: id,
-      title: title,
-      distance: distance,
-      description: description,
-      journalId: this.props.chapter.journal.id
-    }
-
-    this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterFormTitle")
   }
 
   navigateToMap = async () => {
