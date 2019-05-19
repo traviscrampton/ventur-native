@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   AsyncStorage,
-  CameraRoll,
   Alert
 } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"

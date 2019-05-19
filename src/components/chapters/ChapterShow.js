@@ -77,12 +77,30 @@ class ChapterShow extends Component {
 
   getChapterUserFormProps() {
     let optionsProps = [
-      { type: "touchable", title: "Delete Chapter", callback: this.openDeleteAlert },
-      { type: "switch", title: "Published", value: this.props.chapter.published, callback: this.updatePublishedStatus }
+      {
+        type: "touchable",
+        iconName: "delete",
+        title: "Delete Chapter",
+        callback: this.openDeleteAlert,
+        closeMenuOnClick: true
+      },
+      {
+        type: "switch",
+        title: "Published",
+        iconName: "publish",
+        value: this.props.chapter.published,
+        callback: this.updatePublishedStatus,
+        closeMenuOnClick: false
+      }
     ]
 
     if (this.props.chapter.published) {
-      const emailOption = { type: "touchable", title: this.getEmailToggle(), callback: this.sendEmails }
+      const emailOption = {
+        type: "touchable",
+        iconName: "mail-outline",
+        title: this.getEmailToggle(),
+        callback: this.sendEmails
+      }
       optionsProps.push(emailOption)
     }
 
@@ -114,6 +132,20 @@ class ChapterShow extends Component {
         </View>
       </View>
     )
+  }
+
+  returnDistanceString(distance) {
+    const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+    switch (distanceType) {
+      case "kilometer":
+        return `${kilometerAmount} ${readableDistanceType}`
+
+      case "mile":
+        return `${mileAmount} ${readableDistanceType}`
+
+      default:
+        return ""
+    }
   }
 
   editMetaData = () => {
@@ -169,6 +201,7 @@ class ChapterShow extends Component {
 
   renderStatistics() {
     const { readableDate, distance } = this.props.chapter
+    const distanceString = this.returnDistanceString(distance)
     return (
       <View style={styles.statisticsPadding}>
         <View style={styles.statisticsContainer}>
@@ -177,7 +210,7 @@ class ChapterShow extends Component {
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
-          <Text style={styles.statisticsText}>{`${distance} kilometers`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${distanceString}`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -305,15 +338,20 @@ class ChapterShow extends Component {
     })
   }
 
-  renderChapterMenu() {
+  renderThreeDotMenu() {
     if (this.props.user.id != this.props.currentUser.id) {
       return <View />
     }
     const options = this.getChapterUserFormProps()
-    return <ThreeDotDropdown options={options} />
+    return (
+      <ThreeDotDropdown
+        options={options}
+        openMenuStyling={{ borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }}
+      />
+    )
   }
 
-  renderThreeDotDropdown() {
+  renderIconAndThreeDotMenu() {
     return (
       <View
         style={{
@@ -325,7 +363,7 @@ class ChapterShow extends Component {
           marginBottom: 5
         }}>
         {this.renderMapIconCta()}
-        {this.renderChapterMenu()}
+        {this.renderThreeDotMenu()}
       </View>
     )
   }
@@ -354,7 +392,7 @@ class ChapterShow extends Component {
         </View>
         {this.renderTitle()}
         {this.renderStatistics()}
-        {this.renderThreeDotDropdown()}
+        {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
         <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>

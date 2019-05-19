@@ -2,9 +2,25 @@ import React from "react"
 import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 
+const distanceString = distance => {
+  const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+  switch (distanceType) {
+    case "kilometer":
+      return `${kilometerAmount} ${readableDistanceType}`
+
+    case "mile":
+      return `${mileAmount} ${readableDistanceType}`
+
+    default:
+      return ""
+  }
+}
+
 const ChapterCard = props => {
   let publishedStatus
   let { imageUrl, title, distance, readableDate } = props
+
+  distance = distanceString(distance)
 
   if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
     publishedStatus = <Text style={{color: "orange"}}>Draft</Text>
@@ -23,7 +39,7 @@ const ChapterCard = props => {
             </View>
             <View style={styles.individualIconTextContainer}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
-              <Text style={styles.textStats}>{`${distance} kilometers`.toUpperCase()}</Text>
+              <Text style={styles.textStats}>{`${distance}`.toUpperCase()}</Text>
             </View>
             <View style={styles.individualIconTextContainer}>
               <Feather style={styles.iconMargin} name="camera" size={16} />

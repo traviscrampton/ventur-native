@@ -13,7 +13,14 @@ import {
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { get } from "agent"
-import { loadSingleJournal, requestForChapter, resetJournalShow } from "actions/journals"
+import {
+  loadSingleJournal,
+  requestForChapter,
+  resetJournalShow,
+  uploadBannerImage,
+  imageUploading
+} from "actions/journals"
+import { MaterialIndicator } from "react-native-indicators"
 import { createChapter } from "utils/chapter_form_helper"
 import { updateJournalForm } from "actions/journal_form"
 import { loadChapter, resetChapter } from "actions/chapter"
@@ -22,10 +29,12 @@ import { loadJournalMap } from "actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
+import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
 import LoadingScreen from "components/shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
+  imageUploading: state.journal.imageUploading,
   user: state.journal.journal.user,
   chapters: state.journal.journal.chapters,
   chapterForm: state.chapterForm,
@@ -44,9 +53,11 @@ const mapDispatchToProps = dispatch => ({
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
   setLoadingTrue: () => dispatch(setLoadingTrue()),
+  updateImageUploading: bool => dispatch(imageUploading(bool)),
   setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadJournalMap: id => dispatch(loadJournalMap(id)),
-  resetJournalShow: () => dispatch(resetJournalShow())
+  resetJournalShow: () => dispatch(resetJournalShow()),
+  uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img))
 })
 
 class Journal extends Component {
@@ -92,6 +103,62 @@ class Journal extends Component {
     this.props.loadJournalMap(this.props.journal.id)
   }
 
+  getJournalOptions() {
+    let optionsProps = [
+      {
+        type: "touchable",
+        iconName: "edit",
+        title: "Edit Journal",
+        callback: this.renderJournalEditForm,
+        closeMenuOnClick: true
+      },
+      {
+        type: "touchable",
+        iconName: "cloud-upload",
+        title: "Upload Image",
+        callback: this.updateBannerImage,
+        closeMenuOnClick: true
+      }
+    ]
+
+    return optionsProps
+  }
+
+  uploadImage(img) {
+    this.props.updateImageUploading(true)
+    let imgPost = Object.assign(
+      {},
+      {
+        uri: img.uri,
+        name: img.filename,
+        type: "multipart/form-data"
+      }
+    )
+
+    this.props.uploadBannerImage(this.props.journal.id, imgPost)
+  }
+
+  updateBannerImage = () => {
+    this.props.navigation.navigate("CameraRollContainer", {
+      selectSingleItem: true,
+      singleItemCallback: img => this.uploadImage(img)
+    })
+  }
+
+  returnDistanceString(distance) {
+    const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+    switch (distanceType) {
+      case "kilometer":
+        return `${kilometerAmount} ${readableDistanceType}`
+
+      case "mile":
+        return `${mileAmount} ${readableDistanceType}`
+
+      default:
+        return ""
+    }
+  }
+
   renderJournalEditForm = () => {
     const { id, title, description, status, countries } = this.props.journal
     const payload = Object.assign(
@@ -133,6 +200,16 @@ class Journal extends Component {
     }
   }
 
+  renderThreeDotMenu(user) {
+    let options
+    if (user.id == this.props.currentUser.id) {
+      options = this.getJournalOptions()
+      return <ThreeDotDropdown options={options} menuOpenStyling={Object.assign({})} menuPosition={"below"} />
+    } else {
+      return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+    }
+  }
+
   renderNavHeader(user) {
     return (
       <View style={styles.navigationContainer}>
@@ -142,17 +219,27 @@ class Journal extends Component {
           onPress={this.navigateBack}>
           <Ionicons style={styles.backIconPosition} name="ios-arrow-back" size={28} color="white" />
         </TouchableHighlight>
-        {this.renderImageOrEdit(user)}
+        {this.renderThreeDotMenu(user)}
+      </View>
+    )
+  }
+
+  renderImageUploadingScreen() {
+    if (!this.props.imageUploading) return
+
+    return (
+      <View style={{ position: "absolute", width: this.props.width, height: "100%" }}>
+        <MaterialIndicator size={40} color="#ff8c34" />
       </View>
     )
   }
 
   renderBannerAndUserImages(journal, user) {
-    let bannerHeight = this.getBannerHeight()
     return (
       <View style={[styles.bannerUserImage]}>
         <ImageBackground style={{ width: this.props.width }} source={{ uri: journal.cardBannerImageUrl }}>
           <View style={[styles.banner, { width: this.props.width }]}>
+            {this.renderImageUploadingScreen()}
             {this.renderNavHeader(user)}
             {this.renderJournalMetadata(journal)}
           </View>
@@ -162,6 +249,7 @@ class Journal extends Component {
   }
 
   renderJournalMetadata(journal) {
+    const distance = this.returnDistanceString(journal.distance)
     return (
       <View style={styles.metaDataContainer}>
         <View style={styles.titleSubTitleContainer}>
@@ -174,9 +262,7 @@ class Journal extends Component {
         <View style={styles.statsAndMapContainer}>
           <View>
             <View>
-              <Text style={styles.stats}>
-                {`${journal.status} \u2022 ${journal.distance} kilometers`.toUpperCase()}
-              </Text>
+              <Text style={styles.stats}>{`${journal.status} \u2022 ${distance}`.toUpperCase()}</Text>
             </View>
             <View>
               <Text style={styles.stats}>FOLLOWERS: {this.props.journal.journalFollowsCount}</Text>
@@ -351,7 +437,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10
+    marginBottom: 10,
+    zIndex: 10
   },
   backButton: {
     padding: 20,

@@ -15,7 +15,23 @@ const countries = names => {
   })
 }
 
+const distanceString = distance => {
+  const { distanceType, kilometerAmount, mileAmount } = distance
+  switch (distanceType) {
+    case "kilometer":
+      return `${kilometerAmount} KM`
+
+    case "mile":
+      return `${mileAmount} MI`
+
+    default:
+      return ""
+  }
+}
+
 const tripMetaData = props => {
+  const distance = distanceString(props.distance)
+
   return (
     <View style={styles.metadataContainer}>
       <View style={styles.marginBottomAuto}>
@@ -33,7 +49,7 @@ const tripMetaData = props => {
           display: "flex"
         }}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status} ${"\u2022"} ${props.distance} KM ${"\u2022"} ${
+          {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${
             props.journalFollowsCount
           } followers`.toUpperCase()}
         </Text>

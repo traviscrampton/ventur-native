@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, Switch, TouchableWithoutFeedback } from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({})
@@ -11,11 +12,41 @@ class ChapterUserForm extends Component {
     super(props)
   }
 
+  stylePosition() {
+    let styles = Object.assign(
+      {},
+      {
+        position: "absolute",
+        borderRadius: 4,
+        right: 20,
+        zIndex: 100,
+        width: 250,
+        backgroundColor: "#323941"
+      }
+    )
+
+    if (this.props.menuPosition === "below") {
+      styles["top"] = 50
+    } else {
+      styles["bottom"] = 50
+    }
+
+    return styles
+  }
+
+  handleOptionCallback = option => {
+    if (option.closeMenuOnClick) {
+      this.props.toggleUserMenuOpen()
+    }
+
+    option.callback()
+  }
+
   renderTouchableOption(option, index) {
-    console.log("callback!!!", option.callback)
     return (
-      <TouchableWithoutFeedback onPress={option.callback} key={option.title}>
+      <TouchableWithoutFeedback onPress={() => this.handleOptionCallback(option)} key={option.title}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>
+          <MaterialIcons name={option.iconName} style={{ marginRight: 10 }} color={"white"} size={16} />
           <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -35,7 +66,10 @@ class ChapterUserForm extends Component {
           paddingRight: 10,
           justifyContent: "space-between"
         }}>
-        <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <MaterialIcons name={option.iconName} style={{ marginRight: 10 }} color={"white"} size={16} />
+          <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
+        </View>
         <Switch
           value={option.value}
           style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
@@ -65,15 +99,11 @@ class ChapterUserForm extends Component {
   render() {
     return (
       <View
-        style={{
-          position: "absolute",
-          bottom: 50,
-          borderRadius: 4,
-          right: 20,
-          zIndex: 10,
-          width: 250,
-          backgroundColor: "#323941"
-        }}>
+        shadowColor="gray"
+        shadowOffset={{ width: 2, height: 2 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={this.stylePosition()}>
         {this.renderChapterOptions()}
       </View>
     )
