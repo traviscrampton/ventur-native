@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback, Al
 import { connect } from "react-redux"
 import { deleteComment } from "actions/comments"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
+const CycleTouringLogo = require("assets/images/cycletouringlogo.png")
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
@@ -84,10 +85,13 @@ class Comment extends Component {
   }
 
   renderUserSection() {
+    const avatarImageUrl =
+      this.props.user.avatarImageUrl.length > 0 ? { uri: this.props.user.avatarImageUrl } : CycleTouringLogo
+
     return (
       <View style={styles.userSectionContainer}>
         <View style={styles.imageAndUser}>
-          <Image style={styles.image} source={{ uri: this.props.user.avatarImageUrl }} />
+          <Image style={styles.image} source={avatarImageUrl} />
           <View style={styles.userAndDate}>
             <Text style={styles.userFullName}>{this.props.user.fullName}</Text>
             <Text style={styles.commentDate}>{this.props.readableDate}</Text>
@@ -211,7 +215,9 @@ const styles = StyleSheet.create({
   image: {
     width: 35,
     height: 35,
-    borderRadius: 17.5
+    borderRadius: 17.5,
+    borderWidth: 1,
+    borderColor: "#d3d3d3"
   },
   userAndDate: {
     display: "flex",

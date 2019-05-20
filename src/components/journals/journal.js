@@ -160,7 +160,15 @@ class Journal extends Component {
   }
 
   renderJournalEditForm = () => {
-    const { id, title, description, status, countries } = this.props.journal
+    const {
+      id,
+      title,
+      description,
+      status,
+      countries,
+      distance: { distanceType }
+    } = this.props.journal
+    
     const payload = Object.assign(
       {},
       {
@@ -168,6 +176,7 @@ class Journal extends Component {
         title,
         description,
         status,
+        distanceType,
         includedCountries: countries
       }
     )
