@@ -46,7 +46,13 @@ class ThreeDotDropdown extends Component {
   renderUserMenu() {
     if (!this.state.userMenuOpen) return
 
-    return <ChapterUserForm menuPosition={this.props.menuPosition} options={this.props.options} toggleUserMenuOpen={this.toggleUserMenuOpen} />
+    return (
+      <ChapterUserForm
+        menuPosition={this.props.menuPosition}
+        options={this.props.options}
+        toggleUserMenuOpen={this.toggleUserMenuOpen}
+      />
+    )
   }
 
   renderUserDropDown() {

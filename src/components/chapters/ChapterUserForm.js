@@ -17,8 +17,11 @@ class ChapterUserForm extends Component {
       {},
       {
         position: "absolute",
-        borderRadius: 4,
+        borderRadius: 5,
         right: 20,
+        borderWidth: 1,
+        borderColor: "white",
+        borderBottomWidth: 0,
         zIndex: 100,
         width: 250,
         backgroundColor: "#323941"
@@ -45,7 +48,16 @@ class ChapterUserForm extends Component {
   renderTouchableOption(option, index) {
     return (
       <TouchableWithoutFeedback onPress={() => this.handleOptionCallback(option)} key={option.title}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            height: 50,
+            paddingLeft: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: "white"
+          }}>
           <MaterialIcons name={option.iconName} style={{ marginRight: 10 }} color={"white"} size={16} />
           <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
         </View>
@@ -61,9 +73,12 @@ class ChapterUserForm extends Component {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          height: 40,
+          height: 50,
           paddingLeft: 10,
           paddingRight: 10,
+          paddingLeft: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: "white",
           justifyContent: "space-between"
         }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
@@ -90,7 +105,7 @@ class ChapterUserForm extends Component {
     }
   }
 
-  renderChapterOptions() {
+  renderOptions() {
     return this.props.options.map((option, index) => {
       return this.dispatchOption(option, index)
     })
@@ -98,13 +113,8 @@ class ChapterUserForm extends Component {
 
   render() {
     return (
-      <View
-        shadowColor="gray"
-        shadowOffset={{ width: 2, height: 2 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}
-        style={this.stylePosition()}>
-        {this.renderChapterOptions()}
+      <View shadowColor="white" shadowOffset={{ width: 3, height: 3 }} shadowRadius={3} style={this.stylePosition()}>
+        {this.renderOptions()}
       </View>
     )
   }

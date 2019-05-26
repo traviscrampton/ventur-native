@@ -297,7 +297,7 @@ class ChapterDispatch extends Component {
           shadowRadius={2}
           style={{
             position: "absolute",
-            backgroundColor: "#067BC2",
+            backgroundColor: "#FF5423",
             width: 60,
             height: 60,
             borderRadius: 30,

@@ -358,6 +358,7 @@ class ChapterShow extends Component {
       return <View />
     }
     const options = this.getChapterUserFormProps()
+
     return (
       <ThreeDotDropdown
         menuPosition={"below"}
@@ -376,7 +377,9 @@ class ChapterShow extends Component {
           justifyContent: "space-between",
           paddingRight: 20,
           paddingLeft: 20,
-          marginBottom: 5
+          marginBottom: 5,
+          position: "relative", 
+          zIndex: 100
         }}>
         {this.renderMapIconCta()}
         {this.renderThreeDotMenu()}
@@ -410,7 +413,9 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
-        <View style={{ marginBottom: 100, minHeight: 200 }}>{this.renderBodyContent()}</View>
+        <View style={{ marginBottom: 100, minHeight: 200, position: "relative", zIndex: 0 }}>
+          {this.renderBodyContent()}
+        </View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>
     )
