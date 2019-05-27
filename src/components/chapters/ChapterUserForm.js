@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, Switch, TouchableWithoutFeedback } from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({})
@@ -11,10 +12,53 @@ class ChapterUserForm extends Component {
     super(props)
   }
 
+  stylePosition() {
+    let styles = Object.assign(
+      {},
+      {
+        position: "absolute",
+        borderRadius: 5,
+        right: 20,
+        borderWidth: 1,
+        borderColor: "white",
+        borderBottomWidth: 0,
+        zIndex: 100,
+        width: 250,
+        backgroundColor: "#323941"
+      }
+    )
+
+    if (this.props.menuPosition === "below") {
+      styles["top"] = 50
+    } else {
+      styles["bottom"] = 50
+    }
+
+    return styles
+  }
+
+  handleOptionCallback = option => {
+    if (option.closeMenuOnClick) {
+      this.props.toggleUserMenuOpen()
+    }
+
+    option.callback()
+  }
+
   renderTouchableOption(option, index) {
     return (
-      <TouchableWithoutFeedback onPress={option.callback} key={option.title}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", height: 40, paddingLeft: 10 }}>
+      <TouchableWithoutFeedback onPress={() => this.handleOptionCallback(option)} key={option.title}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            height: 50,
+            paddingLeft: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: "white"
+          }}>
+          <MaterialIcons name={option.iconName} style={{ marginRight: 10 }} color={"white"} size={16} />
           <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -29,12 +73,18 @@ class ChapterUserForm extends Component {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          height: 40,
+          height: 50,
           paddingLeft: 10,
           paddingRight: 10,
+          paddingLeft: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: "white",
           justifyContent: "space-between"
         }}>
-        <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <MaterialIcons name={option.iconName} style={{ marginRight: 10 }} color={"white"} size={16} />
+          <Text style={{ color: "white", fontSize: 16 }}>{option.title}</Text>
+        </View>
         <Switch
           value={option.value}
           style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
@@ -55,7 +105,7 @@ class ChapterUserForm extends Component {
     }
   }
 
-  renderChapterOptions() {
+  renderOptions() {
     return this.props.options.map((option, index) => {
       return this.dispatchOption(option, index)
     })
@@ -63,17 +113,8 @@ class ChapterUserForm extends Component {
 
   render() {
     return (
-      <View
-        style={{
-          position: "absolute",
-          bottom: 50,
-          borderRadius: 4,
-          right: 20,
-          zIndex: 10,
-          width: 250,
-          backgroundColor: "#323941"
-        }}>
-        {this.renderChapterOptions()}
+      <View shadowColor="white" shadowOffset={{ width: 3, height: 3 }} shadowRadius={3} style={this.stylePosition()}>
+        {this.renderOptions()}
       </View>
     )
   }

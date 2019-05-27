@@ -151,7 +151,7 @@ class ChapterFormJournals extends Component {
         <View style={{ borderRadius: 30, marginRight: 20, marginLeft: 20, marginTop: 20, backgroundColor: "white" }}>
           <Text
             style={{
-              color: "#067BC2",
+              color: "#3F88C5",
               textAlign: "center",
               paddingTop: 15,
               fontSize: 18,
@@ -243,7 +243,7 @@ class ChapterFormJournals extends Component {
   render() {
     return (
       <View>
-        <LinearGradient style={{ height: this.props.height }} colors={["#067BC2", "#032D47"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#3F88C5", "#032D47"]}>
           {this.renderBackButtonHeader()}
           <ScrollView bounces="none" style={{ padding: 20, maxHeight: this.props.height * 0.65 }}>
             {this.renderForm()}

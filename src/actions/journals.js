@@ -1,4 +1,4 @@
-import { get } from "agent"
+import { get, put, API_ROOT, setToken } from "agent"
 import { setLoadingTrue, setLoadingFalse } from "actions/common"
 import { loadChapter, resetChapter } from "actions/chapter"
 
@@ -12,10 +12,46 @@ export function resetJournalShow() {
   }
 }
 
+export const updateBannerImage = async (journalId, img, dispatch) => {
+  let formData = new FormData()
+  formData.append("banner_image", img)
+
+  const token = await setToken()
+  fetch(`${API_ROOT}/journals/${journalId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: token
+    },
+    body: formData
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      dispatch(populateSingleJournal(data))
+      dispatch(imageUploading(false))
+    })
+}
+
+export function uploadBannerImage(journalId, img) {
+  return function(dispatch, getState) {
+    updateBannerImage(journalId, img, dispatch)
+  }
+}
+
 export const POPULATE_SINGLE_JOURNAL = "POPULATE_SINGLE_JOURNAL"
 export function populateSingleJournal(payload) {
   return {
     type: POPULATE_SINGLE_JOURNAL,
+    payload: payload
+  }
+}
+
+export const IMAGE_UPLOADING = "IMAGE_UPLOADING"
+export function imageUploading(payload) {
+  return {
+    type: IMAGE_UPLOADING,
     payload: payload
   }
 }

@@ -1,19 +1,25 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "actions/editor"
-import { StyleSheet, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, ScrollView, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
 import { updateChapterForm, addChapterToJournals, resetChapterForm } from "actions/chapter_form"
+import { StackActions, NavigationActions } from "react-navigation"
 import _ from "lodash"
 import { loadChapter } from "actions/chapter"
-import { updateChapter } from "utils/chapter_form_helper"
+import { updateChapter, createChapter } from "actions/chapter_form"
+import { Header } from "components/editor/header"
 import DatePickerDropdown from "components/editor/DatePickerDropdown"
+import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
+import { generateReadableDate } from "utils/chapter_form_helper"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
   chapter: state.chapter.chapter,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  isUpdating: state.editor.isUpdating,
+  currentRoot: state.common.currentBottomTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -22,7 +28,9 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
-  resetChapterForm: () => dispatch(resetChapterForm())
+  resetChapterForm: () => dispatch(resetChapterForm()),
+  updateChapter: (params, callback) => dispatch(updateChapter(params, callback, dispatch)),
+  createChapter: (params, callback) => dispatch(createChapter(params, callback, dispatch))
 })
 
 class ChapterMetaDataForm extends Component {
@@ -32,7 +40,6 @@ class ChapterMetaDataForm extends Component {
     this.state = {
       datePickerOpen: false
     }
-    this.persistUpdate = _.debounce(this.persistUpdate, 1000)
   }
 
   componentWillUnmount() {
@@ -40,24 +47,22 @@ class ChapterMetaDataForm extends Component {
   }
 
   persistMetadata = async (text, field) => {
-    this.props.startUpdating()
     this.props.updateChapterForm({ [field]: text })
+  }
 
-    this.persistUpdate()
+  handleGoBack = () => {
+    this.props.navigation.goBack()
   }
 
   uploadImage(img) {
-    this.props.startUpdating()
-
     let imgPost = {
       uri: img.uri,
       name: img.filename,
       type: "multipart/form-data",
       needsUpload: true
     }
-    this.props.updateChapterForm({ bannerImage: imgPost })
 
-    this.persistUpdate()
+    this.props.updateChapterForm({ bannerImage: imgPost })
   }
 
   updateImage = () => {
@@ -72,22 +77,52 @@ class ChapterMetaDataForm extends Component {
     this.setState({ datePickerOpen: !datePickerOpen })
   }
 
-  chapterCallback = async data => {
-    this.props.addChapterToJournals(data)
-    this.props.loadChapter(data)
-    this.props.doneUpdating()
+  chapterCallback = async () => {
+    this.navigateToChapter()
   }
 
   persistUpdate = async () => {
-    let chapter = _.omit(this.props.chapterForm, "journals")
-    updateChapter(this.props.chapterForm.id, chapter, this.chapterCallback)
+    this.props.startUpdating()
+    let { id } = this.props.chapterForm
+
+    if (id) {
+      this.props.updateChapter(this.props.chapterForm, this.chapterCallback)
+    } else {
+      this.props.createChapter(this.props.chapterForm, this.chapterCallback)
+    }
+  }
+
+  focusDistanceTextInput = () => {
+    this.distanceTextInput.focus()
+  }
+
+  getFirstRoute() {
+    if (this.props.currentRoot === "Profile") {
+      return "Profile"
+    } else if (this.props.currentRoot === "Explore") {
+      return "JournalFeed"
+    }
+  }
+
+  navigateToChapter = () => {
+    const { journalId, id } = this.props.chapterForm
+    const resetAction = StackActions.reset({
+      index: 2,
+      actions: [
+        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
+        NavigationActions.navigate({ routeName: "Journal", params: { journalId } }),
+        NavigationActions.navigate({ routeName: "Chapter" })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
 
   renderDatePicker() {
     if (!this.state.datePickerOpen) return
+
     return (
       <DatePickerDropdown
-        date={this.props.chapter.date}
+        date={this.props.chapterForm.date}
         toggleDatePicker={this.toggleDatePicker}
         persistMetadata={date => this.persistMetadata(date, "date")}
       />
@@ -95,28 +130,40 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderStatistics() {
-    const { distance } = this.props.chapterForm
+    const { distance, readableDistanceType } = this.props.chapterForm
+    let readableDate = generateReadableDate(this.props.chapterForm.date)
+
     return (
       <View style={styles.statsContainer}>
         <TouchableWithoutFeedback onPress={this.toggleDatePicker}>
           <View style={styles.iconsAndText}>
             <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
-            <Text style={styles.iconText}>{`${this.props.chapter.readableDate}`.toUpperCase()}</Text>
+            <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
           </View>
         </TouchableWithoutFeedback>
         {this.renderDatePicker()}
-        <View style={styles.iconsAndText}>
-          <MaterialIcons style={styles.iconPositioning} name="directions-bike" size={16} />
-          <TextInput
-            selectionColor={"#FF8C34"}
-            keyboardType={"numeric"}
-            maxLength={6}
-            value={distance.toString()}
-            onChangeText={text => this.persistMetadata(text, "distance")}
-            style={{ textAlign: "right", marginRight: 5, paddingBottom: 2 }}
-          />
-          <Text style={styles.iconText}>KILOMETERS</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={() => this.focusDistanceTextInput()}>
+          <View style={styles.iconsAndText}>
+            <MaterialIcons
+              style={styles.iconPositioning}
+              name="directions-bike"
+              style={styles.iconPositioning}
+              size={18}
+            />
+            <TextInput
+              selectionColor={"#FF5423"}
+              ref={input => {
+                this.distanceTextInput = input
+              }}
+              keyboardType={"numeric"}
+              maxLength={6}
+              value={distance.toString()}
+              onChangeText={text => this.persistMetadata(text, "distance")}
+              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6 }}
+            />
+            <Text style={styles.iconText}>{`${readableDistanceType}`.toUpperCase()}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     )
   }
@@ -128,7 +175,7 @@ class ChapterMetaDataForm extends Component {
         <View>
           <TextInput
             multiline
-            selectionColor={"#FF8C34"}
+            selectionColor={"#FF5423"}
             placeholder={"Chapter Title"}
             style={styles.title}
             value={title}
@@ -139,9 +186,34 @@ class ChapterMetaDataForm extends Component {
     )
   }
 
+  renderHeader() {
+    const headerProps = Object.assign(
+      {},
+      {
+        goBackCta: "Cancel",
+        handleGoBack: this.handleGoBack,
+        centerCta: "",
+        handleConfirm: this.persistUpdate,
+        confirmCta: "Save"
+      }
+    )
+    return <Header key="header" {...headerProps} />
+  }
+
+  renderLoadingSpinner(fourthWindowWidth) {
+    if (this.props.isUpdating && this.props.chapterForm.bannerImage.needsUpload) {
+      return (
+        <View style={{ position: "absolute", zIndex: 200, width: this.props.width, top: fourthWindowWidth / 3 }}>
+          <MaterialIndicator size={40} color="#FF5423" />
+        </View>
+      )
+    }
+  }
+
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 2.5
-    let { imageUrl } = this.props.chapter
+    let { uri } = this.props.chapterForm.bannerImage
+    const spinner = this.renderLoadingSpinner(fourthWindowWidth)
 
     return (
       <View style={{ position: "relative", marginBottom: 20, height: fourthWindowWidth, width: this.props.width }}>
@@ -166,6 +238,7 @@ class ChapterMetaDataForm extends Component {
             <MaterialIcons name="cloud-upload" color="#323941" size={30} />
           </TouchableWithoutFeedback>
         </View>
+        {spinner}
         <TouchableWithoutFeedback onPress={this.updateImage}>
           <Image
             style={{
@@ -173,7 +246,7 @@ class ChapterMetaDataForm extends Component {
               height: fourthWindowWidth,
               backgroundColor: "#f8f8f8"
             }}
-            source={{ uri: imageUrl }}
+            source={{ uri: uri }}
           />
         </TouchableWithoutFeedback>
       </View>
@@ -182,40 +255,56 @@ class ChapterMetaDataForm extends Component {
 
   render() {
     return (
-      <View style={styles.marginBottom20}>
-        {this.renderChapterImage()}
-        {this.renderTitleAndDescription()}
-        {this.renderStatistics()}
+      <View style={styles.container}>
+        {this.renderHeader()}
+        <ScrollView>
+          {this.renderChapterImage()}
+          {this.renderTitleAndDescription()}
+          {this.renderStatistics()}
+        </ScrollView>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    backgroundColor: "white"
+  },
   statsContainer: {
     padding: 20,
     paddingTop: 0
   },
   iconPositioning: {
-    marginRight: 5
+    marginRight: 5,
+    paddingBottom: 2
   },
   title: {
     fontSize: 28,
     fontFamily: "playfair",
     color: "#323941",
-    backgroundColor: "#f8f8f8"
+    borderColor: "#d3d3d3",
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "white",
+    padding: 5
   },
   iconsAndText: {
     display: "flex",
     flexDirection: "row",
-    paddingTop: 5,
-    backgroundColor: "#f8f8f8",
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5,
+    backgroundColor: "white",
     marginBottom: 10,
-    alignItem: "middle"
+    alignItems: "center",
+    paddingBottom: 3
   },
   iconText: {
     fontFamily: "overpass",
-    fontSize: 14
+    fontSize: 20
   },
   titleAndDescriptionContainer: {
     padding: 20,

@@ -174,7 +174,7 @@ class UserAvatarForm extends Component {
           position: "relative",
           paddingTop: 25
         }}
-        colors={["#FF8C34", "#E46545"]}>
+        colors={["#FF5423", "#E46545"]}>
         <View style={{ paddingLeft: 25 }}>
           {this.renderBackButton()}
           {this.renderFormTitle()}
@@ -182,7 +182,7 @@ class UserAvatarForm extends Component {
         <TouchableWithoutFeedback onPress={this.submitForm}>
           <View
             style={{
-              backgroundColor: "#FF8C34",
+              backgroundColor: "#FF5423",
               width: Dimensions.get("window").width - 50,
               borderRadius: 30,
               display: "flex",

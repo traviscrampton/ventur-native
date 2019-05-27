@@ -273,33 +273,6 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
     })
 }
 
-export const editChapterPublished = async (chapter, published, dispatch) => {
-  const token = await setToken()
-  let params = { id: chapter.id, published: published }
-  fetch(`${API_ROOT}/chapters/${params.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token
-    },
-    body: JSON.stringify(params)
-  })
-    .then(response => {
-      return response.json()
-    })
-    .then(data => {
-      if (data.errors) {
-        throw Error(data.errors.join(", "))
-      }
-      let chapter = data.chapter
-      dispatch(loadChapter(chapter))
-      dispatch(addChapterToJournals(chapter))
-    })
-    .catch(err => {
-      DropDownHolder.alert("error", "Error", err)
-    })
-}
-
 export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
 export const addImageToDeletedIds = imageId => {
   console.log("addImageTODeletedIds", imageId)
@@ -309,42 +282,6 @@ export const addImageToDeletedIds = imageId => {
   }
 }
 
-export const REMOVE_CHAPTER_FROM_STATE = "REMOVE_CHAPTER_FROM_STATE"
-export const removeChapterFromState = chapter => {
-  return {
-    type: REMOVE_CHAPTER_FROM_STATE,
-    payload: chapter
-  }
-}
-
-export const deleteChapter = async (chapter, callback, dispatch) => {
-  const token = await setToken()
-  let params = { id: chapter.id }
-  fetch(`${API_ROOT}/chapters/${params.id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token
-    },
-    body: JSON.stringify(params)
-  })
-    .then(response => {
-      return response.json()
-    })
-    .then(data => {
-      if (data.errors) {
-        throw Error(data.errors.join(", "))
-      }
-      dispatch(removeChapterFromState(chapter))
-      // remove from journal
-      // if offline mode remove from offline mode
-      dispatch(resetChapterForm())
-      callback()
-    })
-    .catch(err => {
-      DropDownHolder.alert("error", "Error", err)
-    })
-}
 
 export const dispatchPersist = async (entries, imageUpload, chapter, dispatch) => {
   saveEditorContent(entries, imageUpload, chapter, dispatch)

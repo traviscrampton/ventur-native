@@ -45,6 +45,7 @@ class Login extends Component {
     const { email, password } = this.props
 
     post("/users/login", { email, password }).then(login => {
+      console.log("LOGIN RES", login)
       storeJWT(login)
       this.props.setCurrentUser(login.user)
     })
@@ -116,7 +117,7 @@ class Login extends Component {
               height: 50,
               marginTop: 20
             }}>
-            <Text style={{ color: "#FF8C34", fontSize: 16 }}>CONTINUE</Text>
+            <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -127,7 +128,7 @@ class Login extends Component {
     return (
       <LinearGradient
         style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, padding: 25 }}
-        colors={["#FF8C34", "#E46545"]}>
+        colors={["#FF5423", "#E46545"]}>
         {this.renderBackButton()}
         {this.renderFormTitle()}
         {this.renderForm()}

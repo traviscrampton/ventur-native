@@ -46,8 +46,11 @@ class DatePickerDropdown extends Component {
               paddingBottom: 4,
               paddingRight: 5,
               paddingLeft: 5,
-              backgroundColor: "#067BC2",
-              marginRight: 10
+              backgroundColor: "#3F88C5",
+              marginRight: 10,
+              borderRadius: 5,
+              borderWidth: 1,
+              borderColor: "#3F88C5"
             }}>
             <Text style={{ color: "white" }}>SUBMIT</Text>
           </View>

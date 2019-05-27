@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 let imageWidth
 let imageHeight
@@ -15,7 +16,23 @@ const countries = names => {
   })
 }
 
+const distanceString = distance => {
+  const { distanceType, kilometerAmount, mileAmount } = distance
+  switch (distanceType) {
+    case "kilometer":
+      return `${kilometerAmount} KM`
+
+    case "mile":
+      return `${mileAmount} MI`
+
+    default:
+      return ""
+  }
+}
+
 const tripMetaData = props => {
+  const distance = distanceString(props.distance)
+
   return (
     <View style={styles.metadataContainer}>
       <View style={styles.marginBottomAuto}>
@@ -33,9 +50,7 @@ const tripMetaData = props => {
           display: "flex"
         }}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status} ${"\u2022"} ${props.distance} KM ${"\u2022"} ${
-            props.journalFollowsCount
-          } followers`.toUpperCase()}
+          {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${props.journalFollowsCount} followers`.toUpperCase()}
         </Text>
       </View>
     </View>
@@ -45,22 +60,17 @@ const tripMetaData = props => {
 const JournalCard = props => {
   imageWidth = props.width - 20
   imageHeight = Math.round(imageWidth * (240 / 350))
+  const imageStyles = Object.assign({}, styles.journalImage, {
+    width: imageWidth,
+    height: imageHeight,
+    borderRadius: 10
+  })
 
   return (
     <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
       <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <View style={[styles.card, { width: imageWidth, borderRadius: 10, overflow: "hidden" }]}>
-          <ImageBackground
-            style={[
-              styles.journalImage,
-              {
-                width: imageWidth,
-                height: imageHeight,
-                borderRadius: 10
-              }
-            ]}
-            source={{ uri: props.cardImageUrl }}
-          />
+          <ProgressiveImage thumbnailSource={props.thumbnailImageUrl} source={props.cardImageUrl} style={imageStyles} />
           <View>{tripMetaData(props)}</View>
         </View>
       </View>

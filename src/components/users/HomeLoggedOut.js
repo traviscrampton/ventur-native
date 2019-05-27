@@ -71,7 +71,7 @@ class HomeLoggedOut extends Component {
             alignItems: "center",
             borderRadius: 30
           }}
-          colors={["#FF8C34", "#E46545"]}>
+          colors={["#FF5423", "#E46545"]}>
           <Text style={{ textAlign: "center", color: "white", fontWeight: "bold", fontSize: 20 }}>Get Started</Text>
         </LinearGradient>
       </TouchableWithoutFeedback>

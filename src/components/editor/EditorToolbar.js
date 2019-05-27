@@ -84,7 +84,11 @@ class EditorToolbar extends Component {
 
   render() {
     return (
-      <View style={styles.toolbarContainer}>
+      <View
+        style={styles.toolbarContainer}
+        shadowColor="black"
+        shadowOffset={{ width: 0, height: 1 }}
+        shadowOpacity={0.9}>
         <View style={styles.textEditButtons}>{this.renderTextStyler()}</View>
       </View>
     )
@@ -106,8 +110,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: "#efefef",
-    height: 40
+    backgroundColor: "white",
+    height: 45
   },
   textEditButtons: {
     display: "flex",

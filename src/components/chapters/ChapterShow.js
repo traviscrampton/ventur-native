@@ -7,15 +7,20 @@ import {
   Image,
   ImageBackground,
   TouchableHighlight,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm } from "actions/chapter_form"
+import { sendEmails } from "actions/chapter"
 import { loadRouteEditor } from "actions/route_editor"
 import { loadRouteViewer } from "actions/route_viewer"
-import EditorDropdown from "components/editor/EditorDropdown"
+import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
 import CommentsContainer from "components/Comments/CommentsContainer"
+import { editChapterPublished, deleteChapter } from "actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
+import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -29,7 +34,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
-  loadRouteViewer: payload => dispatch(loadRouteViewer(payload))
+  loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
+  sendEmails: payload => dispatch(sendEmails(payload)),
+  editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
+  deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
 })
 
 class ChapterShow extends Component {
@@ -37,8 +45,105 @@ class ChapterShow extends Component {
     super(props)
   }
 
-  navigateBack() {
+  navigateBack = () => {
     this.props.navigation.goBack()
+  }
+
+  openDeleteAlert = () => {
+    Alert.alert(
+      "Are you sure?",
+      "Deleting this chapter will erase all images and content",
+      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
+  }
+
+  navigateToChapterForm = () => {
+    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
+    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
+
+    let obj = Object.assign(
+      {},
+      {
+        id: id,
+        title: title,
+        distance: distanceAmount,
+        description: description,
+        readableDistanceType: distance.readableDistanceType,
+        bannerImage: {
+          uri: imageUrl
+        },
+        journalId: journal.id
+      }
+    )
+
+    this.props.updateChapterForm(obj)
+    this.props.navigation.navigate("ChapterMetaDataForm")
+  }
+
+  handleDelete = async () => {
+    this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
+  }
+
+  sendEmails = async () => {
+    if (this.props.chapter.emailSent) return
+
+    this.props.sendEmails(this.props.chapter.id)
+  }
+
+  getEmailToggle() {
+    console.log("email sent!", this.props.chapter.emailSent)
+    if (this.props.chapter.emailSent) {
+      return "Email Sent"
+    } else {
+      return "Send Email"
+    }
+  }
+
+  getChapterUserFormProps() {
+    let optionsProps = [
+      {
+        type: "touchable",
+        iconName: "edit",
+        title: "Edit Metadata",
+        callback: this.navigateToChapterForm,
+        closeMenuOnClick: true
+      },
+      {
+        type: "touchable",
+        iconName: "delete",
+        title: "Delete Chapter",
+        callback: this.openDeleteAlert,
+        closeMenuOnClick: true
+      },
+      {
+        type: "switch",
+        title: "Published",
+        iconName: "publish",
+        value: this.props.chapter.published,
+        callback: this.updatePublishedStatus,
+        closeMenuOnClick: false
+      }
+    ]
+
+    if (this.props.chapter.published) {
+      const emailOption = {
+        type: "touchable",
+        iconName: "mail-outline",
+        title: this.getEmailToggle(),
+        callback: this.sendEmails
+      }
+      optionsProps.push(emailOption)
+    }
+
+    return optionsProps
+  }
+
+  updatePublishedStatus = async () => {
+    const {
+      chapter: { id, published }
+    } = this.props
+    this.props.editChapterPublished(id, !published)
   }
 
   renderTitle() {
@@ -61,19 +166,18 @@ class ChapterShow extends Component {
     )
   }
 
-  editMetaData = () => {
-    let { id, title, distance, description } = this.props.chapter
+  returnDistanceString(distance) {
+    const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+    switch (distanceType) {
+      case "kilometer":
+        return `${kilometerAmount} ${readableDistanceType}`
 
-    let obj = {
-      id: id,
-      title: title,
-      distance: distance,
-      description: description,
-      journalId: this.props.chapter.journal.id
+      case "mile":
+        return `${mileAmount} ${readableDistanceType}`
+
+      default:
+        return ""
     }
-
-    this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterFormTitle")
   }
 
   navigateToMap = async () => {
@@ -114,6 +218,7 @@ class ChapterShow extends Component {
 
   renderStatistics() {
     const { readableDate, distance } = this.props.chapter
+    const distanceString = this.returnDistanceString(distance)
     return (
       <View style={styles.statisticsPadding}>
         <View style={styles.statisticsContainer}>
@@ -122,7 +227,7 @@ class ChapterShow extends Component {
         </View>
         <View style={styles.statisticsContainer}>
           <MaterialIcons style={styles.iconPosition} name="directions-bike" size={16} />
-          <Text style={styles.statisticsText}>{`${distance} kilometers`.toUpperCase()}</Text>
+          <Text style={styles.statisticsText}>{`${distanceString}`.toUpperCase()}</Text>
         </View>
       </View>
     )
@@ -130,13 +235,16 @@ class ChapterShow extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 2.5
-    const { imageUrl } = this.props.chapter
+    const { imageUrl, thumbnailSource } = this.props.chapter
     if (!imageUrl) return
     return (
-      <Image
-        style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
-        source={{ uri: imageUrl }}
-      />
+      <View style={{ height: fourthWindowWidth, width: this.props.width, marginBottom: 10 }}>
+        <ProgressiveImage
+          source={imageUrl}
+          thumbnailSource={thumbnailSource}
+          style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
+        />
+      </View>
     )
   }
 
@@ -192,13 +300,27 @@ class ChapterShow extends Component {
     return aspectRatio * this.props.width
   }
 
+  getThumbnailSource(entry) {
+    if (entry.thumbnailSource) {
+      return entry.thumbnailSource
+    } else {
+      return ""
+    }
+  }
+
   renderImageEntry(entry, index) {
+    const height = this.getImageHeight(entry.aspectRatio)
+    const thumbnailSource = this.getThumbnailSource(entry)
+
     return (
       <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
-        <ImageBackground
-          style={{ width: this.props.width, height: this.getImageHeight(entry.aspectRatio) }}
-          source={{ uri: entry.uri }}
-        />
+        <View style={{ height }}>
+          <ProgressiveImage
+            source={entry.uri}
+            thumbnailSource={this.getThumbnailSource(entry)}
+            style={{ width: this.props.width, height }}
+          />
+        </View>
         {this.renderImageCaption(entry)}
       </View>
     )
@@ -250,15 +372,22 @@ class ChapterShow extends Component {
     })
   }
 
-  renderChapterMenu() {
+  renderThreeDotMenu() {
     if (this.props.user.id != this.props.currentUser.id) {
       return <View />
     }
+    const options = this.getChapterUserFormProps()
 
-    return <EditorDropdown navigation={this.props.navigation} />
+    return (
+      <ThreeDotDropdown
+        menuPosition={"below"}
+        options={options}
+        openMenuStyling={{ borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }}
+      />
+    )
   }
 
-  renderEditorDropdown() {
+  renderIconAndThreeDotMenu() {
     return (
       <View
         style={{
@@ -267,10 +396,12 @@ class ChapterShow extends Component {
           justifyContent: "space-between",
           paddingRight: 20,
           paddingLeft: 20,
-          marginBottom: 5
+          marginBottom: 5,
+          position: "relative",
+          zIndex: 100
         }}>
         {this.renderMapIconCta()}
-        {this.renderChapterMenu()}
+        {this.renderThreeDotMenu()}
       </View>
     )
   }
@@ -299,9 +430,11 @@ class ChapterShow extends Component {
         </View>
         {this.renderTitle()}
         {this.renderStatistics()}
-        {this.renderEditorDropdown()}
+        {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
-        <View style={{ marginBottom: 100 }}>{this.renderBodyContent()}</View>
+        <View style={{ marginBottom: 100, minHeight: 200, position: "relative", zIndex: 0 }}>
+          {this.renderBodyContent()}
+        </View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
       </ScrollView>
     )

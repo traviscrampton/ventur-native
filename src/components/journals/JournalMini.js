@@ -1,16 +1,19 @@
 import React from "react"
 import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback, Dimensions } from "react-native"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 const pad = Dimensions.get("window").width * 0.04
 const imageGaps = Dimensions.get("window").width * 0.11
 const imageWidth = (Dimensions.get("window").width - imageGaps) / 2
 const JournalMini = props => {
   return (
-    <ImageBackground
-      style={styles.imageBackground}
-      imageStyle={styles.borderRadius}
-      source={{ uri: props.cardBannerImageUrl }}>
-      <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
+    <View style={{ height: imageWidth, width: imageWidth, marginBottom: pad }}>
+      <ProgressiveImage
+        style={[styles.imageBackground, { borderRadius: 10, borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 10 }]}
+        thumbnailSource={props.thumbnailSource}
+        source={props.cardBannerImageUrl}
+      />
+      <TouchableWithoutFeedback style={{ zIndex: 100 }} onPress={() => props.handlePress(props.id)}>
         <View style={styles.metadataContainer}>
           <Text numberOfLines={2} style={styles.title}>
             {props.title}
@@ -20,18 +23,14 @@ const JournalMini = props => {
           </Text>
         </View>
       </TouchableWithoutFeedback>
-    </ImageBackground>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   imageBackground: {
     width: imageWidth,
-    height: imageWidth,
-    marginBottom: pad,
-    position: "relative",
-    paddingRight: 5,
-    paddingLeft: 5
+    height: imageWidth
   },
   borderRadius: {
     borderRadius: 10
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1
+    zIndex: 100
   },
   title: {
     color: "white",

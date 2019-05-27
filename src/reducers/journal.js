@@ -1,5 +1,5 @@
-import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB } from "actions/journals"
-import { REMOVE_CHAPTER_FROM_STATE } from "actions/editor"
+import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB, IMAGE_UPLOADING } from "actions/journals"
+import { REMOVE_CHAPTER_FROM_STATE } from "actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "actions/chapter_form"
 
 const defaultJournalData = {
@@ -8,7 +8,8 @@ const defaultJournalData = {
     chapters: []
   },
   noRequest: false,
-  loaded: false
+  loaded: false,
+  imageUploading: false
 }
 
 export default (state = defaultJournalData, action) => {
@@ -16,7 +17,7 @@ export default (state = defaultJournalData, action) => {
     case POPULATE_SINGLE_JOURNAL:
       return {
         ...state,
-        journal: action.payload,
+        journal: Object.assign({}, state.journal, action.payload),
         loaded: true
       }
     case RESET_JOURNAL_TAB:
@@ -30,10 +31,18 @@ export default (state = defaultJournalData, action) => {
         ...state,
         journal: Object.assign({}, state.journal, { chapters: chapters })
       }
+    case IMAGE_UPLOADING:
+      return {
+        ...state,
+        imageUploading: action.payload
+      }
     case PUSH_CHAPTER_TO_JOURNAL:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { chapters: action.payload.chapters, distance: action.payload.distance })
+        journal: Object.assign({}, state.journal, {
+          chapters: action.payload.chapters,
+          distance: action.payload.distance
+        })
       }
     default:
       return state

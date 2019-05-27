@@ -142,8 +142,8 @@ class RouteEditorButtons extends Component {
     if (!this.props.polylineEditor || this.props.positionMode) return
 
     const { drawMode } = this.props
-    const buttonBackground = drawMode ? { backgroundColor: "#FF8C34" } : {}
-    const pencilColor = drawMode ? "white" : "#FF8C34"
+    const buttonBackground = drawMode ? { backgroundColor: "#FF5423" } : {}
+    const pencilColor = drawMode ? "white" : "#FF5423"
 
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
@@ -173,7 +173,7 @@ class RouteEditorButtons extends Component {
   renderSaveButton() {
     if (this.props.drawMode || this.props.positionMode) return
     let icon = this.props.isSaving ? (
-      <MaterialIndicator size={25} color="#FF8C34" />
+      <MaterialIndicator size={25} color="#FF5423" />
     ) : (
       <MaterialIcons name="save" size={25} color={"#323941"} />
     )
@@ -205,8 +205,8 @@ class RouteEditorButtons extends Component {
   renderCropButton() {
     if (this.props.drawMode) return
     const { positionMode } = this.props
-    const backgroundColor = positionMode ? "#067BC2" : "white"
-    const iconColor = positionMode ? "white" : "#067BC2"
+    const backgroundColor = positionMode ? "#3F88C5" : "white"
+    const iconColor = positionMode ? "white" : "#3F88C5"
 
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>

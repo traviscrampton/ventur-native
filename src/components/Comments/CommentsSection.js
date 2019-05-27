@@ -35,7 +35,7 @@ class CommentsSection extends Component {
   }
 
   getAvatarUrl() {
-    if (this.props.currentUserAvatarImageUrl) {
+    if (this.props.currentUserAvatarImageUrl.length > 0) {
       return { uri: this.props.currentUserAvatarImageUrl }
     } else {
       return CycleTouringLogo
@@ -44,6 +44,7 @@ class CommentsSection extends Component {
 
   renderCommentCta = () => {
     const avatarUrl = this.getAvatarUrl()
+
     return (
       <View style={{ backgroundColor: "white", marginBottom: 20, borderWidth: 1, borderColor: "#d3d3d3" }}>
         <TouchableWithoutFeedback onPress={this.navigateToCommentForm}>

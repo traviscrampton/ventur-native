@@ -173,7 +173,7 @@ class JournalFormLocation extends Component {
             <View style={{ borderRadius: 30, backgroundColor: "white" }}>
               <Text
                 style={{
-                  color: "#FF8C34",
+                  color: "#FF5423",
                   textAlign: "center",
                   fontSize: 18,
                   paddingTop: 15,
@@ -191,7 +191,7 @@ class JournalFormLocation extends Component {
   render() {
     return (
       <View>
-        <LinearGradient style={{ height: this.props.height }} colors={["#FF8C34", "#E46545"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#FF5423", "#E46545"]}>
           {this.renderBackButtonHeader()}
           {this.renderForm()}
         </LinearGradient>

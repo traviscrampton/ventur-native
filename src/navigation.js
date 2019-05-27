@@ -18,10 +18,14 @@ import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
 import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
 import UserNameForm from "components/users/UserNameForm"
 import CommentForm from "components/Comments/CommentForm"
+import JournalForm from "components/JournalForm/JournalForm"
+import CountriesEditor from "components/JournalForm/CountriesEditor"
 import UserAvatarForm from "components/users/UserAvatarForm"
 import RouteEditor from "components/Maps/RouteEditor"
 import RouteViewer from "components/Maps/RouteViewer"
 import JournalRoute from "components/Maps/JournalRoute"
+import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
+import ChapterEditor from "components/chapters/ChapterEditor"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -40,7 +44,11 @@ const NO_FOOTER_SCREENS = [
   "JournalFormUpload",
   "RouteEditor",
   "RouteViewer",
-  "JournalRoute"
+  "JournalRoute",
+  "JournalForm",
+  "CountriesEditor",
+  "ChapterEditor",
+  "ChapterMetaDataForm"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -48,17 +56,21 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
+    JournalForm: JournalForm,
+    CountriesEditor: CountriesEditor,
     JournalFormTitle: JournalFormTitle,
     JournalFormLocation: JournalFormLocation,
     JournalFormStatus: JournalFormStatus,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
-    JournalFormUpload: JournalFormUpload
+    JournalFormUpload: JournalFormUpload,
+    ChapterEditor: ChapterEditor,
   },
   {
     initialRouteName: "JournalFeed",
@@ -77,6 +89,7 @@ const ProfileNavigator = createStackNavigator(
     Profile: Profile,
     Journal: Journal,
     Chapter: ChapterDispatch,
+    ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
     JournalFormTitle: JournalFormTitle,
@@ -84,11 +97,14 @@ const ProfileNavigator = createStackNavigator(
     JournalFormStatus: JournalFormStatus,
     ImageCaptionForm: ImageCaptionForm,
     JournalFormUpload: JournalFormUpload,
+    JournalForm: JournalForm,
+    CountriesEditor: CountriesEditor,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
     ManageContent: ManageContent,
-    ChapterFormJournals: ChapterFormJournals
+    ChapterFormJournals: ChapterFormJournals,
+    ChapterEditor: ChapterEditor,
   },
   {
     initialRouteName: "Profile",
