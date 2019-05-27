@@ -86,7 +86,7 @@ class Profile extends Component {
 
   isActiveTab(tab) {
     if (this.state.activeTab === tab) {
-      return { backgroundColor: "#FF8C34", color: "white", borderColor: "#FF8C34" }
+      return { backgroundColor: "#FF5423", color: "white", borderColor: "#FF5423" }
     }
   }
 
@@ -389,7 +389,7 @@ class Profile extends Component {
           shadowRadius={2}
           style={{
             position: "absolute",
-            backgroundColor: "#FF8C34",
+            backgroundColor: "#FF5423",
             width: 60,
             height: 60,
             borderRadius: 30,
@@ -437,7 +437,7 @@ class Profile extends Component {
           shadowRadius={2}
           style={{
             position: "absolute",
-            backgroundColor: "#067BC2",
+            backgroundColor: "#3F88C5",
             width: 60,
             height: 60,
             borderRadius: 30,

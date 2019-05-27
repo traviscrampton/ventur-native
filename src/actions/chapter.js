@@ -64,7 +64,7 @@ export const deleteChapter = async (chapterId, callback, dispatch) => {
 }
 
 export const kickOffEmails = async (chapterId, dispatch) => {
-  const { payload } = await post(`/journal_follows/${chapterId}/send_chapter_emails`)
-
+  const payload = await post(`/journal_follows/${chapterId}/send_chapter_emails`)
+  console.log("IS THERE ANYTHING HERE?", payload)
   dispatch(loadChapter(payload.chapter))
 }

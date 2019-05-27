@@ -78,7 +78,7 @@ class JournalFormStatus extends Component {
             height: 20,
             width: 20,
             backgroundColor: "white",
-            borderColor: "#FF8C34",
+            borderColor: "#FF5423",
             borderWidth: 1,
             marginRight: 20,
             borderRadius: 10,
@@ -86,7 +86,7 @@ class JournalFormStatus extends Component {
             justifyContent: "center",
             alignItems: "center"
           }}>
-          <View style={{ height: 12, width: 12, backgroundColor: "#FF8C34", borderRadius: 6 }} />
+          <View style={{ height: 12, width: 12, backgroundColor: "#FF5423", borderRadius: 6 }} />
         </View>
       )
     } else {
@@ -127,7 +127,7 @@ class JournalFormStatus extends Component {
           ]}>
           {this.renderRadioButton(isActive)}
           <View>
-            <Text style={[{ fontSize: 24 }, isActive ? { color: "#FF8C34" } : { color: "white" }]}>{option.text}</Text>
+            <Text style={[{ fontSize: 24 }, isActive ? { color: "#FF5423" } : { color: "white" }]}>{option.text}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -152,7 +152,7 @@ class JournalFormStatus extends Component {
             <View style={{ borderRadius: 30, marginTop: 20, backgroundColor: "white" }}>
               <Text
                 style={{
-                  color: "#FF8C34",
+                  color: "#FF5423",
                   textAlign: "center",
                   paddingTop: 15,
                   fontSize: 18,
@@ -170,7 +170,7 @@ class JournalFormStatus extends Component {
   render() {
     return (
       <View>
-        <LinearGradient style={{ height: this.props.height }} colors={["#FF8C34", "#E46545"]}>
+        <LinearGradient style={{ height: this.props.height }} colors={["#FF5423", "#E46545"]}>
           {this.renderBackButtonHeader()}
           {this.renderForm()}
         </LinearGradient>

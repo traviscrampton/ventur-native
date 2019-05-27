@@ -126,7 +126,7 @@ class UserNameForm extends Component {
               height: 50,
               marginTop: 20
             }}>
-            <Text style={{ color: "#FF8C34", fontSize: 16 }}>CONTINUE</Text>
+            <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -137,7 +137,7 @@ class UserNameForm extends Component {
     return (
       <LinearGradient
         style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, padding: 25 }}
-        colors={["#FF8C34", "#E46545"]}>
+        colors={["#FF5423", "#E46545"]}>
         {this.renderBackButton()}
         {this.renderFormTitle()}
         {this.renderForm()}

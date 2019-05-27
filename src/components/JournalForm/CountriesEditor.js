@@ -78,7 +78,7 @@ class CountriesEditor extends Component {
         <TextInput
           style={{ borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 5, padding: 5, fontSize: 18 }}
           autoFocus
-          selectionColor="#FF8C34"
+          selectionColor="#FF5423"
           value={this.state.searchText}
           placeholder={"Type to find country"}
           onChangeText={text => this.handleTextChange(text)}

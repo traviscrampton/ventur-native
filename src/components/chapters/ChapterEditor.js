@@ -87,6 +87,15 @@ class ChapterEditor extends Component {
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
 
+  componentDidMount() {
+    // console.log("whos refs is it?")
+    // const textEntries = this.props.entries.filter((entry, index) => {
+    //   return entry.type === "text"
+    // })
+    // console.log(this.refs)
+    // console.log("textEntries", textEntries)
+  }
+
   componentWillUnmount() {
     this.props.setInitialEditorState()
   }
@@ -180,7 +189,7 @@ class ChapterEditor extends Component {
           styles.opacCover,
           { height: imageHeight, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }
         ]}>
-        <MaterialIndicator size={40} color="#ff8c34" />
+        <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
   }
@@ -231,6 +240,16 @@ class ChapterEditor extends Component {
     return diff
   }
 
+  returnLowResImageUri(entry) {
+    const { uri, lowResUri } = entry
+
+    if (lowResUri) {
+      return lowResUri
+    } else {
+      return uri
+    }
+  }
+
   renderAsImage(entry, index) {
     const imageHeight = this.getImageHeight(entry.aspectRatio)
 
@@ -240,7 +259,7 @@ class ChapterEditor extends Component {
           <View>
             <ImageBackground
               style={{ width: Dimensions.get("window").width, height: imageHeight }}
-              source={{ uri: entry.uri }}>
+              source={{ uri: this.returnLowResImageUri(entry) }}>
               {this.renderOpacCover(index, imageHeight, entry)}
             </ImageBackground>
             {this.renderImageCaption(entry)}
@@ -291,7 +310,7 @@ class ChapterEditor extends Component {
         multiline
         editable={!this.props.uploadIsImage}
         key={index}
-        selectionColor={"#FF8C34"}
+        selectionColor={"#FF5423"}
         ref={`textInput${index}`}
         style={[styles.textInput, this.getInputStyling(entry)]}
         onChangeText={text => this.handleTextChange(text, index)}
@@ -397,13 +416,13 @@ class ChapterEditor extends Component {
           <InputScrollView
             useAnimatedScrollView={true}
             bounces={true}
+            topOffset={50}
             style={styles.positionRelative}
             keyboardOffset={90}
             multilineInputStyle={{ lineHeight: 30 }}>
-            <View>
               {this.renderEditor()}
               {this.renderCreateCta(this.props.entries.length)}
-            </View>
+            <View style={{marginBottom: 200}}/>
           </InputScrollView>
           {this.renderEditorToolbar()}
         </View>

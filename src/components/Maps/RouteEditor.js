@@ -104,11 +104,11 @@ class RouteEditor extends Component {
     let buttonContent
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color="#FF8C34" />
+      buttonContent = <MaterialIndicator size={20} color="#FF5423" />
     } else if (this.isChangedRegionDifferent()) {
-      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVED</Text>
+      buttonContent = <Text style={{ color: "#FF5423" }}>SAVED</Text>
     } else {
-      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVE POSITION</Text>
+      buttonContent = <Text style={{ color: "#FF5423" }}>SAVE POSITION</Text>
     }
 
     return (
@@ -178,13 +178,13 @@ class RouteEditor extends Component {
     return this.props.polylines.map((coordinates, index) => {
       if (index > this.props.shownIndex) return
 
-      return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF8C34" />
+      return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
     })
   }
 
   renderPreviousPolylines() {
     return this.props.previousPolylines.map((coordinates, index) => {
-      return <MapView.Polyline style={{ zIndex: 9 }} coordinates={coordinates} strokeWidth={2} strokeColor="#067BC2" />
+      return <MapView.Polyline style={{ zIndex: 9 }} coordinates={coordinates} strokeWidth={2} strokeColor="#3F88C5" />
     })
   }
 

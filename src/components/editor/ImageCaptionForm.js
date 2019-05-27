@@ -67,7 +67,7 @@ class ImageCaptionForm extends Component {
         <TextInput
           autoFocus
           multiline
-          selectionColor={"#FF8C34"}
+          selectionColor={"#FF5423"}
           style={styles.textAlignCenter}
           value={this.props.activeCaption}
           maxLength={200}

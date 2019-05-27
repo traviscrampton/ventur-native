@@ -86,8 +86,8 @@ class JournalRoute extends Component {
     if (!this.isCurrentUser()) return
 
     const { positionMode } = this.props
-    const backgroundColor = positionMode ? "#067BC2" : "white"
-    const iconColor = positionMode ? "white" : "#067BC2"
+    const backgroundColor = positionMode ? "#3F88C5" : "white"
+    const iconColor = positionMode ? "white" : "#3F88C5"
 
     return (
       <View style={{ position: "absolute", top: 60, right: 30 }}>
@@ -132,11 +132,11 @@ class JournalRoute extends Component {
     let buttonContent
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color="#FF8C34" />
+      buttonContent = <MaterialIndicator size={20} color="#FF5423" />
     } else if (this.isChangedRegionDifferent()) {
-      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVED</Text>
+      buttonContent = <Text style={{ color: "#FF5423" }}>SAVED</Text>
     } else {
-      buttonContent = <Text style={{ color: "#FF8C34" }}>SAVE POSITION</Text>
+      buttonContent = <Text style={{ color: "#FF5423" }}>SAVE POSITION</Text>
     }
 
     return (
@@ -173,7 +173,7 @@ class JournalRoute extends Component {
     return this.props.polylines.map((polylines, index) => {
       return polylines.map((coordinates, index) => {
         return (
-          <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF8C34" />
+          <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
         )
       })
     })

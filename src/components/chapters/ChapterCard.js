@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 const distanceString = distance => {
   const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
@@ -18,20 +19,23 @@ const distanceString = distance => {
 
 const ChapterCard = props => {
   let publishedStatus
-  let { imageUrl, title, distance, readableDate } = props
+  let { imageUrl, title, distance, readableDate, thumbnailSource } = props
+  console.log(thumbnailSource)
 
   distance = distanceString(distance)
 
   if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
-    publishedStatus = <Text style={{color: "orange"}}>Draft</Text>
+    publishedStatus = <Text style={{ color: "orange" }}>Draft</Text>
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => props.handleSelectChapter(props.id)}>
+    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
-        <View>
+        <View style={{ maxWidth: Dimensions.get("window").width - 140 }}>
           {publishedStatus}
-          <Text numberOfLines={1} style={styles.chapterTitle}>{title}</Text>
+          <Text numberOfLines={1} style={styles.chapterTitle}>
+            {title}
+          </Text>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
@@ -47,8 +51,8 @@ const ChapterCard = props => {
             </View>
           </View>
         </View>
-        <View>
-          <Image style={styles.chapterImage} source={{ uri: imageUrl }} />
+        <View style={{ width: 80 }}>
+          <ProgressiveImage style={styles.chapterImage} source={imageUrl} thumbnailSource={thumbnailSource} />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -57,7 +61,6 @@ const ChapterCard = props => {
 
 const styles = StyleSheet.create({
   chapterCardContainer: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     marginLeft: 20,
@@ -66,10 +69,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3"
+    borderBottomColor: "#d3d3d3",
+    alignItems: "top"
   },
   chapterTitle: {
-    maxWidth: Dimensions.get('window').width - 140,
+    maxWidth: Dimensions.get("window").width - 140,
     fontFamily: "open-sans-regular",
     color: "#323941",
     fontSize: 20,
@@ -91,8 +95,7 @@ const styles = StyleSheet.create({
   chapterImage: {
     width: 80,
     height: 100,
-    borderRadius: 5,
-    marginLeft: 20
+    borderRadius: 5
   },
   iconMargin: {
     marginRight: 5

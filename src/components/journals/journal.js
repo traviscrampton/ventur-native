@@ -31,6 +31,7 @@ import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
 import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
 import LoadingScreen from "components/shared/LoadingScreen"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -168,7 +169,7 @@ class Journal extends Component {
       countries,
       distance: { distanceType }
     } = this.props.journal
-    
+
     const payload = Object.assign(
       {},
       {
@@ -187,10 +188,6 @@ class Journal extends Component {
 
   renderCountries() {
     return this.props.journal.countries.map((country, index) => {
-      if (this.props.journal.countries.length - 1 !== index) {
-        country.name += ", "
-      }
-
       return <Text style={styles.journalDescription}>{country.name}</Text>
     })
   }
@@ -238,7 +235,7 @@ class Journal extends Component {
 
     return (
       <View style={{ position: "absolute", width: this.props.width, height: "100%" }}>
-        <MaterialIndicator size={40} color="#ff8c34" />
+        <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
   }
@@ -246,13 +243,16 @@ class Journal extends Component {
   renderBannerAndUserImages(journal, user) {
     return (
       <View style={[styles.bannerUserImage]}>
-        <ImageBackground style={{ width: this.props.width }} source={{ uri: journal.cardBannerImageUrl }}>
-          <View style={[styles.banner, { width: this.props.width }]}>
-            {this.renderImageUploadingScreen()}
-            {this.renderNavHeader(user)}
-            {this.renderJournalMetadata(journal)}
-          </View>
-        </ImageBackground>
+        <ProgressiveImage
+          source={journal.cardBannerImageUrl}
+          thumbnailSource={journal.thumbnailSource}
+          style={{ width: this.props.width, height: 220, zIndex: 0 }}
+        />
+        <View style={[styles.banner, { width: this.props.width }]}>
+          {this.renderImageUploadingScreen()}
+          {this.renderNavHeader(user)}
+          {this.renderJournalMetadata(journal)}
+        </View>
       </View>
     )
   }
@@ -339,7 +339,7 @@ class Journal extends Component {
     }
 
     return (
-      <View style={{ marginBottom: 100 }}>
+      <View style={{ marginBottom: 100, width: this.props.width }}>
         <ChapterList
           chapters={this.props.chapters}
           user={this.props.journal.user}
@@ -383,7 +383,7 @@ class Journal extends Component {
           shadowRadius={2}
           style={{
             position: "absolute",
-            backgroundColor: "#067BC2",
+            backgroundColor: "#3F88C5",
             width: 60,
             height: 60,
             borderRadius: 30,
@@ -482,6 +482,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)"
   },
   bannerUserImage: {
+    overflow: "hidden",
     position: "relative",
     backgroundColor: "white"
   },

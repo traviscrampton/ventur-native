@@ -20,6 +20,7 @@ import CommentsContainer from "components/Comments/CommentsContainer"
 import { editChapterPublished, deleteChapter } from "actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
+import ProgressiveImage from "components/shared/ProgressiveImage"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -91,6 +92,7 @@ class ChapterShow extends Component {
   }
 
   getEmailToggle() {
+    console.log("email sent!", this.props.chapter.emailSent)
     if (this.props.chapter.emailSent) {
       return "Email Sent"
     } else {
@@ -233,13 +235,16 @@ class ChapterShow extends Component {
 
   renderChapterImage() {
     let fourthWindowWidth = this.props.width / 2.5
-    const { imageUrl } = this.props.chapter
+    const { imageUrl, thumbnailSource } = this.props.chapter
     if (!imageUrl) return
     return (
-      <Image
-        style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
-        source={{ uri: imageUrl }}
-      />
+      <View style={{ height: fourthWindowWidth, width: this.props.width, marginBottom: 10 }}>
+        <ProgressiveImage
+          source={imageUrl}
+          thumbnailSource={thumbnailSource}
+          style={{ width: this.props.width, height: fourthWindowWidth, borderRadius: 0, marginBottom: 20 }}
+        />
+      </View>
     )
   }
 
@@ -295,13 +300,27 @@ class ChapterShow extends Component {
     return aspectRatio * this.props.width
   }
 
+  getThumbnailSource(entry) {
+    if (entry.thumbnailSource) {
+      return entry.thumbnailSource
+    } else {
+      return ""
+    }
+  }
+
   renderImageEntry(entry, index) {
+    const height = this.getImageHeight(entry.aspectRatio)
+    const thumbnailSource = this.getThumbnailSource(entry)
+
     return (
       <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
-        <ImageBackground
-          style={{ width: this.props.width, height: this.getImageHeight(entry.aspectRatio) }}
-          source={{ uri: entry.uri }}
-        />
+        <View style={{ height }}>
+          <ProgressiveImage
+            source={entry.uri}
+            thumbnailSource={this.getThumbnailSource(entry)}
+            style={{ width: this.props.width, height }}
+          />
+        </View>
         {this.renderImageCaption(entry)}
       </View>
     )
@@ -378,7 +397,7 @@ class ChapterShow extends Component {
           paddingRight: 20,
           paddingLeft: 20,
           marginBottom: 5,
-          position: "relative", 
+          position: "relative",
           zIndex: 100
         }}>
         {this.renderMapIconCta()}

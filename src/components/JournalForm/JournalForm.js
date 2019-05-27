@@ -104,7 +104,7 @@ class JournalForm extends Component {
           <TextInput
             style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
             placeholder={"Title"}
-            selectionColor="#FF8C34"
+            selectionColor="#FF5423"
             onChangeText={text => this.updateJournalForm("title", text)}
             value={this.props.title}
           />
@@ -115,7 +115,7 @@ class JournalForm extends Component {
             minHeight={18 * 4}
             maxLength={200}
             value={this.props.description}
-            selectionColor="#FF8C34"
+            selectionColor="#FF5423"
             style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
             onChangeText={text => this.updateJournalForm("description", text)}
             placeholder={"Description"}

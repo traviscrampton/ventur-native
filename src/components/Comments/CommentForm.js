@@ -1,12 +1,5 @@
 import React, { Component } from "react"
-import {
-  ScrollView,
-  View,
-  Dimensions,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback
-} from "react-native"
+import { ScrollView, View, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
 import { resetCommentForm, updateCommentContent, createComment } from "actions/comment_form"
 import { connect } from "react-redux"
 
@@ -54,12 +47,16 @@ class CommentForm extends Component {
         }}>
         <TouchableWithoutFeedback onPress={this.handleCancelAndNavigate}>
           <View>
-            <Text style={{ fontFamily: "open-sans-regular" }}>Cancel</Text>
+            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
+              Cancel
+            </Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.handleCommentPersistance}>
           <View>
-            <Text style={{ fontFamily: "open-sans-regular" }}>Post</Text>
+            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
+              Post
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -95,7 +92,7 @@ class CommentForm extends Component {
           multiline
           autoFocus
           style={{ fontSize: 16, fontFamily: "open-sans-regular" }}
-          selectionColor={"#FF8C34"}
+          selectionColor={"#FF5423"}
           onChangeText={text => this.props.updateCommentContent(text)}
           value={this.props.content}
         />

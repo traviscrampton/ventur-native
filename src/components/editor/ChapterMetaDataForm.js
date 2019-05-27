@@ -151,7 +151,7 @@ class ChapterMetaDataForm extends Component {
               size={18}
             />
             <TextInput
-              selectionColor={"#FF8C34"}
+              selectionColor={"#FF5423"}
               ref={input => {
                 this.distanceTextInput = input
               }}
@@ -175,7 +175,7 @@ class ChapterMetaDataForm extends Component {
         <View>
           <TextInput
             multiline
-            selectionColor={"#FF8C34"}
+            selectionColor={"#FF5423"}
             placeholder={"Chapter Title"}
             style={styles.title}
             value={title}
@@ -204,7 +204,7 @@ class ChapterMetaDataForm extends Component {
     if (this.props.isUpdating && this.props.chapterForm.bannerImage.needsUpload) {
       return (
         <View style={{ position: "absolute", zIndex: 200, width: this.props.width, top: fourthWindowWidth / 3 }}>
-          <MaterialIndicator size={40} color="#ff8c34" />
+          <MaterialIndicator size={40} color="#FF5423" />
         </View>
       )
     }

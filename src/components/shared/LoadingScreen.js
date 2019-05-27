@@ -5,7 +5,7 @@ import { View} from "react-native"
 const LoadingScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-      <MaterialIndicator size={40} color="#FF8C34" />
+      <MaterialIndicator size={40} color="#FF5423" />
     </View>
   )
 }
