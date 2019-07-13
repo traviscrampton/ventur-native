@@ -1,11 +1,13 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "agent"
 import DropDownHolder from "utils/DropdownHolder"
+import { awsUpload } from "utils/image_uploader"
 import { loadChapter, setEditMode } from "actions/chapter"
 import { resetChapterForm, addChapterToJournals } from "actions/chapter_form"
 import { populateOfflineChapters, dispatch } from "actions/user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
+import { ImageManipulator } from "expo"
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
@@ -148,11 +150,47 @@ export const startImageUploading = () => {
   }
 }
 
-export function addImagesToEntries(payload) {
-  return function(dispatch, getState) {
+export const resizeImage = async image => {
+  let maxWidth = 2000
+  let { width, height, uri } = image
+
+  if (width > maxWidth) {
+    height = height * (maxWidth / width)
+    width = maxWidth
+  }
+
+
+  let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
+    compress: 1,
+    format: "png",
+    base64: false
+  })
+
+  return Object.assign({}, image, updatedImage)
+}
+
+export const addImagesToEntries = payload => {
+  return async (dispatch, getState) => {
+    let image = await resizeImage(payload.images[0])
+    let entry = Object.assign({}, {
+      filename: image.filename,
+      localUri: image.uri,
+      uri: "",
+      type: "image",
+      aspectRatio: image.height / image.width,
+      caption: ""
+    })
+
+    let file = Object.assign({}, { uri: image.uri, name: image.filename + "heoolomoto", type: "image/png" })
     dispatch(startImageUploading())
-    dispatch(updateImagesState(payload))
-    debouncePersist(getState().editor.entries, getState().editor.uploadIsImage, getState().chapter.chapter, dispatch)
+    dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
+    payload.goBack()
+    const response = await awsUpload(file)
+    console.log("response!", response)
+    entry = Object.assign({}, entry, { uri: response.body.postResponse.location })
+    dispatch(updateEntryState({ entry: entry, index: payload.index }))
+    dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
+    // lose all the id based stuff on delete
   }
 }
 
@@ -207,19 +245,6 @@ export const saveEditorContent = async (entries, imageUpload, chapter, dispatch)
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
-  const newImages = entries.filter(entry => {
-    return entry.type === "image" && entry.id === null
-  })
-  if (newImages) {
-    for (let image of newImages) {
-      selectedImage = {
-        uri: image.uri,
-        name: image.filename,
-        type: "multipart/form-data"
-      }
-      formData.append("files[]", selectedImage)
-    }
-  }
   formData.append("content", JSON.stringify(entries))
   fetch(`${API_ROOT}/editor_blobs/${chapter.editorBlob.id}`, {
     method: "PUT",
@@ -275,13 +300,11 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
 
 export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
 export const addImageToDeletedIds = imageId => {
-  console.log("addImageTODeletedIds", imageId)
   return {
     type: ADD_IMAGE_TO_DELETED_IDS,
     payload: imageId
   }
 }
-
 
 export const dispatchPersist = async (entries, imageUpload, chapter, dispatch) => {
   saveEditorContent(entries, imageUpload, chapter, dispatch)

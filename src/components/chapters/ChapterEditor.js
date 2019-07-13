@@ -195,7 +195,7 @@ class ChapterEditor extends Component {
   }
 
   renderOpacCover(index, imageHeight, image) {
-    if (this.props.uploadIsImage && !image.id) {
+    if (this.props.uploadIsImage && !image.uri) {
       return this.renderImageLoadingCover(index, imageHeight)
     }
 
@@ -241,7 +241,11 @@ class ChapterEditor extends Component {
   }
 
   returnLowResImageUri(entry) {
-    const { uri, lowResUri } = entry
+    const { uri, lowResUri, localUri } = entry
+
+    if (!uri) {
+      return localUri
+    }
 
     if (lowResUri) {
       return lowResUri

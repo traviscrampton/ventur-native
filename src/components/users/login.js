@@ -43,9 +43,7 @@ class Login extends Component {
 
   submitForm = () => {
     const { email, password } = this.props
-
     post("/users/login", { email, password }).then(login => {
-      console.log("LOGIN RES", login)
       storeJWT(login)
       this.props.setCurrentUser(login.user)
     })

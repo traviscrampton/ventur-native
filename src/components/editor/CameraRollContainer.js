@@ -30,12 +30,14 @@ class CameraRollContainer extends Component {
       return Object.assign(img, { id: null })
     })
 
+    console.log("selectedImages", selectedImages)
+
     if (this.singleItemCallback) {
       this.singleItemCallback(selectedImages[0])
     } else {
-      this.props.addImagesToEntries({ images: selectedImages, index: this.index })
+      this.props.addImagesToEntries({ images: selectedImages, index: this.index, goBack: this.props.navigation.goBack })
     }
-    this.props.navigation.goBack()
+    // this.props.navigation.goBack()
   }
 
   compileSelectedImages = images => {

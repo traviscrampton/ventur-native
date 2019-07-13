@@ -92,7 +92,6 @@ class ChapterShow extends Component {
   }
 
   getEmailToggle() {
-    console.log("email sent!", this.props.chapter.emailSent)
     if (this.props.chapter.emailSent) {
       return "Email Sent"
     } else {
