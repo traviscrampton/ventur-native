@@ -7,7 +7,8 @@ import {
   SET_WINDOW_DIMENSIONS,
   UPDATE_CONNECTION_TYPE,
   SET_LOADING_TRUE,
-  SET_LOADING_FALSE
+  SET_LOADING_FALSE,
+  ADD_AWS_CREDENTIALS
 } from "actions/common"
 
 const defaultAppState = {
@@ -17,6 +18,8 @@ const defaultAppState = {
   currentBottomTab: "Explore",
   width: Dimensions.get("window").width,
   height: Dimensions.get("window").height,
+  awsAccessKey: null,
+  awsSecretKey: null,
   isOffline: false,
   isLoading: false
 }
@@ -33,6 +36,13 @@ export default (state = defaultAppState, action) => {
         ...state,
         hideTabBar: action.payload
       }
+
+    case ADD_AWS_CREDENTIALS:
+      return {
+        ...state,
+        awsAccessKey: action.payload.awsAccessKey,
+        awsSecretKey: action.payload.awsSecretKey
+      }  
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {
         ...state,

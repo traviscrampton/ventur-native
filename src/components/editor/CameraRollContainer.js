@@ -5,7 +5,8 @@ import CameraRollPicker from "react-native-camera-roll-picker"
 import { Header } from "components/editor/header"
 
 const mapStateToProps = state => ({
-  selectedImages: state.editor.selectedImages
+  selectedImages: state.editor.selectedImages,
+  uploadIsImage: state.editor.uploadIsimage
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -21,16 +22,21 @@ class CameraRollContainer extends Component {
     this.singleItemCallback = this.props.navigation.getParam("singleItemCallback", null)
 
     this.state = {
-      selectedImages: []
+      selectedImages: [],
+      imageSelected: false
     }
   }
 
   addImagesToEntries = () => {
-    const selectedImages = this.state.selectedImages.map((img, idx) => {
-      return Object.assign(img, { id: null })
+    if (this.state.imageSelected) return
+
+    this.setState({ 
+      imageSelected: true
     })
 
-    console.log("selectedImages", selectedImages)
+    const selectedImages = this.state.selectedImages.map((img, idx) => {
+      return img
+    })
 
     if (this.singleItemCallback) {
       this.singleItemCallback(selectedImages[0])

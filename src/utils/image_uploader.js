@@ -7,16 +7,16 @@ import { RNS3 } from "react-native-aws3"
 //   type: "image/png"
 // }
 
-const options = {
+let options = {
   keyPrefix: "s3/",
   bucket: "ventur-blog",
   region: 'us-west-1',
-  accessKey: "AKIAJ4GWDLYJTZQZQ2CQ", // take out of git commit
-  secretKey: "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", // take out of git commit
   successActionStatus: 201
 }
 
-export const awsUpload = async file => {
+export const awsUpload = async (file, awsKeys) => {
+  options = Object.assign({}, options, awsKeys)
+  console.log("OPTIONS", options)
   const response = await RNS3.put(file, options)
   return response
   // RNS3.put(file, options).then(response => {

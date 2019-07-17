@@ -34,10 +34,6 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
   const formData = new FormData()
   const token = await setToken()
 
-  if (deletedIds && deletedIds.length > 0) {
-    formData.append("deletedIds", JSON.stringify(deletedIds))
-  }
-
   fetch(`${API_ROOT}/editor_blobs/${id}`, {
     method: "DELETE",
     headers: {
@@ -55,7 +51,6 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
       }
 
       dispatch(setEditMode(false))
-      dispatch(resetDeletedIds())
       dispatch(populateEntries([]))
       dispatch(doneUpdating())
     })
@@ -104,7 +99,6 @@ export const finalizeDraft = async (id, entries, deletedIds, chapter, dispatch) 
       })
 
       dispatch(loadChapter(updatedChapter))
-      dispatch(resetDeletedIds())
       dispatch(setEditMode(false))
       dispatch(populateEntries([]))
       dispatch(doneUpdating())
@@ -151,7 +145,7 @@ export const startImageUploading = () => {
 }
 
 export const resizeImage = async image => {
-  let maxWidth = 2000
+  let maxWidth = 1000 //for now the image will be small, later we can use cloudfront and have the images distributed appropratiely
   let { width, height, uri } = image
 
   if (width > maxWidth) {
@@ -161,7 +155,7 @@ export const resizeImage = async image => {
 
 
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
-    compress: 1,
+    compress: 0,
     format: "png",
     base64: false
   })
@@ -171,7 +165,11 @@ export const resizeImage = async image => {
 
 export const addImagesToEntries = payload => {
   return async (dispatch, getState) => {
+    dispatch(startImageUploading())
+    let { awsAccessKey, awsSecretKey } = getState().common
+    let awsKeys = Object.assign({}, {accessKey: awsAccessKey, secretKey: awsSecretKey})
     let image = await resizeImage(payload.images[0])
+    
     let entry = Object.assign({}, {
       filename: image.filename,
       localUri: image.uri,
@@ -181,16 +179,14 @@ export const addImagesToEntries = payload => {
       caption: ""
     })
 
-    let file = Object.assign({}, { uri: image.uri, name: image.filename + "heoolomoto", type: "image/png" })
-    dispatch(startImageUploading())
-    dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
     payload.goBack()
-    const response = await awsUpload(file)
-    console.log("response!", response)
+    const filename = Math.floor(Math.random() * 1000000000).toString() + "_" + image.filename
+    let file = Object.assign({}, { uri: image.uri, name: image.filename, type: "image/png" })
+    dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
+    const response = await awsUpload(file, awsKeys)
     entry = Object.assign({}, entry, { uri: response.body.postResponse.location })
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
     dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
-    // lose all the id based stuff on delete
   }
 }
 
