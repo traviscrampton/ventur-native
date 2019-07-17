@@ -55,7 +55,7 @@ class ChapterDispatch extends Component {
     }
 
     this.props.populateEntries(entries)
-    this.props.getInitialImageIds(entries)
+    // this.props.getInitialImageIds(entries)
   }
 
   navigateBack = () => {

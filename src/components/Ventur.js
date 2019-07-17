@@ -1,21 +1,25 @@
 import React, { Component } from "react"
-import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType } from "actions/common"
+import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType, addAwsCredentials } from "actions/common"
 import { Font } from "expo"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
 import { RootNavigator } from "navigation"
 import { connect } from "react-redux"
+import { get } from "agent"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   appLoaded: state.common.initialAppLoaded,
-  isOffline: state.common.isOffline
+  isOffline: state.common.isOffline,
+  awsAccessKey: state.common.awsAccessKey,
+  awsSecretKey: state.common.awsSecretKey
 })
 
 const mapDispatchToProps = dispatch => ({
   initialAppLoaded: () => dispatch(initialAppLoaded()),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
   setWindowDimensions: payload => dispatch(setWindowDimensions(payload)),
-  updateConnectionType: payload => dispatch(updateConnectionType(payload))
+  updateConnectionType: payload => dispatch(updateConnectionType(payload)),
+  addAwsCredentials: payload => dispatch(addAwsCredentials(payload))
 })
 
 class Ventur extends Component {
@@ -25,6 +29,7 @@ class Ventur extends Component {
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
     this.setUpConnectionListener()
+    this.getAWSCredentials()
   }
 
   setupDimensionsListener() {
@@ -33,6 +38,15 @@ class Ventur extends Component {
 
   setUpConnectionListener() {
     NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
+  }
+
+  getAWSCredentials() {
+    if (this.props.awsSecretKey && this.props.awsAccessKey) return
+
+    get("/credentials").then(response => {
+      console.log("response", response)
+      this.props.addAwsCredentials(response)
+    })
   }
 
   handleConnectionChange = connectionInfo => {

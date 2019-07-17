@@ -12,6 +12,14 @@ export function setLoadingFalse() {
   }
 }
 
+export const ADD_AWS_CREDENTIALS = "ADD_AWS_CREDENTIALS"
+export function addAwsCredentials(payload) {
+  return {
+    type: ADD_AWS_CREDENTIALS,
+    payload: payload
+  }
+}
+
 export const UPDATE_CURRENT_BOTTOM_TAB = "UPDATE_CURRENT_BOTTOM_TAB"
 export function updateCurrentBottomTab(payload) {
   return {

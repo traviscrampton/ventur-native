@@ -165,9 +165,9 @@ class ChapterEditor extends Component {
   }
 
   deleteImage = index => {
-    let imageId = this.props.entries[index].id
+    // let imageId = this.props.entries[index].id
 
-    this.props.addImageToDeletedIds(imageId)
+    // this.props.addImageToDeletedIds(imageId)
     this.props.removeEntryAndFocus(index)
   }
 
@@ -195,7 +195,7 @@ class ChapterEditor extends Component {
   }
 
   renderOpacCover(index, imageHeight, image) {
-    if (this.props.uploadIsImage && !image.id) {
+    if (this.props.uploadIsImage && !image.uri) {
       return this.renderImageLoadingCover(index, imageHeight)
     }
 
@@ -241,7 +241,11 @@ class ChapterEditor extends Component {
   }
 
   returnLowResImageUri(entry) {
-    const { uri, lowResUri } = entry
+    const { uri, lowResUri, localUri } = entry
+
+    if (!uri) {
+      return localUri
+    }
 
     if (lowResUri) {
       return lowResUri
@@ -324,15 +328,14 @@ class ChapterEditor extends Component {
   }
 
   handleDoneButtonPress = () => {
-    if (this.props.isUpdating) return
+    if (this.props.isUpdating || this.props.uploadIsImage) return
     this.props.doneEditingAndPersist()
     this.navigateBack()
   }
 
   loseChangesAndUpdate = () => {
     const { id } = this.props.chapter.editorBlob
-    const deletedIds = this.getImagesToDelete()
-    const payload = Object.assign({}, { id, deletedIds })
+    const payload = Object.assign({}, { id })
     this.props.loseChangesAndUpdate(payload)
     this.navigateBack()
   }
