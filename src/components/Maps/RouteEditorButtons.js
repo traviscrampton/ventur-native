@@ -6,7 +6,7 @@ import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "actions/route_editor"
-import { loadInitialStravaData } from "actions/strava_activity_import"
+import { checkForExpiredToken } from "actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({
@@ -15,11 +15,11 @@ const mapDispatchToProps = dispatch => ({
   setShownIndex: payload => dispatch(setShownIndex(payload)),
   persistRoute: () => dispatch(persistRoute()),
   eraseRoute: () => dispatch(eraseRoute()),
-  loadInitialStravaData: () => dispatch(loadInitialStravaData()),
+  checkForExpiredToken: () => dispatch(checkForExpiredToken()),
 })
 
 const mapStateToProps = state => ({
-  stravaAuthToken: state.common.currentUser.stravaAuthToken,
+  stravaAccessToken: state.common.currentUser.stravaAccessToken,
   polylineEditor: state.routeEditor.polylineEditor,
   drawMode: state.routeEditor.drawMode,
   shownIndex: state.routeEditor.shownIndex,
@@ -82,7 +82,7 @@ class RouteEditorButtons extends Component {
 
   loadStravaAndNavigate = () => {
     this.props.navigation.navigate("StravaRouteSelector")
-    this.props.loadInitialStravaData()
+    this.props.checkForExpiredToken()
   }
 
   renderUndoButton() {
@@ -241,7 +241,7 @@ class RouteEditorButtons extends Component {
   }
 
   renderStravaCta() {
-    if (!this.props.stravaAuthToken) return
+    if (!this.props.stravaAccessToken) return
 
         return (
       <View

@@ -132,7 +132,7 @@ class Profile extends Component {
   }
 
   connectToStrava = async () => {
-    if (this.state.currentUser.stravaAuthToken) return
+    if (this.props.currentUser.stravaAccessToken) return
 
     this.setState({ userMenuOpen: false })
     const redirect = await Linking.getInitialURL("/")
@@ -153,7 +153,7 @@ class Profile extends Component {
   }
 
   stravaCtaText() {
-    return this.props.currentUser.stravaAuthToken ? "Connected to Strava" : "Connect To Strava"
+    return this.props.currentUser.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
   }
 
   renderUserName() {

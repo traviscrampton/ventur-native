@@ -1,3 +1,6 @@
+import { encodeQueryString } from "agent"
+import { persistAccessToken } from "actions/strava"
+
 export const INITIAL_ACTIVITY_LOAD = "INITIAL_ACTIVITY_LOAD"
 export const initialActivityLoad = payload => {
   return {
@@ -6,16 +9,65 @@ export const initialActivityLoad = payload => {
   }
 }
 
+export const checkForExpiredToken = () => {
+  return async (dispatch, getState) => {
+    console.log("What in tarnation", getState().common.currentUser.stravaExpiresAt, Date.now())
+    if (getState().common.currentUser.stravaExpiresAt < new Date().getTime() / 1000) {
+      console.log("its expired!")
+      dispatch(refreshAccessToken())
+    } else {
+      console.log("its still good")
+      dispatch(loadInitialStravaData())
+    }
+  }
+}
+
+export const refreshAccessToken = () => {
+  return async (dispatch, getState) => {
+    const { stravaRefreshToken } = getState().common.currentUser
+    const { stravaClientId, stravaClientSecret } = getState().common
+    let url = "https://www.strava.com/oauth/token"
+    let params = Object.assign(
+      {},
+      {
+        client_id: stravaClientId,
+        client_secret: stravaClientSecret,
+        grant_type: "refresh_token",
+        refresh_token: stravaRefreshToken
+      }
+    )
+    url = url + encodeQueryString(params)
+
+    fetch(url, {
+      method: "POST"
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        dispatch(persistAccessToken(data))
+        dispatch(loadInitialStravaData())
+      })
+      .catch(err => {
+        console.log("error!", err)
+        if (err.status === 401) {
+          console.log("error 401")
+          // return logout()
+        }
+      })
+  }
+}
+
 export const loadInitialStravaData = () => {
   return async (dispatch, getState) => {
     const url = "https://www.strava.com/api/v3/athlete/activities?per_page=20"
-    const { stravaAuthToken } = getState().common.currentUser
+    const { stravaAccessToken } = getState().common.currentUser
     const distance = getState().chapter.chapter.distance
 
     fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${stravaAuthToken}`
+        Authorization: `Bearer ${stravaAccessToken}`
       }
     })
       .then(response => {
@@ -35,16 +87,16 @@ export const loadInitialStravaData = () => {
   }
 }
 
-export const ADD_TO_SELECTED_IDS = "ADD_TO_SELECTED_IDS" 
-export const addToSelectedIds = (payload) => {
+export const ADD_TO_SELECTED_IDS = "ADD_TO_SELECTED_IDS"
+export const addToSelectedIds = payload => {
   return {
     type: ADD_TO_SELECTED_IDS,
     payload: payload
   }
 }
 
-export const REMOVE_FROM_SELECTED_IDS = "REMOVE_FROM_SELECTED_IDS" 
-export const removeFromSelectedIds = (payload) => {
+export const REMOVE_FROM_SELECTED_IDS = "REMOVE_FROM_SELECTED_IDS"
+export const removeFromSelectedIds = payload => {
   return {
     type: REMOVE_FROM_SELECTED_IDS,
     payload: payload

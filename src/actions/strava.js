@@ -9,7 +9,7 @@ export const authenticateStravaUser = result => {
   return async (dispatch, getState) => {
     const code = getCodeFromUrl(result)
     dispatch(validateUser(code)).then(response => {
-      dispatch(persistAccessToken(response.access_token))
+      dispatch(persistAccessToken(response))
     })
   }
 }
@@ -20,13 +20,17 @@ const getCodeFromUrl = result => {
   return params.code
 }
 
-export const persistAccessToken = authToken => {
+export const persistAccessToken = response => {
   return async (dispatch, getState) => {
+    console.log("are we here", response)
     let user
-    let params = Object.assign({}, { authToken: authToken })
+    let params = Object.assign(
+      {},
+      { stravaAccessToken: response.access_token, stravaRefreshToken: response.refresh_token, stravaExpiresAt: response.expires_at }
+    )
 
-    post("/users/update_strava_token", params).then(response => {
-      const { user } = response
+    post("/strava_auths", params).then(response => {
+      user = Object.assign({}, getState().common.currentUser, response)
       AsyncStorage.setItem("currentUser", JSON.stringify(user))
       dispatch(setCurrentUser(user))
     })

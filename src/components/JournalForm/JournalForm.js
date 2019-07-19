@@ -127,8 +127,7 @@ class JournalForm extends Component {
 
   renderDistanceType() {
     const distanceType = this.props.distanceType.toUpperCase()
-    console.log("distanceType: ", distanceType)
-
+    
     return (
       <View>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("distanceType", this.props.distanceType)}>
