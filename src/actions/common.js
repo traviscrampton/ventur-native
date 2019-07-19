@@ -12,10 +12,10 @@ export function setLoadingFalse() {
   }
 }
 
-export const ADD_AWS_CREDENTIALS = "ADD_AWS_CREDENTIALS"
-export function addAwsCredentials(payload) {
+export const ADD_API_CREDENTIALS = "ADD_API_CREDENTIALS"
+export function addApiCredentials(payload) {
   return {
-    type: ADD_AWS_CREDENTIALS,
+    type: ADD_API_CREDENTIALS,
     payload: payload
   }
 }

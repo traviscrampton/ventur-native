@@ -8,7 +8,8 @@ import {
   FlatList,
   AsyncStorage,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Linking
 } from "react-native"
 import ChapterList from "components/chapters/ChapterList"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
@@ -20,15 +21,18 @@ import { updateChapterForm } from "actions/chapter_form"
 import { loadChapter } from "actions/chapter"
 import { loadSingleJournal, resetJournalShow } from "actions/journals"
 import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "actions/common"
+import { authenticateStravaUser } from "actions/strava"
 import { connect } from "react-redux"
 import { addJournalsToAsyncStorage } from "utils/offline_helpers"
 import { logOut } from "auth"
 import { getChapterFromStorage, updateOfflineChapters } from "utils/offline_helpers"
-import { setToken, API_ROOT } from "agent"
+import { setToken, API_ROOT, encodeQueryString } from "agent"
 import LoadingScreen from "components/shared/LoadingScreen"
+import { WebBrowser } from "expo"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
+  stravaClientId: state.common.stravaClientId,
   user: state.user.user,
   offlineChapters: state.user.offlineChapters,
   isLoading: state.common.isLoading
@@ -43,7 +47,8 @@ const mapDispatchToProps = dispatch => ({
   loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
-  resetJournalShow: () => dispatch(resetJournalShow())
+  resetJournalShow: () => dispatch(resetJournalShow()),
+  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload))
 })
 
 class Profile extends Component {
@@ -126,6 +131,31 @@ class Profile extends Component {
     this.props.navigation.navigate("ChapterFormJournals")
   }
 
+  connectToStrava = async () => {
+    if (this.state.currentUser.stravaAuthToken) return
+
+    this.setState({ userMenuOpen: false })
+    const redirect = await Linking.getInitialURL("/")
+    const params = Object.assign(
+      {},
+      {
+        client_id: this.props.stravaClientId,
+        response_type: "code",
+        redirect_uri: redirect,
+        scope: "activity:read_all",
+        approval_prompt: "force"
+      }
+    )
+
+    let url = "https://www.strava.com/oauth/authorize" + encodeQueryString(params)
+    const result = await WebBrowser.openAuthSessionAsync(url)
+    await this.props.authenticateStravaUser(result)
+  }
+
+  stravaCtaText() {
+    return this.props.currentUser.stravaAuthToken ? "Connected to Strava" : "Connect To Strava"
+  }
+
   renderUserName() {
     return (
       <View style={{ height: Dimensions.get("window").width / 4, display: "flex", flexDirection: "column" }}>
@@ -194,8 +224,11 @@ class Profile extends Component {
   renderDropdown() {
     if (!this.state.userMenuOpen) return
 
-    const options = [{ type: "touchable", title: "Log Out", callback: this.handleLogout }]
-    return <ChapterUserForm options={options} styles={{ right: -5, top: 25, width: 100 }} />
+    const options = [
+      { type: "touchable", title: "Log Out", callback: this.handleLogout },
+      { type: "touchable", title: this.stravaCtaText(), callback: this.connectToStrava }
+    ]
+    return <ChapterUserForm options={options} />
   }
 
   renderProfilePhotoAndMetadata() {

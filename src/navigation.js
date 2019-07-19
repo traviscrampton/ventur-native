@@ -3,6 +3,7 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator }
 import JournalFeed from "components/journals/JournalFeed"
 import Journal from "components/journals/journal"
 import Login from "components/users/login"
+import StravaLogin from "components/users/StravaLogin"
 import HomeLoggedOut from "components/users/HomeLoggedOut"
 import BottomTabBar from "components/shared/BottomTabBar"
 import CameraRollContainer from "components/editor/CameraRollContainer"
@@ -71,6 +72,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalRoute: JournalRoute,
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
+    // StravaLogin: StravaLogin,
   },
   {
     initialRouteName: "JournalFeed",
@@ -105,6 +107,7 @@ const ProfileNavigator = createStackNavigator(
     ManageContent: ManageContent,
     ChapterFormJournals: ChapterFormJournals,
     ChapterEditor: ChapterEditor,
+    StravaLogin: StravaLogin,
   },
   {
     initialRouteName: "Profile",

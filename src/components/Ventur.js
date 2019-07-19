@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType, addAwsCredentials } from "actions/common"
+import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType, addApiCredentials } from "actions/common"
 import { Font } from "expo"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
 import { RootNavigator } from "navigation"
@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
   setWindowDimensions: payload => dispatch(setWindowDimensions(payload)),
   updateConnectionType: payload => dispatch(updateConnectionType(payload)),
-  addAwsCredentials: payload => dispatch(addAwsCredentials(payload))
+  addApiCredentials: payload => dispatch(addApiCredentials(payload))
 })
 
 class Ventur extends Component {
@@ -45,7 +45,7 @@ class Ventur extends Component {
 
     get("/credentials").then(response => {
       console.log("response", response)
-      this.props.addAwsCredentials(response)
+      this.props.addApiCredentials(response)
     })
   }
 
