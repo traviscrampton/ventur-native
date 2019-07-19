@@ -23,6 +23,7 @@ import JournalForm from "components/JournalForm/JournalForm"
 import CountriesEditor from "components/JournalForm/CountriesEditor"
 import UserAvatarForm from "components/users/UserAvatarForm"
 import RouteEditor from "components/Maps/RouteEditor"
+import StravaRouteSelector from "components/Maps/StravaRouteSelector"
 import RouteViewer from "components/Maps/RouteViewer"
 import JournalRoute from "components/Maps/JournalRoute"
 import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
@@ -49,7 +50,8 @@ const NO_FOOTER_SCREENS = [
   "JournalForm",
   "CountriesEditor",
   "ChapterEditor",
-  "ChapterMetaDataForm"
+  "ChapterMetaDataForm",
+  "StravaRouteSelector"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -72,7 +74,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalRoute: JournalRoute,
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
-    // StravaLogin: StravaLogin,
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "JournalFeed",
@@ -107,7 +109,7 @@ const ProfileNavigator = createStackNavigator(
     ManageContent: ManageContent,
     ChapterFormJournals: ChapterFormJournals,
     ChapterEditor: ChapterEditor,
-    StravaLogin: StravaLogin,
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "Profile",

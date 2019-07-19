@@ -1,11 +1,12 @@
 import React, { Component } from "react"
 import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "actions/route_editor"
+import { loadInitialStravaData } from "actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({
@@ -13,10 +14,12 @@ const mapDispatchToProps = dispatch => ({
   togglePositionMode: () => dispatch(togglePositionMode()),
   setShownIndex: payload => dispatch(setShownIndex(payload)),
   persistRoute: () => dispatch(persistRoute()),
-  eraseRoute: () => dispatch(eraseRoute())
+  eraseRoute: () => dispatch(eraseRoute()),
+  loadInitialStravaData: () => dispatch(loadInitialStravaData()),
 })
 
 const mapStateToProps = state => ({
+  stravaAuthToken: state.common.currentUser.stravaAuthToken,
   polylineEditor: state.routeEditor.polylineEditor,
   drawMode: state.routeEditor.drawMode,
   shownIndex: state.routeEditor.shownIndex,
@@ -75,6 +78,11 @@ class RouteEditorButtons extends Component {
     }
 
     this.props.setShownIndex(shownIndex + 1)
+  }
+
+  loadStravaAndNavigate = () => {
+    this.props.navigation.navigate("StravaRouteSelector")
+    this.props.loadInitialStravaData()
   }
 
   renderUndoButton() {
@@ -232,6 +240,36 @@ class RouteEditorButtons extends Component {
     )
   }
 
+  renderStravaCta() {
+    if (!this.props.stravaAuthToken) return
+
+        return (
+      <View
+        shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={{ position: "absolute", bottom: 100, right: 30 }}>
+        <TouchableWithoutFeedback onPress={this.loadStravaAndNavigate}>
+          <View
+            style={{
+              height: 35,
+              width: 35,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+              borderRadius: "50%"
+            }}>
+            <Text>S</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )  
+
+  }
+
   renderEraseButton() {
     if (this.props.positionMode) return
 
@@ -297,6 +335,7 @@ class RouteEditorButtons extends Component {
           {this.renderSaveButton()}
           {this.renderCropButton()}
         </View>
+        {this.renderStravaCta()}
         {this.renderEraseButton()}
       </React.Fragment>
     )

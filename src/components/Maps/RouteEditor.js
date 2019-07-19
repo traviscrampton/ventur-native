@@ -210,7 +210,7 @@ class RouteEditor extends Component {
           </MapView>
         </View>
         {this.renderFloatingBackButton()}
-        <RouteEditorButtons />
+        <RouteEditorButtons navigation={this.props.navigation} />
         {this.renderSavingButton()}
       </View>
     )
