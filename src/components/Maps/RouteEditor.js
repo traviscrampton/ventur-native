@@ -48,7 +48,8 @@ class RouteEditor extends Component {
 
   onPanDrag = e => {
     if (!this.props.drawMode || !this.props.isDrawing) return
-    this.props.drawLine(e.nativeEvent.coordinate)
+    let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
+    this.props.drawLine(coordinates)
   }
 
   checkForSaveAndNavigateBack = () => {
@@ -175,8 +176,13 @@ class RouteEditor extends Component {
   }
 
   renderPolylines() {
-    return this.props.polylines.map((coordinates, index) => {
+    let coordinates
+    return this.props.polylines.map((coordinateArrays, index) => {
       if (index > this.props.shownIndex) return
+
+      coordinates = coordinateArrays.map(coordinate => {
+        return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
+      })
 
       return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
     })

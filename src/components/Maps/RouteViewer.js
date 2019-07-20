@@ -62,8 +62,13 @@ class RouteViewer extends Component {
   }
 
   renderPolylines() {
-    return this.props.polylines.map((coordinates, index) => {
+    let coordinates
+    return this.props.polylines.map((coordinateArrays, index) => {
       if (index > this.props.shownIndex) return
+
+      coordinates = coordinateArrays.map(coordinate => {
+        return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
+      })
 
       return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
     })

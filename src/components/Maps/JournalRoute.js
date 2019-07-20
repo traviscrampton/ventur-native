@@ -170,8 +170,13 @@ class JournalRoute extends Component {
   }
 
   renderPolylines() {
+    let coordinates
     return this.props.polylines.map((polylines, index) => {
-      return polylines.map((coordinates, index) => {
+      return polylines.map((coordinateArrays, index) => {
+        coordinates = coordinateArrays.map(coordinate => {
+          return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
+        })
+
         return (
           <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
         )

@@ -1,6 +1,7 @@
+const googlePolyline = require("google-polyline")
+
 import { setLoadingTrue, setLoadingFalse } from "./common"
 import { get, put, destroy } from "../agent"
-import base64 from "react-native-base64"
 
 export const POPULATE_MAP = "POPULATE_MAP"
 export function populateMap(payload) {
@@ -55,12 +56,20 @@ export function persistRoute() {
       polylines = [...polylines, []]
     }
 
-    polylines = base64.encode(JSON.stringify(polylines))
-    let params = Object.assign({}, { polylines })
-    put(`/cycle_routes/${id}`, params).then(res => {
-      const newPolylines = JSON.parse(base64.decode(res.cycleRoute.polylines))
+    polylines = polylines.map(polylineArr => {
+      return googlePolyline.encode(polylineArr)
+    })
 
-      dispatch(drawPolyline({ polylines: newPolylines, shownIndex: newPolylines.length - 1 }))
+    polylines = JSON.stringify(polylines)
+
+    const params = Object.assign({}, { polylines })
+    put(`/cycle_routes/${id}`, params).then(res => {
+      polylines = JSON.parse(res.cycleRoute.polylines)
+      polylines = polylines.map(polyline => {
+        return googlePolyline.decode(polyline)
+      })
+
+      dispatch(drawPolyline({ polylines, shownIndex: polylines.length - 1 }))
       dispatch(updateStartingPolylines())
       dispatch(savingMapEnd())
     })
@@ -194,9 +203,18 @@ export function loadRouteEditor(cycleRouteId) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
     get(`/cycle_routes/${cycleRouteId}/editor_show`).then(res => {
-      let { cycleRoute } = res
-      let polylines = cycleRoute.polylines.length === 0 ? [[], []] : JSON.parse(base64.decode(cycleRoute.polylines))
-      let previousPolylines = cycleRoute.previousPolylines.length === 0 ? [[]] : JSON.parse(base64.decode(cycleRoute.previousPolylines))
+      let {
+        cycleRoute: { polylines, previousPolylines },
+        cycleRoute
+      } = res
+
+      polylines =
+        polylines.length === 0
+          ? [[], []]
+          : JSON.parse(polylines).map(polyline => {
+              return googlePolyline.decode(polyline)
+            })
+      previousPolylines = [[]] // do i even want this
       cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines })
       dispatch(populateMap(cycleRoute))
       dispatch(setLoadingFalse())
