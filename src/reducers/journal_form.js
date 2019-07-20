@@ -1,4 +1,4 @@
-import { UPDATE_JOURNAL_FORM, RESET_JOURNAL_FORM } from "actions/journal_form"
+import { UPDATE_JOURNAL_FORM, RESET_JOURNAL_FORM } from "../actions/journal_form"
 
 const defaultJournalFormData = {
   id: null,  

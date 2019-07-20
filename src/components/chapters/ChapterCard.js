@@ -1,7 +1,7 @@
 import React from "react"
 import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
-import ProgressiveImage from "components/shared/ProgressiveImage"
+import ProgressiveImage from "../shared/ProgressiveImage"
 
 const distanceString = distance => {
   const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
@@ -20,7 +20,6 @@ const distanceString = distance => {
 const ChapterCard = props => {
   let publishedStatus
   let { imageUrl, title, distance, readableDate, thumbnailSource } = props
-  console.log(thumbnailSource)
 
   distance = distanceString(distance)
 
@@ -69,8 +68,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
-    alignItems: "top"
+    borderBottomColor: "#d3d3d3"
   },
   chapterTitle: {
     maxWidth: Dimensions.get("window").width - 140,

@@ -5,8 +5,8 @@ import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "actions/route_editor"
-import { checkForExpiredToken } from "actions/strava_activity_import"
+import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "../../actions/route_editor"
+import { checkForExpiredToken } from "../../actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({

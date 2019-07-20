@@ -5,8 +5,8 @@ import { connect } from "react-redux"
 import { MapView } from "expo"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
-import { defaultRouteViewer } from "actions/route_viewer"
-import LoadingScreen from "components/shared/LoadingScreen"
+import { defaultRouteViewer } from "../../actions/route_viewer"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   defaultRouteViewer: () => dispatch(defaultRouteViewer())

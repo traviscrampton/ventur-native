@@ -1,5 +1,5 @@
-import { post, put, destroy } from "agent"
-import { addChapterToJournals } from "actions/chapter_form"
+import { post, put, destroy } from "../agent"
+import { addChapterToJournals } from "./chapter_form"
 
 function convertToJson(str) {
   if (typeof str === "string") {

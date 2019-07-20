@@ -1,9 +1,9 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback, Alert } from "react-native"
 import { connect } from "react-redux"
-import { deleteComment } from "actions/comments"
+import { deleteComment } from "../../actions/comments"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
-const CycleTouringLogo = require("assets/images/cycletouringlogo.png")
+const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   imageAndUser: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "top"
+    alignItems: "flex-start"
   },
   image: {
     width: 35,

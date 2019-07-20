@@ -1,10 +1,16 @@
 import React, { Component } from "react"
-import { initialAppLoaded, setCurrentUser, setWindowDimensions, updateConnectionType, addApiCredentials } from "actions/common"
+import {
+  initialAppLoaded,
+  setCurrentUser,
+  setWindowDimensions,
+  updateConnectionType,
+  addApiCredentials
+} from "../actions/common"
 import { Font } from "expo"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
-import { RootNavigator } from "navigation"
+import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
-import { get } from "agent"
+import { get } from "../agent"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -23,9 +29,9 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Ventur extends Component {
-  componentWillMount() {
+  async componentWillMount() {
+    await this.setUpFonts()
     this.setupDimensionsListener()
-    this.setUpFonts()
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
     this.setUpConnectionListener()
@@ -63,7 +69,6 @@ class Ventur extends Component {
   async setChaptersForAsyncStorage() {
     let chapters = await AsyncStorage.getItem("chapters")
     let journals = await AsyncStorage.getItem("journals")
-    // await AsyncStorage.setItem("chapters", JSON.stringify([]))
     if (!chapters) {
       await AsyncStorage.setItem("chapters", JSON.stringify([]))
     } else if (!journals) {
@@ -84,11 +89,11 @@ class Ventur extends Component {
 
   async setUpFonts() {
     await Font.loadAsync({
-      "open-sans-regular": require("assets/fonts/Lato/Lato-Regular.ttf"),
-      playfair: require("assets/fonts/Lato/Lato-Bold.ttf"),
-      overpass: require("assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
-      "open-sans-bold": require("assets/fonts/Lato/Lato-Black.ttf"),
-      "open-sans-semi": require("assets/fonts/Lato/Lato-Light.ttf")
+      "open-sans-regular": require("../assets/fonts/Lato/Lato-Regular.ttf"),
+      playfair: require("../assets/fonts/Lato/Lato-Bold.ttf"),
+      overpass: require("../assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
+      "open-sans-bold": require("../assets/fonts/Lato/Lato-Black.ttf"),
+      "open-sans-semi": require("../assets/fonts/Lato/Lato-Light.ttf")
     })
   }
 
@@ -98,7 +103,7 @@ class Ventur extends Component {
 
     if (!this.props.appLoaded) {
       return null
-    } 
+    }
 
     return (
       <React.Fragment>

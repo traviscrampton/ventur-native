@@ -1,8 +1,8 @@
 import { AsyncStorage } from "react-native"
 import _ from "lodash"
-import { setToken, API_ROOT } from "agent"
-import DropDownHolder from "utils/DropdownHolder"
-import { persistChapterToAsyncStorage, findChapter } from "utils/offline_helpers"
+import { setToken, API_ROOT } from "../agent"
+import DropDownHolder from "./DropdownHolder"
+import { persistChapterToAsyncStorage, findChapter } from "./offline_helpers"
 
 export const offlineChapterCreate = async (chapter, reduxCallback) => {
   const localId = "Created on " + Date.now()

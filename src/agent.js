@@ -2,8 +2,8 @@ import _superagent from "superagent"
 import superagentPromise from "superagent-promise"
 import request from "superagent"
 import { AsyncStorage } from "react-native"
-import DropDownHolder from "utils/DropdownHolder"
-import { logOut } from "auth"
+import DropDownHolder from "./utils/DropdownHolder"
+import { logOut } from "./auth"
 
 const ql = require("superagent-graphql")
 export const API_ROOT = "http://192.168.2.176:3000"

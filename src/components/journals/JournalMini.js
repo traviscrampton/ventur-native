@@ -1,6 +1,6 @@
 import React from "react"
 import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback, Dimensions } from "react-native"
-import ProgressiveImage from "components/shared/ProgressiveImage"
+import ProgressiveImage from "../shared/ProgressiveImage"
 
 const pad = Dimensions.get("window").width * 0.04
 const imageGaps = Dimensions.get("window").width * 0.11

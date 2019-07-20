@@ -1,11 +1,11 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { View, TouchableWithoutFeedback, Alert } from "react-native"
-import { setToken, API_ROOT } from "agent"
-import DropDownHolder from "utils/DropdownHolder"
-import { editChapterPublished, deleteChapter } from "actions/editor"
+import { setToken, API_ROOT } from "../../agent"
+import DropDownHolder from "../../utils/DropdownHolder"
+import { editChapterPublished, deleteChapter } from "../../actions/editor"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import ChapterUserForm from "components/chapters/ChapterUserForm"
+import ChapterUserForm from "../chapters/ChapterUserForm"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter

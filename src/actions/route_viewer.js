@@ -1,5 +1,5 @@
-import { get } from "agent"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
+import { get } from "../agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
 import base64 from "react-native-base64"
 
 export function loadRouteViewer(id) {

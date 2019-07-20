@@ -1,17 +1,17 @@
 import React, { Component } from "react"
 import _ from "lodash"
-import { resetChapter } from "actions/chapter"
+import { resetChapter } from "../../actions/chapter"
 import { StyleSheet, View, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
-import { loadChapter, setEditMode } from "actions/chapter"
-import { populateEntries, getInitialImageIds, loseChangesAndUpdate } from "actions/editor"
-import ChapterEditor from "components/chapters/ChapterEditor"
-import ChapterShow from "components/chapters/ChapterShow"
-import { updateChapterForm, resetChapterForm } from "actions/chapter_form"
+import { loadChapter, setEditMode } from "../../actions/chapter"
+import { populateEntries, getInitialImageIds, loseChangesAndUpdate } from "../../actions/editor"
+import ChapterEditor from "./ChapterEditor"
+import ChapterShow from "./ChapterShow"
+import { updateChapterForm, resetChapterForm } from "../../actions/chapter_form"
 import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons"
-import { get, put, destroy } from "agent"
-import LoadingScreen from "components/shared/LoadingScreen"
+import { get, put, destroy } from "../../agent"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     marginLeft: 2,
-    borderRadius: "50%",
+    borderRadius: 25,
     position: "relative"
   },
   backIcon: {

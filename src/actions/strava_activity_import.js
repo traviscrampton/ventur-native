@@ -1,5 +1,5 @@
-import { encodeQueryString } from "agent"
-import { persistAccessToken } from "actions/strava"
+import { encodeQueryString } from "../agent"
+import { persistAccessToken } from "./strava"
 
 export const INITIAL_ACTIVITY_LOAD = "INITIAL_ACTIVITY_LOAD"
 export const initialActivityLoad = payload => {

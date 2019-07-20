@@ -1,4 +1,4 @@
-import { INITIAL_ACTIVITY_LOAD, ADD_TO_SELECTED_IDS, REMOVE_FROM_SELECTED_IDS } from "actions/strava_activity_import"
+import { INITIAL_ACTIVITY_LOAD, ADD_TO_SELECTED_IDS, REMOVE_FROM_SELECTED_IDS } from "../actions/strava_activity_import"
 
 const defaultData = {
   activities: [],

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { ScrollView, View, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
-import { resetCommentForm, updateCommentContent, createComment } from "actions/comment_form"
+import { resetCommentForm, updateCommentContent, createComment } from "../../actions/comment_form"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({

@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import Comment from "components/Comments/Comment"
-const CycleTouringLogo = require("assets/images/cycletouringlogo.png")
+import Comment from "./Comment"
+const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
 
 const mapStateToProps = state => ({
   comments: state.comments.comments,

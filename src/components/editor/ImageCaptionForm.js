@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Header } from "components/editor/header"
-import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "actions/editor"
+import { Header } from "./header"
+import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "../../actions/editor"
 import { Text, TextInput, StyleSheet, View, Image } from "react-native"
 
 const mapStateToProps = state => ({

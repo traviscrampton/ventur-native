@@ -9,16 +9,15 @@ import {
   Dimensions,
   TouchableWithoutFeedback
 } from "react-native"
-import { updateUserForm, populateUserForm, resetUserForm } from "actions/user_form"
-import { setCurrentUser } from "actions/common"
+import { updateUserForm, populateUserForm, resetUserForm } from "../../actions/user_form"
+import { setCurrentUser } from "../../actions/common"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
-import DropDownHolder from "utils/DropdownHolder"
+import DropDownHolder from "../../utils/DropdownHolder"
 import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
-import { storeJWT } from "auth"
-import { API_ROOT, setToken } from "agent"
-import { post } from "agent"
+import { storeJWT } from "../../auth"
+import { API_ROOT, setToken, post } from "../../agent"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,

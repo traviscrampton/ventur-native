@@ -1,7 +1,7 @@
-import { get } from "agent"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
+import { get } from "../agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
 import base64 from "react-native-base64"
-import { populateMap } from "actions/route_editor"
+import { populateMap } from "./route_editor"
 
 export function loadJournalMap(id) {
   return function(dispatch, getState) {

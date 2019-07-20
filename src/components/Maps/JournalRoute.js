@@ -10,9 +10,9 @@ import {
   togglePositionMode,
   persistCoordinates,
   defaultRouteEditor
-} from "actions/route_editor"
-import { defaultJournalRoute } from "actions/journal_route"
-import LoadingScreen from "components/shared/LoadingScreen"
+} from "../../actions/route_editor"
+import { defaultJournalRoute } from "../../actions/journal_route"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   defaultJournalRoute: () => dispatch(defaultJournalRoute()),

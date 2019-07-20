@@ -1,4 +1,4 @@
-import { POPULATE_ROUTE_VIEWER, DEFAULT_ROUTE_VIEWER } from "actions/route_viewer"
+import { POPULATE_ROUTE_VIEWER, DEFAULT_ROUTE_VIEWER } from "../actions/route_viewer"
 
 const defaultRouteData = {
   id: null,

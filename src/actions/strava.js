@@ -1,9 +1,8 @@
 import { Linking } from "react-native"
-import { encodeQueryString } from "agent"
+import { encodeQueryString, post } from "../agent"
 import { WebBrowser } from "expo"
-import { post } from "agent"
 import { AsyncStorage } from "react-native"
-import { setCurrentUser } from "actions/common"
+import { setCurrentUser } from "./common"
 
 export const authenticateStravaUser = result => {
   return async (dispatch, getState) => {

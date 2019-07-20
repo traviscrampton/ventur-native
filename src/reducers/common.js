@@ -1,4 +1,4 @@
-import { TOGGLE_TAB_BAR } from "actions/action_types"
+import { TOGGLE_TAB_BAR } from "../actions/action_types"
 import { Dimensions } from "react-native"
 import {
   SET_CURRENT_USER,
@@ -9,7 +9,7 @@ import {
   SET_LOADING_TRUE,
   SET_LOADING_FALSE,
   ADD_API_CREDENTIALS
-} from "actions/common"
+} from "../actions/common"
 
 const defaultAppState = {
   currentUser: null,

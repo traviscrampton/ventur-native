@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } f
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
-import RouteEditorButtons from "components/Maps/RouteEditorButtons"
+import RouteEditorButtons from "../Maps/RouteEditorButtons"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
 import {
@@ -14,8 +14,8 @@ import {
   persistCoordinates,
   updateRegionCoordinates,
   defaultRouteEditor
-} from "actions/route_editor"
-import LoadingScreen from "components/shared/LoadingScreen"
+} from "../../actions/route_editor"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),

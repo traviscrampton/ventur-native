@@ -1,5 +1,5 @@
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import { get, put, destroy } from "agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
+import { get, put, destroy } from "../agent"
 import base64 from "react-native-base64"
 
 export const POPULATE_MAP = "POPULATE_MAP"

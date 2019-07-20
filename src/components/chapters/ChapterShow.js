@@ -11,16 +11,16 @@ import {
   Alert
 } from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm } from "actions/chapter_form"
-import { sendEmails } from "actions/chapter"
-import { loadRouteEditor } from "actions/route_editor"
-import { loadRouteViewer } from "actions/route_viewer"
-import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
-import CommentsContainer from "components/Comments/CommentsContainer"
-import { editChapterPublished, deleteChapter } from "actions/chapter"
+import { updateChapterForm } from "../../actions/chapter_form"
+import { sendEmails } from "../../actions/chapter"
+import { loadRouteEditor } from "../../actions/route_editor"
+import { loadRouteViewer } from "../../actions/route_viewer"
+import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import CommentsContainer from "../Comments/CommentsContainer"
+import { editChapterPublished, deleteChapter } from "../../actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
-import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "utils/offline_helpers"
-import ProgressiveImage from "components/shared/ProgressiveImage"
+import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "../../utils/offline_helpers"
+import ProgressiveImage from "../shared/ProgressiveImage"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,

@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback
 import { WebBrowser } from "expo"
 import { connect } from "react-redux"
 import { AuthSession } from "expo"
-import { encodeQueryString } from "agent"
+import { encodeQueryString } from "../../agent"
 
 const mapStateToProps = state => ({
   stravaClientId: state.common.stravaClientId,

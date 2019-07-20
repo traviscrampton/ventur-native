@@ -1,11 +1,11 @@
 import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
-import { Header } from "components/editor/header"
+import { Header } from "../editor/header"
 import { StackActions, NavigationActions } from "react-navigation"
 import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
-import { setToken, API_ROOT } from "agent"
-import { updateJournalForm, resetJournalForm, persistJournal } from "actions/journal_form"
+import { setToken, API_ROOT } from "../../agent"
+import { updateJournalForm, resetJournalForm, persistJournal } from "../../actions/journal_form"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,

@@ -4,7 +4,7 @@ import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Dimensions, Tex
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { MaterialIndicator } from "react-native-indicators"
-import { addToSelectedIds, removeFromSelectedIds } from "actions/strava_activity_import"
+import { addToSelectedIds, removeFromSelectedIds } from "../../actions/strava_activity_import"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({

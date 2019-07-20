@@ -1,4 +1,4 @@
-import { POPULATE_JOURNAL_ROUTE, DEFAULT_JOURNAL_ROUTE } from "actions/journal_route"
+import { POPULATE_JOURNAL_ROUTE, DEFAULT_JOURNAL_ROUTE } from "../actions/journal_route"
 
 const defaultRouteData = {
   id: null,
