@@ -1,10 +1,87 @@
+import { addStravaImportRoute } from "./route_editor"
 import { encodeQueryString } from "../agent"
 import { persistAccessToken } from "./strava"
+
+const googlePolyline = require("google-polyline")
 
 export const INITIAL_ACTIVITY_LOAD = "INITIAL_ACTIVITY_LOAD"
 export const initialActivityLoad = payload => {
   return {
     type: INITIAL_ACTIVITY_LOAD,
+    payload: payload
+  }
+}
+
+export const importStravaActivites = payload => {
+  return async (dispatch, getState) => {
+    await dispatch(makeStravaActivityRequests())
+
+    const { activitiesToImport } = getState().stravaActivityImport
+
+    for (let activity of activitiesToImport) {
+      dispatch(addStravaImportRoute(googlePolyline.decode(activity.polyline)))
+    }
+
+    payload.goBack()
+  }
+}
+
+export const makeStravaActivityRequests = () => {
+  return async (dispatch, getState) => {
+    const { selectedIds } = getState().stravaActivityImport
+    let { stravaAccessToken } = getState().common.currentUser
+
+    for (let id of selectedIds) {
+      const activity = await requestForStravaActivity(id, stravaAccessToken)
+      console.log('activity', activity.id)
+      dispatch(addToActivitesToImport(activity))
+    }
+
+    console.log("all finished here in activity Requests")
+  }
+}
+
+export const requestForStravaActivity = async (activityId, stravaAccessToken) => {
+  let url = `https://www.strava.com/api/v3/activities/${activityId}`
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${stravaAccessToken}`
+    }
+  })
+
+  const data = await response.json()
+  let {
+    id,
+    map: { polyline }
+  } = data
+  return Object.assign({}, { id, polyline })
+
+  // .then(response => {
+  //   return response.json()
+  // })
+  // .then(data => {
+  //   let {
+  //     id,
+  //     map: { polyline }
+  //   } = data
+  //   return Object.assign({}, { id, polyline })
+  // })
+  // .catch(err => {
+  //   console.log("error!", err)
+  //   if (err.status === 401) {
+  //     console.log("error 401")
+  //     // return logout()
+  //   }
+  // })
+}
+
+export const ADD_TO_ACTIVITY_TO_IMPORT = "ADD_TO_ACTIVITY_TO_IMPORT"
+export const addToActivitesToImport = payload => {
+  console.log("from the action", payload)
+  return {
+    type: ADD_TO_ACTIVITY_TO_IMPORT,
     payload: payload
   }
 }
@@ -60,7 +137,7 @@ export const refreshAccessToken = () => {
 
 export const loadInitialStravaData = () => {
   return async (dispatch, getState) => {
-    const url = "https://www.strava.com/api/v3/athlete/activities?per_page=20"
+    const url = "https://www.strava.com/api/v3/athlete/activities?per_page=50"
     const { stravaAccessToken } = getState().common.currentUser
     const distance = getState().chapter.chapter.distance
 

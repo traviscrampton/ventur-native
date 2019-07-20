@@ -50,7 +50,6 @@ class Ventur extends Component {
     if (this.props.awsSecretKey && this.props.awsAccessKey) return
 
     get("/credentials").then(response => {
-      console.log("response", response)
       this.props.addApiCredentials(response)
     })
   }

@@ -179,6 +179,14 @@ export function updateStartingPolylines() {
   }
 }
 
+export const addStravaImportRoute = stravaImport => {
+  return async (dispatch, getState) => {
+    let { polylines } = getState().routeEditor
+    polylines = [...polylines, stravaImport, []]
+    dispatch(drawPolyline({ polylines: polylines, shownIndex: polylines.length - 1 }))
+  }
+}
+
 export function drawLine(coordinate) {
   return function(dispatch, getState) {
     let { shownIndex } = getState().routeEditor

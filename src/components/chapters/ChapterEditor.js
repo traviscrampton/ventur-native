@@ -87,15 +87,6 @@ class ChapterEditor extends Component {
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
   }
 
-  componentDidMount() {
-    // console.log("whos refs is it?")
-    // const textEntries = this.props.entries.filter((entry, index) => {
-    //   return entry.type === "text"
-    // })
-    // console.log(this.refs)
-    // console.log("textEntries", textEntries)
-  }
-
   componentWillUnmount() {
     this.props.setInitialEditorState()
   }

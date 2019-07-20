@@ -4,12 +4,18 @@ import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Dimensions, Tex
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { MaterialIndicator } from "react-native-indicators"
-import { addToSelectedIds, removeFromSelectedIds } from "../../actions/strava_activity_import"
+import {
+  addToSelectedIds,
+  removeFromSelectedIds,
+  importStravaActivites
+} from "../../actions/strava_activity_import"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Header } from "../editor/header"
 
 const mapDispatchToProps = dispatch => ({
   addToSelectedIds: payload => dispatch(addToSelectedIds(payload)),
-  removeFromSelectedIds: payload => dispatch(removeFromSelectedIds(payload))
+  removeFromSelectedIds: payload => dispatch(removeFromSelectedIds(payload)),
+  importStravaActivites: payload => dispatch(importStravaActivites(payload))
 })
 
 const mapStateToProps = state => ({
@@ -28,6 +34,28 @@ class StravaRouteSelector extends Component {
     } else {
       this.props.addToSelectedIds(activityId)
     }
+  }
+
+  handleCancelButtonPress = () => {
+    this.props.navigation.goBack()
+  }
+
+  handleDoneButtonPress = () => {
+    this.props.importStravaActivites({ goBack: this.props.navigation.goBack })
+  }
+
+  renderHeader() {
+    const headerProps = Object.assign(
+      {},
+      {
+        goBackCta: "Cancel",
+        handleGoBack: this.handleCancelButtonPress,
+        centerCta: "",
+        handleConfirm: this.handleDoneButtonPress,
+        confirmCta: "Save"
+      }
+    )
+    return <Header key="header" {...headerProps} />
   }
 
   checkMarkColor(isIncluded) {
@@ -94,7 +122,12 @@ class StravaRouteSelector extends Component {
   }
 
   render() {
-    return <ScrollView style={{ padding: 20, backgroundColor: "white" }}>{this.renderStravaActivities()}</ScrollView>
+    return (
+      <View style={{ backgroundColor: "white", height: "100%" }}>
+        {this.renderHeader()}
+        <ScrollView style={{ padding: 20, backgroundColor: "white" }}>{this.renderStravaActivities()}</ScrollView>
+      </View>
+    )
   }
 }
 
