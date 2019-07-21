@@ -80,8 +80,7 @@ class Ventur extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      const linkingUrl = await Linking.getInitialURL("/")
-
+      const linkingUrl = await Expo.Linking.makeUrl("venturAuth", {})
       user = JSON.parse(user)
       user = Object.assign({}, user, { linkingUrl })
       this.props.setCurrentUser(user)
