@@ -135,7 +135,7 @@ class Profile extends Component {
     if (this.props.currentUser.stravaAccessToken) return
 
     this.setState({ userMenuOpen: false })
-    const redirect = await Expo.Linking.makeUrl("venturAuth", {})
+    const redirect = "ventur://venturAuth"
     const params = Object.assign(
       {},
       {
