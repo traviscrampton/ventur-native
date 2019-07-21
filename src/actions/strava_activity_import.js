@@ -14,26 +14,59 @@ export const initialActivityLoad = payload => {
 
 export const importStravaActivites = payload => {
   return async (dispatch, getState) => {
+    dispatch(setStravaLoadingTrue())
     await dispatch(makeStravaActivityRequests())
 
-    const { activitiesToImport } = getState().stravaActivityImport
+    let { activitiesToImport } = getState().stravaActivityImport
 
     for (let activity of activitiesToImport) {
       dispatch(addStravaImportRoute(googlePolyline.decode(activity.polyline)))
+      dispatch(addActivityToIncludedActivities(Object.assign({}, { id: activity.id, polyline: activity.polyline })))
     }
 
     payload.goBack()
+    dispatch(setStravaLoadingFalse())
+  }
+}
+
+export const SET_STRAVA_LOADING_TRUE = "SET_STRAVA_LOADING_TRUE"
+export const setStravaLoadingTrue = () => {
+  return {
+    type: SET_STRAVA_LOADING_TRUE
+  }
+}
+
+export const SET_STRAVA_LOADING_FALSE = "SET_STRAVA_LOADING_FALSE"
+export const setStravaLoadingFalse = () => {
+  return {
+    type: SET_STRAVA_LOADING_FALSE
+  }
+}
+
+export const ADD_ACTIVITY_TO_INCLUDED_ACTIVITIES = "ADD_ACTIVITY_TO_INCLUDED_ACTIVITIES"
+export const addActivityToIncludedActivities = payload => {
+  return {
+    type: ADD_ACTIVITY_TO_INCLUDED_ACTIVITIES,
+    payload: payload
   }
 }
 
 export const makeStravaActivityRequests = () => {
   return async (dispatch, getState) => {
-    const { selectedIds } = getState().stravaActivityImport
+    const { selectedIds, includedActivities } = getState().stravaActivityImport
     let { stravaAccessToken } = getState().common.currentUser
+    const includedActivitiesIds = includedActivities.map(activity => {
+      return activity.id
+    })
 
     for (let id of selectedIds) {
+      if (includedActivitiesIds.includes(id)) {
+        console.log("it is included")
+        continue
+      }
+
+      console.log("it is not included!")
       const activity = await requestForStravaActivity(id, stravaAccessToken)
-      console.log('activity', activity.id)
       dispatch(addToActivitesToImport(activity))
     }
 
@@ -153,6 +186,7 @@ export const loadInitialStravaData = () => {
       .then(data => {
         let shapedRoutes = shapeRoutesForRender(data, distance)
         dispatch(initialActivityLoad(shapedRoutes))
+        dispatch(setStravaLoadingFalse())
       })
       .catch(err => {
         console.log("error!", err)

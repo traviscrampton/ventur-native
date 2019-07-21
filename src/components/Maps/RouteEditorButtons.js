@@ -6,7 +6,7 @@ import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "../../actions/route_editor"
-import { checkForExpiredToken } from "../../actions/strava_activity_import"
+import { checkForExpiredToken, setStravaLoadingTrue } from "../../actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({
@@ -16,6 +16,7 @@ const mapDispatchToProps = dispatch => ({
   persistRoute: () => dispatch(persistRoute()),
   eraseRoute: () => dispatch(eraseRoute()),
   checkForExpiredToken: () => dispatch(checkForExpiredToken()),
+  setStravaLoadingTrue: () => dispatch(setStravaLoadingTrue())
 })
 
 const mapStateToProps = state => ({
@@ -81,6 +82,7 @@ class RouteEditorButtons extends Component {
   }
 
   loadStravaAndNavigate = () => {
+    this.props.setStravaLoadingTrue()
     this.props.navigation.navigate("StravaRouteSelector")
     this.props.checkForExpiredToken()
   }
@@ -243,7 +245,7 @@ class RouteEditorButtons extends Component {
   renderStravaCta() {
     if (!this.props.stravaAccessToken) return
 
-        return (
+    return (
       <View
         shadowColor="#323941"
         shadowOffset={{ width: 0, height: 0 }}
@@ -266,8 +268,7 @@ class RouteEditorButtons extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )  
-
+    )
   }
 
   renderEraseButton() {

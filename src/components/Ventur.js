@@ -7,7 +7,7 @@ import {
   addApiCredentials
 } from "../actions/common"
 import { Font } from "expo"
-import { AsyncStorage, Dimensions, NetInfo, StatusBar } from "react-native"
+import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
 import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
 import { get } from "../agent"
@@ -50,6 +50,7 @@ class Ventur extends Component {
     if (this.props.awsSecretKey && this.props.awsAccessKey) return
 
     get("/credentials").then(response => {
+      console.log("response", response)
       this.props.addApiCredentials(response)
     })
   }
@@ -78,7 +79,9 @@ class Ventur extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
+      const linkingUrl = await Linking.getInitialURL("/")
       user = JSON.parse(user)
+      user = Object.assign({}, user, { linkingUrl })
       this.props.setCurrentUser(user)
       this.props.initialAppLoaded()
     } catch (err) {

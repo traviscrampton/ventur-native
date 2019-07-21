@@ -50,6 +50,7 @@ export function persistRoute() {
   return function(dispatch, getState) {
     dispatch(savingMapBegin())
     let { id, polylines, shownIndex } = getState().routeEditor
+    let { includedActivities } = getState().stravaActivityImport
 
     if (shownIndex !== polylines.length - 1) {
       polylines.length = shownIndex + 1
@@ -61,8 +62,9 @@ export function persistRoute() {
     })
 
     polylines = JSON.stringify(polylines)
+    includedActivities = JSON.stringify(includedActivities)
 
-    const params = Object.assign({}, { polylines })
+    const params = Object.assign({}, { polylines, included_activities: includedActivities })
     put(`/cycle_routes/${id}`, params).then(res => {
       polylines = JSON.parse(res.cycleRoute.polylines)
       polylines = polylines.map(polyline => {
@@ -212,9 +214,11 @@ export function loadRouteEditor(cycleRouteId) {
     dispatch(setLoadingTrue())
     get(`/cycle_routes/${cycleRouteId}/editor_show`).then(res => {
       let {
-        cycleRoute: { polylines, previousPolylines },
+        cycleRoute: { polylines, previousPolylines, includedActivities },
         cycleRoute
       } = res
+
+      includedActivities = includedActivities.length === 0 ? [] : JSON.parse(includedActivities)
 
       polylines =
         polylines.length === 0
@@ -223,7 +227,7 @@ export function loadRouteEditor(cycleRouteId) {
               return googlePolyline.decode(polyline)
             })
       previousPolylines = [[]] // do i even want this
-      cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines })
+      cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines, includedActivities })
       dispatch(populateMap(cycleRoute))
       dispatch(setLoadingFalse())
     })

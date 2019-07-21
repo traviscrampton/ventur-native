@@ -164,7 +164,7 @@ class Profile extends Component {
           </Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>Welcome to your content portal!</Text>
+          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>{this.props.currentUser.linkingUrl}</Text>
         </View>
       </View>
     )

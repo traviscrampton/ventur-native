@@ -4,13 +4,10 @@ import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Dimensions, Tex
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { MaterialIndicator } from "react-native-indicators"
-import {
-  addToSelectedIds,
-  removeFromSelectedIds,
-  importStravaActivites
-} from "../../actions/strava_activity_import"
+import { addToSelectedIds, removeFromSelectedIds, importStravaActivites } from "../../actions/strava_activity_import"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Header } from "../editor/header"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   addToSelectedIds: payload => dispatch(addToSelectedIds(payload)),
@@ -20,7 +17,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   activities: state.stravaActivityImport.activities,
-  selectedIds: state.stravaActivityImport.selectedIds
+  selectedIds: state.stravaActivityImport.selectedIds,
+  stravaLoading: state.stravaActivityImport.stravaLoading
 })
 
 class StravaRouteSelector extends Component {
@@ -122,6 +120,10 @@ class StravaRouteSelector extends Component {
   }
 
   render() {
+    if (this.props.stravaLoading) {
+      return <LoadingScreen />
+    }
+
     return (
       <View style={{ backgroundColor: "white", height: "100%" }}>
         {this.renderHeader()}
