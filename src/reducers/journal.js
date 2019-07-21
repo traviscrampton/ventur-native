@@ -1,6 +1,6 @@
-import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB, IMAGE_UPLOADING } from "actions/journals"
-import { REMOVE_CHAPTER_FROM_STATE } from "actions/chapter"
-import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "actions/chapter_form"
+import { POPULATE_SINGLE_JOURNAL, RESET_JOURNAL_TAB, IMAGE_UPLOADING } from "../actions/journals"
+import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
+import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
 
 const defaultJournalData = {
   journal: {

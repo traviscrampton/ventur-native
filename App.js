@@ -2,14 +2,14 @@ import React, { Component } from "react"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { Provider } from "react-redux"
 import logger from "redux-logger"
-import allReducers from "reducers/all_reducers"
+import allReducers from "./src/reducers/all_reducers"
 import thunk from "redux-thunk"
 import { AsyncStorage, View } from "react-native"
 import DropdownAlert from "react-native-dropdownalert"
 import { Font } from "expo"
 import { registerRootComponent } from 'expo';
-import DropDownHolder from "utils/DropdownHolder"
-import Ventur from "components/Ventur"
+import DropDownHolder from "./src/utils/DropdownHolder"
+import Ventur from "./src/components/Ventur"
 
 const store = createStore(allReducers, applyMiddleware(thunk))
 

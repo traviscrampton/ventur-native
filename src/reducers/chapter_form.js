@@ -1,4 +1,4 @@
-import { UPDATE_CHAPTER_FORM, RESET_CHAPTER_FORM } from "actions/chapter_form"
+import { UPDATE_CHAPTER_FORM, RESET_CHAPTER_FORM } from "../actions/chapter_form"
 import _ from "lodash"
 
 const defaultChapterFormData = {

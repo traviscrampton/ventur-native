@@ -1,14 +1,16 @@
-import { get } from "agent"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import base64 from "react-native-base64"
+import { get } from "../agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
+const googlePolyline = require("google-polyline")
 
 export function loadRouteViewer(id) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
     get(`/cycle_routes/${id}`).then(res => {
-      let { cycleRoute } = res
-      let { polylines, initialRegion } = cycleRoute
-      polylines = polylines.length === 0 ? [[], []] : JSON.parse(base64.decode(polylines))
+      let { cycleRoute, cycleRoute: { polylines, initialRegion } } = res
+      polylines = JSON.parse(polylines)
+      polylines = polylines.length === 0 ? [[], []] : polylines.map((polyline) => {
+        return googlePolyline.decode(polyline)
+      })
       cycleRoute = Object.assign(
         {},
         {

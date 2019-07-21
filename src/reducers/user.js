@@ -1,4 +1,4 @@
-import { POPULATE_USER_PAGE, POPULATE_OFFLINE_CHAPTERS } from "actions/user"
+import { POPULATE_USER_PAGE, POPULATE_OFFLINE_CHAPTERS } from "../actions/user"
 
 
 const defaultAppState = {

@@ -1,6 +1,6 @@
-import { get, put, API_ROOT, setToken } from "agent"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import { loadChapter, resetChapter } from "actions/chapter"
+import { get, put, API_ROOT, setToken } from "../agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
+import { loadChapter, resetChapter } from "./chapter"
 
 export const JOURNAL_FEED_LOADED = "JOURNAL_FEED_LOADED"
 export const SINGLE_JOURNAL_LOADED = "SINGLE_JOURNAL_LOADED"

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
-const GabeBolivia = require("assets/images/Gabe_in_Bolivia.jpg")
+const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
 
 const mapStateToProps = state => ({})
 

@@ -1,11 +1,11 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
-import { updateUserForm, populateUserForm } from "actions/user_form"
+import { updateUserForm, populateUserForm } from "../../actions/user_form"
 import { connect } from "react-redux"
 import { LinearGradient } from "expo"
-import DropDownHolder from "utils/DropdownHolder"
+import DropDownHolder from "../../utils/DropdownHolder"
 import { Ionicons } from "@expo/vector-icons"
-import { API_ROOT, setToken } from "agent"
+import { API_ROOT, setToken } from "../../agent"
 
 const mapStateToProps = state => ({
   id: state.userForm.id,

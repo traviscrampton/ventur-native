@@ -1,5 +1,5 @@
 import { AsyncStorage } from "react-native"
-import { SET_CURRENT_USER } from "actions/action_types"
+import { SET_CURRENT_USER } from "./actions/action_types"
 
 export const storeJWT = async obj => {
   try {

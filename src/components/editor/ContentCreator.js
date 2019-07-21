@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { createNewTextEntry, updateActiveCreator } from "actions/editor"
+import { createNewTextEntry, updateActiveCreator } from "../../actions/editor"
 import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 import { MaterialIcons, Entypo } from "@expo/vector-icons"
 

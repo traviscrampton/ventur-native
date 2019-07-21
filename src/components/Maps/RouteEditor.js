@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } f
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
-import RouteEditorButtons from "components/Maps/RouteEditorButtons"
+import RouteEditorButtons from "../Maps/RouteEditorButtons"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
 import {
@@ -14,8 +14,8 @@ import {
   persistCoordinates,
   updateRegionCoordinates,
   defaultRouteEditor
-} from "actions/route_editor"
-import LoadingScreen from "components/shared/LoadingScreen"
+} from "../../actions/route_editor"
+import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
@@ -48,7 +48,8 @@ class RouteEditor extends Component {
 
   onPanDrag = e => {
     if (!this.props.drawMode || !this.props.isDrawing) return
-    this.props.drawLine(e.nativeEvent.coordinate)
+    let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
+    this.props.drawLine(coordinates)
   }
 
   checkForSaveAndNavigateBack = () => {
@@ -175,8 +176,13 @@ class RouteEditor extends Component {
   }
 
   renderPolylines() {
-    return this.props.polylines.map((coordinates, index) => {
+    let coordinates
+    return this.props.polylines.map((coordinateArrays, index) => {
       if (index > this.props.shownIndex) return
+
+      coordinates = coordinateArrays.map(coordinate => {
+        return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
+      })
 
       return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
     })
@@ -210,7 +216,7 @@ class RouteEditor extends Component {
           </MapView>
         </View>
         {this.renderFloatingBackButton()}
-        <RouteEditorButtons />
+        <RouteEditorButtons navigation={this.props.navigation} />
         {this.renderSavingButton()}
       </View>
     )

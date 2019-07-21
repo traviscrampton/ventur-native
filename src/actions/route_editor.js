@@ -1,6 +1,7 @@
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import { get, put, destroy } from "agent"
-import base64 from "react-native-base64"
+const googlePolyline = require("google-polyline")
+
+import { setLoadingTrue, setLoadingFalse } from "./common"
+import { get, put, destroy } from "../agent"
 
 export const POPULATE_MAP = "POPULATE_MAP"
 export function populateMap(payload) {
@@ -49,18 +50,28 @@ export function persistRoute() {
   return function(dispatch, getState) {
     dispatch(savingMapBegin())
     let { id, polylines, shownIndex } = getState().routeEditor
+    let { includedActivities } = getState().stravaActivityImport
 
     if (shownIndex !== polylines.length - 1) {
       polylines.length = shownIndex + 1
       polylines = [...polylines, []]
     }
 
-    polylines = base64.encode(JSON.stringify(polylines))
-    let params = Object.assign({}, { polylines })
-    put(`/cycle_routes/${id}`, params).then(res => {
-      const newPolylines = JSON.parse(base64.decode(res.cycleRoute.polylines))
+    polylines = polylines.map(polylineArr => {
+      return googlePolyline.encode(polylineArr)
+    })
 
-      dispatch(drawPolyline({ polylines: newPolylines, shownIndex: newPolylines.length - 1 }))
+    polylines = JSON.stringify(polylines)
+    includedActivities = JSON.stringify(includedActivities)
+
+    const params = Object.assign({}, { polylines, included_activities: includedActivities })
+    put(`/cycle_routes/${id}`, params).then(res => {
+      polylines = JSON.parse(res.cycleRoute.polylines)
+      polylines = polylines.map(polyline => {
+        return googlePolyline.decode(polyline)
+      })
+
+      dispatch(drawPolyline({ polylines, shownIndex: polylines.length - 1 }))
       dispatch(updateStartingPolylines())
       dispatch(savingMapEnd())
     })
@@ -170,6 +181,14 @@ export function updateStartingPolylines() {
   }
 }
 
+export const addStravaImportRoute = stravaImport => {
+  return async (dispatch, getState) => {
+    let { polylines } = getState().routeEditor
+    polylines = [...polylines, stravaImport, []]
+    dispatch(drawPolyline({ polylines: polylines, shownIndex: polylines.length - 1 }))
+  }
+}
+
 export function drawLine(coordinate) {
   return function(dispatch, getState) {
     let { shownIndex } = getState().routeEditor
@@ -194,10 +213,21 @@ export function loadRouteEditor(cycleRouteId) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
     get(`/cycle_routes/${cycleRouteId}/editor_show`).then(res => {
-      let { cycleRoute } = res
-      let polylines = cycleRoute.polylines.length === 0 ? [[], []] : JSON.parse(base64.decode(cycleRoute.polylines))
-      let previousPolylines = cycleRoute.previousPolylines.length === 0 ? [[]] : JSON.parse(base64.decode(cycleRoute.previousPolylines))
-      cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines })
+      let {
+        cycleRoute: { polylines, previousPolylines, includedActivities },
+        cycleRoute
+      } = res
+
+      includedActivities = includedActivities.length === 0 ? [] : JSON.parse(includedActivities)
+
+      polylines =
+        polylines.length === 0
+          ? [[], []]
+          : JSON.parse(polylines).map(polyline => {
+              return googlePolyline.decode(polyline)
+            })
+      previousPolylines = [[]] // do i even want this
+      cycleRoute = Object.assign({}, cycleRoute, { polylines, previousPolylines, includedActivities })
       dispatch(populateMap(cycleRoute))
       dispatch(setLoadingFalse())
     })

@@ -2,9 +2,9 @@ import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
-import { get } from "agent"
-import { Header } from "components/editor/header"
-import { updateJournalForm } from "actions/journal_form"
+import { get } from "../../agent"
+import { Header } from "../editor/header"
+import { updateJournalForm } from "../../actions/journal_form"
 import { Feather } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({

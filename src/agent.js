@@ -2,15 +2,15 @@ import _superagent from "superagent"
 import superagentPromise from "superagent-promise"
 import request from "superagent"
 import { AsyncStorage } from "react-native"
-import DropDownHolder from "utils/DropdownHolder"
-import { logOut } from "auth"
+import DropDownHolder from "./utils/DropdownHolder"
+import { logOut } from "./auth"
 
 const ql = require("superagent-graphql")
-export const API_ROOT = "http://192.168.2.176:3000"
+// export const API_ROOT = "http://192.168.2.176:3000"
 // export const API_ROOT = "http://0.0.0.0:3000"
 // export const API_ROOT = "http://192.168.1.80:3000"
 // export const API_ROOT = "http://localhost:3000"
-// export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
+export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
 export const setToken = async () => {
   let token

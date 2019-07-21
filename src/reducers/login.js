@@ -1,4 +1,4 @@
-import { UPDATE_LOGIN_FORM } from "actions/action_types"
+import { UPDATE_LOGIN_FORM } from "../actions/action_types"
 
 const defaultLoginForm = {
   email: "",

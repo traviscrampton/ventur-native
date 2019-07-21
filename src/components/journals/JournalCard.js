@@ -1,7 +1,7 @@
 import React from "react"
 import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
-import ProgressiveImage from "components/shared/ProgressiveImage"
+import ProgressiveImage from "../shared/ProgressiveImage"
 
 let imageWidth
 let imageHeight

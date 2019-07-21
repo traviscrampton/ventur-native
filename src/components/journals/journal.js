@@ -11,27 +11,27 @@ import {
   Dimensions,
   TouchableWithoutFeedback
 } from "react-native"
-import ChapterList from "components/chapters/ChapterList"
-import { get } from "agent"
+import ChapterList from "../chapters/ChapterList"
+import { get } from "../../agent"
 import {
   loadSingleJournal,
   requestForChapter,
   resetJournalShow,
   uploadBannerImage,
   imageUploading
-} from "actions/journals"
+} from "../../actions/journals"
 import { MaterialIndicator } from "react-native-indicators"
-import { createChapter } from "utils/chapter_form_helper"
-import { updateJournalForm } from "actions/journal_form"
-import { loadChapter, resetChapter } from "actions/chapter"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import { loadJournalMap } from "actions/journal_route"
+import { createChapter } from "../../utils/chapter_form_helper"
+import { updateJournalForm } from "../../actions/journal_form"
+import { loadChapter, resetChapter } from "../../actions/chapter"
+import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
+import { loadJournalMap } from "../../actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { updateChapterForm, addChapterToJournals } from "actions/chapter_form"
-import ThreeDotDropdown from "components/shared/ThreeDotDropdown"
-import LoadingScreen from "components/shared/LoadingScreen"
-import ProgressiveImage from "components/shared/ProgressiveImage"
+import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_form"
+import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import LoadingScreen from "../shared/LoadingScreen"
+import ProgressiveImage from "../shared/ProgressiveImage"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     marginLeft: 10,
-    borderRadius: "50%",
+    borderRadius: 25,
     position: "relative"
   },
   metaDataContainer: {

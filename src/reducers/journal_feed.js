@@ -1,6 +1,6 @@
-import { POPULATE_JOURNAL_FEED } from "actions/journals"
-import { ADD_TO_JOURNAL_FEED } from "actions/journal_form"
-import { UPDATE_FEED_DISTANCE } from "actions/chapter_form"
+import { POPULATE_JOURNAL_FEED } from "../actions/journals"
+import { ADD_TO_JOURNAL_FEED } from "../actions/journal_form"
+import { UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
 
 const defaultJournalData = {
   allJournals: []

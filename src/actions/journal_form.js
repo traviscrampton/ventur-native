@@ -1,5 +1,5 @@
-import { post, put } from "agent"
-import { populateSingleJournal } from "actions/journals"
+import { post, put } from "../agent"
+import { populateSingleJournal } from "./journals"
 
 export function persistJournal(navigationCallBack) {
   return function(dispatch, getState) {

@@ -28,12 +28,12 @@ import {
   addImageToDeletedIds,
   doneEditingAndPersist,
   loseChangesAndUpdate
-} from "actions/editor"
-import { Header } from "components/editor/header"
+} from "../../actions/editor"
+import { Header } from "../editor/header"
 import InputScrollView from "react-native-input-scroll-view"
 import _ from "lodash"
-import EditorToolbar from "components/editor/EditorToolbar"
-import ContentCreator from "components/editor/ContentCreator"
+import EditorToolbar from "../editor/EditorToolbar"
+import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
 
 const mapDispatchToProps = dispatch => ({
@@ -85,15 +85,6 @@ class ChapterEditor extends Component {
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
-  }
-
-  componentDidMount() {
-    // console.log("whos refs is it?")
-    // const textEntries = this.props.entries.filter((entry, index) => {
-    //   return entry.type === "text"
-    // })
-    // console.log(this.refs)
-    // console.log("textEntries", textEntries)
   }
 
   componentWillUnmount() {

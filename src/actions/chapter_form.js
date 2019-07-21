@@ -1,7 +1,7 @@
 import _ from "lodash"
-import { setToken, API_ROOT } from "agent"
-import { loadChapter } from "actions/chapter"
-import { doneUpdating } from "actions/editor"
+import { setToken, API_ROOT } from "../agent"
+import { loadChapter } from "./chapter"
+import { doneUpdating } from "./editor"
 
 export const mungeChapter = chapter => {
   return Object.assign(

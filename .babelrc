@@ -1,13 +1,11 @@
 {
   "presets": ["babel-preset-expo"],
-   "plugins": [
-    ["babel-plugin-module-resolver", {
-      "root": ["./src"]
-    }]
-  ],
   "env": {
     "development": {
-      "plugins": ["transform-react-jsx-source"]
+      "plugins": []
+    },
+    "production": {
+      "plugins": ["transform-remove-console"]
     }
   }
 }

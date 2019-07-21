@@ -1,20 +1,21 @@
 import { combineReducers } from "redux"
-import journalFeed from "reducers/journal_feed"
-import journal from "reducers/journal"
-import login from "reducers/login"
-import common from "reducers/common"
-import editor from "reducers/editor"
-import myJournals from "reducers/my_journals"
-import journalForm from "reducers/journal_form"
-import chapter from "reducers/chapter"
-import chapterForm from "reducers/chapter_form"
-import user from "reducers/user"
-import userForm from "reducers/userForm"
-import comments from "reducers/comments"
-import commentForm from "reducers/comment_form"
-import routeEditor from "reducers/route_editor"
-import routeViewer from "reducers/route_viewer"
-import journalRoute from "reducers/journal_route"
+import journalFeed from "./journal_feed"
+import journal from "./journal"
+import login from "./login"
+import common from "./common"
+import editor from "./editor"
+import myJournals from "./my_journals"
+import journalForm from "./journal_form"
+import chapter from "./chapter"
+import chapterForm from "./chapter_form"
+import user from "./user"
+import userForm from "./userForm"
+import comments from "./comments"
+import commentForm from "./comment_form"
+import routeEditor from "./route_editor"
+import routeViewer from "./route_viewer"
+import journalRoute from "./journal_route"
+import stravaActivityImport from "./strava_activity_import"
 
 export default combineReducers({
   editor,
@@ -32,5 +33,6 @@ export default combineReducers({
   commentForm,
   routeViewer,
   routeEditor,
-  journalRoute
+  journalRoute,
+  stravaActivityImport
 })

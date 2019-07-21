@@ -1,6 +1,6 @@
-import { post } from "agent"
+import { post } from "../agent"
 import _ from "lodash"
-import { populateComments } from "actions/comments"
+import { populateComments } from "./comments"
 
 export const POPULATE_COMMENT_FORM = "POPULATE_COMMENT_FORM"
 export function populateCommentForm(payload) {

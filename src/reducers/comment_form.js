@@ -1,4 +1,4 @@
-import { POPULATE_COMMENT_FORM, RESET_COMMENT_FORM, UPDATE_COMMENT_CONTENT } from "actions/comment_form"
+import { POPULATE_COMMENT_FORM, RESET_COMMENT_FORM, UPDATE_COMMENT_CONTENT } from "../actions/comment_form"
 
 const defaultCommentForm = {
   id: null,

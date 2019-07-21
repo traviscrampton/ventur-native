@@ -1,7 +1,7 @@
-import { get } from "agent"
-import { setLoadingTrue, setLoadingFalse } from "actions/common"
-import base64 from "react-native-base64"
-import { populateMap } from "actions/route_editor"
+import { get } from "../agent"
+import { setLoadingTrue, setLoadingFalse } from "./common"
+const googlePolyline = require("google-polyline")
+import { populateMap } from "./route_editor"
 
 export function loadJournalMap(id) {
   return function(dispatch, getState) {
@@ -10,7 +10,11 @@ export function loadJournalMap(id) {
       let { id, polylines, initialRegion } = res
 
       polylines = polylines.map((polyString, index) => {
-        return polyString.length === 0 ? [] : JSON.parse(base64.decode(polyString))
+        return polyString.length === 0
+          ? []
+          : JSON.parse(polyString).map(polyline => {
+              return googlePolyline.decode(polyline)
+            })
       })
 
       if (getState().common.currentUser.id == getState().journal.journal.user.id) {

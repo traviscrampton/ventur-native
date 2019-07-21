@@ -1,35 +1,35 @@
 import React, { Component } from "react"
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
-import JournalFeed from "components/journals/JournalFeed"
-import Journal from "components/journals/journal"
-import Login from "components/users/login"
-import HomeLoggedOut from "components/users/HomeLoggedOut"
-import BottomTabBar from "components/shared/BottomTabBar"
-import CameraRollContainer from "components/editor/CameraRollContainer"
-import ImageCaptionForm from "components/editor/ImageCaptionForm"
-import ChapterDispatch from "components/chapters/ChapterDispatch"
-import ManageContent from "components/editor/ManageContent"
-import JournalFormTitle from "components/JournalForm/JournalFormTitle"
-import JournalFormLocation from "components/JournalForm/JournalFormLocation"
-import JournalFormStatus from "components/JournalForm/JournalFormStatus"
-import JournalFormUpload from "components/JournalForm/JournalFormUpload"
-import Profile from "components/users/Profile"
-import ChapterFormJournals from "components/ChapterForm/ChapterFormJournals"
-import UserEmailPasswordForm from "components/users/UserEmailPasswordForm"
-import UserNameForm from "components/users/UserNameForm"
-import CommentForm from "components/Comments/CommentForm"
-import JournalForm from "components/JournalForm/JournalForm"
-import CountriesEditor from "components/JournalForm/CountriesEditor"
-import UserAvatarForm from "components/users/UserAvatarForm"
-import RouteEditor from "components/Maps/RouteEditor"
-import RouteViewer from "components/Maps/RouteViewer"
-import JournalRoute from "components/Maps/JournalRoute"
-import ChapterMetaDataForm from "components/editor/ChapterMetaDataForm"
-import ChapterEditor from "components/chapters/ChapterEditor"
+import JournalFeed from "./components/journals/JournalFeed"
+import Journal from "./components/journals/journal"
+import Login from "./components/users/login"
+import StravaLogin from "./components/users/StravaLogin"
+import HomeLoggedOut from "./components/users/HomeLoggedOut"
+import BottomTabBar from "./components/shared/BottomTabBar"
+import CameraRollContainer from "./components/editor/CameraRollContainer"
+import ImageCaptionForm from "./components/editor/ImageCaptionForm"
+import ChapterDispatch from "./components/chapters/ChapterDispatch"
+import ManageContent from "./components/editor/ManageContent"
+import JournalFormTitle from "./components/JournalForm/JournalFormTitle"
+import JournalFormLocation from "./components/JournalForm/JournalFormLocation"
+import JournalFormStatus from "./components/JournalForm/JournalFormStatus"
+import JournalFormUpload from "./components/JournalForm/JournalFormUpload"
+import Profile from "./components/users/Profile"
+import UserEmailPasswordForm from "./components/users/UserEmailPasswordForm"
+import UserNameForm from "./components/users/UserNameForm"
+import CommentForm from "./components/Comments/CommentForm"
+import JournalForm from "./components/JournalForm/JournalForm"
+import CountriesEditor from "./components/JournalForm/CountriesEditor"
+import UserAvatarForm from "./components/users/UserAvatarForm"
+import RouteEditor from "./components/Maps/RouteEditor"
+import StravaRouteSelector from "./components/Maps/StravaRouteSelector"
+import RouteViewer from "./components/Maps/RouteViewer"
+import JournalRoute from "./components/Maps/JournalRoute"
+import ChapterMetaDataForm from "./components/editor/ChapterMetaDataForm"
+import ChapterEditor from "./components/chapters/ChapterEditor"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
-  "ChapterFormJournals",
   "ChapterFormTitle",
   "ChapterFormDate",
   "ChapterFormDistance",
@@ -48,7 +48,8 @@ const NO_FOOTER_SCREENS = [
   "JournalForm",
   "CountriesEditor",
   "ChapterEditor",
-  "ChapterMetaDataForm"
+  "ChapterMetaDataForm",
+  "StravaRouteSelector"
 ]
 
 const JournalFeedNavigator = createStackNavigator(
@@ -71,6 +72,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalRoute: JournalRoute,
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "JournalFeed",
@@ -103,8 +105,8 @@ const ProfileNavigator = createStackNavigator(
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
     ManageContent: ManageContent,
-    ChapterFormJournals: ChapterFormJournals,
     ChapterEditor: ChapterEditor,
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "Profile",

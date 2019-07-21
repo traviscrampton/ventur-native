@@ -15,7 +15,7 @@ import {
   UPDATE_MANAGE_CONTENT_ENTRIES,
   UPDATE_ENTRIES_ORDER,
   REMOVE_ENTRY_FROM_CLONE
-} from "actions/action_types"
+} from "../actions/action_types"
 
 import {
   POPULATE_ENTRIES,
@@ -27,7 +27,7 @@ import {
   RESET_DELETED_IDS,
   SET_INITAL_IMAGE_IDS,
   UPLOAD_IS_IMAGE
-} from "actions/editor"
+} from "../actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",

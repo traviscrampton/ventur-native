@@ -1,9 +1,9 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { loadComments } from "actions/comments"
-import { populateCommentForm } from "actions/comment_form"
-import CommentsSection from "components/Comments/CommentsSection"
+import { loadComments } from "../../actions/comments"
+import { populateCommentForm } from "../../actions/comment_form"
+import CommentsSection from "./CommentsSection"
 
 const mapStateToProps = state => ({
   comments: state.comments.comments

@@ -1,5 +1,5 @@
-import { MY_JOURNALS_LOADED } from "actions/action_types"
-import { ADD_TO_MY_TRIPS } from "actions/journal_form"
+import { MY_JOURNALS_LOADED } from "../actions/action_types"
+import { ADD_TO_MY_TRIPS } from "../actions/journal_form"
 
 const defaultJournalData = {
   journals: []

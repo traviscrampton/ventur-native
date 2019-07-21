@@ -1,4 +1,4 @@
-import { TOGGLE_TAB_BAR } from "actions/action_types"
+import { TOGGLE_TAB_BAR } from "../actions/action_types"
 import { Dimensions } from "react-native"
 import {
   SET_CURRENT_USER,
@@ -8,8 +8,8 @@ import {
   UPDATE_CONNECTION_TYPE,
   SET_LOADING_TRUE,
   SET_LOADING_FALSE,
-  ADD_AWS_CREDENTIALS
-} from "actions/common"
+  ADD_API_CREDENTIALS
+} from "../actions/common"
 
 const defaultAppState = {
   currentUser: null,
@@ -20,6 +20,8 @@ const defaultAppState = {
   height: Dimensions.get("window").height,
   awsAccessKey: null,
   awsSecretKey: null,
+  stravaClientId: null,
+  stravaClientSecret: null,
   isOffline: false,
   isLoading: false
 }
@@ -37,11 +39,13 @@ export default (state = defaultAppState, action) => {
         hideTabBar: action.payload
       }
 
-    case ADD_AWS_CREDENTIALS:
+    case ADD_API_CREDENTIALS:
       return {
         ...state,
         awsAccessKey: action.payload.awsAccessKey,
-        awsSecretKey: action.payload.awsSecretKey
+        awsSecretKey: action.payload.awsSecretKey,
+        stravaClientId: action.payload.stravaClientId,
+        stravaClientSecret: action.payload.stravaClientSecret
       }  
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {

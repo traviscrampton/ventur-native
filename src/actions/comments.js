@@ -1,4 +1,4 @@
-import { get, destroy } from "agent"
+import { get, destroy } from "../agent"
 
 export function loadComments(params) {
   return function(dispatch, getState) {

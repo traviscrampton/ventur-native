@@ -1,6 +1,6 @@
 import React from "react"
 import { View } from "react-native"
-import ChapterCard from "components/chapters/ChapterCard"
+import ChapterCard from "./ChapterCard"
 
 const ChapterList = props => {
   return (

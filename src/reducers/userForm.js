@@ -1,4 +1,4 @@
-import { UPDATE_USER_FORM, POPULATE_USER_FORM, RESET_USER_FORM } from "actions/user_form"
+import { UPDATE_USER_FORM, POPULATE_USER_FORM, RESET_USER_FORM } from "../actions/user_form"
 const defaultUserForm = {
   id: null,
   email: "",

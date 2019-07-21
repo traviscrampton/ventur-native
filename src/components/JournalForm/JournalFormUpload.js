@@ -11,8 +11,8 @@ import {
   ImageBackground,
   ScrollView
 } from "react-native"
-import { addJournalEverywhere, resetJournalForm } from "actions/journal_form"
-import { setToken, API_ROOT } from "agent"
+import { addJournalEverywhere, resetJournalForm } from "../../actions/journal_form"
+import { setToken, API_ROOT } from "../../agent"
 import { Ionicons } from "@expo/vector-icons"
 import CameraRollPicker from "react-native-camera-roll-picker"
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { addImagesToEntries, setSelectedImages } from "actions/editor"
+import { addImagesToEntries, setSelectedImages } from "../../actions/editor"
 import CameraRollPicker from "react-native-camera-roll-picker"
-import { Header } from "components/editor/header"
+import { Header } from "./header"
 
 const mapStateToProps = state => ({
   selectedImages: state.editor.selectedImages,
