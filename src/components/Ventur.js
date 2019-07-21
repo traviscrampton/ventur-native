@@ -81,7 +81,6 @@ class Ventur extends Component {
     try {
       let user = await AsyncStorage.getItem("currentUser")
       user = JSON.parse(user)
-      user = Object.assign({}, user, { linkingUrl })
       this.props.setCurrentUser(user)
       this.props.initialAppLoaded()
     } catch (err) {
