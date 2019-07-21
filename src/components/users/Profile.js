@@ -135,7 +135,7 @@ class Profile extends Component {
     if (this.props.currentUser.stravaAccessToken) return
 
     this.setState({ userMenuOpen: false })
-    const redirect = "ventur://venturAuth"
+    const redirect = "ventur://ventur"
     const params = Object.assign(
       {},
       {
@@ -165,7 +165,7 @@ class Profile extends Component {
           </Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>{this.props.currentUser.linkingUrl}</Text>
+          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>Go on and git and ride some bikes</Text>
         </View>
       </View>
     )
