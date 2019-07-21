@@ -135,7 +135,7 @@ class Profile extends Component {
     if (this.props.currentUser.stravaAccessToken) return
 
     this.setState({ userMenuOpen: false })
-    const redirect = await Expo.Linking.makeUrl()
+    const redirect = await Linking.getInitialURL("/")
     const params = Object.assign(
       {},
       {
