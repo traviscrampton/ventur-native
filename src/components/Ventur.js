@@ -11,6 +11,7 @@ import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-nat
 import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
 import { get } from "../agent"
+import Expo from "expo"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -79,7 +80,7 @@ class Ventur extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
-      const linkingUrl = await Linking.getInitialURL("/")
+      const linkingUrl = await Expo.Linking.makeUrl()
       user = JSON.parse(user)
       user = Object.assign({}, user, { linkingUrl })
       this.props.setCurrentUser(user)

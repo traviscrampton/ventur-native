@@ -28,6 +28,7 @@ import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offlin
 import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
 import LoadingScreen from "../shared/LoadingScreen"
 import { WebBrowser } from "expo"
+import Expo from "expo"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -134,7 +135,7 @@ class Profile extends Component {
     if (this.props.currentUser.stravaAccessToken) return
 
     this.setState({ userMenuOpen: false })
-    const redirect = await Linking.getInitialURL("/")
+    const redirect = await Expo.Linking.makeUrl()
     const params = Object.assign(
       {},
       {

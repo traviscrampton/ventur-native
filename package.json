@@ -8,7 +8,9 @@
     "react-native-debugger-open": "^0.3.17",
     "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.3.1",
-    "redux-devtools-extension": "^2.13.5"
+    "redux-devtools-extension": "^2.13.5",
+    "babel-plugin-transform-remove-console": "6.9.4",
+    "babel-preset-expo": "^5.0.0"
   },
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -23,6 +25,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-react-native": "2.1.0",
     "expo": "^31.0.0",
     "google-polyline": "^1.0.3",
