@@ -42,7 +42,8 @@ const mapStateToProps = state => ({
   loaded: state.journal.loaded,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  subContentLoading: state.journal.subContentLoading
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -333,7 +334,15 @@ class Journal extends Component {
     )
   }
 
+  renderChapterLoadingIcon = () => {
+    return <MaterialIndicator style={{marginTop: 50}} size={40} color="#FF5423" />
+  }
+
   renderChapters() {
+    if (this.props.subContentLoading) {
+      return this.renderChapterLoadingIcon()
+    }
+
     if (this.props.chapters.length === 0) {
       return this.renderEmptyChapterState()
     }

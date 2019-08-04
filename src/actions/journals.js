@@ -58,8 +58,9 @@ export function imageUploading(payload) {
 
 export function loadSingleJournal(journalId) {
   return function(dispatch, getState) {
-    get(`/journals/${journalId}`).then(data => {
+    get(`/journals/${journalId}/journal_metadata`).then(data => {
       dispatch(populateSingleJournal(data.journal))
+      dispatch(fetchJournalChapters(journalId))
     })
   }
 }
@@ -69,6 +70,22 @@ export function populateJournalFeed(payload) {
   return {
     type: POPULATE_JOURNAL_FEED,
     payload: payload
+  }
+}
+
+export const POPULATE_JOURNAL_CHAPTERS = "POPULATE_JOURNAL_CHAPTERS"
+export function populateJournalChapters(payload) {
+  return {
+    type: POPULATE_JOURNAL_CHAPTERS,
+    payload: payload
+  }
+}
+
+export const fetchJournalChapters = journalId => {
+  return function(dispatch, getState) {
+    get(`/journals/${journalId}/chapters`).then(data => {
+      dispatch(populateJournalChapters(data.chapters))
+    })
   }
 }
 
