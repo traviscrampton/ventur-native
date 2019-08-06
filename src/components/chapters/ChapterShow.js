@@ -21,6 +21,7 @@ import { editChapterPublished, deleteChapter } from "../../actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "../../utils/offline_helpers"
 import ProgressiveImage from "../shared/ProgressiveImage"
+import LazyImage from "../shared/LazyImage"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -43,11 +44,18 @@ const mapDispatchToProps = dispatch => ({
 class ChapterShow extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      scrollPosition: 0,
+      imageYPositions: {}
+    }
   }
 
   navigateBack = () => {
     this.props.navigation.goBack()
   }
+
+  componentDidMount() {}
 
   openDeleteAlert = () => {
     Alert.alert(
@@ -83,6 +91,10 @@ class ChapterShow extends Component {
 
   handleDelete = async () => {
     this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
+  }
+
+  handleScroll = event => {
+    this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
   }
 
   sendEmails = async () => {
@@ -307,17 +319,31 @@ class ChapterShow extends Component {
     }
   }
 
+  handleLayout(e, index) {
+    const { y } = e.nativeEvent.layout
+    this.setState({ imageYPositions: Object.assign({}, this.state.imageYPositions, { [index]: y }) })
+  }
+
+  getYPosition(index) {
+    return this.state.imageYPositions[index] ? this.state.imageYPositions[index] : false
+  }
+
   renderImageEntry(entry, index) {
     const height = this.getImageHeight(entry.aspectRatio)
     const thumbnailSource = this.getThumbnailSource(entry)
 
     return (
-      <View key={`image${index}`} style={{ position: "relative", marginBottom: 20 }}>
+      <View
+        onLayout={e => this.handleLayout(e, index)}
+        key={`image${index}`}
+        yPosition={this.state.imageYPositions[index]}
+        style={{ position: "relative", marginBottom: 20 }}>
         <View style={{ height }}>
-          <ProgressiveImage
-            source={entry.uri}
-            thumbnailSource={this.getThumbnailSource(entry)}
+          <LazyImage
             style={{ width: this.props.width, height }}
+            yPosition={this.getYPosition(index)}
+            scrollPosition={this.state.scrollPosition}
+            uri={entry.uri}
           />
         </View>
         {this.renderImageCaption(entry)}
@@ -422,7 +448,10 @@ class ChapterShow extends Component {
 
   render() {
     return (
-      <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
+      <ScrollView
+        style={[styles.container, { minHeight: this.props.height }]}
+        scrollEventThrottle={100}
+        onScroll={event => this.handleScroll(event)}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           {this.renderChapterImage()}
           {this.renderMapIconWithImage()}

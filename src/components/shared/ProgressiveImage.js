@@ -40,6 +40,12 @@ class ProgressiveImage extends Component {
     }).start()
   }
 
+  handleOnloadEnd = () => {
+    if(this.props.onLoadEnd) {
+      this.props.onLoadEnd()
+    } 
+  }
+
   render() {
     const { thumbnailSource, source, style, ...props } = this.props
 
@@ -57,6 +63,7 @@ class ProgressiveImage extends Component {
           source={{uri: source}}
           style={[styles.imageOverlay, { opacity: this.state.imageAnimated }, style]}
           onLoad={this.onImageLoad}
+          onLoadEnd={this.handleOnloadEnd}
         />
       </View>
     )
