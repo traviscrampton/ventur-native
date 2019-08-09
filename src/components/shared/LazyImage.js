@@ -14,7 +14,7 @@ class LazyImage extends Component {
   }
 
   handleOnloadEnd = () => {
-    this.setState({ loaded: true})
+    this.setState({ loaded: true })
   }
 
   canRenderImage() {
@@ -24,17 +24,18 @@ class LazyImage extends Component {
 
     const { yPosition, scrollPosition } = this.props
 
-    return yPosition && scrollPosition > yPosition - 1000
+    if (yPosition === 0) {
+      return true
+    }
+
+    return yPosition && scrollPosition > yPosition - 700
   }
 
   render() {
     const { uri, style, yPosition, scrollPosition } = this.props
 
     if (this.canRenderImage()) {
-      return <ProgressiveImage
-          source={uri}
-          style={style}
-          onLoadEnd={this.handleOnloadEnd} />
+      return <ProgressiveImage source={uri} style={style} onLoadEnd={this.handleOnloadEnd} />
     } else {
       return <View style={[{ backgroundColor: "#e1e4e8" }, style]} />
     }

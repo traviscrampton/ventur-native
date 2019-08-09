@@ -18,8 +18,8 @@ const defaultAppState = {
   currentBottomTab: "Explore",
   width: Dimensions.get("window").width,
   height: Dimensions.get("window").height,
-  awsAccessKey: null,
-  awsSecretKey: null,
+  awsAccessKey: "AKIAJ4GWDLYJTZQZQ2CQ",
+  awsSecretKey: "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",
   stravaClientId: null,
   stravaClientSecret: null,
   isOffline: false,
@@ -39,14 +39,14 @@ export default (state = defaultAppState, action) => {
         hideTabBar: action.payload
       }
 
-    case ADD_API_CREDENTIALS:
-      return {
-        ...state,
-        awsAccessKey: action.payload.awsAccessKey,
-        awsSecretKey: action.payload.awsSecretKey,
-        stravaClientId: action.payload.stravaClientId,
-        stravaClientSecret: action.payload.stravaClientSecret
-      }  
+    // case ADD_API_CREDENTIALS:
+    //   return {
+    //     ...state,
+    //     awsAccessKey: action.payload.awsAccessKey,
+    //     awsSecretKey: action.payload.awsSecretKey,
+    //     stravaClientId: action.payload.stravaClientId,
+    //     stravaClientSecret: action.payload.stravaClientSecret
+    //   }  
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {
         ...state,

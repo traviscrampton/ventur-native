@@ -8,7 +8,7 @@ import { RNS3 } from "react-native-aws3"
 // }
 
 let options = {
-  keyPrefix: "s3/",
+  keyPrefix: "develop/",
   bucket: "ventur-blog",
   region: 'us-west-1',
   successActionStatus: 201
@@ -16,7 +16,6 @@ let options = {
 
 export const awsUpload = async (file, awsKeys) => {
   options = Object.assign({}, options, awsKeys)
-  console.log("OPTIONS", options)
   const response = await RNS3.put(file, options)
   return response
   // RNS3.put(file, options).then(response => {

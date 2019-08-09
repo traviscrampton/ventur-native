@@ -325,6 +325,10 @@ class ChapterShow extends Component {
   }
 
   getYPosition(index) {
+    if (index === 0) {
+      return 0
+    }
+
     return this.state.imageYPositions[index] ? this.state.imageYPositions[index] : false
   }
 

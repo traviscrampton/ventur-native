@@ -35,6 +35,7 @@ import _ from "lodash"
 import EditorToolbar from "../editor/EditorToolbar"
 import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
+import LazyImage from "../shared/LazyImage"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -78,7 +79,9 @@ class ChapterEditor extends Component {
     this.state = {
       containerHeight: Dimensions.get("window").height - 80,
       offlineMode: false,
-      imagesNeededOffline: []
+      imagesNeededOffline: [],
+      scrollPosition: 0,
+      imageYPositions: []
     }
   }
 
@@ -97,6 +100,10 @@ class ChapterEditor extends Component {
       nextIndex.focus()
       this.props.setNextIndexNull()
     }
+  }
+
+  handleScroll = event => {
+    this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
   }
 
   populateEditor = () => {
@@ -133,6 +140,19 @@ class ChapterEditor extends Component {
       default:
         return {}
     }
+  }
+
+  handleLayout(e, index) {
+    const { y } = e.nativeEvent.layout
+    this.setState({ imageYPositions: Object.assign({}, this.state.imageYPositions, { [index]: y }) })
+  }
+
+  getYPosition(index) {
+    if (index === 0) {
+      return 0
+    }
+
+    return this.state.imageYPositions[index] ? this.state.imageYPositions[index] : false
   }
 
   updateActiveIndex(e, index) {
@@ -193,7 +213,7 @@ class ChapterEditor extends Component {
     if (index !== this.props.activeIndex) return
 
     return (
-      <TouchableWithoutFeedback onPress={e => this.updateActiveIndex(e, null)}>
+      <TouchableWithoutFeedback style={{ height: imageHeight }} onPress={e => this.updateActiveIndex(e, null)}>
         <View style={[styles.opacCover, { height: imageHeight }]}>
           <TouchableWithoutFeedback onPress={() => this.handleImageDelete(index)}>
             <View>
@@ -249,14 +269,19 @@ class ChapterEditor extends Component {
     const imageHeight = this.getImageHeight(entry.aspectRatio)
 
     return (
-      <View key={`image${index}`} style={styles.positionRelative}>
+      <View
+        onLayout={e => this.handleLayout(e, index)}
+        key={`image${index}`}
+        style={[{ height: imageHeight }, styles.positionRelative]}>
         <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
           <View>
-            <ImageBackground
-              style={{ width: Dimensions.get("window").width, height: imageHeight }}
-              source={{ uri: this.returnLowResImageUri(entry) }}>
-              {this.renderOpacCover(index, imageHeight, entry)}
-            </ImageBackground>
+            {this.renderOpacCover(index, imageHeight, entry)}
+            <LazyImage
+              style={{ width: Dimensions.get("window").width, height: imageHeight, position: "relative" }}
+              yPosition={this.getYPosition(index)}
+              scrollPosition={this.state.scrollPosition}
+              uri={entry.uri}
+            />
             {this.renderImageCaption(entry)}
           </View>
         </TouchableWithoutFeedback>
@@ -413,10 +438,12 @@ class ChapterEditor extends Component {
             topOffset={50}
             style={styles.positionRelative}
             keyboardOffset={90}
+            onScroll={event => this.handleScroll(event)}
+            scrollEventThrottle={100}
             multilineInputStyle={{ lineHeight: 30 }}>
-              {this.renderEditor()}
-              {this.renderCreateCta(this.props.entries.length)}
-            <View style={{marginBottom: 200}}/>
+            {this.renderEditor()}
+            {this.renderCreateCta(this.props.entries.length)}
+            <View style={{ marginBottom: 200 }} />
           </InputScrollView>
           {this.renderEditorToolbar()}
         </View>
@@ -464,6 +491,8 @@ const styles = StyleSheet.create({
   opacCover: {
     width: Dimensions.get("window").width,
     padding: 20,
+    position: "absolute",
+    zIndex: 11,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     flexDirection: "row",
