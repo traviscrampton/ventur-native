@@ -6,11 +6,11 @@ import DropDownHolder from "./utils/DropdownHolder"
 import { logOut } from "./auth"
 
 const ql = require("superagent-graphql")
-export const API_ROOT = "http://192.168.1.136:3000"
+// export const API_ROOT = "http://192.168.1.161:3000"
 // export const API_ROOT = "http://0.0.0.0:3000"
 // export const API_ROOT = "http://192.168.1.80:3000"
 // export const API_ROOT = "http://localhost:3000"
-// export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
+export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
 export const setToken = async () => {
   let token
@@ -29,6 +29,32 @@ export const encodeQueryString = params => {
   return keys.length
     ? "?" + keys.map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&")
     : ""
+}
+
+export const getCredentials = async () => {
+  const token = await setToken()
+  const requestRoute = "https://aqueous-sea-94280.herokuapp.com/credentials"
+
+  return fetch(requestRoute, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    }
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      return data
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        return logOut()
+      }
+
+      DropDownHolder.alert("error", "Error", err.message)
+    })
 }
 
 export const get = async (route, params = {}) => {

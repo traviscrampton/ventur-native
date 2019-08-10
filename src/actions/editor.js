@@ -153,7 +153,6 @@ export const resizeImage = async image => {
     width = maxWidth
   }
 
-
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
     compress: 0,
     format: "png",
@@ -167,24 +166,27 @@ export const addImagesToEntries = payload => {
   return async (dispatch, getState) => {
     dispatch(startImageUploading())
     let { awsAccessKey, awsSecretKey } = getState().common
-    let awsKeys = Object.assign({}, {accessKey: awsAccessKey, secretKey: awsSecretKey})
+    let awsKeys = Object.assign({}, { accessKey: awsAccessKey, secretKey: awsSecretKey })
     let image = await resizeImage(payload.images[0])
-    
-    let entry = Object.assign({}, {
-      filename: image.filename,
-      localUri: image.uri,
-      uri: "",
-      type: "image",
-      aspectRatio: image.height / image.width,
-      caption: ""
-    })
+
+    let entry = Object.assign(
+      {},
+      {
+        filename: image.filename,
+        localUri: image.uri,
+        uri: "",
+        type: "image",
+        aspectRatio: image.height / image.width,
+        caption: ""
+      }
+    )
 
     payload.goBack()
     const filename = Math.floor(Math.random() * 1000000000).toString() + "_" + image.filename
     let file = Object.assign({}, { uri: image.uri, name: image.filename, type: "image/png" })
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
-    const response = await awsUpload(file, awsKeys)
-    entry = Object.assign({}, entry, { uri: response.body.postResponse.location })
+    const uri = await awsUpload(file, awsKeys)
+    entry = Object.assign({}, entry, { uri })
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
     dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
   }

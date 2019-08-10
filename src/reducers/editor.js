@@ -35,7 +35,7 @@ const defaultTextData = {
   initialEntries: [],
   deletedIds: [],
   initialImageIds: [],
-  activeIndex: 0,
+  activeIndex: null,
   toolbarOptions: ["H1", "QUOTE"],
   activeContentCreator: null,
   showEditorToolbar: false,

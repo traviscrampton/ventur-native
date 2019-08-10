@@ -7,8 +7,10 @@ import { RNS3 } from "react-native-aws3"
 //   type: "image/png"
 // }
 
+const cloudFrontUrl = "d1p1x07b0tmfpi.cloudfront.net"
+
 let options = {
-  keyPrefix: "develop/",
+  keyPrefix: "s3/",
   bucket: "ventur-blog",
   region: 'us-west-1',
   successActionStatus: 201
@@ -17,7 +19,9 @@ let options = {
 export const awsUpload = async (file, awsKeys) => {
   options = Object.assign({}, options, awsKeys)
   const response = await RNS3.put(file, options)
-  return response
+  let url = response.body.postResponse.location
+  url = url.replace("ventur-blog.s3.amazonaws.com", cloudFrontUrl)
+  return url
   // RNS3.put(file, options).then(response => {
   //   console.log("does any of this fucking work")
   //   // if (response.status !== 201) {
