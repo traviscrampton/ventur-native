@@ -10,7 +10,7 @@ import { Font } from "expo"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
 import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
-import { get } from "../agent"
+import { get, getCredentials } from "../agent"
 import Expo from "expo"
 
 const mapStateToProps = state => ({
@@ -48,9 +48,9 @@ class Ventur extends Component {
   }
 
   getAWSCredentials() {
-    if (this.props.awsSecretKey && this.props.awsAccessKey) return
+    // if (this.props.awsSecretKey && this.props.awsAccessKey) return
 
-    get("/credentials").then(response => {
+    getCredentials().then(response => {
       console.log("response", response)
       this.props.addApiCredentials(response)
     })

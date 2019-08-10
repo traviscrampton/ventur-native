@@ -40,7 +40,8 @@ export default (state = defaultData, action) => {
     case SET_STRAVA_LOADING_FALSE:
       return {
         ...state,
-        stravaLoading: false
+        stravaLoading: false,
+        includedActivities: defaultData.includedActivities
       }
     case ERASE_TOTAL_ROUTE:
       return {

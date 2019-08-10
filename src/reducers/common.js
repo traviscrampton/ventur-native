@@ -46,7 +46,7 @@ export default (state = defaultAppState, action) => {
         awsSecretKey: action.payload.awsSecretKey,
         stravaClientId: action.payload.stravaClientId,
         stravaClientSecret: action.payload.stravaClientSecret
-      }  
+      }
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {
         ...state,
