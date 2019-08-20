@@ -334,7 +334,6 @@ class ChapterShow extends Component {
 
   renderImageEntry(entry, index) {
     const height = this.getImageHeight(entry.aspectRatio)
-    const thumbnailSource = this.getThumbnailSource(entry)
 
     return (
       <View
@@ -347,6 +346,7 @@ class ChapterShow extends Component {
             style={{ width: this.props.width, height }}
             yPosition={this.getYPosition(index)}
             scrollPosition={this.state.scrollPosition}
+            thumbnailSource={entry.thumbnailUri}
             uri={entry.uri}
           />
         </View>
