@@ -1,13 +1,14 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "../agent"
 import DropDownHolder from "../utils/DropdownHolder"
-import { awsUpload } from "../utils/image_uploader"
+import { awsUpload, cloudFrontUrlLength } from "../utils/image_uploader"
 import { loadChapter, setEditMode } from "./chapter"
 import { resetChapterForm, addChapterToJournals } from "./chapter_form"
 import { populateOfflineChapters, dispatch } from "./user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "../utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
 import { ImageManipulator } from "expo"
+const uuid = require('react-native-uuid');
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
@@ -145,7 +146,7 @@ export const startImageUploading = () => {
 }
 
 export const resizeImage = async image => {
-  let maxWidth = 1000 //for now the image will be small, later we can use cloudfront and have the images distributed appropratiely
+  let maxWidth = 1800
   let { width, height, uri } = image
 
   if (width > maxWidth) {
@@ -155,7 +156,7 @@ export const resizeImage = async image => {
 
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
     compress: 0,
-    format: "png",
+    format: "jpg",
     base64: false
   })
 
@@ -182,14 +183,40 @@ export const addImagesToEntries = payload => {
     )
 
     payload.goBack()
-    const filename = Math.floor(Math.random() * 1000000000).toString() + "_" + image.filename
-    let file = Object.assign({}, { uri: image.uri, name: image.filename, type: "image/png" })
+    let filename = image.filename.split(".")[0] + uuid.v1() + "." + "jpg" // hack for this server shite
+    let file = Object.assign({}, { uri: image.uri, name: filename, type: "image/jpg" })
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
     const uri = await awsUpload(file, awsKeys)
-    entry = Object.assign({}, entry, { uri })
+    const allUriSizes = createUrisObject(uri, entry.aspectRatio)
+    entry = Object.assign({}, entry, allUriSizes)
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
     dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
   }
+}
+
+export const createUrisObject = (uri, aspectRatio) => {
+  let newUriObject = Object.assign(
+    {},
+    {
+      thumbnailUri: createResizeImgUri(aspectRatio, uri, 50),
+      lowResUri: createResizeImgUri(aspectRatio, uri, 450),
+      uri: createResizeImgUri(aspectRatio, uri, 1000),
+      originalUri: uri
+    }
+  )
+
+  return newUriObject
+}
+
+export const createResizeImgUri = (aspectRatio, originalUri, newWidth) => {
+  let newHeight = parseInt(newWidth * aspectRatio)
+
+  let uri =
+    originalUri.slice(0, cloudFrontUrlLength) +
+    `/fit-in/${newWidth}x${newHeight}` +
+    originalUri.slice(cloudFrontUrlLength)
+
+  return uri
 }
 
 export function storeChapterToOfflineMode(payload) {
