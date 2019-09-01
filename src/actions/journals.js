@@ -61,6 +61,7 @@ export function loadSingleJournal(journalId) {
     get(`/journals/${journalId}/journal_metadata`).then(data => {
       dispatch(populateSingleJournal(data.journal))
       dispatch(fetchJournalChapters(journalId))
+      dispatch(fetchJournalGear(journalId))
     })
   }
 }
@@ -86,6 +87,22 @@ export const fetchJournalChapters = journalId => {
     get(`/journals/${journalId}/chapters`).then(data => {
       dispatch(populateJournalChapters(data.chapters))
     })
+  }
+}
+
+export const fetchJournalGear = journalId => {
+  return function(dispatch, getState) {
+    get(`/journals/${journalId}/gear_item_reviews`).then(data => {
+      dispatch(populateJournalGear(data.gearItemReviews))
+    })
+  }
+}
+
+export const POPULATE_JOURNAL_GEAR = "POPULATE_JOURNAL_GEAR"
+export const populateJournalGear = (payload) => {
+  return {
+    type: POPULATE_JOURNAL_GEAR,
+    payload: payload
   }
 }
 

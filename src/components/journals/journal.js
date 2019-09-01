@@ -32,6 +32,7 @@ import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_f
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
+import GearListItem from "../GearItem/GearListItem"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -363,6 +364,10 @@ class Journal extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
+  handleGearItemPress = (id) => {
+    console.log("ID", id)
+  }
+
   navigateToChapterForm = () => {
     let chapterForm = Object.assign(
       {},
@@ -408,16 +413,24 @@ class Journal extends Component {
     )
   }
 
+  renderGear() {
+    return this.props.journal.gear.map((gearItem, index) => {
+      console.log("GEAR ITEM", gearItem)
+      return <GearListItem gearItem={gearItem} handleGearItemPress={() => this.handleGearItemPress(gearItem.id)} />
+    })
+  }
+
   render() {
     if (!this.props.loaded) {
       return <LoadingScreen />
     }
 
+          // {this.renderChapters()}
     return (
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>
           {this.renderHeader()}
-          {this.renderChapters()}
+          {this.renderGear()}
         </ScrollView>
         {this.renderCreateChapterCta()}
       </View>
