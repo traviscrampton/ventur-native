@@ -30,11 +30,13 @@ const ChapterCard = props => {
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
-        <View style={{ maxWidth: Dimensions.get("window").width - 140 }}>
-          {publishedStatus}
-          <Text numberOfLines={1} style={styles.chapterTitle}>
-            {title}
-          </Text>
+        <View style={{ maxWidth: Dimensions.get("window").width - 140, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <View>
+            <Text numberOfLines={1} style={styles.chapterTitle}>
+              {title}
+            </Text>
+            {publishedStatus}
+          </View>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
@@ -43,10 +45,6 @@ const ChapterCard = props => {
             <View style={styles.individualIconTextContainer}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
               <Text style={styles.textStats}>{`${distance}`.toUpperCase()}</Text>
-            </View>
-            <View style={styles.individualIconTextContainer}>
-              <Feather style={styles.iconMargin} name="camera" size={16} />
-              <Text style={styles.textStats}>{props.blogImageCount} Photos</Text>
             </View>
           </View>
         </View>
@@ -68,14 +66,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3"
+    borderBottomColor: "#d3d3d3",
+    minHeight: 120
   },
   chapterTitle: {
     maxWidth: Dimensions.get("window").width - 140,
     fontFamily: "open-sans-regular",
     color: "#323941",
     fontSize: 20,
-    marginBottom: 10
   },
   allIcons: {
     display: "flex",

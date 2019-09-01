@@ -32,6 +32,7 @@ import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_f
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
+import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import GearListItem from "../GearItem/GearListItem"
 
 const mapStateToProps = state => ({
@@ -63,9 +64,30 @@ const mapDispatchToProps = dispatch => ({
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img))
 })
 
+const ChapterTest = () => {
+  return (
+    <View>
+      <Text>Chapter</Text>
+    </View>
+  )
+}
+
+const GearTest = () => {
+  return (
+    <View>
+      <Text>Gear</Text>
+    </View>
+  )
+}
+
 class Journal extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      index: 0,
+      routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }]
+    }
   }
 
   componentWillMount() {
@@ -336,7 +358,7 @@ class Journal extends Component {
   }
 
   renderChapterLoadingIcon = () => {
-    return <MaterialIndicator style={{marginTop: 50}} size={40} color="#FF5423" />
+    return <MaterialIndicator style={{ marginTop: 50 }} size={40} color="#FF5423" />
   }
 
   renderChapters() {
@@ -364,7 +386,7 @@ class Journal extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
-  handleGearItemPress = (id) => {
+  handleGearItemPress = id => {
     console.log("ID", id)
   }
 
@@ -420,17 +442,39 @@ class Journal extends Component {
     })
   }
 
+  renderTabView() {
+    return (
+      <TabView
+        navigationState={this.state}
+        renderTabBar={props => (
+          <TabBar {...props} labelStyle={{color: "#323941"}} indicatorStyle={{ backgroundColor: "#3F88C5" }} style={{ backgroundColor: "white" }} />
+        )}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case "chapters":
+              return this.renderChapters()
+            case "gear":
+              return this.renderGear()
+          }
+        }}
+        onIndexChange={index => this.setState({ index })}
+        initialLayout={{ width: Dimensions.get("window").width }}
+      />
+    )
+  }
+
   render() {
     if (!this.props.loaded) {
       return <LoadingScreen />
     }
 
-          // {this.renderChapters()}
+    // {this.renderGear()}
+    // {this.renderChapters()}
     return (
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>
           {this.renderHeader()}
-          {this.renderGear()}
+          {this.renderTabView()}
         </ScrollView>
         {this.renderCreateChapterCta()}
       </View>
