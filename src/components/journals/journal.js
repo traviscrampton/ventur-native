@@ -28,12 +28,14 @@ import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
 import { loadJournalMap } from "../../actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
+import { MaterialIcons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_form"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import GearListItem from "../GearItem/GearListItem"
+import { FloatingAction } from "react-native-floating-action"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -64,22 +66,6 @@ const mapDispatchToProps = dispatch => ({
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img))
 })
 
-const ChapterTest = () => {
-  return (
-    <View>
-      <Text>Chapter</Text>
-    </View>
-  )
-}
-
-const GearTest = () => {
-  return (
-    <View>
-      <Text>Gear</Text>
-    </View>
-  )
-}
-
 class Journal extends Component {
   constructor(props) {
     super(props)
@@ -89,6 +75,23 @@ class Journal extends Component {
       routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }]
     }
   }
+
+  static actions = [
+    {
+      text: "Create Chapter",
+      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
+      name: "create_chapter",
+      position: 0,
+      color: "#3F88C5"
+    },
+    {
+      text: "Create Gear Item",
+      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
+      name: "create_gear_item",
+      position: 1,
+      color: "#3F88C5"
+    }
+  ]
 
   componentWillMount() {
     Expo.ScreenOrientation.allow("ALL")
@@ -390,6 +393,17 @@ class Journal extends Component {
     console.log("ID", id)
   }
 
+  navigateToForm = name => {
+    switch (name) {
+      case "create_chapter":
+        return this.navigateToChapterForm()
+      case "create_gear_item":
+        return console.log("hey this is where we woudl go")
+      default:
+        return null
+    }
+  }
+
   navigateToChapterForm = () => {
     let chapterForm = Object.assign(
       {},
@@ -408,37 +422,23 @@ class Journal extends Component {
     this.props.navigation.navigate("ChapterMetaDataForm")
   }
 
-  renderCreateChapterCta() {
+  renderFloatingButton() {
     if (!this.isCurrentUsersJournal()) return
+
     return (
-      <TouchableWithoutFeedback onPress={this.navigateToChapterForm}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 1, height: 1 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#3F88C5",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 20,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Feather name="plus" size={32} color="white" />
-        </View>
-      </TouchableWithoutFeedback>
+      <FloatingAction
+        color={"#3F88C5"}
+        actions={Journal.actions}
+        onPressItem={name => {
+          this.navigateToForm(name)
+        }}
+      />
     )
   }
 
   renderGear() {
     return this.props.journal.gear.map((gearItem, index) => {
-      console.log("GEAR ITEM", gearItem)
-      return <GearListItem gearItem={gearItem} handleGearItemPress={() => this.handleGearItemPress(gearItem.id)} />
+      return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })
   }
 
@@ -447,7 +447,12 @@ class Journal extends Component {
       <TabView
         navigationState={this.state}
         renderTabBar={props => (
-          <TabBar {...props} labelStyle={{color: "#323941"}} indicatorStyle={{ backgroundColor: "#3F88C5" }} style={{ backgroundColor: "white" }} />
+          <TabBar
+            {...props}
+            labelStyle={{ color: "#323941" }}
+            indicatorStyle={{ backgroundColor: "#3F88C5" }}
+            style={{ backgroundColor: "white" }}
+          />
         )}
         renderScene={({ route }) => {
           switch (route.key) {
@@ -468,15 +473,13 @@ class Journal extends Component {
       return <LoadingScreen />
     }
 
-    // {this.renderGear()}
-    // {this.renderChapters()}
     return (
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>
           {this.renderHeader()}
           {this.renderTabView()}
         </ScrollView>
-        {this.renderCreateChapterCta()}
+        {this.renderFloatingButton()}
       </View>
     )
   }

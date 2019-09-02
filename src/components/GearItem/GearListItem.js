@@ -30,7 +30,7 @@ const GearListItem = props => {
         backgroundColor: "white",
         borderRadius: 5
       }}>
-      <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.handleSelectGearItem(props.id)}>
+      <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.gearItemPress(id)}>
         <View style={{ display: "flex", flexDirection: "row", backgroundColor: "white" }}>
           <View style={{ width: 120, height: 120, backgroundColor: "gray" }}>
             <ProgressiveImage style={{ width: 120, borderTopLeftRadius: 5, borderBottomLeftRadius: 5, height: 120 }} source={imageUrl} />
