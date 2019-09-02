@@ -4,6 +4,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Animated,
   ScrollView,
   Image,
   ImageBackground,
@@ -33,7 +34,7 @@ import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_f
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
-import { TabView, SceneMap, TabBar } from "react-native-tab-view"
+import { TabView, SceneMap, TabBar, PagerScroll } from "react-native-tab-view"
 import GearListItem from "../GearItem/GearListItem"
 import { FloatingAction } from "react-native-floating-action"
 
@@ -72,26 +73,33 @@ class Journal extends Component {
 
     this.state = {
       index: 0,
-      routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }]
+      routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }],
+      position: new Animated.Value(0)
     }
   }
 
   static actions = [
     {
-      text: "Create Chapter",
+      text: "New Chapter",
       icon: <MaterialIcons name={"edit"} color="white" size={20} />,
       name: "create_chapter",
       position: 0,
       color: "#3F88C5"
     },
     {
-      text: "Create Gear Item",
+      text: "New Gear Item",
       icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
       name: "create_gear_item",
       position: 1,
       color: "#3F88C5"
     }
   ]
+
+  componentDidUpdate(prevState, prevProps) {
+    if (this.state.index !== prevState.index) {
+      console.log("didnt change!", this.state.index)
+    }
+  }
 
   componentWillMount() {
     Expo.ScreenOrientation.allow("ALL")
@@ -445,7 +453,21 @@ class Journal extends Component {
   renderTabView() {
     return (
       <TabView
-        navigationState={this.state}
+        navigationState={{ index: this.state.index, routes: this.state.routes }}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case "chapters":
+              return this.renderChapters()
+            case "gear":
+              return this.renderGear()
+            default:
+              return null
+          }
+        }}
+        onIndexChange={index => {
+          this.setState({ index })
+        }}
+        initialLayout={{ width: this.props.width, height: 0 }}
         renderTabBar={props => (
           <TabBar
             {...props}
@@ -454,16 +476,6 @@ class Journal extends Component {
             style={{ backgroundColor: "white" }}
           />
         )}
-        renderScene={({ route }) => {
-          switch (route.key) {
-            case "chapters":
-              return this.renderChapters()
-            case "gear":
-              return this.renderGear()
-          }
-        }}
-        onIndexChange={index => this.setState({ index })}
-        initialLayout={{ width: Dimensions.get("window").width }}
       />
     )
   }

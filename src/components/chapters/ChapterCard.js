@@ -24,7 +24,7 @@ const ChapterCard = props => {
   distance = distanceString(distance)
 
   if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
-    publishedStatus = <Text style={{ color: "orange" }}>Draft</Text>
+    publishedStatus = <Text style={{ color: "orange" }}>Unpublished</Text>
   }
 
   return (

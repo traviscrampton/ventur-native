@@ -159,19 +159,21 @@ class ChapterShow extends Component {
 
   renderTitle() {
     const { title } = this.props.chapter
+    const publishedText = this.props.chapter.published ? "Published" : "Unpublished"
     return (
       <View style={styles.titleDescriptionContainer}>
         <View
           style={[
             {
               display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center"
+              // justifyContent: "space-between",
+              flexDirection: "column",
+              // alignItems: "center"
             },
             { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
           ]}>
           <Text style={styles.title}>{title}</Text>
+          <Text>{publishedText}</Text>
         </View>
       </View>
     )

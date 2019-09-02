@@ -48,8 +48,9 @@ const NO_FOOTER_SCREENS = [
   "StravaRouteSelector"
 ]
 
-const JournalNavigator = createStackNavigator(
+const JournalFeedNavigator = createStackNavigator(
   {
+    JournalFeed: JournalFeed,
     Journal: Journal,
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,
@@ -59,28 +60,15 @@ const JournalNavigator = createStackNavigator(
     ManageContent: ManageContent,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
-    StravaRouteSelector: StravaRouteSelector
-  },
-  {
-    headerMode: "none",
-    navigationOptions: {
-      headerTransparent: true,
-      headerStyle: {
-        borderBottomWidth: 0
-      }
-    }
-  }
-)
-
-const JournalFeedNavigator = createStackNavigator(
-  {
-    JournalFeed: JournalFeed,
-    Journal: JournalNavigator
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "JournalFeed",
@@ -97,7 +85,24 @@ const JournalFeedNavigator = createStackNavigator(
 const ProfileNavigator = createStackNavigator(
   {
     Profile: Profile,
-    Journal: JournalNavigator
+    Journal: Journal,
+    Chapter: ChapterDispatch,
+    ChapterMetaDataForm: ChapterMetaDataForm,
+    CommentForm: CommentForm,
+    CameraRollContainer: CameraRollContainer,
+    JournalFormTitle: JournalFormTitle,
+    JournalFormLocation: JournalFormLocation,
+    JournalFormStatus: JournalFormStatus,
+    ImageCaptionForm: ImageCaptionForm,
+    JournalFormUpload: JournalFormUpload,
+    JournalForm: JournalForm,
+    CountriesEditor: CountriesEditor,
+    RouteEditor: RouteEditor,
+    RouteViewer: RouteViewer,
+    JournalRoute: JournalRoute,
+    ManageContent: ManageContent,
+    ChapterEditor: ChapterEditor,
+    StravaRouteSelector: StravaRouteSelector,
   },
   {
     initialRouteName: "Profile",
