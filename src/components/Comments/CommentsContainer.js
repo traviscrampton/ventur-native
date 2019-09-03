@@ -47,7 +47,6 @@ class CommentsContainer extends Component {
       }
     )
     this.props.populateCommentForm({ id, commentable })
-    this.props.navigation.navigate("CommentForm")
   }
 
   renderCommentsCTA() {

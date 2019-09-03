@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
+import CommentForm from "./CommentForm"
+import { toggleCommentFormModal } from "../../actions/comment_form"
 import Comment from "./Comment"
 const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
 
@@ -9,7 +11,9 @@ const mapStateToProps = state => ({
   currentUserAvatarImageUrl: state.common.currentUser.avatarImageUrl
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  toggleCommentFormModal: payload => dispatch(toggleCommentFormModal(payload))
+})
 
 class CommentsSection extends Component {
   constructor(props) {
@@ -18,6 +22,7 @@ class CommentsSection extends Component {
 
   navigateToCommentForm = () => {
     this.props.navigateAndPopulateCommentForm()
+    this.props.toggleCommentFormModal(true)
   }
 
   replyToComment = comment => {
@@ -32,6 +37,7 @@ class CommentsSection extends Component {
     }
 
     this.props.navigateAndPopulateCommentForm(params)
+    this.props.toggleCommentFormModal(true)
   }
 
   getAvatarUrl() {
@@ -89,6 +95,7 @@ class CommentsSection extends Component {
           style={{ borderBottomColor: "#d3d3d3", borderBottomWidth: 3, width: 70, marginBottom: 20, marginLeft: 20 }}
         />
         {this.renderComments()}
+        <CommentForm />
       </View>
     )
   }

@@ -1,16 +1,23 @@
 import React, { Component } from "react"
-import { ScrollView, View, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
-import { resetCommentForm, updateCommentContent, createComment } from "../../actions/comment_form"
+import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import {
+  resetCommentForm,
+  updateCommentContent,
+  createComment,
+  toggleCommentFormModal
+} from "../../actions/comment_form"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   content: state.commentForm.content,
-  commentable: state.commentForm.commentable
+  commentable: state.commentForm.commentable,
+  visible: state.commentForm.visible
 })
 
 const mapDispatchToProps = dispatch => ({
   resetCommentForm: () => dispatch(resetCommentForm()),
   updateCommentContent: payload => dispatch(updateCommentContent(payload)),
+  toggleCommentFormModal: payload => dispatch(toggleCommentFormModal(payload)),
   createComment: () => dispatch(createComment())
 })
 
@@ -21,13 +28,13 @@ class CommentForm extends Component {
 
   handleCancelAndNavigate = () => {
     this.props.resetCommentForm()
-    this.props.navigation.goBack()
+    this.props.toggleCommentFormModal(false)
   }
 
   handleCommentPersistance = () => {
     this.props.createComment()
     this.props.resetCommentForm()
-    this.props.navigation.goBack()
+    this.props.toggleCommentFormModal(false)
   }
 
   renderHeader() {
@@ -102,13 +109,16 @@ class CommentForm extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white", height: Dimensions.get("window").height }}>
+      <Modal
+        visible={this.props.visible}
+        animationType={"slide"}
+        style={{ backgroundColor: "white", height: Dimensions.get("window").height }}>
         {this.renderHeader()}
         <ScrollView>
           {this.renderCommentablePreview()}
           {this.renderTextBox()}
         </ScrollView>
-      </View>
+      </Modal>
     )
   }
 }

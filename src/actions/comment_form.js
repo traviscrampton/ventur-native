@@ -10,6 +10,15 @@ export function populateCommentForm(payload) {
   }
 }
 
+export const TOGGLE_COMMENT_FORM_MODAL = "TOGGLE_COMMENT_FORM_MODAL"
+export function toggleCommentFormModal(payload) {
+  console.log("are we getting here atleast", payload)
+  return {
+    type: TOGGLE_COMMENT_FORM_MODAL,
+    payload: payload
+  }
+} 
+
 export const RESET_COMMENT_FORM = "RESET_COMMENT_FORM"
 export function resetCommentForm(payload) {
   return {

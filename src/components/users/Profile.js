@@ -168,7 +168,7 @@ class Profile extends Component {
           </Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 40 }}></Text>
+          <Text style={{ width: Dimensions.get("window").width * 0.68 - 40 }} />
         </View>
       </View>
     )
