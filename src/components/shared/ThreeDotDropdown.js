@@ -1,83 +1,50 @@
 import React, { Component } from "react"
-import { connect } from "react-redux"
-import { View, TouchableWithoutFeedback, Alert } from "react-native"
-import { setToken, API_ROOT } from "../../agent"
-import DropDownHolder from "../../utils/DropdownHolder"
-import { editChapterPublished, deleteChapter } from "../../actions/editor"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import ChapterUserForm from "../chapters/ChapterUserForm"
-
-const mapStateToProps = state => ({
-  chapter: state.chapter.chapter
-})
-
-const mapDispatchToProps = dispatch => ({
-  editChapterPublished: (chapter, published) => editChapterPublished(chapter, published, dispatch),
-  deleteChapter: (chapter, callback) => deleteChapter(chapter, callback, dispatch)
-})
+import { View, TouchableWithoutFeedback } from "react-native"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { connectActionSheet } from "@expo/react-native-action-sheet"
 
 class ThreeDotDropdown extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      userMenuOpen: false
-    }
   }
 
-  navigateBack = () => {
-    this.props.navigation.goBack()
-  }
+  openActionSheet = () => {
+    let options = this.props.options.map((option, index) => {
+      return option.title
+    })
 
-  toggleUserMenuOpen = () => {
-    let menuOpen = this.state.userMenuOpen
-    this.setState({ userMenuOpen: !menuOpen })
-  }
+    options.push("Cancel")
 
-  getMenuStyling() {
-    let styling = {}
-    if (this.state.userMenuOpen) {
-      styling = this.props.openMenuStyling
-    }
+    const destructiveButtonIndex = options.length
+    const cancelButtonIndex = options.length - 1
 
-    return styling
-  }
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex
+      },
+      buttonIndex => {
+        if (buttonIndex === cancelButtonIndex) return
 
-  renderUserMenu() {
-    if (!this.state.userMenuOpen) return
-
-    return (
-      <ChapterUserForm
-        menuPosition={this.props.menuPosition}
-        options={this.props.options}
-        toggleUserMenuOpen={this.toggleUserMenuOpen}
-      />
+        this.props.options[buttonIndex].callback()  
+      }
     )
+    
   }
 
-  renderUserDropDown() {
+  render() {
     return (
       <View style={{ position: "relative" }}>
-        <TouchableWithoutFeedback onPress={this.toggleUserMenuOpen}>
-          <View style={[{ paddingTop: 2, width: 40, height: 40 }, this.getMenuStyling()]}>
+        <TouchableWithoutFeedback onPress={this.openActionSheet}>
+          <View style={{ paddingTop: 2, width: 40, height: 40 }}>
             <MaterialCommunityIcons style={{ textAlign: "center" }} name="dots-vertical" size={32} color="#D7D7D7" />
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
   }
-
-  render() {
-    return (
-      <React.Fragment>
-        {this.renderUserMenu()}
-        {this.renderUserDropDown()}
-      </React.Fragment>
-    )
-  }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ThreeDotDropdown)
+
+export default connectActionSheet(ThreeDotDropdown)

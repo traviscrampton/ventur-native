@@ -24,6 +24,7 @@ import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
 import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
 import { connect } from "react-redux"
+import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import { addJournalsToAsyncStorage } from "../../utils/offline_helpers"
 import { logOut } from "../../auth"
 import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
@@ -167,7 +168,7 @@ class Profile extends Component {
           </Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>Go on and git and ride some bikes</Text>
+          <Text style={{ width: Dimensions.get("window").width * 0.68 - 40 }}></Text>
         </View>
       </View>
     )
@@ -194,6 +195,7 @@ class Profile extends Component {
 
   renderProfilePhoto() {
     let imgDimensions = Dimensions.get("window").width / 4
+    const options = this.getOptions()
 
     return (
       <View
@@ -201,7 +203,8 @@ class Profile extends Component {
           display: "flex",
           width: Dimensions.get("window").width - 30,
           flexDirection: "row",
-          alignItems: "top"
+          alignItems: "top",
+          paddingRight: 20
         }}>
         <Image
           style={{
@@ -215,22 +218,18 @@ class Profile extends Component {
           source={{ uri: this.props.user.avatarImageUrl }}
         />
         <View>{this.renderUserName()}</View>
-        <TouchableWithoutFeedback onPress={this.toggleUserMenu}>
-          <MaterialIcons name="settings" color="#333" size={24} />
-        </TouchableWithoutFeedback>
-        {this.renderDropdown()}
+        <ThreeDotDropdown options={options} />
       </View>
     )
   }
 
-  renderDropdown() {
-    if (!this.state.userMenuOpen) return
-
+  getOptions() {
     const options = [
-      { type: "touchable", title: "Log Out", callback: this.handleLogout },
-      { type: "touchable", title: this.stravaCtaText(), callback: this.connectToStrava }
+      { title: this.stravaCtaText(), callback: this.connectToStrava },
+      { title: "Log Out", callback: this.handleLogout }
     ]
-    return <ChapterUserForm options={options} />
+
+    return options
   }
 
   renderProfilePhotoAndMetadata() {

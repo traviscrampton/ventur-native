@@ -6,6 +6,7 @@ import { loadJournalFeed, resetJournalShow } from "../../actions/journals"
 import JournalCard from "./JournalCard"
 import LoadingScreen from "../shared/LoadingScreen"
 
+
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),
   resetJournalShow: () => dispatch(resetJournalShow())
@@ -49,7 +50,7 @@ class JournalFeed extends Component {
             />
           )
         })}
-        <View style={{marginBottom: 60}}/>
+        <View style={{ marginBottom: 60 }} />
       </ScrollView>
     )
   }

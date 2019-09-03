@@ -76,7 +76,7 @@ const mapDispatchToProps = dispatch => ({
   resetJournalShow: () => dispatch(resetJournalShow()),
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
   updateTabIndex: payload => dispatch(updateTabIndex(payload)),
-  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload))
 })
 
 class Journal extends Component {
@@ -141,25 +141,19 @@ class Journal extends Component {
   getJournalOptions() {
     let optionsProps = [
       {
-        type: "touchable",
-        iconName: "edit",
         title: "Edit Journal",
-        callback: this.renderJournalEditForm,
-        closeMenuOnClick: true
+        callback: this.renderJournalEditForm
       },
       {
-        type: "touchable",
-        iconName: "cloud-upload",
         title: "Upload Image",
-        callback: this.updateBannerImage,
-        closeMenuOnClick: true
+        callback: this.updateBannerImage
       }
     ]
 
     return optionsProps
   }
 
-  uploadImage = (img) => {
+  uploadImage = img => {
     this.props.updateImageUploading(true)
     let imgPost = Object.assign(
       {},
@@ -245,7 +239,7 @@ class Journal extends Component {
     let options
     if (user.id == this.props.currentUser.id) {
       options = this.getJournalOptions()
-      return <ThreeDotDropdown options={options} menuOpenStyling={Object.assign({})} menuPosition={"below"} />
+      return <ThreeDotDropdown options={options} />
     } else {
       return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
     }
@@ -493,7 +487,7 @@ class Journal extends Component {
           {this.renderTabView()}
         </ScrollView>
         {this.renderFloatingButton()}
-        <ChapterMetaDataForm navigateToChapter={this.requestForChapter}/>
+        <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
         <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
         <JournalForm />
       </View>

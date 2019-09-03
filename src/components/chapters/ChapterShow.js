@@ -103,45 +103,28 @@ class ChapterShow extends Component {
     this.props.sendEmails(this.props.chapter.id)
   }
 
-  getEmailToggle() {
-    if (this.props.chapter.emailSent) {
-      return "Email Sent"
-    } else {
-      return "Send Email"
-    }
-  }
-
   getChapterUserFormProps() {
+    let published = this.props.chapter.published ? "Unpublish" : "Publish"
+    let emailSent = this.props.chapter.emailSent ? "Email Sent" : "Send Email"
+
     let optionsProps = [
       {
-        type: "touchable",
-        iconName: "edit",
         title: "Edit Metadata",
-        callback: this.navigateToChapterForm,
-        closeMenuOnClick: true
+        callback: this.navigateToChapterForm
       },
       {
-        type: "touchable",
-        iconName: "delete",
         title: "Delete Chapter",
-        callback: this.openDeleteAlert,
-        closeMenuOnClick: true
+        callback: this.openDeleteAlert
       },
       {
-        type: "switch",
-        title: "Published",
-        iconName: "publish",
-        value: this.props.chapter.published,
-        callback: this.updatePublishedStatus,
-        closeMenuOnClick: false
+        title: published,
+        callback: this.updatePublishedStatus
       }
     ]
 
     if (this.props.chapter.published) {
       const emailOption = {
-        type: "touchable",
-        iconName: "mail-outline",
-        title: this.getEmailToggle(),
+        title: emailSent,
         callback: this.sendEmails
       }
       optionsProps.push(emailOption)
@@ -167,7 +150,7 @@ class ChapterShow extends Component {
             {
               display: "flex",
               // justifyContent: "space-between",
-              flexDirection: "column",
+              flexDirection: "column"
               // alignItems: "center"
             },
             { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
@@ -409,13 +392,7 @@ class ChapterShow extends Component {
     }
     const options = this.getChapterUserFormProps()
 
-    return (
-      <ThreeDotDropdown
-        menuPosition={"below"}
-        options={options}
-        openMenuStyling={{ borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }}
-      />
-    )
+    return <ThreeDotDropdown options={options} />
   }
 
   renderIconAndThreeDotMenu() {
