@@ -4,11 +4,12 @@ import DropDownHolder from "../utils/DropdownHolder"
 import { awsUpload, cloudFrontUrlLength } from "../utils/image_uploader"
 import { loadChapter, setEditMode } from "./chapter"
 import { resetChapterForm, addChapterToJournals } from "./chapter_form"
+import { toggleCameraRollModal } from "./camera_roll"
 import { populateOfflineChapters, dispatch } from "./user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "../utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
 import { ImageManipulator } from "expo"
-const uuid = require('react-native-uuid');
+const uuid = require("react-native-uuid")
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
@@ -165,6 +166,7 @@ export const resizeImage = async image => {
 
 export const addImagesToEntries = payload => {
   return async (dispatch, getState) => {
+    console.log("payload.image", payload)
     dispatch(startImageUploading())
     let { awsAccessKey, awsSecretKey } = getState().common
     let awsKeys = Object.assign({}, { accessKey: awsAccessKey, secretKey: awsSecretKey })
@@ -182,7 +184,7 @@ export const addImagesToEntries = payload => {
       }
     )
 
-    payload.goBack()
+    dispatch(toggleCameraRollModal(false))
     let filename = image.filename.split(".")[0] + uuid.v1() + "." + "jpg" // hack for this server shite
     let file = Object.assign({}, { uri: image.uri, name: filename, type: "image/jpg" })
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))

@@ -1,18 +1,20 @@
 import React, { Component } from "react"
 import { LinearGradient } from "expo"
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
+import { StyleSheet, ScrollView, View, Text, Modal, TouchableWithoutFeedback, TextInput } from "react-native"
 import { get } from "../../agent"
 import { Header } from "../editor/header"
-import { updateJournalForm } from "../../actions/journal_form"
+import { updateJournalForm, toggleCountriesEditorModal } from "../../actions/journal_form"
 import { Feather } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  includedCountries: state.journalForm.includedCountries
+  includedCountries: state.journalForm.includedCountries,
+  visible: state.journalForm.countriesEditorVisible
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+  updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload)),
 })
 
 class CountriesEditor extends Component {
@@ -54,7 +56,7 @@ class CountriesEditor extends Component {
   handleGoBack = () => {
     const { includedCountries } = this.props
     this.setState({ includedCountries })
-    this.props.navigation.goBack()
+    this.props.toggleCountriesEditorModal(false)
   }
 
   includeCountry = searchCountry => {
@@ -192,7 +194,7 @@ class CountriesEditor extends Component {
     const { searchBar, searchResults, includedCountries, header } = this.renderComponents()
 
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <Modal visible={this.props.visible} animationType="slide" style={{ backgroundColor: "white", height: "100%" }}>
         {header}
         <View style={styles.container}>
           <View style={{ position: "relative", zIndex: 10 }}>
@@ -201,7 +203,7 @@ class CountriesEditor extends Component {
           </View>
           {includedCountries}
         </View>
-      </View>
+      </Modal>
     )
   }
 }

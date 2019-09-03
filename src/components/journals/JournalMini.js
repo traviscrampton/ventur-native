@@ -5,9 +5,43 @@ import ProgressiveImage from "../shared/ProgressiveImage"
 const pad = Dimensions.get("window").width * 0.04
 const imageGaps = Dimensions.get("window").width * 0.11
 const imageWidth = (Dimensions.get("window").width - imageGaps) / 2
-const JournalMini = props => {
+
+const getDistanceString = distance => {
+  const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+  switch (distanceType) {
+    case "kilometer":
+      return `${kilometerAmount} ${readableDistanceType}`
+
+    case "mile":
+      return `${mileAmount} ${readableDistanceType}`
+
+    default:
+      return ""
+  }
+}
+
+const getStatusText = props => {
+  let distanceString = getDistanceString(props.distance)
+
   return (
-    <View style={{ height: imageWidth, width: imageWidth, marginBottom: pad }}>
+    <Text style={styles.metadata}>
+      {`${props.status}`.replace("_", " ").toUpperCase()} {`\u2022`} {`${distanceString}`.toUpperCase()}
+    </Text>
+  )
+}
+
+const JournalMini = props => {
+  const statusText = getStatusText(props)
+
+  return (
+    <View
+      style={{
+        height: imageWidth,
+        width: imageWidth,
+        marginBottom: pad,
+        backgroundColor: "lightgray",
+        borderRadius: 10
+      }}>
       <ProgressiveImage
         style={[styles.imageBackground, { borderRadius: 10, borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 10 }]}
         thumbnailSource={props.thumbnailSource}
@@ -18,9 +52,7 @@ const JournalMini = props => {
           <Text numberOfLines={2} style={styles.title}>
             {props.title}
           </Text>
-          <Text style={styles.metadata}>
-            {`${props.status}`.toUpperCase()} {`\u2022`} {`${props.distance} kilometers`.toUpperCase()}
-          </Text>
+          {statusText}
         </View>
       </TouchableWithoutFeedback>
     </View>

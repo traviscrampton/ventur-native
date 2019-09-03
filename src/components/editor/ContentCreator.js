@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { createNewTextEntry, updateActiveCreator } from "../../actions/editor"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
 import { MaterialIcons, Entypo } from "@expo/vector-icons"
 
@@ -11,6 +12,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createNewTextEntry: payload => dispatch(createNewTextEntry(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   updateActiveCreator: payload => dispatch(updateActiveCreator(payload))
 })
 class ContentCreator extends Component {
@@ -35,10 +37,11 @@ class ContentCreator extends Component {
   }
 
   openCameraRoll = e => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      index: this.props.index,
-      selectSingleItem: true
-    })
+    this.props.toggleCameraRollModal(true)
+    // this.props.navigation.navigate("CameraRollContainer", {
+    //   index: this.props.index,
+    //   selectSingleItem: true
+    // })
   }
 
   updateActiveCreator = () => {

@@ -3,9 +3,10 @@ import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { Header } from "../editor/header"
 import { StackActions, NavigationActions } from "react-navigation"
-import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
+import { StyleSheet, ScrollView, View, Modal, Text, TouchableWithoutFeedback, TextInput } from "react-native"
 import { setToken, API_ROOT } from "../../agent"
-import { updateJournalForm, resetJournalForm, persistJournal } from "../../actions/journal_form"
+import { updateJournalForm, resetJournalForm, persistJournal, toggleJournalFormModal, toggleCountriesEditorModal } from "../../actions/journal_form"
+import CountriesEditor from "./CountriesEditor"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -14,11 +15,14 @@ const mapStateToProps = state => ({
   status: state.journalForm.status,
   includedCountries: state.journalForm.includedCountries,
   distanceType: state.journalForm.distanceType,
-  currentRoot: state.common.currentBottomTab
+  currentRoot: state.common.currentBottomTab,
+  visible: state.journalForm.visible
 })
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
+  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload)),
   resetJournalForm: () => dispatch(resetJournalForm()),
   persistJournal: callback => dispatch(persistJournal(callback))
 })
@@ -36,33 +40,17 @@ class JournalForm extends Component {
     this.props.updateJournalForm(payload)
   }
 
-  getFirstRoute() {
-    if (this.props.currentRoot === "Profile") {
-      return "Profile"
-    } else if (this.props.currentRoot === "Explore") {
-      return "JournalFeed"
-    }
-  }
-
   saveJournal = () => {
     this.props.persistJournal(this.navigateToJournal)
   }
 
   navigateToJournal = () => {
-    const journalId = this.props.id
-    const resetAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
-        NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)
+    this.props.toggleJournalFormModal(false)
   }
 
   handleGoBack = () => {
+    this.props.toggleJournalFormModal(false)
     this.props.resetJournalForm()
-    this.props.navigation.goBack()
   }
 
   toggleFormButton = (buttonType, currentOption) => {
@@ -74,7 +62,7 @@ class JournalForm extends Component {
   }
 
   navigateToCountriesEditor = () => {
-    this.props.navigation.navigate("CountriesEditor")
+    this.props.toggleCountriesEditorModal(true)
   }
 
   getOptionArray(buttonType) {
@@ -127,7 +115,7 @@ class JournalForm extends Component {
 
   renderDistanceType() {
     const distanceType = this.props.distanceType.toUpperCase()
-    
+
     return (
       <View>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("distanceType", this.props.distanceType)}>
@@ -249,7 +237,7 @@ class JournalForm extends Component {
   render() {
     const { formTitle, textFields, status, header, distanceType, countries } = this.renderFormComponents()
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <Modal visible={this.props.visible} animationType="slide" style={{ backgroundColor: "white", height: "100%" }}>
         {header}
         <ScrollView style={styles.container}>
           {formTitle}
@@ -258,7 +246,8 @@ class JournalForm extends Component {
           {distanceType}
           {countries}
         </ScrollView>
-      </View>
+        <CountriesEditor />
+      </Modal>
     )
   }
 }

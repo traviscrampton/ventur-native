@@ -13,3 +13,11 @@ export function populateOfflineChapters(payload) {
     payload: payload
   }
 }
+
+export const POPULATE_USER_JOURNALS = "POPULATE_USER_JOURNALS"
+export function populateUserJournals(payload) {
+  return {
+    type: POPULATE_USER_JOURNALS,
+    payload: payload
+  }
+}

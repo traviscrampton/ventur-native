@@ -3,7 +3,8 @@ import {
   RESET_JOURNAL_TAB,
   IMAGE_UPLOADING,
   POPULATE_JOURNAL_CHAPTERS,
-  POPULATE_JOURNAL_GEAR
+  POPULATE_JOURNAL_GEAR,
+  UPDATE_TAB_INDEX
 } from "../actions/journals"
 import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
@@ -17,7 +18,9 @@ const defaultJournalData = {
   noRequest: false,
   loaded: false,
   imageUploading: false,
-  subContentLoading: true
+  subContentLoading: true,
+  tabIndex: 0,
+  routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }]
 }
 
 export default (state = defaultJournalData, action) => {
@@ -36,7 +39,6 @@ export default (state = defaultJournalData, action) => {
       }
 
     case POPULATE_JOURNAL_GEAR:
-      console.log("GEAR!!!", action.payload)
       return {
         ...state,
         journal: Object.assign({}, state.journal, { gear: action.payload })
@@ -56,6 +58,12 @@ export default (state = defaultJournalData, action) => {
       return {
         ...state,
         imageUploading: action.payload
+      }
+
+    case UPDATE_TAB_INDEX:
+      return {
+        ...state,
+        tabIndex: action.payload
       }
     case PUSH_CHAPTER_TO_JOURNAL:
       return {

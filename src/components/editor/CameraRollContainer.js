@@ -1,25 +1,29 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { Modal } from "react-native"
 import { addImagesToEntries, setSelectedImages } from "../../actions/editor"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import CameraRollPicker from "react-native-camera-roll-picker"
 import { Header } from "./header"
 
 const mapStateToProps = state => ({
   selectedImages: state.editor.selectedImages,
-  uploadIsImage: state.editor.uploadIsimage
+  uploadIsImage: state.editor.uploadIsimage,
+  index: state.editor.activeIndex,
+  visible: state.cameraRoll.visible
 })
 
 const mapDispatchToProps = dispatch => ({
   setSelectedImages: payload => dispatch(setSelectedImages(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   addImagesToEntries: payload => dispatch(addImagesToEntries(payload))
 })
+
 class CameraRollContainer extends Component {
   constructor(props) {
     super(props)
-    this.compileSelectedImages = this.compileSelectedImages.bind(this)
-    this.index = this.props.navigation.getParam("index", "NO-ID")
-    this.selectSingleItem = this.props.navigation.getParam("selectSingleItem", false)
-    this.singleItemCallback = this.props.navigation.getParam("singleItemCallback", null)
+    // this.selectSingleItem = this.props.navigation.getParam("selectSingleItem", false) // change to passed in props
+    // this.singleItemCallback = this.props.navigation.getParam("singleItemCallback", null) // change to passed in props
 
     this.state = {
       selectedImages: [],
@@ -38,13 +42,20 @@ class CameraRollContainer extends Component {
       return img
     })
 
-    if (this.singleItemCallback) {
-      console.log("is single item callback")
-      this.singleItemCallback(selectedImages[0])
-      this.props.navigation.goBack()
+    if (this.props.selectSingleItem) {
+      this.props.imageCallback(selectedImages[0])
+      this.props.toggleCameraRollModal(false)
     } else {
-      this.props.addImagesToEntries({ images: selectedImages, index: this.index, goBack: this.props.navigation.goBack })
+      this.props.imageCallback(selectedImages)
     }
+
+    // if (this.singleItemCallback) {
+    //   console.log("is single item callback")
+    //   this.singleItemCallback(selectedImages[0])
+    //   this.props.navigation.goBack()
+    // } else {
+    //   this.props.addImagesToEntries({ images: selectedImages, index: this.index, goBack: this.props.navigation.goBack })
+    // }
     // this.props.navigation.goBack()
   }
 
@@ -55,7 +66,7 @@ class CameraRollContainer extends Component {
   }
 
   handleGoBack = () => {
-    this.props.navigation.goBack()
+    this.props.toggleCameraRollModal(false)
   }
 
   renderHeader() {
@@ -72,7 +83,7 @@ class CameraRollContainer extends Component {
   renderCameraRollPicker() {
     return (
       <CameraRollPicker
-        selectSingleItem={this.selectSingleItem}
+        selectSingleItem={this.props.selectSingleItem}
         key="cameraRollPicker"
         selected={this.state.selectedImages}
         callback={this.compileSelectedImages}
@@ -82,10 +93,10 @@ class CameraRollContainer extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Modal visible={this.props.visible} animationType="slide">
         {this.renderHeader()}
         {this.renderCameraRollPicker()}
-      </React.Fragment>
+      </Modal>
     )
   }
 }

@@ -29,7 +29,7 @@ class HomeLoggedOut extends Component {
         </View>
         <View style={{ padding: 40, paddingTop: 10 }}>
           <Text style={{ fontSize: 22, color: "white", textAlign: "center" }}>
-            Bike touring built for you, online and offline
+            Bike touring built for you
           </Text>
         </View>
       </View>

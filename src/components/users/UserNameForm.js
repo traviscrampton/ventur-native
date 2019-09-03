@@ -73,7 +73,7 @@ class UserNameForm extends Component {
   renderBackButton() {
     return (
       <TouchableWithoutFeedback
-        underlayColor="rgba(111, 111, 111, 0.5)"
+        // underlayColor="rgba(111, 111, 111, 0.5)"
         style={{
           position: "relative"
         }}

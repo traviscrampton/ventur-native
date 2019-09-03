@@ -140,7 +140,7 @@ class UserEmailPasswordForm extends Component {
     return (
       <LinearGradient
         style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, padding: 25 }}
-        colors={["##FF5423", "#E46545"]}>
+        colors={["#FF5423", "#E46545"]}>
         {this.renderBackButton()}
         {this.renderFormTitle()}
         {this.renderForm()}

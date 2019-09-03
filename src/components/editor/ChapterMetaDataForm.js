@@ -1,7 +1,15 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "../../actions/editor"
-import { StyleSheet, View, ScrollView, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
-import { updateChapterForm, addChapterToJournals, resetChapterForm } from "../../actions/chapter_form"
+import { StyleSheet, View, ScrollView, Modal, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import {
+  updateChapterForm,
+  addChapterToJournals,
+  resetChapterForm,
+  toggleChapterModal
+} from "../../actions/chapter_form"
+import {
+  toggleCameraRollModal
+} from "../../actions/camera_roll"
 import { StackActions, NavigationActions } from "react-navigation"
 import _ from "lodash"
 import { loadChapter } from "../../actions/chapter"
@@ -12,6 +20,7 @@ import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
+import  CameraRollContainer from "../editor/CameraRollContainer"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
@@ -19,15 +28,18 @@ const mapStateToProps = state => ({
   width: state.common.width,
   height: state.common.height,
   isUpdating: state.editor.isUpdating,
-  currentRoot: state.common.currentBottomTab
+  currentRoot: state.common.currentBottomTab,
+  visible: state.chapterForm.modalVisible
 })
 
 const mapDispatchToProps = dispatch => ({
   startUpdating: payload => dispatch(startUpdating()),
   doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   loadChapter: payload => dispatch(loadChapter(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   resetChapterForm: () => dispatch(resetChapterForm()),
   updateChapter: (params, callback) => dispatch(updateChapter(params, callback, dispatch)),
   createChapter: (params, callback) => dispatch(createChapter(params, callback, dispatch))
@@ -51,10 +63,10 @@ class ChapterMetaDataForm extends Component {
   }
 
   handleGoBack = () => {
-    this.props.navigation.goBack()
+    this.props.toggleChapterModal(false)
   }
 
-  uploadImage(img) {
+  uploadImage = (img) => {
     let imgPost = {
       uri: img.uri,
       name: img.filename,
@@ -66,10 +78,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   updateImage = () => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      selectSingleItem: true,
-      singleItemCallback: img => this.uploadImage(img)
-    })
+    this.props.toggleCameraRollModal(true)
   }
 
   toggleDatePicker = () => {
@@ -96,25 +105,12 @@ class ChapterMetaDataForm extends Component {
     this.distanceTextInput.focus()
   }
 
-  getFirstRoute() {
-    if (this.props.currentRoot === "Profile") {
-      return "Profile"
-    } else if (this.props.currentRoot === "Explore") {
-      return "JournalFeed"
-    }
-  }
-
   navigateToChapter = () => {
-    const { journalId, id } = this.props.chapterForm
-    const resetAction = StackActions.reset({
-      index: 2,
-      actions: [
-        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
-        NavigationActions.navigate({ routeName: "Journal", params: { journalId } }),
-        NavigationActions.navigate({ routeName: "Chapter" })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)
+    if (this.props.navigateToChapter) {
+      this.props.navigateToChapter(this.props.chapter.id)
+    }
+    
+    this.props.toggleChapterModal(false)
   }
 
   renderDatePicker() {
@@ -255,14 +251,15 @@ class ChapterMetaDataForm extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Modal visible={this.props.visible} animationType="slide" style={styles.container}>
         {this.renderHeader()}
         <ScrollView>
           {this.renderChapterImage()}
           {this.renderTitleAndDescription()}
           {this.renderStatistics()}
         </ScrollView>
-      </View>
+        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+      </Modal>
     )
   }
 }

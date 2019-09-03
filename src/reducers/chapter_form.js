@@ -1,4 +1,4 @@
-import { UPDATE_CHAPTER_FORM, RESET_CHAPTER_FORM } from "../actions/chapter_form"
+import { UPDATE_CHAPTER_FORM, RESET_CHAPTER_FORM, TOGGLE_CHAPTER_MODAL } from "../actions/chapter_form"
 import _ from "lodash"
 
 const defaultChapterFormData = {
@@ -21,7 +21,8 @@ const defaultChapterFormData = {
     }
   ],
   journals: [],
-  user: {}
+  user: {},
+  modalVisible: false
 }
 
 const chapterFormResetData = _.omit(defaultChapterFormData, "journals")
@@ -32,6 +33,11 @@ export default (state = defaultChapterFormData, action) => {
       return Object.assign({}, state, action.payload)
     case RESET_CHAPTER_FORM:
       return Object.assign({}, state, chapterFormResetData)
+    case TOGGLE_CHAPTER_MODAL:
+      return {
+        ...state,
+        modalVisible: action.payload
+      }
 
     default:
       return state

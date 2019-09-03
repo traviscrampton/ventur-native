@@ -10,33 +10,39 @@ import {
   ImageBackground,
   TouchableHighlight,
   Dimensions,
+  Modal,
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "../chapters/ChapterList"
+import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
 import { get } from "../../agent"
 import {
   loadSingleJournal,
   requestForChapter,
   resetJournalShow,
   uploadBannerImage,
-  imageUploading
+  imageUploading,
+  updateTabIndex
 } from "../../actions/journals"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import { MaterialIndicator } from "react-native-indicators"
 import { createChapter } from "../../utils/chapter_form_helper"
-import { updateJournalForm } from "../../actions/journal_form"
+import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
 import { loadChapter, resetChapter } from "../../actions/chapter"
 import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
 import { loadJournalMap } from "../../actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { MaterialIcons } from "@expo/vector-icons"
-import { updateChapterForm, addChapterToJournals } from "../../actions/chapter_form"
+import { updateChapterForm, addChapterToJournals, toggleChapterModal } from "../../actions/chapter_form"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import { TabView, SceneMap, TabBar, PagerScroll } from "react-native-tab-view"
 import GearListItem from "../GearItem/GearListItem"
 import { FloatingAction } from "react-native-floating-action"
+import CameraRollContainer from "../editor/CameraRollContainer"
+import JournalForm from "../JournalForm/JournalForm"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -48,7 +54,9 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   width: state.common.width,
   height: state.common.height,
-  subContentLoading: state.journal.subContentLoading
+  subContentLoading: state.journal.subContentLoading,
+  index: state.journal.tabIndex,
+  routes: state.journal.routes
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -56,6 +64,8 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
+  toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
@@ -64,18 +74,14 @@ const mapDispatchToProps = dispatch => ({
   setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadJournalMap: id => dispatch(loadJournalMap(id)),
   resetJournalShow: () => dispatch(resetJournalShow()),
-  uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img))
+  uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
+  updateTabIndex: payload => dispatch(updateTabIndex(payload)),
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
 })
 
 class Journal extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      index: 0,
-      routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }],
-      position: new Animated.Value(0)
-    }
   }
 
   static actions = [
@@ -95,14 +101,7 @@ class Journal extends Component {
     }
   ]
 
-  componentDidUpdate(prevState, prevProps) {
-    if (this.state.index !== prevState.index) {
-      console.log("didnt change!", this.state.index)
-    }
-  }
-
   componentWillMount() {
-    Expo.ScreenOrientation.allow("ALL")
     this.requestForJournal()
   }
 
@@ -160,7 +159,7 @@ class Journal extends Component {
     return optionsProps
   }
 
-  uploadImage(img) {
+  uploadImage = (img) => {
     this.props.updateImageUploading(true)
     let imgPost = Object.assign(
       {},
@@ -175,10 +174,11 @@ class Journal extends Component {
   }
 
   updateBannerImage = () => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      selectSingleItem: true,
-      singleItemCallback: img => this.uploadImage(img)
-    })
+    this.props.toggleCameraRollModal(true)
+    // this.props.navigation.navigate("CameraRollContainer", {
+    //   selectSingleItem: true,
+    //   singleItemCallback: img => this.uploadImage(img)
+    // })
   }
 
   returnDistanceString(distance) {
@@ -218,7 +218,7 @@ class Journal extends Component {
     )
 
     this.props.updateJournalForm(payload)
-    this.props.navigation.navigate("JournalForm")
+    this.props.toggleJournalFormModal(true)
   }
 
   renderCountries() {
@@ -427,7 +427,8 @@ class Journal extends Component {
     )
 
     this.props.updateChapterForm(chapterForm)
-    this.props.navigation.navigate("ChapterMetaDataForm")
+    this.props.toggleChapterModal(true)
+    // this.props.navigation.navigate("ChapterMetaDataForm")
   }
 
   renderFloatingButton() {
@@ -453,7 +454,7 @@ class Journal extends Component {
   renderTabView() {
     return (
       <TabView
-        navigationState={{ index: this.state.index, routes: this.state.routes }}
+        navigationState={{ index: this.props.index, routes: this.props.routes }}
         renderScene={({ route }) => {
           switch (route.key) {
             case "chapters":
@@ -465,7 +466,7 @@ class Journal extends Component {
           }
         }}
         onIndexChange={index => {
-          this.setState({ index })
+          this.props.updateTabIndex(index)
         }}
         initialLayout={{ width: this.props.width, height: 0 }}
         renderTabBar={props => (
@@ -492,6 +493,9 @@ class Journal extends Component {
           {this.renderTabView()}
         </ScrollView>
         {this.renderFloatingButton()}
+        <ChapterMetaDataForm navigateToChapter={this.requestForChapter}/>
+        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+        <JournalForm />
       </View>
     )
   }

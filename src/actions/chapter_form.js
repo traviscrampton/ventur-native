@@ -182,3 +182,11 @@ export function pushChapterToJournal(payload) {
     payload: payload
   }
 }
+
+export const TOGGLE_CHAPTER_MODAL = "TOGGLE_CHAPTER_MODAL"
+export function toggleChapterModal(payload) {
+  return {
+    type: TOGGLE_CHAPTER_MODAL,
+    payload: payload
+  }
+}

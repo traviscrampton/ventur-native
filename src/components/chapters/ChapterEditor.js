@@ -27,7 +27,8 @@ import {
   setInitialEditorState,
   addImageToDeletedIds,
   doneEditingAndPersist,
-  loseChangesAndUpdate
+  loseChangesAndUpdate,
+  addImagesToEntries
 } from "../../actions/editor"
 import { Header } from "../editor/header"
 import InputScrollView from "react-native-input-scroll-view"
@@ -36,6 +37,7 @@ import EditorToolbar from "../editor/EditorToolbar"
 import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
 import LazyImage from "../shared/LazyImage"
+import  CameraRollContainer from "../editor/CameraRollContainer"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -50,6 +52,7 @@ const mapDispatchToProps = dispatch => ({
   populateEntries: payload => dispatch(populateEntries(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
+  addImagesToEntries: (payload) => dispatch(addImagesToEntries(payload)),
   addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
 })
 
@@ -164,6 +167,10 @@ class ChapterEditor extends Component {
     if (entry.content.length === 0) {
       this.props.removeEntryAndFocus(index)
     }
+  }
+
+  uploadImages = (selectedImages) => {
+    this.props.addImagesToEntries({ images: selectedImages, index: this.props.activeIndex })
   }
 
   handleImageDelete = index => {
@@ -446,6 +453,7 @@ class ChapterEditor extends Component {
             <View style={{ marginBottom: 200 }} />
           </InputScrollView>
           {this.renderEditorToolbar()}
+          <CameraRollContainer imageCallback={this.uploadImages} selectSingleItem={false} />
         </View>
       </View>
     )

@@ -40,6 +40,7 @@ class Ventur extends Component {
   }
 
   setupDimensionsListener() {
+    return 
     Dimensions.addEventListener("change", this.handleDimensionChange)
   }
 
@@ -49,7 +50,7 @@ class Ventur extends Component {
 
   getAWSCredentials() {
     // if (this.props.awsSecretKey && this.props.awsAccessKey) return
-
+    return 
     getCredentials().then(response => {
       console.log("response", response)
       this.props.addApiCredentials(response)

@@ -11,11 +11,12 @@ import {
   Alert
 } from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm } from "../../actions/chapter_form"
+import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import { sendEmails } from "../../actions/chapter"
 import { loadRouteEditor } from "../../actions/route_editor"
 import { loadRouteViewer } from "../../actions/route_viewer"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
 import CommentsContainer from "../Comments/CommentsContainer"
 import { editChapterPublished, deleteChapter } from "../../actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
@@ -36,6 +37,7 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
   loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   sendEmails: payload => dispatch(sendEmails(payload)),
   editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
   deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
@@ -54,8 +56,6 @@ class ChapterShow extends Component {
   navigateBack = () => {
     this.props.navigation.goBack()
   }
-
-  componentDidMount() {}
 
   openDeleteAlert = () => {
     Alert.alert(
@@ -86,7 +86,7 @@ class ChapterShow extends Component {
     )
 
     this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterMetaDataForm")
+    this.props.toggleChapterModal(true)
   }
 
   handleDelete = async () => {
@@ -470,6 +470,7 @@ class ChapterShow extends Component {
           {this.renderBodyContent()}
         </View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
+        <ChapterMetaDataForm />
       </ScrollView>
     )
   }

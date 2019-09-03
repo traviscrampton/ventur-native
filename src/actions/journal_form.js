@@ -1,4 +1,5 @@
 import { post, put } from "../agent"
+import { populateUserJournals } from "./user"
 import { populateSingleJournal } from "./journals"
 
 export function persistJournal(navigationCallBack) {
@@ -7,7 +8,7 @@ export function persistJournal(navigationCallBack) {
     if (journalForm.id) {
       persistJournalPut(journalForm, dispatch, navigationCallBack)
     } else {
-      persistJournalPost(journalForm, dispatch, navigationCallBack)
+      persistJournalPost(journalForm, dispatch)
     }
   }
 }
@@ -16,8 +17,8 @@ export const persistJournalPost = async (params, dispatch, navigationCallBack) =
   const res = await post("/journals", params)
   const payload = Object.assign({}, { id: res.id })
 
+  dispatch(populateUserJournals(res))
   dispatch(updateJournalForm(payload))
-  navigationCallBack()
   dispatch(resetJournalForm())
 }
 
@@ -89,6 +90,22 @@ export const ADD_TO_MY_TRIPS = "ADD_TO_MY_TRIPS"
 export function addToMyTrips(payload) {
   return {
     type: ADD_TO_MY_TRIPS,
+    payload: payload
+  }
+}
+
+export const TOGGLE_JOURNAL_FORM_MODAL = "TOGGLE_JOURNAL_FORM_MODAL"
+export function toggleJournalFormModal(payload) {
+  return {
+    type: TOGGLE_JOURNAL_FORM_MODAL,
+    payload: payload
+  }
+}
+
+export const TOGGLE_COUNTRIES_EDITOR_MODAL = "TOGGLE_COUNTRIES_EDITOR_MODAL"
+export function toggleCountriesEditorModal(payload) {
+  return {
+    type: TOGGLE_COUNTRIES_EDITOR_MODAL,
     payload: payload
   }
 }

@@ -126,3 +126,12 @@ export function loadJournalFeed() {
     })
   }
 }
+
+export const UPDATE_TAB_INDEX = "UPDATE_TAB_INDEX"
+export function updateTabIndex(payload) {
+  return {
+    type: UPDATE_TAB_INDEX,
+    payload: payload
+  }
+}
+

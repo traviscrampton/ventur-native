@@ -15,9 +15,11 @@ import ChapterList from "../chapters/ChapterList"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
 import { populateUserPage, populateOfflineChapters } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
+import JournalForm from "../JournalForm/JournalForm"
 import ChapterUserForm from "../chapters/ChapterUserForm"
 import { updateChapterForm } from "../../actions/chapter_form"
 import { loadChapter } from "../../actions/chapter"
+import { toggleJournalFormModal } from "../../actions/journal_form"
 import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
 import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
@@ -45,6 +47,7 @@ const mapDispatchToProps = dispatch => ({
   setLoadingTrue: () => dispatch(setLoadingTrue()),
   setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadChapter: payload => dispatch(loadChapter(payload)),
+  toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetJournalShow: () => dispatch(resetJournalShow()),
@@ -63,7 +66,6 @@ class Profile extends Component {
 
   componentWillMount() {
     this.props.setLoadingTrue()
-    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.getProfilePageData()
     this.getOfflineChapters()
   }
@@ -409,7 +411,7 @@ class Profile extends Component {
 
   navigateToJournalForm = () => {
     this.props.resetJournalShow()
-    this.props.navigation.navigate("JournalForm")
+    this.props.toggleJournalFormModal(true)
   }
 
   renderCreateJournalCta() {
@@ -497,6 +499,7 @@ class Profile extends Component {
         {this.renderProfileTabBar()}
         <ScrollView>{this.renderRelatedProfileContent()}</ScrollView>
         {this.renderFloatingCreateButton()}
+        <JournalForm />
       </View>
     )
   }
