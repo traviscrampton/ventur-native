@@ -319,7 +319,7 @@ class ChapterShow extends Component {
 
   renderImageEntry(entry, index) {
     const height = this.getImageHeight(entry.aspectRatio)
-    console.log("entry", entry)
+    
     return (
       <View
         onLayout={e => this.handleLayout(e, index)}

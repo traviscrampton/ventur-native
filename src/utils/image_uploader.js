@@ -11,17 +11,11 @@ let options = {
 }
 
 export const deleteS3Objects = async (imageUrls, awsKeys) => {
-  const test = imageUrls.map((url, i) => {
-    return url.substring(cloudFrontUrlLength)
-  })
-
-  console.log(" is this working ?", test)
-
   let deleteParam = {
     Bucket: "ventur-serverless",
     Delete: {
       Objects: imageUrls.map((url, i) => {
-        return Object.assign({}, { Key: url.substring(cloudFrontUrlLength) })
+        return Object.assign({}, { Key: url.substring(cloudFrontUrlLength + 1) })
       })
     }
   }

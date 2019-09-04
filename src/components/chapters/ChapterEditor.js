@@ -75,7 +75,8 @@ const mapStateToProps = state => ({
   uploadIsImage: state.editor.uploadIsImage,
   activeView: state.cameraRoll.activeView,
   deletedUrls: state.editor.deletedUrls,
-  activeContentCreator: state.editor.activeContentCreator
+  activeContentCreator: state.editor.activeContentCreator,
+  newlyAddedImageUrls: state.editor.newlyAddedImageUrls
 })
 
 class ChapterEditor extends Component {
@@ -89,6 +90,10 @@ class ChapterEditor extends Component {
       scrollPosition: 0,
       imageYPositions: []
     }
+  }
+
+  componentDidUpdate() {
+    console.log("this.props.newlyAddedImageUrls", this.props.newlyAddedImageUrls)
   }
 
   componentWillMount() {

@@ -35,10 +35,8 @@ class LazyImage extends Component {
     const { uri, style, yPosition, scrollPosition, thumbnailSource } = this.props
 
     if (this.canRenderImage()) {
-      console.log("render the image!!!")
       return <ProgressiveImage thumbnailSource={thumbnailSource} source={uri} style={style} onLoadEnd={this.handleOnloadEnd} />
     } else {
-      console.log("DONT RENDER THE IMAGE!!")
       return <View style={[{ backgroundColor: "#e1e4e8" }, style]} />
     }
   }

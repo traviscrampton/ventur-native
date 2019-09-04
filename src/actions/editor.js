@@ -25,13 +25,27 @@ export function updateEntryState(payload) {
 }
 
 export function loseChangesAndUpdate(payload) {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(startUpdating())
-    updateBackToDraft(payload.id, payload.deletedIds, dispatch)
+    const {
+      common: { awsAccessKey, awsSecretKey },
+      editor: { newlyAddedImageUrls }
+    } = getState()
+
+    await deleteDeletedUrls(newlyAddedImageUrls, awsAccessKey, awsSecretKey)
+    updateBackToDraft(payload.id, dispatch)
   }
 }
 
-export const updateBackToDraft = async (id, deletedIds, dispatch) => {
+export const ADD_TO_NEWLY_ADDED_IMAGE_URLS = "ADD_TO_NEWLY_ADDED_IMAGE_URLS"
+export function addToNewlyAddedImageUrls(payload) {
+  return {
+    type: ADD_TO_NEWLY_ADDED_IMAGE_URLS,
+    payload: payload
+  }
+}
+
+export const updateBackToDraft = async (id, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
@@ -65,7 +79,6 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
 export function doneEditingAndPersist() {
   return async function(dispatch, getState) {
     dispatch(startUpdating())
-    console.log("is this being hit?")
     const {
       editor: { entries, deletedUrls },
       common: { awsAccessKey, awsSecretKey },
@@ -83,12 +96,10 @@ export function doneEditingAndPersist() {
 }
 
 export const deleteDeletedUrls = async (deletedUrls, awsAccessKey, awsSecretKey) => {
-  console.log("deletedUrls", deletedUrls)
   if (deletedUrls.length === 0) return
 
   const awsKeys = Object.assign({}, { awsAccessKey, awsSecretKey })
   const deleted = await deleteS3Objects(deletedUrls, awsKeys)
-  console.log("deleted", deleted)
 }
 
 export const finalizeDraft = async (id, entries, chapter, dispatch) => {
@@ -208,6 +219,7 @@ export const addImagesToEntries = payload => {
     const allUriSizes = createUrisObject(uri, entry.aspectRatio)
     entry = Object.assign({}, entry, allUriSizes)
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
+    dispatch(addToNewlyAddedImageUrls(entry.originalUri))
     dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
   }
 }
