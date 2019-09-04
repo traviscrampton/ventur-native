@@ -24,7 +24,7 @@ import {
   imageUploading,
   updateTabIndex
 } from "../../actions/journals"
-import { toggleCameraRollModal } from "../../actions/camera_roll"
+import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 import { MaterialIndicator } from "react-native-indicators"
 import { createChapter } from "../../utils/chapter_form_helper"
 import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
@@ -56,7 +56,8 @@ const mapStateToProps = state => ({
   height: state.common.height,
   subContentLoading: state.journal.subContentLoading,
   index: state.journal.tabIndex,
-  routes: state.journal.routes
+  routes: state.journal.routes,
+  activeView: state.cameraRoll.activeView
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -76,7 +77,8 @@ const mapDispatchToProps = dispatch => ({
   resetJournalShow: () => dispatch(resetJournalShow()),
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
   updateTabIndex: payload => dispatch(updateTabIndex(payload)),
-  toggleChapterModal: payload => dispatch(toggleChapterModal(payload))
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
+  updateActiveView: payload => dispatch(updateActiveView(payload)),
 })
 
 class Journal extends Component {
@@ -168,6 +170,7 @@ class Journal extends Component {
   }
 
   updateBannerImage = () => {
+    this.props.updateActiveView("journal")
     this.props.toggleCameraRollModal(true)
     // this.props.navigation.navigate("CameraRollContainer", {
     //   selectSingleItem: true,
@@ -422,7 +425,6 @@ class Journal extends Component {
 
     this.props.updateChapterForm(chapterForm)
     this.props.toggleChapterModal(true)
-    // this.props.navigation.navigate("ChapterMetaDataForm")
   }
 
   renderFloatingButton() {
@@ -475,6 +477,12 @@ class Journal extends Component {
     )
   }
 
+  renderCameraRollContainer() {
+    if (this.props.activeView !== "journal") return
+
+    return <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+  }
+
   render() {
     if (!this.props.loaded) {
       return <LoadingScreen />
@@ -488,7 +496,7 @@ class Journal extends Component {
         </ScrollView>
         {this.renderFloatingButton()}
         <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
-        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+        {this.renderCameraRollContainer()}
         <JournalForm />
       </View>
     )

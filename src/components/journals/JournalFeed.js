@@ -2,10 +2,10 @@ import React, { Component } from "react"
 import { StyleSheet, ScrollView, Dimensions, View } from "react-native"
 import { connect } from "react-redux"
 import { get } from "../../agent"
+import { deleteS3Objects } from "../../utils/image_uploader"
 import { loadJournalFeed, resetJournalShow } from "../../actions/journals"
 import JournalCard from "./JournalCard"
 import LoadingScreen from "../shared/LoadingScreen"
-
 
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),

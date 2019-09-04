@@ -5,3 +5,11 @@ export function toggleCameraRollModal(payload) {
     payload: payload
   }
 }
+
+export const UPDATE_ACTIVE_VIEW = "UPDATE_ACTIVE_VIEW"
+export function updateActiveView(payload) {
+  return {
+    type: UPDATE_ACTIVE_VIEW,
+    payload: payload
+  }
+}

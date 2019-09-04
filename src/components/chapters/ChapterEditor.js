@@ -25,7 +25,7 @@ import {
   updateKeyboardState,
   populateEntries,
   setInitialEditorState,
-  addImageToDeletedIds,
+  addToDeletedUrls,
   doneEditingAndPersist,
   loseChangesAndUpdate,
   addImagesToEntries
@@ -37,7 +37,7 @@ import EditorToolbar from "../editor/EditorToolbar"
 import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
 import LazyImage from "../shared/LazyImage"
-import  CameraRollContainer from "../editor/CameraRollContainer"
+import CameraRollContainer from "../editor/CameraRollContainer"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -52,8 +52,8 @@ const mapDispatchToProps = dispatch => ({
   populateEntries: payload => dispatch(populateEntries(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
-  addImagesToEntries: (payload) => dispatch(addImagesToEntries(payload)),
-  addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
+  addImagesToEntries: payload => dispatch(addImagesToEntries(payload)),
+  addToDeletedUrls: payload => dispatch(addToDeletedUrls(payload))
 })
 
 const mapStateToProps = state => ({
@@ -72,7 +72,10 @@ const mapStateToProps = state => ({
   initialEntries: state.editor.initialEntries,
   showEditorToolbar: state.editor.showEditorToolbar,
   isOffline: state.common.isOffline,
-  uploadIsImage: state.editor.uploadIsImage
+  uploadIsImage: state.editor.uploadIsImage,
+  activeView: state.cameraRoll.activeView,
+  deletedUrls: state.editor.deletedUrls,
+  activeContentCreator: state.editor.activeContentCreator
 })
 
 class ChapterEditor extends Component {
@@ -169,8 +172,8 @@ class ChapterEditor extends Component {
     }
   }
 
-  uploadImages = (selectedImages) => {
-    this.props.addImagesToEntries({ images: selectedImages, index: this.props.activeIndex })
+  uploadImages = selectedImages => {
+    this.props.addImagesToEntries({ images: selectedImages, index: this.props.activeContentCreator })
   }
 
   handleImageDelete = index => {
@@ -183,9 +186,9 @@ class ChapterEditor extends Component {
   }
 
   deleteImage = index => {
-    // let imageId = this.props.entries[index].id
+    let uri = this.props.entries[index].originalUri
 
-    // this.props.addImageToDeletedIds(imageId)
+    this.props.addToDeletedUrls(uri)
     this.props.removeEntryAndFocus(index)
   }
 
@@ -434,6 +437,12 @@ class ChapterEditor extends Component {
     }
   }
 
+  renderCameraRollContainer() {
+    if (this.props.activeView !== "editor") return
+
+    return <CameraRollContainer imageCallback={this.uploadImages} selectSingleItem={false} />
+  }
+
   render() {
     return (
       <View style={{ backgroundColor: "white" }}>
@@ -453,8 +462,8 @@ class ChapterEditor extends Component {
             <View style={{ marginBottom: 200 }} />
           </InputScrollView>
           {this.renderEditorToolbar()}
-          <CameraRollContainer imageCallback={this.uploadImages} selectSingleItem={false} />
         </View>
+        {this.renderCameraRollContainer()}
       </View>
     )
   }

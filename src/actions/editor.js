@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "../agent"
 import DropDownHolder from "../utils/DropdownHolder"
-import { awsUpload, cloudFrontUrlLength } from "../utils/image_uploader"
+import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
 import { loadChapter, setEditMode } from "./chapter"
 import { resetChapterForm, addChapterToJournals } from "./chapter_form"
 import { toggleCameraRollModal } from "./camera_roll"
@@ -63,21 +63,38 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
 }
 
 export function doneEditingAndPersist() {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(startUpdating())
-    const { entries, deletedIds } = getState().editor
-    const { chapter } = getState().chapter
-    finalizeDraft(chapter.editorBlob.id, entries, deletedIds, chapter, dispatch)
+    console.log("is this being hit?")
+    const {
+      editor: { entries, deletedUrls },
+      common: { awsAccessKey, awsSecretKey },
+      chapter: {
+        chapter,
+        chapter: {
+          editorBlob: { id }
+        }
+      }
+    } = getState()
+
+    await deleteDeletedUrls(deletedUrls, awsAccessKey, awsSecretKey)
+    finalizeDraft(id, entries, chapter, dispatch)
   }
 }
 
-export const finalizeDraft = async (id, entries, deletedIds, chapter, dispatch) => {
+export const deleteDeletedUrls = async (deletedUrls, awsAccessKey, awsSecretKey) => {
+  console.log("deletedUrls", deletedUrls)
+  if (deletedUrls.length === 0) return
+
+  const awsKeys = Object.assign({}, { awsAccessKey, awsSecretKey })
+  const deleted = await deleteS3Objects(deletedUrls, awsKeys)
+  console.log("deleted", deleted)
+}
+
+export const finalizeDraft = async (id, entries, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
-  if (deletedIds.length > 0) {
-    formData.append("deletedIds", JSON.stringify(deletedIds))
-  }
 
   formData.append("content", JSON.stringify(entries))
   fetch(`${API_ROOT}/editor_blobs/${id}/update_blob_done`, {
@@ -166,7 +183,6 @@ export const resizeImage = async image => {
 
 export const addImagesToEntries = payload => {
   return async (dispatch, getState) => {
-    console.log("payload.image", payload)
     dispatch(startImageUploading())
     let { awsAccessKey, awsSecretKey } = getState().common
     let awsKeys = Object.assign({}, { accessKey: awsAccessKey, secretKey: awsSecretKey })
@@ -250,10 +266,10 @@ export const setInitalImageIds = ids => {
   }
 }
 
-export const RESET_DELETED_IDS = "RESET_DELETED_IDS"
-export const resetDeletedIds = () => {
+export const RESET_DELETED_URLS = "RESET_DELETED_URLS"
+export const resetDeletedUrls = () => {
   return {
-    type: RESET_DELETED_IDS
+    type: RESET_DELETED_URLS
   }
 }
 
@@ -325,10 +341,10 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
     })
 }
 
-export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
-export const addImageToDeletedIds = imageId => {
+export const ADD_TO_DELETED_URLS = "ADD_TO_DELETED_URLS"
+export const addToDeletedUrls = imageId => {
   return {
-    type: ADD_IMAGE_TO_DELETED_IDS,
+    type: ADD_TO_DELETED_URLS,
     payload: imageId
   }
 }

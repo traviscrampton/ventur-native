@@ -29,6 +29,8 @@ class CameraRollContainer extends Component {
       selectedImages: [],
       imageSelected: false
     }
+
+    console.log("is in journal", props.selectSingleItem)
   }
 
   addImagesToEntries = () => {
