@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { View, Text, TextInput } from "react-native"
 import { connect } from "react-redux"
+import { updateGearReviewFormReview } from "../../actions/gear_review_form"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -8,19 +9,17 @@ const mapStateToProps = state => ({
   review: state.gearReviewForm.review
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  updateGearReviewFormReview: payload => dispatch(updateGearReviewFormReview(payload))
+})
 
 class GearReviewFormReview extends Component {
   constructor(props) {
     super(props)
   }
 
-  renderPros = () => {
-    return <View />
-  }
-
-  renderCons = () => {
-    return <View />
+  updateGearReviewFormReview = text => {
+    this.props.updateGearReviewFormReview(text)
   }
 
   render() {
@@ -41,7 +40,7 @@ class GearReviewFormReview extends Component {
             borderColor: "#d3d3d3"
           }}
           selectionColor="#FF5423"
-          onChangeText={text => console.log("text", text)}
+          onChangeText={text => this.updateGearReviewFormReview(text)}
           value={this.props.review}
         />
       </View>

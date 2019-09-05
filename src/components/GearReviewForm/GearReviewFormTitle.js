@@ -1,5 +1,6 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { updateGearReviewFormTitle } from "../../actions/gear_review_form"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
@@ -7,7 +8,9 @@ const mapStateToProps = state => ({
   name: state.gearReviewForm.name
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  updateGearReviewFormTitle: payload => dispatch(updateGearReviewFormTitle(payload))
+})
 
 class GearReviewFormTitle extends Component {
   constructor(props) {
@@ -32,6 +35,11 @@ class GearReviewFormTitle extends Component {
     )
   }
 
+  updateGearReviewFormTitle = (text) => {
+    console.log("in component")
+    this.props.updateGearReviewFormTitle(text)
+  }
+
   render() {
     return (
       <View style={{ position: "relative" }}>
@@ -48,7 +56,7 @@ class GearReviewFormTitle extends Component {
             borderColor: "#d3d3d3"
           }}
           selectionColor="#FF5423"
-          onChangeText={text => console.log("text", text)}
+          onChangeText={text => this.updateGearReviewFormTitle(text)}
           value={this.props.name}
         />
         {this.renderGearDropdown()}
