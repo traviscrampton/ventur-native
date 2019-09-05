@@ -1,10 +1,12 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Text, FlatList, TouchableWithoutFeedback } from "react-native"
+import { ScrollView, TextInput, View, Modal, Dimensions, Text, FlatList, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  width: state.common.width
+  width: state.common.width,
+  pros: state.gearReviewForm.pros,
+  cons: state.gearReviewForm.cons
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -15,11 +17,53 @@ class GearReviewFormProsCons extends Component {
   }
 
   renderPros = () => {
-    return <View />
+    return this.props.pros.map((pro, i) => {
+      return (
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+          <TextInput
+            style={{
+              marginTop: 5,
+              marginBottom: 5,
+              fontSize: 16,
+              borderWidth: 1,
+              fontFamily: "open-sans-regular",
+              padding: 5,
+              borderRadius: 5,
+              borderColor: "#d3d3d3"
+            }}
+            selectionColor="#FF5423"
+            onChangeText={text => console.log("text", text)}
+            value={pro.text}
+          />
+          <MaterialIcons name="delete" size={20} />
+        </View>
+      )
+    })
   }
 
   renderCons = () => {
-    return <View />
+    return this.props.cons.map((con, i) => {
+      return (
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+          <TextInput
+            style={{
+              marginTop: 5,
+              marginBottom: 5,
+              fontSize: 16,
+              borderWidth: 1,
+              fontFamily: "open-sans-regular",
+              padding: 5,
+              borderRadius: 5,
+              borderColor: "#d3d3d3"
+            }}
+            selectionColor="#FF5423"
+            onChangeText={text => console.log("text", text)}
+            value={con.text}
+          />
+          <MaterialIcons name="delete" size={20} />
+        </View>
+      )
+    })
   }
 
   render() {
@@ -28,12 +72,16 @@ class GearReviewFormProsCons extends Component {
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Pros</Text>
           {this.renderPros()}
-          <View><Text>+ Add Pro</Text></View>
+          <View>
+            <Text>+ Add Pro</Text>
+          </View>
         </View>
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Cons</Text>
           {this.renderCons()}
-          <View><Text>+ Add Con</Text></View>
+          <View>
+            <Text>+ Add Con</Text>
+          </View>
         </View>
       </View>
     )

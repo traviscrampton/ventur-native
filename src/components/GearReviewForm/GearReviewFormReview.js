@@ -4,7 +4,8 @@ import { connect } from "react-redux"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  width: state.common.width
+  width: state.common.width,
+  review: state.gearReviewForm.review
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -41,7 +42,7 @@ class GearReviewFormReview extends Component {
           }}
           selectionColor="#FF5423"
           onChangeText={text => console.log("text", text)}
-          value={""}
+          value={this.props.review}
         />
       </View>
     )

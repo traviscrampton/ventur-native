@@ -3,7 +3,8 @@ import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutF
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
-  width: state.common.width
+  width: state.common.width,
+  name: state.gearReviewForm.name
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -41,14 +42,14 @@ class GearReviewFormTitle extends Component {
           style={{
             fontSize: 18,
             borderWidth: 1,
-            fontFamily: "open-sans-bold",
+            fontFamily: "open-sans-regular",
             padding: 5,
             borderRadius: 5,
             borderColor: "#d3d3d3"
           }}
           selectionColor="#FF5423"
           onChangeText={text => console.log("text", text)}
-          value={""}
+          value={this.props.name}
         />
         {this.renderGearDropdown()}
       </View>

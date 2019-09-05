@@ -4,7 +4,8 @@ import { connect } from "react-redux"
 import { MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  width: state.common.width
+  width: state.common.width,
+  rating: state.gearReviewForm.rating
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -14,9 +15,14 @@ class GearReviewFormStarRating extends Component {
     super(props)
   }
 
+  static MAX_STARS = 5
+
   renderStars = () => {
-    return [...Array(5)].map((e, i) => {
-      // TODO: Make a 
+    return [...Array(GearReviewFormStarRating.MAX_STARS)].map((e, i) => {
+      if (this.props.rating >= i + 1) {
+        return <MaterialIcons name="star" color="gold" size={32} key={i} />
+      }
+
       return <MaterialIcons name="star-border" color="gold" size={32} key={i} />
     })
   }
@@ -27,9 +33,7 @@ class GearReviewFormStarRating extends Component {
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Rating</Text>
         </View>
-        <View style={{display: "flex", flexDirection: "row"}}>
-          {this.renderStars()}
-        </View>  
+        <View style={{ display: "flex", flexDirection: "row" }}>{this.renderStars()}</View>
       </View>
     )
   }

@@ -1,10 +1,11 @@
 import React, { Component } from "react"
 import { ScrollView, View, Modal, Dimensions, Text, FlatList, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { MaterialIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
-  width: state.common.width
+  width: state.common.width,
+  images: state.gearReviewForm.images
 })
 
 const mapDispatchToProps = dispatch => ({})
@@ -31,7 +32,7 @@ class GearReviewFormImageCarousel extends Component {
           justifyContent: "space-around"
         }}>
         <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <MaterialCommunityIcons name={"plus"} size={32} />
+          <MaterialIcons name={"file-upload"} size={32} />
           <View>
             <Text style={{ fontSize: 20 }}>Upload</Text>
           </View>
