@@ -4,8 +4,10 @@ import {
   UPDATE_GEAR_REVIEW_STAR_RATING,
   UPDATE_GEAR_REVIEW_PRO,
   UPDATE_GEAR_REVIEW_CON,
-  DELETE_GEAR_REVIEW_PRO,
-  DELETE_GEAR_REVIEW_CON
+  REMOVE_GEAR_REVIEW_PRO,
+  REMOVE_GEAR_REVIEW_CON,
+  ADD_GEAR_REVIEW_PRO,
+  ADD_GEAR_REVIEW_CON
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
@@ -46,24 +48,35 @@ export default (state = defaultGearForm, action) => {
     case UPDATE_GEAR_REVIEW_PRO:
       return {
         ...state,
-        pros: Object.assign([], state.pros, { [payload.index]: payload.proCon })
+        pros: Object.assign([], state.pros, { [action.payload.index]: action.payload.proCon })
       }
 
     case UPDATE_GEAR_REVIEW_CON:
       return {
         ...state,
-        cons: Object.assign([], state.pros, { [payload.index]: payload.proCon })
+        cons: Object.assign([], state.cons, { [action.payload.index]: action.payload.proCon })
       }
 
-    case DELETE_GEAR_REVIEW_PRO:
+    case REMOVE_GEAR_REVIEW_PRO:
       return {
         ...state,
         pros: [...state.pros.slice(0, action.payload), ...state.pros.slice(action.payload + 1)]
       }
-    case DELETE_GEAR_REVIEW_CON:
+    case REMOVE_GEAR_REVIEW_CON:
       return {
         ...state,
         cons: [...state.cons.slice(0, action.payload), ...state.cons.slice(action.payload + 1)]
+      }
+
+    case ADD_GEAR_REVIEW_PRO:
+      return {
+        ...state,
+        pros: [...state.pros, action.payload]
+      }
+    case ADD_GEAR_REVIEW_CON:
+      return {
+        ...state,
+        cons: [...state.cons, action.payload]
       }
     default:
       return state
