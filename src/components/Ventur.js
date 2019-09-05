@@ -45,10 +45,12 @@ class Ventur extends Component {
   }
 
   setUpConnectionListener() {
+    return
     NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
   }
 
   getAWSCredentials() {
+    return
     // if (this.props.awsSecretKey && this.props.awsAccessKey) return
     getCredentials().then(response => {
       console.log("response", response)
