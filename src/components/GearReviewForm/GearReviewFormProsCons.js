@@ -41,6 +41,13 @@ class GearReviewFormProsCons extends Component {
     this.props.removeGearReviewFormProCon(payload)
   }
 
+  getTitleAndCta = isPro => {
+    const title = isPro ? "Pros" : "Cons"
+    const addCta = `+ Add ${title.substring(0, 3)}
+    `
+    return Object.assign({}, { title, addCta })
+  }
+
   renderProsCons = (prosCons, isPro) => {
     return prosCons.map((proCon, index) => {
       return (
@@ -69,29 +76,29 @@ class GearReviewFormProsCons extends Component {
     })
   }
 
+  renderProsConsContainer(listItems, isPro) {
+    const { title, addCta } = this.getTitleAndCta(isPro)
+
+    return (
+      <View style={{ marginBottom: 5 }}>
+        <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>{title}</Text>
+        {this.renderProsCons(listItems, isPro)}
+        <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(isPro)}>
+          <View>
+            <Text>{addCta}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
   render() {
     const { pros, cons } = this.props
 
     return (
       <View style={{ marginTop: 10 }}>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Pros</Text>
-          {this.renderProsCons(pros, true)}
-          <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(true)}>
-            <View>
-              <Text>+ Add Pro</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Cons</Text>
-          {this.renderProsCons(cons, false)}
-          <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(false)}>
-            <View>
-              <Text>+ Add Con</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
+        {this.renderProsConsContainer(pros, true)}
+        {this.renderProsConsContainer(cons, false)}
       </View>
     )
   }

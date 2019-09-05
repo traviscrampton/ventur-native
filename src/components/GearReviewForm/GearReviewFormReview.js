@@ -33,7 +33,7 @@ class GearReviewFormReview extends Component {
           style={{
             fontSize: 18,
             borderWidth: 1,
-            height: 200,
+            height: 100,
             fontFamily: "open-sans-regular",
             padding: 5,
             borderRadius: 5,

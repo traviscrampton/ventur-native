@@ -20,12 +20,39 @@ class GearReviewFormStarRating extends Component {
 
   static MAX_STARS = 5
 
+  getStarText() {
+    switch (this.props.rating) {
+      case 1:
+        return "Bad"
+      case 2:
+        return "Meh"
+      case 3:
+        return "Decent"
+      case 4:
+        return "Pretty Good"
+      case 5:
+        return "Excellent"
+      default:
+        return ""
+    }
+  }
+
   renderStar(i) {
     if (this.props.rating >= i + 1) {
       return <MaterialIcons name="star" color="gold" size={32} key={i} />
     }
 
     return <MaterialIcons name="star-border" color="gold" size={32} key={i} />
+  }
+
+  renderText() {
+    const text = this.getStarText()
+
+    return (
+      <View style={{ marginLeft: 10 }}>
+        <Text style={{ fontFamily: "open-sans-regular" }}>{text}</Text>
+      </View>
+    )
   }
 
   renderStars = () => {
@@ -44,7 +71,10 @@ class GearReviewFormStarRating extends Component {
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Rating</Text>
         </View>
-        <View style={{ display: "flex", flexDirection: "row" }}>{this.renderStars()}</View>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          {this.renderStars()}
+          {this.renderText()}
+        </View>
       </View>
     )
   }

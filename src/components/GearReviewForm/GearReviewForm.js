@@ -58,10 +58,10 @@ class GearReviewForm extends Component {
         {this.renderHeader()}
         <ScrollView style={{ padding: 20 }}>
           <GearReviewFormTitle />
+          <GearReviewFormReview />
           <GearReviewFormImageCarousel />
           <GearReviewFormStarRating />
           <GearReviewFormProsCons />
-          <GearReviewFormReview />
         </ScrollView>
       </Modal>
     )
