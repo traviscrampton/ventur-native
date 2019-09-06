@@ -11,13 +11,15 @@ import {
   TOGGLE_IMAGE_UPLOADING,
   SET_LOADING_IMAGE_FIRST,
   ADD_URI_TO_NEWLY_ADDED_IMAGES,
-  UPDATE_IMAGE_IN_CAROUSEL
+  UPDATE_IMAGE_IN_CAROUSEL,
+  UPDATE_ACTIVE_IMAGE_INDEX,
+  REMOVE_IMAGE
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
   gearItemId: null,
   name: "Ortlieb top roller",
-  images: [],
+  images: [{thumbnailUri: "", originalUri: "hey"}, {thumbnailUri: "", originalUri: "what"}],
   rating: 4,
   pros: [
     { id: 1, text: "waterproof beyond belief", isPro: true },
@@ -28,6 +30,7 @@ const defaultGearForm = {
   review:
     "What is there to say about these bags that hasn't said before? I think this is one of the greatest inventions that cycle touring has ever had and I am confident in that fact. I mean take a think about it, isn't it amazing and isn't this a really long text that I am writing, i mean come on thats ridiculous!",
   imageUploading: false,
+  activeImageIndex: null,
   urisSetForDelete: [],
   newlyCreatedUris: []
 }
@@ -93,18 +96,31 @@ export default (state = defaultGearForm, action) => {
     case SET_LOADING_IMAGE_FIRST:
       return {
         ...state,
-        images: [action.payload, ...state.images]
+        images: [action.payload, ...state.images],
+        activeImageIndex: null
       }
     case ADD_URI_TO_NEWLY_ADDED_IMAGES:
       return {
         ...state,
         newlyCreatedUris: action.payload
       }
+    case UPDATE_ACTIVE_IMAGE_INDEX: 
+      return {
+        ...state,
+        activeImageIndex: action.payload
+      }  
     case UPDATE_IMAGE_IN_CAROUSEL:
       return {
         ...state,
         images: Object.assign([], state.images, { [action.payload.index]: action.payload.image })
       }
+    case REMOVE_IMAGE: 
+      return {
+        ...state,
+        images: [...state.images.slice(0, action.payload.index), ...state.images.slice(action.payload.index + 1)],
+        urisSetForDelete: [...state.urisSetForDelete, action.payload.uri],
+        activeImageIndex: null
+      }  
     default:
       return state
   }

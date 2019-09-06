@@ -10,6 +10,22 @@ export function setImageUploadingTrue() {
   }
 }
 
+export const REMOVE_IMAGE = "REMOVE_IMAGE"
+export function removeImage(payload) {
+  return {
+    type: REMOVE_IMAGE,
+    payload: payload
+  }
+}
+
+export const UPDATE_ACTIVE_IMAGE_INDEX = "UPDATE_ACTIVE_IMAGE_INDEX"
+export function updateActiveImageIndex(payload) {
+  return {
+    type: UPDATE_ACTIVE_IMAGE_INDEX,
+    payload: payload 
+  }
+}
+
 export function setImageUploadingFalse() {
   return {
     type: TOGGLE_IMAGE_UPLOADING,
@@ -51,7 +67,6 @@ export function uploadImageToCarousel(payload) {
       common: { awsAccessKey, awsSecretKey }
     } = getState()
     const awsKeys = Object.assign({}, { accessKey: awsAccessKey, secretKey: awsSecretKey })
-    console.log("got da keys", awsKeys)
 
     // create local uri object for loading
     const localUri = payload.uri
@@ -63,26 +78,15 @@ export function uploadImageToCarousel(payload) {
     let filename = image.filename.split(".")[0] + uuid.v1() + "." + "jpg"
     let file = Object.assign({}, { uri: image.uri, name: filename, type: "image/jpg" })
     const uri = await awsUpload(file, awsKeys)
-    console.log("got the URI", uri)
 
     // generateUrls and create object
     const carouselObj = createImageCarouselObj(uri)
     const indexOfLoadingImage = getState().gearReviewForm.images.indexOf(localObject)
     const carouselPayload = Object.assign({}, { image: carouselObj, index: indexOfLoadingImage })
-    console.log("got the carousel payload", carouselPayload)
 
     dispatch(updateImageInCarousel(carouselPayload))
     dispatch(addUriToNewlyAddedImages(uri))
     dispatch(setImageUploadingFalse())
-    console.log("made it out alive!")
-
-    // send to aws get back url,
-
-    // set up object to have original, thumbnail and large uri
-    // find index of loading image
-
-    // replace loading image at index, probably ( 0 ) but we should keep it programatic
-    // set loading equal to false
   }
 }
 
