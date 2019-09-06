@@ -1,5 +1,5 @@
 import { RNS3 } from "react-native-aws3"
-import AWS from "aws-sdk/dist/aws-sdk-react-native"
+const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const cloudFrontUrl = "d2965tkwq0s5g3.cloudfront.net"
 export const cloudFrontUrlLength = `https://${cloudFrontUrl}`.length

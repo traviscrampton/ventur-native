@@ -32,11 +32,11 @@ const mapDispatchToProps = dispatch => ({
 class Ventur extends Component {
   async componentWillMount() {
     await this.setUpFonts()
+    await this.getAWSCredentials()
     this.setupDimensionsListener()
     this.setCurrentUser()
     this.setChaptersForAsyncStorage()
     this.setUpConnectionListener()
-    this.getAWSCredentials()
   }
 
   setupDimensionsListener() {
@@ -49,8 +49,7 @@ class Ventur extends Component {
     NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
   }
 
-  getAWSCredentials() {
-    return
+  async getAWSCredentials() {
     // if (this.props.awsSecretKey && this.props.awsAccessKey) return
     getCredentials().then(response => {
       console.log("response", response)

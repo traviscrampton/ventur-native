@@ -51,14 +51,7 @@ class CameraRollContainer extends Component {
       this.props.imageCallback(selectedImages)
     }
 
-    // if (this.singleItemCallback) {
-    //   console.log("is single item callback")
-    //   this.singleItemCallback(selectedImages[0])
-    //   this.props.navigation.goBack()
-    // } else {
-    //   this.props.addImagesToEntries({ images: selectedImages, index: this.index, goBack: this.props.navigation.goBack })
-    // }
-    // this.props.navigation.goBack()
+    this.setState({ selectedImages: [], imageSelected: false})
   }
 
   compileSelectedImages = images => {
