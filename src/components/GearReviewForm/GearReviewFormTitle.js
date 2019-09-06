@@ -1,15 +1,17 @@
 import React, { Component } from "react"
-import { ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
-import { updateGearReviewFormTitle } from "../../actions/gear_review_form"
+import { ScrollView, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import { updateGearReviewFormTitle, searchForGearItems } from "../../actions/gear_review_form"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   width: state.common.width,
-  name: state.gearReviewForm.name
+  name: state.gearReviewForm.name,
+  gearItemSuggestions: state.gearReviewForm.gearItemSuggestions
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateGearReviewFormTitle: payload => dispatch(updateGearReviewFormTitle(payload))
+  updateGearReviewFormTitle: payload => dispatch(updateGearReviewFormTitle(payload)),
+  searchForGearItems: payload => dispatch(searchForGearItems(payload))
 })
 
 class GearReviewFormTitle extends Component {
@@ -17,27 +19,41 @@ class GearReviewFormTitle extends Component {
     super(props)
   }
 
+  renderGearItemSuggestions() {
+    return this.props.gearItemSuggestions.map((gearItem, index) => {
+      return (
+        <View style={{ display: "flex", backgroundColor: "white", flexDirection: "row", alignItems: "center" }}>
+          <Image style={{ width: 50, height: 50, marginRight: 20 }} source={{ uri: gearItem.imageUrl }} />
+          <View style={{ backgroundColor: "white" }}>
+            <Text>{gearItem.name}</Text>
+          </View>
+        </View>
+      )
+    })
+  }
+
   renderGearDropdown() {
-    return
+    if (this.props.gearItemSuggestions.length === 0) return
+
     return (
       <View
         style={{
           width: this.props.width - 40,
           top: 65,
           position: "absolute",
-          height: 100,
           backgroundColor: "white",
           borderWidth: 1,
           borderRadius: 5,
           borderColor: "#d3d3d3"
-        }}
-      />
+        }}>
+        {this.renderGearItemSuggestions()}
+      </View>
     )
   }
 
-  updateGearReviewFormTitle = (text) => {
-    console.log("in component")
+  updateGearReviewFormTitle = text => {
     this.props.updateGearReviewFormTitle(text)
+    this.props.searchForGearItems(text)
   }
 
   render() {

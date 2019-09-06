@@ -1,4 +1,5 @@
 import { ImageManipulator } from "expo"
+import { get } from "../agent"
 import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
 const uuid = require("react-native-uuid")
 
@@ -7,6 +8,22 @@ export function setImageUploadingTrue() {
   return {
     type: TOGGLE_IMAGE_UPLOADING,
     payload: true
+  }
+}
+
+export function searchForGearItems(name) {
+  return async function(dispatch, getState) {
+    const res = await get("/gear_items/item_search", { name })
+    const { gearItems } = res
+    dispatch(setGearItems(gearItems))
+  }
+}
+
+export const SET_GEAR_ITEMS = "SET_GEAR_ITEMS"
+export function setGearItems(payload) {
+  return {
+    type: SET_GEAR_ITEMS,
+    payload: payload
   }
 }
 
@@ -22,7 +39,7 @@ export const UPDATE_ACTIVE_IMAGE_INDEX = "UPDATE_ACTIVE_IMAGE_INDEX"
 export function updateActiveImageIndex(payload) {
   return {
     type: UPDATE_ACTIVE_IMAGE_INDEX,
-    payload: payload 
+    payload: payload
   }
 }
 

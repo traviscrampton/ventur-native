@@ -13,26 +13,26 @@ import {
   ADD_URI_TO_NEWLY_ADDED_IMAGES,
   UPDATE_IMAGE_IN_CAROUSEL,
   UPDATE_ACTIVE_IMAGE_INDEX,
-  REMOVE_IMAGE
+  REMOVE_IMAGE,
+  SET_GEAR_ITEMS
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
-  gearItemId: null,
-  name: "Ortlieb top roller",
-  images: [{thumbnailUri: "", originalUri: "hey"}, {thumbnailUri: "", originalUri: "what"}],
-  rating: 4,
-  pros: [
-    { id: 1, text: "waterproof beyond belief", isPro: true },
-    { id: 2, text: "very durable, and sealed", isPro: true },
-    { id: 3, text: "nice material", isPro: true }
-  ],
-  cons: [{ id: 4, text: "dirty clothes stick up whole bag" }],
-  review:
-    "What is there to say about these bags that hasn't said before? I think this is one of the greatest inventions that cycle touring has ever had and I am confident in that fact. I mean take a think about it, isn't it amazing and isn't this a really long text that I am writing, i mean come on thats ridiculous!",
+  gearItem: {
+    id: null,
+    name: null
+  },
+  name: "Ort",
+  images: [],
+  rating: 1,
+  pros: [],
+  cons: [],
+  review: "",
   imageUploading: false,
   activeImageIndex: null,
   urisSetForDelete: [],
-  newlyCreatedUris: []
+  newlyCreatedUris: [],
+  gearItemSuggestions: []
 }
 
 export default (state = defaultGearForm, action) => {
@@ -104,23 +104,29 @@ export default (state = defaultGearForm, action) => {
         ...state,
         newlyCreatedUris: action.payload
       }
-    case UPDATE_ACTIVE_IMAGE_INDEX: 
+    case UPDATE_ACTIVE_IMAGE_INDEX:
       return {
         ...state,
         activeImageIndex: action.payload
-      }  
+      }
+
+    case SET_GEAR_ITEMS:
+      return {
+        ...state,
+        gearItemSuggestions: action.payload
+      }
     case UPDATE_IMAGE_IN_CAROUSEL:
       return {
         ...state,
         images: Object.assign([], state.images, { [action.payload.index]: action.payload.image })
       }
-    case REMOVE_IMAGE: 
+    case REMOVE_IMAGE:
       return {
         ...state,
         images: [...state.images.slice(0, action.payload.index), ...state.images.slice(action.payload.index + 1)],
         urisSetForDelete: [...state.urisSetForDelete, action.payload.uri],
         activeImageIndex: null
-      }  
+      }
     default:
       return state
   }
