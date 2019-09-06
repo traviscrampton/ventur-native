@@ -1,16 +1,19 @@
 import React, { Component } from "react"
 import { ScrollView, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
-import { updateGearReviewFormTitle, searchForGearItems } from "../../actions/gear_review_form"
+import { updateGearReviewFormTitle, searchForGearItems, populateFormWithGearItem, toggleDropdown } from "../../actions/gear_review_form"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   width: state.common.width,
   name: state.gearReviewForm.name,
+  dropdownOpen: state.gearReviewForm.dropdownOpen,
   gearItemSuggestions: state.gearReviewForm.gearItemSuggestions
 })
 
 const mapDispatchToProps = dispatch => ({
   updateGearReviewFormTitle: payload => dispatch(updateGearReviewFormTitle(payload)),
+  populateFormWithGearItem: payload => dispatch(populateFormWithGearItem(payload)),
+  toggleDropdown: payload => dispatch(toggleDropdown(payload)),
   searchForGearItems: payload => dispatch(searchForGearItems(payload))
 })
 
@@ -19,20 +22,41 @@ class GearReviewFormTitle extends Component {
     super(props)
   }
 
+  populateFormWithGearItem(gearItem) {
+    this.props.toggleDropdown(false)
+    this.props.populateFormWithGearItem(gearItem)
+  }
+
   renderGearItemSuggestions() {
+    let width = this.props.width - 110
+
     return this.props.gearItemSuggestions.map((gearItem, index) => {
       return (
-        <View style={{ display: "flex", backgroundColor: "white", flexDirection: "row", alignItems: "center" }}>
-          <Image style={{ width: 50, height: 50, marginRight: 20 }} source={{ uri: gearItem.imageUrl }} />
-          <View style={{ backgroundColor: "white" }}>
-            <Text>{gearItem.name}</Text>
-          </View>
-        </View>
+        <React.Fragment>
+          <TouchableWithoutFeedback onPress={() => this.populateFormWithGearItem(gearItem)}>
+            <View
+              style={{
+                padding: 10,
+                display: "flex",
+                backgroundColor: "white",
+                flexDirection: "row",
+                alignItems: "center",
+                width: width
+              }}>
+              <Image style={{ width: 50, height: 50, marginRight: 20 }} source={{ uri: gearItem.imageUrl }} />
+              <View style={{ backgroundColor: "white" }}>
+                <Text>{gearItem.name}</Text>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+          <View style={{ borderWidth: 1, borderColor: "#d3d3d3" }} />
+        </React.Fragment>
       )
     })
   }
 
   renderGearDropdown() {
+    if (!this.props.dropdownOpen) return
     if (this.props.gearItemSuggestions.length === 0) return
 
     return (
@@ -44,7 +68,8 @@ class GearReviewFormTitle extends Component {
           backgroundColor: "white",
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: "#d3d3d3"
+          borderColor: "#d3d3d3",
+          borderBottomWidth: 0
         }}>
         {this.renderGearItemSuggestions()}
       </View>
@@ -52,13 +77,14 @@ class GearReviewFormTitle extends Component {
   }
 
   updateGearReviewFormTitle = text => {
+    this.props.toggleDropdown(true)
     this.props.updateGearReviewFormTitle(text)
     this.props.searchForGearItems(text)
   }
 
   render() {
     return (
-      <View style={{ position: "relative" }}>
+      <View style={{ position: "relative", zIndex: 11 }}>
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Name</Text>
         </View>
@@ -71,6 +97,7 @@ class GearReviewFormTitle extends Component {
             borderRadius: 5,
             borderColor: "#d3d3d3"
           }}
+          onBlur={() => this.props.toggleDropdown(false)}
           selectionColor="#FF5423"
           onChangeText={text => this.updateGearReviewFormTitle(text)}
           value={this.props.name}

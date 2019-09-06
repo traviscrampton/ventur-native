@@ -11,6 +11,22 @@ export function setImageUploadingTrue() {
   }
 }
 
+export const POPULATE_FORM_WITH_GEAR_ITEM = "POPULATE_FORM_WITH_GEAR_ITEM"
+export function populateFormWithGearItem(payload) {
+  return {
+    type: POPULATE_FORM_WITH_GEAR_ITEM,
+    payload: payload
+  }
+}
+
+export const TOGGLE_DROPDOWN = "TOGGLE_DROPDOWN"
+export function toggleDropdown(payload) {
+  return {
+    type: TOGGLE_DROPDOWN,
+    payload: payload
+  }
+}
+
 export function searchForGearItems(name) {
   return async function(dispatch, getState) {
     const res = await get("/gear_items/item_search", { name })

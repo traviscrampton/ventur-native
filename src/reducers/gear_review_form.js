@@ -14,6 +14,8 @@ import {
   UPDATE_IMAGE_IN_CAROUSEL,
   UPDATE_ACTIVE_IMAGE_INDEX,
   REMOVE_IMAGE,
+  TOGGLE_DROPDOWN,
+  POPULATE_FORM_WITH_GEAR_ITEM,
   SET_GEAR_ITEMS
 } from "../actions/gear_review_form"
 
@@ -32,7 +34,8 @@ const defaultGearForm = {
   activeImageIndex: null,
   urisSetForDelete: [],
   newlyCreatedUris: [],
-  gearItemSuggestions: []
+  gearItemSuggestions: [],
+  dropdownOpen: false
 }
 
 export default (state = defaultGearForm, action) => {
@@ -109,12 +112,23 @@ export default (state = defaultGearForm, action) => {
         ...state,
         activeImageIndex: action.payload
       }
+    case POPULATE_FORM_WITH_GEAR_ITEM:
+      return {
+        ...state,
+        gearItem: Object.assign({}, action.payload),
+        name: action.payload.name
+      }  
 
     case SET_GEAR_ITEMS:
       return {
         ...state,
         gearItemSuggestions: action.payload
       }
+    case TOGGLE_DROPDOWN:
+      return {
+        ...state,
+        dropdownOpen: action.payload
+      }  
     case UPDATE_IMAGE_IN_CAROUSEL:
       return {
         ...state,
