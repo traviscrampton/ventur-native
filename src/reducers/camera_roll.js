@@ -19,7 +19,6 @@ export default (state = defaultCameraRollData, action) => {
         visible: action.payload
       }
     case UPDATE_ACTIVE_VIEW:
-      console.log("PAAAY LOAD", action.payload)
       return {
         ...state,
         activeView: action.payload

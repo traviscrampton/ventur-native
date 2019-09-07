@@ -30,6 +30,7 @@ import { createChapter } from "../../utils/chapter_form_helper"
 import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
 import { loadChapter, resetChapter } from "../../actions/chapter"
 import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
+import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form"
 import { loadJournalMap } from "../../actions/journal_route"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
@@ -43,6 +44,7 @@ import GearListItem from "../GearItem/GearListItem"
 import { FloatingAction } from "react-native-floating-action"
 import CameraRollContainer from "../editor/CameraRollContainer"
 import JournalForm from "../JournalForm/JournalForm"
+import GearReviewForm from "../GearReviewForm/GearReviewForm"
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -69,6 +71,7 @@ const mapDispatchToProps = dispatch => ({
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
+  triggerGearReviewFormFromJournal: payload => dispatch(triggerGearReviewFormFromJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
   setLoadingTrue: () => dispatch(setLoadingTrue()),
   updateImageUploading: bool => dispatch(imageUploading(bool)),
@@ -78,7 +81,7 @@ const mapDispatchToProps = dispatch => ({
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
   updateTabIndex: payload => dispatch(updateTabIndex(payload)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
-  updateActiveView: payload => dispatch(updateActiveView(payload)),
+  updateActiveView: payload => dispatch(updateActiveView(payload))
 })
 
 class Journal extends Component {
@@ -398,12 +401,16 @@ class Journal extends Component {
     console.log("ID", id)
   }
 
+  navigateToGearReviewForm = () => {
+    this.props.triggerGearReviewFormFromJournal(this.props.journal.id)
+  }
+
   navigateToForm = name => {
     switch (name) {
       case "create_chapter":
         return this.navigateToChapterForm()
       case "create_gear_item":
-        return console.log("hey this is where we woudl go")
+        return this.navigateToGearReviewForm()
       default:
         return null
     }
@@ -498,6 +505,7 @@ class Journal extends Component {
         <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
         {this.renderCameraRollContainer()}
         <JournalForm />
+        <GearReviewForm />
       </View>
     )
   }

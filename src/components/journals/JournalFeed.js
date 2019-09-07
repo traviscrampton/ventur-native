@@ -5,7 +5,6 @@ import { get } from "../../agent"
 import { deleteS3Objects } from "../../utils/image_uploader"
 import { loadJournalFeed, resetJournalShow } from "../../actions/journals"
 import JournalCard from "./JournalCard"
-import GearReviewForm from "../GearReviewForm/GearReviewForm"
 import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
@@ -25,8 +24,6 @@ class JournalFeed extends Component {
   }
 
   componentWillMount() {
-    return
-    Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.props.loadJournalFeed()
   }
 
@@ -53,7 +50,6 @@ class JournalFeed extends Component {
           )
         })}
         <View style={{ marginBottom: 60 }} />
-        <GearReviewForm />
       </ScrollView>
     )
   }

@@ -1,5 +1,5 @@
 import { ImageManipulator } from "expo"
-import { get } from "../agent"
+import { get, post } from "../agent"
 import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
 const uuid = require("react-native-uuid")
 
@@ -8,6 +8,67 @@ export function setImageUploadingTrue() {
   return {
     type: TOGGLE_IMAGE_UPLOADING,
     payload: true
+  }
+}
+
+export function triggerGearReviewFormFromJournal(journalId) {
+  return async function(dispatch, getState) {
+    let payload = Object.assign({}, { journalIds: [journalId] })
+    dispatch(populateGearItemReviewForm(payload))
+    dispatch(toggleGearReviewFormModal(true))
+
+  }
+}
+
+export const POPULATE_GEAR_ITEM_REVIEW_FORM = "POPULATE_GEAR_ITEM_REVIEW_FORM"
+export function populateGearItemReviewForm(payload) {
+  return {
+    type: POPULATE_GEAR_ITEM_REVIEW_FORM,
+    payload: payload
+  }
+}
+
+export const TOGGLE_GEAR_REVIEW_FORM_MODAL = "TOGGLE_GEAR_REVIEW_FORM_MODAL"
+export function toggleGearReviewFormModal(payload) {
+  return {
+    type: TOGGLE_GEAR_REVIEW_FORM_MODAL,
+    payload: payload
+  }
+}
+
+export function persistGearReview() {
+  return async function(dispatch, getState) {
+    let { id, name, images, rating, pros, cons, review, journalIds, gearItem } = getState().gearReviewForm
+
+    cons = JSON.stringify(cons)
+    pros = JSON.stringify(pros)
+    images = JSON.stringify(images)
+    journalIds = JSON.stringify(journalIds)
+
+    const params = Object.assign(
+      {},
+      {
+        gearItemId: gearItem.id,
+        name,
+        images,
+        rating,
+        cons,
+        pros,
+        journalIds
+      }
+    )
+
+    if (id) {
+      dispatch(updateGearReview(params))
+    } else {
+      dispatch(createGearReview(params))
+    }
+  }
+}
+
+export function createGearReview(params) {
+  return async function(dispatch, getState) {
+    const res = await post("/gear_item_reviews", params)
   }
 }
 

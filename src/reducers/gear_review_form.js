@@ -17,30 +17,40 @@ import {
   TOGGLE_DROPDOWN,
   POPULATE_FORM_WITH_GEAR_ITEM,
   SET_GEAR_ITEMS,
-  RESET_GEAR_ITEM
+  RESET_GEAR_ITEM,
+  POPULATE_GEAR_ITEM_REVIEW_FORM,
+  TOGGLE_GEAR_REVIEW_FORM_MODAL
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
+  id: null,
   gearItem: {
     id: null,
     name: null
   },
-  name: "Ort",
+  name: "",
   images: [],
   rating: 1,
   pros: [],
   cons: [],
   review: "",
+  journalIds: [],
   imageUploading: false,
   activeImageIndex: null,
   urisSetForDelete: [],
   newlyCreatedUris: [],
   gearItemSuggestions: [],
-  dropdownOpen: false
+  dropdownOpen: false,
+  visible: false
 }
 
 export default (state = defaultGearForm, action) => {
   switch (action.type) {
+    case TOGGLE_GEAR_REVIEW_FORM_MODAL:
+      return {
+        ...state,
+        visible: action.payload
+      }
     case UPDATE_GEAR_REVIEW_TITLE:
       return {
         ...state,
@@ -51,6 +61,10 @@ export default (state = defaultGearForm, action) => {
         ...state,
         gearItem: defaultGearForm.gearItem
       }
+
+    case POPULATE_GEAR_ITEM_REVIEW_FORM:
+      console.log("action.payload", action.payload)
+      return Object.assign({}, state, action.payload)
 
     case UPDATE_GEAR_REVIEW_REVIEW:
       return {
