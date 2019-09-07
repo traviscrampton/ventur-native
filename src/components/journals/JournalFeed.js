@@ -25,6 +25,7 @@ class JournalFeed extends Component {
   }
 
   componentWillMount() {
+    return
     Expo.ScreenOrientation.allow("PORTRAIT_UP")
     this.props.loadJournalFeed()
   }

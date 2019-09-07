@@ -16,7 +16,8 @@ import {
   REMOVE_IMAGE,
   TOGGLE_DROPDOWN,
   POPULATE_FORM_WITH_GEAR_ITEM,
-  SET_GEAR_ITEMS
+  SET_GEAR_ITEMS,
+  RESET_GEAR_ITEM
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
@@ -44,6 +45,11 @@ export default (state = defaultGearForm, action) => {
       return {
         ...state,
         name: action.payload
+      }
+    case RESET_GEAR_ITEM:
+      return {
+        ...state,
+        gearItem: defaultGearForm.gearItem
       }
 
     case UPDATE_GEAR_REVIEW_REVIEW:
@@ -117,7 +123,7 @@ export default (state = defaultGearForm, action) => {
         ...state,
         gearItem: Object.assign({}, action.payload),
         name: action.payload.name
-      }  
+      }
 
     case SET_GEAR_ITEMS:
       return {
@@ -128,7 +134,7 @@ export default (state = defaultGearForm, action) => {
       return {
         ...state,
         dropdownOpen: action.payload
-      }  
+      }
     case UPDATE_IMAGE_IN_CAROUSEL:
       return {
         ...state,

@@ -1,13 +1,20 @@
 import React, { Component } from "react"
 import { ScrollView, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
-import { updateGearReviewFormTitle, searchForGearItems, populateFormWithGearItem, toggleDropdown } from "../../actions/gear_review_form"
+import {
+  updateGearReviewFormTitle,
+  searchForGearItems,
+  populateFormWithGearItem,
+  toggleDropdown
+} from "../../actions/gear_review_form"
+import { MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
   width: state.common.width,
   name: state.gearReviewForm.name,
   dropdownOpen: state.gearReviewForm.dropdownOpen,
-  gearItemSuggestions: state.gearReviewForm.gearItemSuggestions
+  gearItemSuggestions: state.gearReviewForm.gearItemSuggestions,
+  gearItem: state.gearReviewForm.gearItem
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -33,7 +40,7 @@ class GearReviewFormTitle extends Component {
     return this.props.gearItemSuggestions.map((gearItem, index) => {
       return (
         <React.Fragment>
-          <TouchableWithoutFeedback onPress={() => this.populateFormWithGearItem(gearItem)}>
+          <TouchableWithoutFeedback onPressIn={() => this.populateFormWithGearItem(gearItem)}>
             <View
               style={{
                 padding: 10,
@@ -82,11 +89,18 @@ class GearReviewFormTitle extends Component {
     this.props.searchForGearItems(text)
   }
 
+  renderVerifiedIcon() {
+    if (!this.props.gearItem.id) return
+
+    return <MaterialIcons style={{ marginLeft: 10 }} color="#3F88C5" name="verified-user" size={16} />
+  }
+
   render() {
     return (
       <View style={{ position: "relative", zIndex: 11 }}>
-        <View style={{ marginBottom: 5 }}>
+        <View style={{ marginBottom: 5, display: "flex", flexDirection: "row", alignItems: "center" }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Name</Text>
+          {this.renderVerifiedIcon()}
         </View>
         <TextInput
           style={{
@@ -97,7 +111,6 @@ class GearReviewFormTitle extends Component {
             borderRadius: 5,
             borderColor: "#d3d3d3"
           }}
-          onBlur={() => this.props.toggleDropdown(false)}
           selectionColor="#FF5423"
           onChangeText={text => this.updateGearReviewFormTitle(text)}
           value={this.props.name}

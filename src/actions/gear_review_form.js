@@ -13,6 +13,7 @@ export function setImageUploadingTrue() {
 
 export const POPULATE_FORM_WITH_GEAR_ITEM = "POPULATE_FORM_WITH_GEAR_ITEM"
 export function populateFormWithGearItem(payload) {
+  console.log("in action atleast", payload)
   return {
     type: POPULATE_FORM_WITH_GEAR_ITEM,
     payload: payload
@@ -162,6 +163,25 @@ export const createResizeImgUri = (originalUri, newWidth, newHeight) => {
 
 export const UPDATE_GEAR_REVIEW_TITLE = "UPDATE_GEAR_REVIEW_TITLE"
 export function updateGearReviewFormTitle(payload) {
+  return async function(dispatch, getState) {
+    let { id, title } = getState().gearReviewForm.gearItem
+
+    if (id && payload !== title) {
+      dispatch(resetGearItem())
+    }
+
+    dispatch(updateGearReviewName(payload))
+  }
+}
+
+export const RESET_GEAR_ITEM = "RESET_GEAR_ITEM"
+export function resetGearItem() {
+  return {
+    type: RESET_GEAR_ITEM
+  }
+}
+
+export function updateGearReviewName(payload) {
   return {
     type: UPDATE_GEAR_REVIEW_TITLE,
     payload: payload
