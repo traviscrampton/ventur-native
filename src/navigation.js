@@ -27,6 +27,7 @@ import RouteViewer from "./components/Maps/RouteViewer"
 import JournalRoute from "./components/Maps/JournalRoute"
 import ChapterMetaDataForm from "./components/editor/ChapterMetaDataForm"
 import ChapterEditor from "./components/chapters/ChapterEditor"
+import GearItemReview from "./components/GearItemReview/GearItemReview"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -69,6 +70,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
+    GearItemReview: GearItemReview,
   },
   {
     initialRouteName: "JournalFeed",

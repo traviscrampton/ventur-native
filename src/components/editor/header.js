@@ -14,7 +14,7 @@ export const Header = props => {
               alignItems: "center",
               justifyContent: "center"
             }}>
-            <Text style={{ fontFamily: "open-sans-regular", fontWeight: "bold", fontSize: 14, color: "#323941" }}>{props.goBackCta}</Text>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>{props.goBackCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -31,7 +31,7 @@ export const Header = props => {
               alignItems: "center",
               justifyContent: "center"
             }}>
-            <Text style={{ fontFamily: "open-sans-regular", fontWeight: "bold", fontSize: 14, color: "#323941" }}>{props.confirmCta}</Text>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>{props.confirmCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>

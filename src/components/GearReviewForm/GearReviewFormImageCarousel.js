@@ -199,7 +199,7 @@ class GearReviewFormImageCarousel extends Component {
     return (
       <View style={{ marginTop: 10 }}>
         <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Photos</Text>
+          <Text style={{ fontFamily: "playfair", fontSize: 18, color: "#323941" }}>Photos</Text>
         </View>
         <FlatList
           ListHeaderComponent={this.renderUploadButton}

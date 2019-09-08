@@ -1,15 +1,23 @@
 import React, { Component } from "react"
 import { doneUpdating, startUpdating } from "../../actions/editor"
-import { StyleSheet, View, ScrollView, Modal, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Modal,
+  Text,
+  TextInput,
+  Image,
+  TouchableWithoutFeedback
+} from "react-native"
 import {
   updateChapterForm,
   addChapterToJournals,
   resetChapterForm,
   toggleChapterModal
 } from "../../actions/chapter_form"
-import {
-  toggleCameraRollModal
-} from "../../actions/camera_roll"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import { StackActions, NavigationActions } from "react-navigation"
 import _ from "lodash"
 import { loadChapter } from "../../actions/chapter"
@@ -20,7 +28,7 @@ import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
-import  CameraRollContainer from "../editor/CameraRollContainer"
+import CameraRollContainer from "../editor/CameraRollContainer"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
@@ -66,7 +74,7 @@ class ChapterMetaDataForm extends Component {
     this.props.toggleChapterModal(false)
   }
 
-  uploadImage = (img) => {
+  uploadImage = img => {
     let imgPost = {
       uri: img.uri,
       name: img.filename,
@@ -109,7 +117,7 @@ class ChapterMetaDataForm extends Component {
     if (this.props.navigateToChapter) {
       this.props.navigateToChapter(this.props.chapter.id)
     }
-    
+
     this.props.toggleChapterModal(false)
   }
 
@@ -252,13 +260,15 @@ class ChapterMetaDataForm extends Component {
   render() {
     return (
       <Modal visible={this.props.visible} animationType="slide" style={styles.container}>
-        {this.renderHeader()}
-        <ScrollView>
-          {this.renderChapterImage()}
-          {this.renderTitleAndDescription()}
-          {this.renderStatistics()}
-        </ScrollView>
-        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+        <SafeAreaView>
+          {this.renderHeader()}
+          <ScrollView>
+            {this.renderChapterImage()}
+            {this.renderTitleAndDescription()}
+            {this.renderStatistics()}
+          </ScrollView>
+          <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+        </SafeAreaView>
       </Modal>
     )
   }

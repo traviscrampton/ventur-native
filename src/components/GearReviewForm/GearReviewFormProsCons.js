@@ -81,7 +81,7 @@ class GearReviewFormProsCons extends Component {
 
     return (
       <View style={{ marginBottom: 5 }}>
-        <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>{title}</Text>
+        <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>{title}</Text>
         {this.renderProsCons(listItems, isPro)}
         <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(isPro)}>
           <View>

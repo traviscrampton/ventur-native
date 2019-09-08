@@ -12,6 +12,7 @@ import { updateChapterForm, resetChapterForm } from "../../actions/chapter_form"
 import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons"
 import { get, put, destroy } from "../../agent"
 import LoadingScreen from "../shared/LoadingScreen"
+import { JournalChildHeader } from "../shared/JournalChildHeader"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -22,7 +23,7 @@ const mapStateToProps = state => ({
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
-  editMode: state.chapter.editMode,
+  editMode: state.chapter.editMode
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -69,41 +70,9 @@ class ChapterDispatch extends Component {
     this.props.navigation.navigate("ChapterEditor")
   }
 
-  renderChapterNavigation() {
-    return <View style={styles.chapterNavigationContainer}>{this.renderBackIcon()}</View>
-  }
-
-  renderJournalName() {
-    let buttonsWidth = this.props.editMode ? 250 : 160
-
-    return (
-      <View style={styles.journalAndUserContainer}>
-        <View>
-          <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: this.props.width - buttonsWidth }]}>
-            {this.props.journal.title}
-          </Text>
-        </View>
-      </View>
-    )
-  }
-
-  renderBackIcon() {
-    return (
-      <View style={styles.backIconContainer}>
-        <TouchableHighlight
-          underlayColor="rgba(111, 111, 111, 0.5)"
-          style={styles.backButton}
-          onPress={this.navigateBack}>
-          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="#323941" />
-        </TouchableHighlight>
-        {this.renderJournalName()}
-      </View>
-    )
-  }
-
   renderEditorFloatingButton() {
-    if (this.props.currentUser.id != this.props.user.id) return 
-      
+    if (this.props.currentUser.id != this.props.user.id) return
+
     return (
       <TouchableWithoutFeedback onPress={this.navigateToEditor}>
         <View
@@ -136,7 +105,11 @@ class ChapterDispatch extends Component {
 
     return (
       <View style={styles.chapterDispatchContainer}>
-        {this.renderChapterNavigation()}
+        <JournalChildHeader
+          width={this.props.width}
+          title={this.props.journal.title}
+          navigateBack={this.navigateBack}
+        />
         <ChapterShow navigation={this.props.navigation} />
         {this.renderEditorFloatingButton()}
       </View>

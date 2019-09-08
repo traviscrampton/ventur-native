@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Modal } from "react-native"
+import { Modal, SafeAreaView } from "react-native"
 import { addImagesToEntries, setSelectedImages } from "../../actions/editor"
 import { toggleCameraRollModal } from "../../actions/camera_roll"
 import CameraRollPicker from "react-native-camera-roll-picker"
@@ -36,7 +36,7 @@ class CameraRollContainer extends Component {
   addImagesToEntries = () => {
     if (this.state.imageSelected) return
 
-    this.setState({ 
+    this.setState({
       imageSelected: true
     })
 
@@ -51,7 +51,7 @@ class CameraRollContainer extends Component {
       this.props.imageCallback(selectedImages)
     }
 
-    this.setState({ selectedImages: [], imageSelected: false})
+    this.setState({ selectedImages: [], imageSelected: false })
   }
 
   compileSelectedImages = images => {
@@ -89,8 +89,10 @@ class CameraRollContainer extends Component {
   render() {
     return (
       <Modal visible={this.props.visible} animationType="slide">
-        {this.renderHeader()}
-        {this.renderCameraRollPicker()}
+        <SafeAreaView>
+          {this.renderHeader()}
+          {this.renderCameraRollPicker()}
+        </SafeAreaView>
       </Modal>
     )
   }

@@ -99,7 +99,7 @@ class GearReviewFormTitle extends Component {
     return (
       <View style={{ position: "relative", zIndex: 11 }}>
         <View style={{ marginBottom: 5, display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontFamily: "open-sans-bold", fontSize: 18 }}>Name</Text>
+          <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Name</Text>
           {this.renderVerifiedIcon()}
         </View>
         <TextInput

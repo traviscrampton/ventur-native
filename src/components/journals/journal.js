@@ -24,9 +24,9 @@ import {
   imageUploading,
   updateTabIndex
 } from "../../actions/journals"
+import { populateGearItemReview }  from "../../actions/gear_item_review"
 import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 import { MaterialIndicator } from "react-native-indicators"
-import { createChapter } from "../../utils/chapter_form_helper"
 import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
 import { loadChapter, resetChapter } from "../../actions/chapter"
 import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
@@ -81,7 +81,8 @@ const mapDispatchToProps = dispatch => ({
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
   updateTabIndex: payload => dispatch(updateTabIndex(payload)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
-  updateActiveView: payload => dispatch(updateActiveView(payload))
+  updateActiveView: payload => dispatch(updateActiveView(payload)),
+  populateGearItemReview: payload => dispatch(populateGearItemReview(payload))
 })
 
 class Journal extends Component {
@@ -398,7 +399,10 @@ class Journal extends Component {
   }
 
   handleGearItemPress = id => {
-    console.log("ID", id)
+    const payload = Object.assign({}, { id, loading: true })
+
+    this.props.populateGearItemReview(payload)
+    this.props.navigation.navigate("GearItemReview")
   }
 
   navigateToGearReviewForm = () => {

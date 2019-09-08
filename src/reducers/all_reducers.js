@@ -18,6 +18,7 @@ import journalRoute from "./journal_route"
 import stravaActivityImport from "./strava_activity_import"
 import cameraRoll from "./camera_roll"
 import gearReviewForm from "./gear_review_form"
+import gearItemReview from "./gear_item_review"
 
 export default combineReducers({
   editor,
@@ -38,5 +39,6 @@ export default combineReducers({
   journalRoute,
   stravaActivityImport,
   cameraRoll,
-  gearReviewForm
+  gearReviewForm,
+  gearItemReview
 })

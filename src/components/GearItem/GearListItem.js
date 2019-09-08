@@ -3,16 +3,16 @@ import _ from "lodash"
 import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
 import ProgressiveImage from "../shared/ProgressiveImage"
+import StarRating from "../shared/StarRating"
 
-const renderRatingStars = rating => {
-  return [...Array(rating)].map((e, i) => {
-    return <MaterialIcons name="star" color="gold" size={20} key={i} />
+const renderRatingStars = props => {
+  return [...Array(props.rating)].map((e, i) => {
+    return <MaterialIcons name="star" color="gold" size={props.size} key={i} />
   })
 }
 
 const GearListItem = props => {
   const { id, gearItemId, name, imageUrl, rating } = props.gearItem
-  const ratingStars = renderRatingStars(rating)
   const width = Dimensions.get("window").width - 40
   const textWidth = width - 135
 
@@ -39,7 +39,7 @@ const GearListItem = props => {
             <Text style={{ fontSize: 16, width: textWidth, fontFamily: "open-sans-regular" }} numberOfLines={2}>
               {name}
             </Text>
-            <View style={{ display: "flex", flexDirection: "row" }}>{ratingStars}</View>
+            <StarRating rating={rating} size={20}/>
           </View>
         </View>
       </TouchableWithoutFeedback>

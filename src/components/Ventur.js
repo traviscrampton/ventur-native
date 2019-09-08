@@ -7,6 +7,7 @@ import {
   addApiCredentials
 } from "../actions/common"
 import { Font } from "expo"
+import { SafeAreaView } from "react-native"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
 import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
@@ -107,10 +108,9 @@ class Ventur extends Component {
     }
 
     return (
-      <React.Fragment>
-        <StatusBar hidden={true} />
+      <SafeAreaView style={{ flex: 1 }}>
         <VNTR />
-      </React.Fragment>
+      </SafeAreaView>
     )
   }
 }

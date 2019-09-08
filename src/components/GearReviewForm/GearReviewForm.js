@@ -1,5 +1,14 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import {
+  ScrollView,
+  View,
+  Modal,
+  SafeAreaView,
+  Dimensions,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback
+} from "react-native"
 import { connect } from "react-redux"
 import { persistGearReview } from "../../actions/gear_review_form"
 import GearReviewFormTitle from "./GearReviewFormTitle"
@@ -9,7 +18,9 @@ import GearReviewFormProsCons from "./GearReviewFormProsCons"
 import GearReviewFormReview from "./GearReviewFormReview"
 
 const mapStateToProps = state => ({
-  visible: state.gearReviewForm.visible
+  visible: state.gearReviewForm.visible,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -42,14 +53,14 @@ class GearReviewForm extends Component {
         }}>
         <TouchableWithoutFeedback onPress={() => console.log("DO SOMETHING")}>
           <View>
-            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>
               Cancel
             </Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.persistGearReview}>
           <View>
-            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>
               Save
             </Text>
           </View>
@@ -63,15 +74,17 @@ class GearReviewForm extends Component {
       <Modal
         visible={this.props.visible}
         animationType={"slide"}
-        style={{ backgroundColor: "white", height: Dimensions.get("window").height }}>
-        {this.renderHeader()}
-        <ScrollView style={{ padding: 20 }}>
-          <GearReviewFormTitle />
-          <GearReviewFormReview />
-          <GearReviewFormImageCarousel />
-          <GearReviewFormStarRating />
-          <GearReviewFormProsCons />
-        </ScrollView>
+        style={{ backgroundColor: "white", height: this.props.height }}>
+        <SafeAreaView>
+          {this.renderHeader()}
+          <ScrollView style={{ padding: 20 }}>
+            <GearReviewFormTitle />
+            <GearReviewFormReview />
+            <GearReviewFormImageCarousel />
+            <GearReviewFormStarRating />
+            <GearReviewFormProsCons />
+          </ScrollView>
+        </SafeAreaView>
       </Modal>
     )
   }

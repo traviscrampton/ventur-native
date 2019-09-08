@@ -3,9 +3,24 @@ import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { Header } from "../editor/header"
 import { StackActions, NavigationActions } from "react-navigation"
-import { StyleSheet, ScrollView, View, Modal, Text, TouchableWithoutFeedback, TextInput } from "react-native"
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  View,
+  Modal,
+  Text,
+  TouchableWithoutFeedback,
+  TextInput
+} from "react-native"
 import { setToken, API_ROOT } from "../../agent"
-import { updateJournalForm, resetJournalForm, persistJournal, toggleJournalFormModal, toggleCountriesEditorModal } from "../../actions/journal_form"
+import {
+  updateJournalForm,
+  resetJournalForm,
+  persistJournal,
+  toggleJournalFormModal,
+  toggleCountriesEditorModal
+} from "../../actions/journal_form"
 import CountriesEditor from "./CountriesEditor"
 
 const mapStateToProps = state => ({
@@ -238,15 +253,17 @@ class JournalForm extends Component {
     const { formTitle, textFields, status, header, distanceType, countries } = this.renderFormComponents()
     return (
       <Modal visible={this.props.visible} animationType="slide" style={{ backgroundColor: "white", height: "100%" }}>
-        {header}
-        <ScrollView style={styles.container}>
-          {formTitle}
-          {textFields}
-          {status}
-          {distanceType}
-          {countries}
-        </ScrollView>
-        <CountriesEditor />
+        <SafeAreaView>
+          {header}
+          <ScrollView style={styles.container}>
+            {formTitle}
+            {textFields}
+            {status}
+            {distanceType}
+            {countries}
+          </ScrollView>
+          <CountriesEditor />
+        </SafeAreaView>
       </Modal>
     )
   }
