@@ -13,6 +13,7 @@ import {
 import { connect } from "react-redux"
 import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import { sendEmails } from "../../actions/chapter"
+import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
 import { loadRouteEditor } from "../../actions/route_editor"
 import { loadRouteViewer } from "../../actions/route_viewer"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
@@ -23,6 +24,7 @@ import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-ico
 import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "../../utils/offline_helpers"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import LazyImage from "../shared/LazyImage"
+import ImageSlider from "../shared/ImageSlider"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -40,6 +42,8 @@ const mapDispatchToProps = dispatch => ({
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   sendEmails: payload => dispatch(sendEmails(payload)),
   editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
+  toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
+  populateImages: payload => dispatch(populateImages(payload)),
   deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
 })
 
@@ -174,6 +178,27 @@ class ChapterShow extends Component {
       default:
         return ""
     }
+  }
+
+  prepareSliderImages() {
+    return this.props.chapter.editorBlob.content
+      .filter((entry, index) => {
+        return entry.type === "image"
+      })
+      .map((entry, index) => {
+        return Object.assign({}, { uri: entry.uri, caption: entry.caption, height: this.getImageHeight(entry.aspectRatio) })
+      })
+  }
+
+  openImageSlider = (entry) => {
+    const images = this.prepareSliderImages()
+    const activeIndex = images.findIndex((image) => {
+      return image.uri === entry.uri
+    }) 
+    const payload = Object.assign({}, { images, activeIndex})
+
+    this.props.populateImages(payload)
+    this.props.toggleImageSliderModal(true)
   }
 
   navigateToMap = async () => {
@@ -319,22 +344,24 @@ class ChapterShow extends Component {
 
   renderImageEntry(entry, index) {
     const height = this.getImageHeight(entry.aspectRatio)
-    
+
     return (
       <View
         onLayout={e => this.handleLayout(e, index)}
         key={`image${index}`}
         yPosition={this.state.imageYPositions[index]}
         style={{ position: "relative", marginBottom: 20 }}>
-        <View style={{ height }}>
-          <LazyImage
-            style={{ width: this.props.width, height }}
-            yPosition={this.getYPosition(index)}
-            scrollPosition={this.state.scrollPosition}
-            thumbnailSource={entry.thumbnailUri}
-            uri={entry.uri}
-          />
-        </View>
+        <TouchableWithoutFeedback onPress={() => this.openImageSlider(entry)}>
+          <View style={{ height }}>
+            <LazyImage
+              style={{ width: this.props.width, height }}
+              yPosition={this.getYPosition(index)}
+              scrollPosition={this.state.scrollPosition}
+              thumbnailSource={entry.thumbnailUri}
+              uri={entry.uri}
+            />
+          </View>
+        </TouchableWithoutFeedback>
         {this.renderImageCaption(entry)}
       </View>
     )
@@ -448,6 +475,7 @@ class ChapterShow extends Component {
         </View>
         <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
         <ChapterMetaDataForm />
+        <ImageSlider />
       </ScrollView>
     )
   }

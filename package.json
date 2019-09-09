@@ -47,6 +47,7 @@
     "react-native-markdown-renderer": "^3.2.8",
     "react-native-snap-carousel": "^3.8.0",
     "react-native-sortable-list": "0.0.22",
+    "react-native-swiper": "^1.5.14",
     "react-native-tab-view": "^2.10.0",
     "react-native-uuid": "^1.4.9",
     "react-navigation": "^2.6.1",

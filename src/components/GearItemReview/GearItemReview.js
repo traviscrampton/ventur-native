@@ -1,11 +1,13 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, Image, TouchableWithoutFeedback, TextInput } from "react-native"
+import { StyleSheet, ScrollView, View, Text, FlatList, Image, TouchableWithoutFeedback, TextInput } from "react-native"
 import { fetchGearItem } from "../../actions/gear_item_review"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
-import ImageCarousel from "../shared/ImageCarousel"
 import ProsCons from "./ProsCons"
 import StarRating from "../shared/StarRating"
+import ImageSlider from "../shared/ImageSlider"
+import ProgressiveImage from "../shared/ProgressiveImage"
+import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -21,7 +23,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchGearItem: payload => dispatch(fetchGearItem(payload))
+  fetchGearItem: payload => dispatch(fetchGearItem(payload)),
+  toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
+  populateImages: payload => dispatch(populateImages(payload))
 })
 
 class GearItemReview extends Component {
@@ -87,7 +91,7 @@ class GearItemReview extends Component {
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontSize: 18, color: "#323941", fontFamily: "playfair" }}>Review: </Text>
         </View>
-        <Text style={{ fontSize: 14, color: "#323941", fontFamily: "open-sans-regular" }}>{this.props.review}</Text>
+        <Text style={{ fontSize: 16, color: "#323941", fontFamily: "open-sans-regular" }}>{this.props.review}</Text>
       </View>
     )
   }
@@ -98,15 +102,40 @@ class GearItemReview extends Component {
     return (
       <View style={{ marginTop: 20, display: "flex", flexDirection: "row", alignItems: "center" }}>
         <StarRating rating={this.props.rating} size={44} />
-        <View style={{ marginLeft: 10}}>
-          <Text style={{color: "#323941", fontFamily: "open-sans-regular"}}>{starText}</Text>
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ color: "#323941", fontFamily: "open-sans-regular" }}>{starText}</Text>
         </View>
       </View>
     )
   }
 
+  renderImageSlider = (index) => {
+    const activeIndex = index
+    const images = this.getCarouselImages().map((image) => {
+      return Object.assign({}, { uri: image, caption: "", height: this.props.width })
+    })
+
+    const payload = Object.assign({}, { images, activeIndex })
+
+    this.props.populateImages(payload)
+    this.props.toggleImageSliderModal(true)
+
+  }
+
   renderProsCons() {
     return <ProsCons pros={this.props.pros} cons={this.props.cons} />
+  }
+
+  renderItem(item, index) {
+    if (!item) return
+
+    return (
+      <TouchableWithoutFeedback onPress={() => this.renderImageSlider(index)}>
+        <View>
+          <Image source={{ uri: item }} style={{ width: 120, height: 120, borderRadius: 5 }} />
+        </View>
+      </TouchableWithoutFeedback>
+    )
   }
 
   renderImageCarousel() {
@@ -114,7 +143,11 @@ class GearItemReview extends Component {
 
     return (
       <View style={{ marginTop: 20 }}>
-        <ImageCarousel images={carouselImages} />
+        <FlatList
+          horizontal={true}
+          data={carouselImages}
+          renderItem={({ item, index }) => this.renderItem(item, index)}
+        />
       </View>
     )
   }
@@ -125,10 +158,11 @@ class GearItemReview extends Component {
         <JournalChildHeader width={this.props.width} title={this.props.journalTitle} navigateBack={this.navigateBack} />
         <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
           {this.renderName()}
-          {this.renderReview()}
           {this.renderImageCarousel()}
+          {this.renderReview()}
           {this.renderRating()}
         </ScrollView>
+        <ImageSlider />
       </View>
     )
   }
