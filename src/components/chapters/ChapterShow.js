@@ -12,7 +12,6 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
-import { sendEmails } from "../../actions/chapter"
 import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
 import { loadRouteEditor } from "../../actions/route_editor"
 import { loadRouteViewer } from "../../actions/route_viewer"
@@ -39,12 +38,8 @@ const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
   loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
-  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
-  sendEmails: payload => dispatch(sendEmails(payload)),
-  editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
   populateImages: payload => dispatch(populateImages(payload)),
-  deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
 })
 
 class ChapterShow extends Component {
@@ -57,91 +52,8 @@ class ChapterShow extends Component {
     }
   }
 
-  navigateBack = () => {
-    this.props.navigation.goBack()
-  }
-
-  openDeleteAlert = () => {
-    Alert.alert(
-      "Are you sure?",
-      "Deleting this chapter will erase all images and content",
-      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
-      { cancelable: true }
-    )
-  }
-
-  navigateToChapterForm = () => {
-    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
-    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
-
-    let obj = Object.assign(
-      {},
-      {
-        id: id,
-        title: title,
-        distance: distanceAmount,
-        description: description,
-        readableDistanceType: distance.readableDistanceType,
-        bannerImage: {
-          uri: imageUrl
-        },
-        journalId: journal.id
-      }
-    )
-
-    this.props.updateChapterForm(obj)
-    this.props.toggleChapterModal(true)
-  }
-
-  handleDelete = async () => {
-    this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
-  }
-
   handleScroll = event => {
     this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
-  }
-
-  sendEmails = async () => {
-    if (this.props.chapter.emailSent) return
-
-    this.props.sendEmails(this.props.chapter.id)
-  }
-
-  getChapterUserFormProps() {
-    let published = this.props.chapter.published ? "Unpublish" : "Publish"
-    let emailSent = this.props.chapter.emailSent ? "Email Sent" : "Send Email"
-
-    let optionsProps = [
-      {
-        title: "Edit Metadata",
-        callback: this.navigateToChapterForm
-      },
-      {
-        title: "Delete Chapter",
-        callback: this.openDeleteAlert
-      },
-      {
-        title: published,
-        callback: this.updatePublishedStatus
-      }
-    ]
-
-    if (this.props.chapter.published) {
-      const emailOption = {
-        title: emailSent,
-        callback: this.sendEmails
-      }
-      optionsProps.push(emailOption)
-    }
-
-    return optionsProps
-  }
-
-  updatePublishedStatus = async () => {
-    const {
-      chapter: { id, published }
-    } = this.props
-    this.props.editChapterPublished(id, !published)
   }
 
   renderTitle() {
@@ -153,9 +65,7 @@ class ChapterShow extends Component {
           style={[
             {
               display: "flex",
-              // justifyContent: "space-between",
               flexDirection: "column"
-              // alignItems: "center"
             },
             { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
           ]}>
@@ -413,15 +323,6 @@ class ChapterShow extends Component {
     })
   }
 
-  renderThreeDotMenu() {
-    if (this.props.user.id != this.props.currentUser.id) {
-      return <View />
-    }
-    const options = this.getChapterUserFormProps()
-
-    return <ThreeDotDropdown options={options} />
-  }
-
   renderIconAndThreeDotMenu() {
     return (
       <View
@@ -436,7 +337,6 @@ class ChapterShow extends Component {
           zIndex: 100
         }}>
         {this.renderMapIconCta()}
-        {this.renderThreeDotMenu()}
       </View>
     )
   }

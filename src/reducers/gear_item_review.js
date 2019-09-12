@@ -3,6 +3,7 @@ import { POPULATE_GEAR_ITEM_REVIEW, RESET_GEAR_ITEM_REVIEW } from "../actions/ge
 const defaultGearItemReview = {
   id: null,
   name: "",
+  userId: null,
   gearItem: {
     id: null,
     name: null,

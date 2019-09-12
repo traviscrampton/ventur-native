@@ -1,6 +1,13 @@
 import React, { Component } from "react"
-import { View, TouchableHighlight, Text, StyleSheet } from "react-native"
+import { View, TouchableHighlight, Text, StyleSheet, Dimensions } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+
+const Dropdown = props => {
+  if (!props.isCurrentUser) return
+
+  return <ThreeDotDropdown options={props.options} />
+}
 
 export const JournalChildHeader = props => {
   let buttonsWidth = 160
@@ -22,6 +29,7 @@ export const JournalChildHeader = props => {
           </View>
         </View>
       </View>
+      {Dropdown(props.dropdownProps)}
     </View>
   )
 }
@@ -33,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingRight: 20,
-    height: 45,
+    height: 50,
     borderBottomWidth: 1,
     borderBottomColor: "#f8f8f8"
   },

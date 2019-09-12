@@ -12,6 +12,8 @@ import { toggleImageSliderModal, populateImages } from "../../actions/image_slid
 const mapStateToProps = state => ({
   width: state.common.width,
   id: state.gearItemReview.id,
+  userId: state.gearItemReview.userId,
+  currentUser: state.common.currentUser,
   name: state.gearItemReview.name,
   review: state.gearItemReview.review,
   images: state.gearItemReview.images,
@@ -73,6 +75,37 @@ class GearItemReview extends Component {
           return image
         })
     ]
+  }
+
+  isCurrentUser = () => {
+    return this.props.userId == this.props.currentUser.id
+  }
+
+  editGearReview = () => {
+    console.log("edit gear review out here")
+  }
+
+  getOptions = (isCurrentUser) => {
+    if (!isCurrentUser) return
+
+    return [{title: "Edit Gear Review", callback: this.editGearReview}]
+  }
+
+  getDropdownProps = () => {
+    const isCurrentUser = this.isCurrentUser()
+    const options = this.getOptions(isCurrentUser)
+
+
+    return Object.assign( {}, {
+      isCurrentUser,
+      options,
+    })
+  }
+
+  renderHeader = () => {
+    const dropdownProps = this.getDropdownProps()
+    
+    return <JournalChildHeader width={this.props.width} title={this.props.journalTitle} navigateBack={this.navigateBack} dropdownProps={dropdownProps} />
   }
 
   renderName = () => {
@@ -154,7 +187,7 @@ class GearItemReview extends Component {
   render() {
     return (
       <View style={{ height: "100%", backgroundColor: "white" }}>
-        <JournalChildHeader width={this.props.width} title={this.props.journalTitle} navigateBack={this.navigateBack} />
+        {this.renderHeader()}
         <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
           {this.renderName()}
           {this.renderImageCarousel()}
