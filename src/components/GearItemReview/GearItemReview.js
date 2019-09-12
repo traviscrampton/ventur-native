@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { StyleSheet, ScrollView, View, Text, FlatList, Image, TouchableWithoutFeedback, TextInput } from "react-native"
 import { fetchGearItem } from "../../actions/gear_item_review"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
-import ProsCons from "./ProsCons"
+import { ProsCons } from "./ProsCons"
 import StarRating from "../shared/StarRating"
 import ImageSlider from "../shared/ImageSlider"
 import ProgressiveImage from "../shared/ProgressiveImage"
@@ -109,9 +109,9 @@ class GearItemReview extends Component {
     )
   }
 
-  renderImageSlider = (index) => {
+  renderImageSlider = index => {
     const activeIndex = index
-    const images = this.getCarouselImages().map((image) => {
+    const images = this.getCarouselImages().map(image => {
       return Object.assign({}, { uri: image, caption: "", height: this.props.width })
     })
 
@@ -119,7 +119,6 @@ class GearItemReview extends Component {
 
     this.props.populateImages(payload)
     this.props.toggleImageSliderModal(true)
-
   }
 
   renderProsCons() {
@@ -161,6 +160,8 @@ class GearItemReview extends Component {
           {this.renderImageCarousel()}
           {this.renderReview()}
           {this.renderRating()}
+          {this.renderProsCons()}
+          <View style={{ marginBottom: 200 }} />
         </ScrollView>
         <ImageSlider />
       </View>
