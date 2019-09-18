@@ -11,6 +11,7 @@ import {
 } from "react-native"
 import { connect } from "react-redux"
 import { persistGearReview } from "../../actions/gear_review_form"
+import InputScrollView from "react-native-input-scroll-view"
 import GearReviewFormTitle from "./GearReviewFormTitle"
 import GearReviewFormStarRating from "./GearReviewFormStarRating"
 import GearReviewFormImageCarousel from "./GearReviewFormImageCarousel"
@@ -53,16 +54,12 @@ class GearReviewForm extends Component {
         }}>
         <TouchableWithoutFeedback onPress={() => console.log("DO SOMETHING")}>
           <View>
-            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>
-              Cancel
-            </Text>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>Cancel</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.persistGearReview}>
           <View>
-            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>
-              Save
-            </Text>
+            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>Save</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -77,13 +74,14 @@ class GearReviewForm extends Component {
         style={{ backgroundColor: "white", height: this.props.height }}>
         <SafeAreaView>
           {this.renderHeader()}
-          <ScrollView style={{ padding: 20 }}>
+          <InputScrollView style={{ padding: 20 }}>
             <GearReviewFormTitle />
             <GearReviewFormReview />
             <GearReviewFormImageCarousel />
             <GearReviewFormStarRating />
             <GearReviewFormProsCons />
-          </ScrollView>
+            <View style={{ marginBottom: 200 }} />
+          </InputScrollView>
         </SafeAreaView>
       </Modal>
     )

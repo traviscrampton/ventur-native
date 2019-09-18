@@ -12,6 +12,14 @@ export function resetJournalShow() {
   }
 }
 
+export const ADD_CREATED_GEAR_REVIEW = "ADD_CREATED_GEAR_REVIEW"
+export function addCreatedGearReview(payload) {
+  return {
+    type: ADD_CREATED_GEAR_REVIEW,
+    payload: payload
+  }
+}
+
 export const updateBannerImage = async (journalId, img, dispatch) => {
   let formData = new FormData()
   formData.append("banner_image", img)
@@ -99,7 +107,7 @@ export const fetchJournalGear = journalId => {
 }
 
 export const POPULATE_JOURNAL_GEAR = "POPULATE_JOURNAL_GEAR"
-export const populateJournalGear = (payload) => {
+export const populateJournalGear = payload => {
   return {
     type: POPULATE_JOURNAL_GEAR,
     payload: payload
@@ -134,4 +142,3 @@ export function updateTabIndex(payload) {
     payload: payload
   }
 }
-

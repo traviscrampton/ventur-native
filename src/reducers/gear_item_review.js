@@ -14,6 +14,7 @@ const defaultGearItemReview = {
   rating: "",
   pros: [],
   cons: [],
+  journalIds: [],
   loading: false
 }
 

@@ -1,6 +1,8 @@
 import { ImageManipulator } from "expo"
-import { get, post } from "../agent"
+import { get, post, put } from "../agent"
 import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
+import { addCreatedGearReview } from "./journals"
+import { populateGearItemReview } from "./gear_item_review"
 const uuid = require("react-native-uuid")
 
 export const TOGGLE_IMAGE_UPLOADING = "TOGGLE_IMAGE_UPLOADING"
@@ -11,12 +13,20 @@ export function setImageUploadingTrue() {
   }
 }
 
+export function editGearItemReview() {
+  return async function(dispatch, getState) {
+    const { id, gearItem, name, images, rating, pros, cons, review, journalIds } = getState().gearItemReview
+    const visible = true
+    const payload = Object.assign({}, { id, gearItem, name, images, rating, pros, cons, review, visible, journalIds })
+    dispatch(populateGearItemReviewForm(payload))
+  }
+}
+
 export function triggerGearReviewFormFromJournal(journalId) {
   return async function(dispatch, getState) {
     let payload = Object.assign({}, { journalIds: [journalId] })
     dispatch(populateGearItemReviewForm(payload))
     dispatch(toggleGearReviewFormModal(true))
-
   }
 }
 
@@ -53,13 +63,14 @@ export function persistGearReview() {
         images,
         rating,
         cons,
+        review,
         pros,
         journalIds
       }
     )
 
     if (id) {
-      dispatch(updateGearReview(params))
+      dispatch(updateGearReview(id, params))
     } else {
       dispatch(createGearReview(params))
     }
@@ -69,6 +80,35 @@ export function persistGearReview() {
 export function createGearReview(params) {
   return async function(dispatch, getState) {
     const res = await post("/gear_item_reviews", params)
+    const {
+      id,
+      gearItem,
+      rating,
+      gearItem: { imageUrl, name }
+    } = res
+
+    const payload = Object.assign(
+      {},
+      {
+        id,
+        imageUrl,
+        name,
+        rating,
+        gearItemId: gearItem.id
+      }
+    )
+
+    dispatch(addCreatedGearReview(payload))
+    dispatch(toggleGearReviewFormModal(false))
+  }
+}
+
+export function updateGearReview(id, params) {
+  return async function(dispatch, getState) {
+    let res = await put(`/gear_item_reviews/${id}`, params)
+    res = Object.assign({}, res, { images: JSON.parse(res.images) })
+    dispatch(populateGearItemReview(res))
+    dispatch(toggleGearReviewFormModal(false))
   }
 }
 

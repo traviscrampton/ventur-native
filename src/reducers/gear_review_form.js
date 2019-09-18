@@ -38,6 +38,7 @@ const defaultGearForm = {
   imageUploading: false,
   activeImageIndex: null,
   urisSetForDelete: [],
+  journalIds: [],
   newlyCreatedUris: [],
   gearItemSuggestions: [],
   dropdownOpen: false,

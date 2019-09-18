@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, FlatList, Image, TouchableWithoutFeedback, TextInput } from "react-native"
-import { fetchGearItem } from "../../actions/gear_item_review"
+import { StyleSheet, ScrollView, View, Text, FlatList, Image, TouchableWithoutFeedback, TextInput, Alert } from "react-native"
+import { fetchGearItem, deleteGearReview } from "../../actions/gear_item_review"
+import { editGearItemReview } from "../../actions/gear_review_form"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
 import { ProsCons } from "./ProsCons"
 import StarRating from "../shared/StarRating"
@@ -27,7 +28,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchGearItem: payload => dispatch(fetchGearItem(payload)),
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
-  populateImages: payload => dispatch(populateImages(payload))
+  populateImages: payload => dispatch(populateImages(payload)),
+  editGearItemReview: payload => dispatch(editGearItemReview(payload)),
+  deleteGearReview: payload => dispatch(deleteGearReview(payload))
 })
 
 class GearItemReview extends Component {
@@ -82,30 +85,56 @@ class GearItemReview extends Component {
   }
 
   editGearReview = () => {
-    console.log("edit gear review out here")
+    this.props.editGearItemReview()
   }
 
-  getOptions = (isCurrentUser) => {
+  handleDelete = () => {
+    this.props.deleteGearReview()
+    this.navigateBack()
+  }
+
+  deleteGearReview = () => {
+    Alert.alert(
+      "Are you sure?",
+      "Deleting this gear review will erase all images and content",
+      [{ text: "Delete Gear Review", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
+      { cancelable: true }
+    )
+  }
+
+  getOptions = isCurrentUser => {
     if (!isCurrentUser) return
 
-    return [{title: "Edit Gear Review", callback: this.editGearReview}]
+    return [
+      { title: "Edit Gear Review", callback: this.editGearReview },
+      { title: "Delete Gear Review", callback: this.deleteGearReview }
+    ]
   }
 
   getDropdownProps = () => {
     const isCurrentUser = this.isCurrentUser()
     const options = this.getOptions(isCurrentUser)
 
-
-    return Object.assign( {}, {
-      isCurrentUser,
-      options,
-    })
+    return Object.assign(
+      {},
+      {
+        isCurrentUser,
+        options
+      }
+    )
   }
 
   renderHeader = () => {
     const dropdownProps = this.getDropdownProps()
-    
-    return <JournalChildHeader width={this.props.width} title={this.props.journalTitle} navigateBack={this.navigateBack} dropdownProps={dropdownProps} />
+
+    return (
+      <JournalChildHeader
+        width={this.props.width}
+        title={this.props.journalTitle}
+        navigateBack={this.navigateBack}
+        dropdownProps={dropdownProps}
+      />
+    )
   }
 
   renderName = () => {

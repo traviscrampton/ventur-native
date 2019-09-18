@@ -4,10 +4,12 @@ import {
   IMAGE_UPLOADING,
   POPULATE_JOURNAL_CHAPTERS,
   POPULATE_JOURNAL_GEAR,
-  UPDATE_TAB_INDEX
+  UPDATE_TAB_INDEX,
+  ADD_CREATED_GEAR_REVIEW
 } from "../actions/journals"
 import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
+import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
 
 const defaultJournalData = {
   journal: {
@@ -64,6 +66,20 @@ export default (state = defaultJournalData, action) => {
       return {
         ...state,
         tabIndex: action.payload
+      }
+    case ADD_CREATED_GEAR_REVIEW:
+      return {
+        ...state,
+        journal: Object.assign({}, state.journal, { gear: [...state.journal.gear, action.payload] })
+      }
+    case REMOVE_GEAR_REVIEW:
+      return {
+        ...state,
+        journal: Object.assign({}, state.journal, {
+          gear: state.journal.gear.filter(gear => {
+            return gear.id !== action.payload
+          })
+        })
       }
     case PUSH_CHAPTER_TO_JOURNAL:
       return {

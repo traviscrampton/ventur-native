@@ -24,7 +24,7 @@ import {
   imageUploading,
   updateTabIndex
 } from "../../actions/journals"
-import { populateGearItemReview }  from "../../actions/gear_item_review"
+import { populateGearItemReview } from "../../actions/gear_item_review"
 import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 import { MaterialIndicator } from "react-native-indicators"
 import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
