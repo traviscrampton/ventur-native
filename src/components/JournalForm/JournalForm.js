@@ -22,6 +22,7 @@ import {
   toggleCountriesEditorModal
 } from "../../actions/journal_form"
 import CountriesEditor from "./CountriesEditor"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -252,19 +253,17 @@ class JournalForm extends Component {
   render() {
     const { formTitle, textFields, status, header, distanceType, countries } = this.renderFormComponents()
     return (
-      <Modal visible={this.props.visible} animationType="slide" style={{ backgroundColor: "white", height: "100%" }}>
-        <SafeAreaView>
-          {header}
-          <ScrollView style={styles.container}>
-            {formTitle}
-            {textFields}
-            {status}
-            {distanceType}
-            {countries}
-          </ScrollView>
-          <CountriesEditor />
-        </SafeAreaView>
-      </Modal>
+      <FormModal visible={this.props.visible}>
+        {header}
+        <ScrollView style={styles.container}>
+          {formTitle}
+          {textFields}
+          {status}
+          {distanceType}
+          {countries}
+        </ScrollView>
+        <CountriesEditor />
+      </FormModal>
     )
   }
 }

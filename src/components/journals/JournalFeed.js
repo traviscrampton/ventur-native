@@ -1,21 +1,26 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, Dimensions, View } from "react-native"
+import { StyleSheet, ScrollView, Dimensions, View, Text, FlatList } from "react-native"
 import { connect } from "react-redux"
 import { get } from "../../agent"
 import { deleteS3Objects } from "../../utils/image_uploader"
-import { loadJournalFeed, resetJournalShow } from "../../actions/journals"
+import { loadJournalFeed, resetJournalShow, toggleRefreshAndRefresh } from "../../actions/journals"
 import JournalCard from "./JournalCard"
 import LoadingScreen from "../shared/LoadingScreen"
+import RetryRequestScreen from "../shared/RetryRequestScreen"
 
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),
-  resetJournalShow: () => dispatch(resetJournalShow())
+  resetJournalShow: () => dispatch(resetJournalShow()),
+  toggleRefreshAndRefresh: payload => dispatch(toggleRefreshAndRefresh(payload))
 })
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
+  refreshing: state.journalFeed.refreshing,
   currentUser: state.common.currentUser,
-  isLoading: state.common.isLoading
+  isLoading: state.common.isLoading,
+  width: state.common.width,
+  height: state.common.height
 })
 
 class JournalFeed extends Component {
@@ -24,6 +29,10 @@ class JournalFeed extends Component {
   }
 
   componentWillMount() {
+    this.loadJournalFeed()
+  }
+
+  loadJournalFeed = () => {
     this.props.loadJournalFeed()
   }
 
@@ -32,26 +41,43 @@ class JournalFeed extends Component {
     this.props.navigation.navigate("Journal", { journalId })
   }
 
+  handleRefresh = () => {
+    this.props.toggleRefreshAndRefresh()
+  }
+
+  renderJournal(journal, index) {
+    return (
+      <JournalCard {...journal} width={this.props.width} height={this.props.height} handlePress={this.handlePress} />
+    )
+  }
+
+  renderErrorScreen = () => {
+    return (
+      <View style={{ marginTop: this.props.height / 2.5 }}>
+        <RetryRequestScreen reload={this.loadJournalFeed} />
+      </View>
+    )
+  }
+
+  renderJournals() {
+    return (
+      <FlatList
+        ListEmptyComponent={this.renderErrorScreen()}
+        style={{ backgroundColor: "white" }}
+        data={this.props.journals}
+        refreshing={this.props.refreshing}
+        onRefresh={this.handleRefresh}
+        renderItem={({ item, index }) => this.renderJournal(item, index)}
+      />
+    )
+  }
+
   render() {
     if (this.props.isLoading) {
       return <LoadingScreen />
     }
 
-    return (
-      <ScrollView style={{ backgroundColor: "white", paddingBottom: 20 }}>
-        {this.props.journals.map((journal, index) => {
-          return (
-            <JournalCard
-              {...journal}
-              width={Dimensions.get("window").width}
-              height={Dimensions.get("window").height}
-              handlePress={this.handlePress}
-            />
-          )
-        })}
-        <View style={{ marginBottom: 60 }} />
-      </ScrollView>
-    )
+    return this.renderJournals()
   }
 }
 

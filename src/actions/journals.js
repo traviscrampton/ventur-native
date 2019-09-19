@@ -114,6 +114,29 @@ export const populateJournalGear = payload => {
   }
 }
 
+export const TOGGLE_REFRESH = "TOGGLE_REFRESH"
+export function toggleRefresh(payload) {
+  return {
+    type: TOGGLE_REFRESH,
+    payload: payload
+  }
+}
+
+export function toggleRefreshAndRefresh(payload) {
+  return async function(dispatch, getState) {
+    dispatch(toggleRefresh(true))
+
+    try {
+      const data = await get("/journals")
+      dispatch(populateJournalFeed(data.journals))
+    } catch {
+      console.log("didn't work")
+    }
+
+    dispatch(toggleRefresh(false))
+  }
+}
+
 export function requestForChapter(chapterId) {
   return function(dispatch, getState) {
     dispatch(setLoadingTrue())
@@ -126,12 +149,17 @@ export function requestForChapter(chapterId) {
 }
 
 export function loadJournalFeed() {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(setLoadingTrue())
-    get("/journals").then(data => {
+
+    try {
+      const data = await get("/journals")
       dispatch(populateJournalFeed(data.journals))
-      dispatch(setLoadingFalse())
-    })
+    } catch {
+      dispatch(populateJournalFeed([]))
+    }
+
+    dispatch(setLoadingFalse())
   }
 }
 

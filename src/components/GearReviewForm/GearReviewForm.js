@@ -17,6 +17,7 @@ import GearReviewFormStarRating from "./GearReviewFormStarRating"
 import GearReviewFormImageCarousel from "./GearReviewFormImageCarousel"
 import GearReviewFormProsCons from "./GearReviewFormProsCons"
 import GearReviewFormReview from "./GearReviewFormReview"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   visible: state.gearReviewForm.visible,
@@ -68,11 +69,10 @@ class GearReviewForm extends Component {
 
   render() {
     return (
-      <Modal
+      <FormModal
         visible={this.props.visible}
         animationType={"slide"}
         style={{ backgroundColor: "white", height: this.props.height }}>
-        <SafeAreaView>
           {this.renderHeader()}
           <InputScrollView style={{ padding: 20 }}>
             <GearReviewFormTitle />
@@ -82,8 +82,7 @@ class GearReviewForm extends Component {
             <GearReviewFormProsCons />
             <View style={{ marginBottom: 200 }} />
           </InputScrollView>
-        </SafeAreaView>
-      </Modal>
+      </FormModal>
     )
   }
 }

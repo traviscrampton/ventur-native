@@ -9,6 +9,24 @@ const ql = require("superagent-graphql")
 export const API_ROOT = "http://10.0.0.157:3000"
 // export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
+const handleError = error => {
+  if (error.message === "Network request failed") {
+    DropDownHolder.alert("error", "Error", error.message)
+    return
+  }
+  
+  return error.json().then(responseJson => {
+    switch (error.status) {
+      case 401:
+        return logout()
+      case 422:
+        DropDownHolder.alert("warn", "Error", responseJson.errors.join(", "))
+      default:
+        DropDownHolder.alert("error", "Error", "Something went wrong")
+    }
+  })
+}
+
 export const setToken = async () => {
   let token
   try {
@@ -66,17 +84,19 @@ export const get = async (route, params = {}) => {
     }
   })
     .then(response => {
-      return response.json()
+      if (response.ok) {
+        return response.json()
+      } else {
+        throw response
+      }
     })
     .then(data => {
       return data
     })
-    .catch(err => {
-      if (err.status === 401) {
-        return logOut()
-      }
+    .catch(error => {
+      handleError(error)
 
-      DropDownHolder.alert("error", "Error", err.message)
+      throw new Error()
     })
 }
 
@@ -93,17 +113,19 @@ export const put = async (route, params = {}) => {
     body: JSON.stringify(params)
   })
     .then(response => {
-      return response.json()
+      if (response.ok) {
+        return response.json()
+      } else {
+        throw response
+      }
     })
     .then(data => {
       return data
     })
-    .catch(err => {
-      if (err.status === 401) {
-        return logout()
-      }
+    .catch(error => {
+      handleError(error)
 
-      DropDownHolder.alert("error", "Error", err.message)
+      throw new Error()
     })
 }
 
@@ -120,17 +142,19 @@ export const post = async (route, params = {}) => {
     body: JSON.stringify(params)
   })
     .then(response => {
-      return response.json()
+      if (response.ok) {
+        return response.json()
+      } else {
+        throw response
+      }
     })
     .then(data => {
       return data
     })
-    .catch(err => {
-      if (err.status === 401) {
-        return logout()
-      }
+    .catch(error => {
+      handleError(error)
 
-      DropDownHolder.alert("error", "Error", err.message)
+      throw new Error()
     })
 }
 
@@ -147,17 +171,19 @@ export const destroy = async (route, params = {}) => {
     body: JSON.stringify(params)
   })
     .then(response => {
-      return response.json()
+      if (response.ok) {
+        return response.json()
+      } else {
+        throw response
+      }
     })
     .then(data => {
       return data
     })
-    .catch(err => {
-      if (err.status === 401) {
-        return logout()
-      }
+    .catch(error => {
+      handleError(error)
 
-      DropDownHolder.alert("error", "Error", err.message)
+      throw new Error()
     })
 }
 

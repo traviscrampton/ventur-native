@@ -29,6 +29,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
 import CameraRollContainer from "../editor/CameraRollContainer"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
@@ -259,17 +260,15 @@ class ChapterMetaDataForm extends Component {
 
   render() {
     return (
-      <Modal visible={this.props.visible} animationType="slide" style={styles.container}>
-        <SafeAreaView>
-          {this.renderHeader()}
-          <ScrollView>
-            {this.renderChapterImage()}
-            {this.renderTitleAndDescription()}
-            {this.renderStatistics()}
-          </ScrollView>
-          <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
-        </SafeAreaView>
-      </Modal>
+      <FormModal visible={this.props.visible}>
+        {this.renderHeader()}
+        <ScrollView>
+          {this.renderChapterImage()}
+          {this.renderTitleAndDescription()}
+          {this.renderStatistics()}
+        </ScrollView>
+        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+      </FormModal>
     )
   }
 }

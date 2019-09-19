@@ -6,6 +6,7 @@ import { get } from "../../agent"
 import { Header } from "../editor/header"
 import { updateJournalForm, toggleCountriesEditorModal } from "../../actions/journal_form"
 import { Feather } from "@expo/vector-icons"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   includedCountries: state.journalForm.includedCountries,
@@ -194,7 +195,7 @@ class CountriesEditor extends Component {
     const { searchBar, searchResults, includedCountries, header } = this.renderComponents()
 
     return (
-      <Modal visible={this.props.visible} animationType="slide" style={{ backgroundColor: "white", height: "100%" }}>
+      <FormModal visible={this.props.visible}>
         {header}
         <View style={styles.container}>
           <View style={{ position: "relative", zIndex: 10 }}>
@@ -203,7 +204,7 @@ class CountriesEditor extends Component {
           </View>
           {includedCountries}
         </View>
-      </Modal>
+      </FormModal>
     )
   }
 }

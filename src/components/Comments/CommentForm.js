@@ -7,6 +7,7 @@ import {
   toggleCommentFormModal
 } from "../../actions/comment_form"
 import { connect } from "react-redux"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   content: state.commentForm.content,
@@ -109,16 +110,13 @@ class CommentForm extends Component {
 
   render() {
     return (
-      <Modal
-        visible={this.props.visible}
-        animationType={"slide"}
-        style={{ backgroundColor: "white", height: Dimensions.get("window").height }}>
+      <FormModal visible={this.props.visible}>
         {this.renderHeader()}
         <ScrollView>
           {this.renderCommentablePreview()}
           {this.renderTextBox()}
         </ScrollView>
-      </Modal>
+      </FormModal>
     )
   }
 }

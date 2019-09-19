@@ -79,7 +79,13 @@ export function persistGearReview() {
 
 export function createGearReview(params) {
   return async function(dispatch, getState) {
-    const res = await post("/gear_item_reviews", params)
+    try {
+      const res = await post("/gear_item_reviews", params)
+    } catch (err) {
+      console.log("ERR", err)
+      return
+    }
+
     const {
       id,
       gearItem,
