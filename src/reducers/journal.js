@@ -15,7 +15,9 @@ const defaultJournalData = {
   journal: {
     user: {},
     chapters: [],
-    gear: []
+    gear: [],
+    distance: {},
+    countries: []
   },
   noRequest: false,
   loaded: false,

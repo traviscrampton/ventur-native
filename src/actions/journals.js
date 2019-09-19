@@ -65,12 +65,15 @@ export function imageUploading(payload) {
 }
 
 export function loadSingleJournal(journalId) {
-  return function(dispatch, getState) {
-    get(`/journals/${journalId}/journal_metadata`).then(data => {
+  return async function(dispatch, getState) {
+    try {
+      const data = await get(`/journals/${journalId}/journal_metadata`)
       dispatch(populateSingleJournal(data.journal))
       dispatch(fetchJournalChapters(journalId))
       dispatch(fetchJournalGear(journalId))
-    })
+    } catch {
+      dispatch(populateSingleJournal({}))
+    }
   }
 }
 
@@ -91,10 +94,13 @@ export function populateJournalChapters(payload) {
 }
 
 export const fetchJournalChapters = journalId => {
-  return function(dispatch, getState) {
-    get(`/journals/${journalId}/chapters`).then(data => {
+  return async function(dispatch, getState) {
+    try {
+      const data = await get(`/journals/${journalId}/chapters`)
       dispatch(populateJournalChapters(data.chapters))
-    })
+    } catch {
+      console.log("we should populate something here")
+    }
   }
 }
 

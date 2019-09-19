@@ -25,7 +25,6 @@ import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "../../actions/c
 import { authenticateStravaUser } from "../../actions/strava"
 import { connect } from "react-redux"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
-import { addJournalsToAsyncStorage } from "../../utils/offline_helpers"
 import { logOut } from "../../auth"
 import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
 import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
@@ -68,7 +67,6 @@ class Profile extends Component {
   componentWillMount() {
     this.props.setLoadingTrue()
     this.getProfilePageData()
-    this.getOfflineChapters()
   }
 
   getProfilePageData() {
@@ -78,12 +76,6 @@ class Profile extends Component {
       addJournalsToAsyncStorage(user.journals)
       this.props.setLoadingFalse()
     })
-  }
-
-  async getOfflineChapters() {
-    let offlineChapters = await AsyncStorage.getItem("chapters")
-    offlineChapters = JSON.parse(offlineChapters)
-    this.props.populateOfflineChapters(offlineChapters)
   }
 
   switchActiveTab = newTab => {
