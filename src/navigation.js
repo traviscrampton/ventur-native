@@ -70,7 +70,7 @@ const JournalFeedNavigator = createStackNavigator(
     JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
-    GearItemReview: GearItemReview,
+    GearItemReview: GearItemReview
   },
   {
     initialRouteName: "JournalFeed",
@@ -105,6 +105,7 @@ const ProfileNavigator = createStackNavigator(
     ManageContent: ManageContent,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
+    GearItemReview: GearItemReview
   },
   {
     initialRouteName: "Profile",

@@ -12,8 +12,9 @@ import {
   Linking
 } from "react-native"
 import ChapterList from "../chapters/ChapterList"
+import GearListItem from "../GearItem/GearListItem"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
-import { populateUserPage, populateOfflineChapters } from "../../actions/user"
+import { populateUserPage, populateOfflineChapters, getProfilePageData } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
 import ChapterUserForm from "../chapters/ChapterUserForm"
@@ -21,37 +22,40 @@ import { updateChapterForm } from "../../actions/chapter_form"
 import { loadChapter } from "../../actions/chapter"
 import { toggleJournalFormModal } from "../../actions/journal_form"
 import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
-import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "../../actions/common"
+import { setCurrentUserf } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
 import { connect } from "react-redux"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import { populateGearItemReview } from "../../actions/gear_item_review"
 import { logOut } from "../../auth"
 import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
 import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
 import LoadingScreen from "../shared/LoadingScreen"
 import { WebBrowser } from "expo"
 import Expo from "expo"
+import SlidingTabs from "../shared/SlidingTabs"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   stravaClientId: state.common.stravaClientId,
   user: state.user.user,
-  offlineChapters: state.user.offlineChapters,
-  isLoading: state.common.isLoading
+  gear: state.user.user.gear,
+  journals: state.user.user.journals,
+  width: state.common.width
 })
 
 const mapDispatchToProps = dispatch => ({
   populateUserPage: payload => dispatch(populateUserPage(payload)),
   populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
-  setLoadingTrue: () => dispatch(setLoadingTrue()),
-  setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadChapter: payload => dispatch(loadChapter(payload)),
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetJournalShow: () => dispatch(resetJournalShow()),
-  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload))
+  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
+  getProfilePageData: () => dispatch(getProfilePageData()),
+  populateGearItemReview: payload => dispatch(populateGearItemReview(payload))
 })
 
 class Profile extends Component {
@@ -59,71 +63,21 @@ class Profile extends Component {
     super(props)
 
     this.state = {
-      activeTab: "journals",
-      userMenuOpen: false
+      activeIndex: 0
     }
   }
 
   componentWillMount() {
-    this.props.setLoadingTrue()
-    this.getProfilePageData()
-  }
-
-  getProfilePageData() {
-    get(`/users/${this.props.currentUser.id}`).then(res => {
-      const { user } = res
-      this.props.populateUserPage(user)
-      addJournalsToAsyncStorage(user.journals)
-      this.props.setLoadingFalse()
-    })
-  }
-
-  switchActiveTab = newTab => {
-    this.setState({
-      activeTab: newTab
-    })
-  }
-
-  isActiveTab(tab) {
-    if (this.state.activeTab === tab) {
-      return { backgroundColor: "#FF5423", color: "white", borderColor: "#FF5423" }
-    }
+    this.props.getProfilePageData()
   }
 
   handleLogout = async () => {
-    await AsyncStorage.setItem("chapters", JSON.stringify([]))
-    await AsyncStorage.setItem("journals", JSON.stringify([]))
     await logOut()
     this.props.setCurrentUser(null)
   }
 
   handleJournalPress = journalId => {
     this.props.navigation.navigate("Journal", { journalId })
-  }
-
-  toggleUserMenu = () => {
-    let { userMenuOpen } = this.state
-    this.setState({
-      userMenuOpen: !userMenuOpen
-    })
-  }
-
-  selectChapter = async chapterId => {
-    let chapters = await AsyncStorage.getItem("chapters")
-    chapters = JSON.parse(chapters)
-    let chapter
-    chapter = chapters.find(chapter => {
-      return chapter.id === chapterId
-    })
-    this.props.loadChapter(chapter)
-    this.props.navigation.navigate("Chapter")
-  }
-
-  populateJournalsAndBeginNavigation = async () => {
-    const journals = await AsyncStorage.getItem("journals")
-    const obj = { journals: JSON.parse(journals), offline: true }
-    this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterFormJournals")
   }
 
   connectToStrava = async () => {
@@ -153,14 +107,14 @@ class Profile extends Component {
 
   renderUserName() {
     return (
-      <View style={{ height: Dimensions.get("window").width / 4, display: "flex", flexDirection: "column" }}>
+      <View style={{ height: this.props.width / 4, display: "flex", flexDirection: "column" }}>
         <View>
           <Text style={{ fontFamily: "playfair", fontSize: 22, marginBottom: 5, fontWeight: "bold" }}>
             Hi {this.props.user.firstName}!
           </Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 40 }} />
+          <Text style={{ width: this.props.width * 0.68 - 40 }} />
         </View>
       </View>
     )
@@ -186,14 +140,14 @@ class Profile extends Component {
   }
 
   renderProfilePhoto() {
-    let imgDimensions = Dimensions.get("window").width / 4
+    let imgDimensions = this.props.width / 4
     const options = this.getOptions()
 
     return (
       <View
         style={{
           display: "flex",
-          width: Dimensions.get("window").width - 30,
+          width: this.props.width - 30,
           flexDirection: "row",
           alignItems: "top",
           paddingRight: 20
@@ -231,7 +185,7 @@ class Profile extends Component {
           padding: 15,
           marginTop: 20,
           backgroundColor: "white",
-          width: Dimensions.get("window").width - 30
+          width: this.props.width - 30
         }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
           {this.renderProfilePhoto()}
@@ -240,144 +194,22 @@ class Profile extends Component {
     )
   }
 
-  renderProfileTabBar() {
-    return (
-      <View
-        shadowColor="#d3d3d3"
-        shadowOffset={{ width: 0, height: 3 }}
-        shadowOpacity={0.3}
-        style={{
-          marginBottom: 10,
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-around",
-          height: 45
-        }}>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("journals")}>
-          <View
-            style={[
-              {
-                borderColor: "#D1D1D1",
-                height: 40,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: Dimensions.get("window").width / 2.2,
-                borderRadius: 30,
-                borderWidth: 1,
-                marginBottom: 5
-              },
-              this.isActiveTab("journals")
-            ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("journals")]}>
-              MY TRIPS ({this.props.user.journals.length})
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
-          <View
-            style={[
-              {
-                borderColor: "#D1D1D1",
-                height: 40,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: Dimensions.get("window").width / 2.2,
-                borderRadius: 30,
-                borderWidth: 1,
-                marginBottom: 5
-              },
-              this.isActiveTab("offlineChapters")
-            ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("offlineChapters")]}>
-              MY CHAPTERS ({this.props.offlineChapters.length})
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
+  handleGearItemPress = id => {
+    const payload = Object.assign({}, { id, loading: true })
+
+    this.props.populateGearItemReview(payload)
+    this.props.navigation.navigate("GearItemReview")
   }
 
-  renderOfflineChapter(chapter, index) {
-    return (
-      <View>
-        <Text>{chapter.title}</Text>
-      </View>
-    )
-  }
-
-  persistOfflineChapter = async chapterId => {
-    const offlineChapter = await getChapterFromStorage(chapterId)
-
-    let selectedImage
-    const formData = new FormData()
-    const token = await setToken()
-    const newImages = offlineChapter.content.filter(entry => {
-      return entry.type === "image" && entry.id === null
+  renderGear() {
+    console.log("THIS DOT PROPS DOT GEAR", this.props.gear)
+    return this.props.gear.map((gearItem, index) => {
+      return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })
-    if (newImages) {
-      for (let image of newImages) {
-        selectedImage = {
-          uri: image.uri,
-          name: image.filename,
-          type: "multipart/form-data"
-        }
-        formData.append("files[]", selectedImage)
-      }
-    }
-
-    if (offlineChapter.bannerImage.uri) {
-      formData.append("banner_image", offlineChapter.bannerImage)
-    }
-
-    formData.append("title", offlineChapter.title)
-    formData.append("status", offlineChapter.status)
-    formData.append("journalId", offlineChapter.journalId)
-    formData.append("offline", offlineChapter.offline)
-    formData.append("date", offlineChapter.date)
-    formData.append("distance", offlineChapter.distance)
-    formData.append("content", JSON.stringify(offlineChapter.content))
-
-    fetch(`${API_ROOT}/chapters/upload_offline_chapter`, {
-      method: "post",
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: token
-      },
-      body: formData
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        updateOfflineChapters(data, this.props.populateOfflineChapters, { id: chapterId })
-      })
-      .catch(err => {
-        console.log("error", err)
-      })
-  }
-
-  renderOfflineChapters() {
-    return (
-      <View style={{ marginBottom: 100 }}>
-        <ChapterList
-          chapters={this.props.offlineChapters}
-          user={this.props.user}
-          currentUser={this.props.currentUser}
-          persistOfflineChapter={this.persistOfflineChapter}
-          handleSelectChapter={this.selectChapter}
-        />
-      </View>
-    )
   }
 
   renderProfileJournals() {
-    const pad = Dimensions.get("window").width * 0.035
+    const pad = this.props.width * 0.035
 
     return (
       <View style={{ position: "relative", backgroundColor: "white" }}>
@@ -390,9 +222,10 @@ class Profile extends Component {
             paddingRight: 15,
             flexDirection: "row",
             justifyContent: "space-between",
-            flexWrap: "wrap"
+            flexWrap: "wrap",
+            marginTop: 10
           }}
-          data={this.props.user.journals}
+          data={this.props.journals}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalMini {...item} handlePress={this.handleJournalPress} />}
         />
@@ -431,51 +264,45 @@ class Profile extends Component {
     )
   }
 
-  renderRelatedProfileContent() {
-    switch (this.state.activeTab) {
-      case "journals":
-        return this.renderProfileJournals()
-      case "offlineChapters":
-        return this.renderOfflineChapters()
-      default:
-        console.log("WHAT IS THIS", this.state.activeTab)
-    }
-  }
-
   renderFloatingCreateButton() {
-    switch (this.state.activeTab) {
-      case "journals":
-        return this.renderCreateJournalCta()
-      case "offlineChapters":
-        return this.createOfflineChapters()
-    }
+    return this.renderCreateJournalCta()
   }
 
-  createOfflineChapters() {
-    if (!this.props.currentUser.canCreate) return
+  handleIndexChange = activeIndex => {
+    this.setState({ activeIndex })
+  }
+
+  getTabProps = () => {
+    return Object.assign(
+      [],
+      [
+        Object.assign(
+          {},
+          {
+            label: "JOURNALS",
+            view: this.renderProfileJournals()
+          }
+        ),
+        Object.assign({
+          label: "GEAR",
+          view: this.renderGear()
+        })
+      ]
+    )
+  }
+
+  renderSlidingTabs() {
+    const tabs = this.getTabProps()
+    const tabWidth = (this.props.width - 40) / tabs.length
 
     return (
-      <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 1, height: 1 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#3F88C5",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 17,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Feather name="plus" size={32} color="white" />
-        </View>
-      </TouchableWithoutFeedback>
+      <SlidingTabs
+        tabs={tabs}
+        tabWidth={tabWidth}
+        tabBarColor="#3F88C5"
+        activeIndex={this.state.activeIndex}
+        onIndexChange={this.handleIndexChange}
+      />
     )
   }
 
@@ -486,9 +313,10 @@ class Profile extends Component {
 
     return (
       <View style={{ backgroundColor: "white", height: "100%" }}>
-        {this.renderProfilePhotoAndMetadata()}
-        {this.renderProfileTabBar()}
-        <ScrollView>{this.renderRelatedProfileContent()}</ScrollView>
+        <ScrollView>
+          {this.renderProfilePhotoAndMetadata()}
+          {this.renderSlidingTabs()}
+        </ScrollView>
         {this.renderFloatingCreateButton()}
         <JournalForm />
       </View>
