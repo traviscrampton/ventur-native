@@ -6,7 +6,7 @@ import {
   updateConnectionType,
   addApiCredentials
 } from "../actions/common"
-import { Font } from "expo"
+import * as Font from "expo-font"
 import { SafeAreaView } from "react-native"
 import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
 import { RootNavigator } from "../navigation"
@@ -51,7 +51,7 @@ class Ventur extends Component {
   }
 
   async getAWSCredentials() {
-    return 
+    return
     getCredentials().then(response => {
       console.log("response", response)
       this.props.addApiCredentials(response)
