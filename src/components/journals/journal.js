@@ -37,9 +37,9 @@ import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { MaterialIcons } from "@expo/vector-icons"
 import { updateChapterForm, addChapterToJournals, toggleChapterModal } from "../../actions/chapter_form"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import SlidingTabs from "../shared/SlidingTabs"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
-import { TabView, SceneMap, TabBar, PagerScroll } from "react-native-tab-view"
 import GearListItem from "../GearItem/GearListItem"
 import { FloatingAction } from "react-native-floating-action"
 import CameraRollContainer from "../editor/CameraRollContainer"
@@ -88,6 +88,8 @@ const mapDispatchToProps = dispatch => ({
 class Journal extends Component {
   constructor(props) {
     super(props)
+
+    this.position = new Animated.Value(0)
   }
 
   static actions = [
@@ -458,32 +460,44 @@ class Journal extends Component {
     })
   }
 
-  renderTabView() {
-    return (
-      <TabView
-        navigationState={{ index: this.props.index, routes: this.props.routes }}
-        renderScene={({ route }) => {
-          switch (route.key) {
-            case "chapters":
-              return this.renderChapters()
-            case "gear":
-              return this.renderGear()
-            default:
-              return null
+  updateTabIndex = index => {
+    this.props.updateTabIndex(index)
+  }
+
+  handleTabPress = index => {
+    console.log("index")
+  }
+
+  getTabProps = () => {
+    return Object.assign(
+      [],
+      [
+        Object.assign(
+          {},
+          {
+            label: "CHAPTERS",
+            view: this.renderChapters()
           }
-        }}
-        onIndexChange={index => {
-          this.props.updateTabIndex(index)
-        }}
-        initialLayout={{ width: this.props.width, height: 0 }}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            labelStyle={{ color: "#323941" }}
-            indicatorStyle={{ backgroundColor: "#3F88C5" }}
-            style={{ backgroundColor: "white" }}
-          />
-        )}
+        ),
+        Object.assign({
+          label: "GEAR",
+          view: this.renderGear()
+        })
+      ]
+    )
+  }
+
+  renderSlidingTabs() {
+    const tabs = this.getTabProps()
+    const tabWidth = (this.props.width - 40) / tabs.length
+
+    return (
+      <SlidingTabs
+        tabs={tabs}
+        tabWidth={tabWidth}
+        tabBarColor="#3F88C5"
+        activeIndex={this.props.index}
+        onIndexChange={this.updateTabIndex}
       />
     )
   }
@@ -503,9 +517,10 @@ class Journal extends Component {
       <View style={{ height: "100%", position: "relative" }}>
         <ScrollView style={styles.container}>
           {this.renderHeader()}
-          {this.renderTabView()}
+          {this.renderSlidingTabs()}
         </ScrollView>
         {this.renderFloatingButton()}
+
         <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
         {this.renderCameraRollContainer()}
         <JournalForm />
