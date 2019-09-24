@@ -67,7 +67,7 @@ const JournalCard = props => {
   })
 
   return (
-    <TouchableWithoutFeedback onPress={() => props.handlePress(props.id)}>
+    <TouchableWithoutFeedback key={props.id} onPress={() => props.handlePress(props.id)}>
       <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <View style={[styles.card, { width: imageWidth, borderRadius: 10, overflow: "hidden" }]}>
           <ProgressiveImage thumbnailSource={props.thumbnailImageUrl} source={props.cardImageUrl} style={imageStyles} />

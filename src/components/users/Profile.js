@@ -202,7 +202,6 @@ class Profile extends Component {
   }
 
   renderGear() {
-    console.log("THIS DOT PROPS DOT GEAR", this.props.gear)
     return this.props.gear.map((gearItem, index) => {
       return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })

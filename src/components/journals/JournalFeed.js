@@ -68,6 +68,7 @@ class JournalFeed extends Component {
         refreshing={this.props.refreshing}
         onRefresh={this.handleRefresh}
         renderItem={({ item, index }) => this.renderJournal(item, index)}
+        keyExtractor={item => item.id}
       />
     )
   }
