@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
 import JournalFeed from "./components/journals/JournalFeed"
 import Journal from "./components/journals/journal"
-import Login from "./components/users/login"
 import StravaLogin from "./components/users/StravaLogin"
 import HomeLoggedOut from "./components/users/HomeLoggedOut"
 import BottomTabBar from "./components/shared/BottomTabBar"
@@ -34,7 +33,6 @@ const NO_FOOTER_SCREENS = [
   "CameraRollContainer",
   "ImageCaptionForm",
   "ManageContent",
-  "Login",
   "JournalFormTitle",
   "JournalFormLocation",
   "JournalFormStatus",
@@ -120,7 +118,6 @@ const ProfileNavigator = createStackNavigator(
 const AuthFlow = createStackNavigator(
   {
     HomeLoggedOut: HomeLoggedOut,
-    Login: Login,
     UserEmailPasswordForm: UserEmailPasswordForm,
     UserNameForm: UserNameForm,
     UserAvatarForm: UserAvatarForm

@@ -6,10 +6,14 @@ import { LinearGradient } from "expo"
 import DropDownHolder from "../../utils/DropdownHolder"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { API_ROOT, setToken } from "../../agent"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   email: state.userForm.email,
-  password: state.userForm.password
+  password: state.userForm.password,
+  width: state.common.width,
+  height: state.common.height,
+  visible: state.userForm.visible
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -138,13 +142,15 @@ class UserEmailPasswordForm extends Component {
 
   render() {
     return (
-      <LinearGradient
-        style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, padding: 25 }}
-        colors={["#FF5423", "#E46545"]}>
-        {this.renderBackButton()}
-        {this.renderFormTitle()}
-        {this.renderForm()}
-      </LinearGradient>
+      <FormModal visible={this.props.visible}>
+        <LinearGradient
+          style={{ height: this.props.height, width: this.props.width, padding: 25 }}
+          colors={["#FF5423", "#E46545"]}>
+          {this.renderBackButton()}
+          {this.renderFormTitle()}
+          {this.renderForm()}
+        </LinearGradient>
+      </FormModal>
     )
   }
 }

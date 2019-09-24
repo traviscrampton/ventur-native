@@ -1,20 +1,27 @@
 import React, { Component } from "react"
 import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
-import { LinearGradient } from "expo"
+import { LinearGradient } from "expo-linear-gradient"
+import { toggleLoginModal } from "../../actions/login"
 import { connect } from "react-redux"
+import Login from "./Login"
 const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  width: state.common.width,
+  height: state.common.height
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  toggleLoginModal: payload => dispatch(toggleLoginModal(payload))
+})
 
 class HomeLoggedOut extends Component {
   constructor(props) {
     super(props)
   }
 
-  navigateToSignIn = () => {
-    this.props.navigation.navigate("Login")
+  toggleLoginModal = () => {
+    this.props.toggleLoginModal(true)
   }
 
   navigateToSignUp = () => {
@@ -23,14 +30,12 @@ class HomeLoggedOut extends Component {
 
   renderTitleAndSubTitle() {
     return (
-      <View style={{ marginTop: Dimensions.get("window").height / 7 }}>
+      <View style={{ marginTop: this.props.height / 7 }}>
         <View>
           <Text style={{ fontSize: 60, color: "white", textAlign: "center" }}>Ventur</Text>
         </View>
         <View style={{ padding: 40, paddingTop: 10 }}>
-          <Text style={{ fontSize: 22, color: "white", textAlign: "center" }}>
-            Bike touring built for you
-          </Text>
+          <Text style={{ fontSize: 22, color: "white", textAlign: "center" }}>Bike touring built for you</Text>
         </View>
       </View>
     )
@@ -48,7 +53,7 @@ class HomeLoggedOut extends Component {
 
   renderSignIn() {
     return (
-      <TouchableWithoutFeedback onPress={this.navigateToSignIn}>
+      <TouchableWithoutFeedback onPress={this.toggleLoginModal}>
         <View>
           <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>Sign in</Text>
         </View>
@@ -63,7 +68,7 @@ class HomeLoggedOut extends Component {
           style={{
             marginTop: 10,
             marginBottom: 20,
-            width: Dimensions.get("window").width - 40,
+            width: this.props.width - 40,
             height: 50,
             display: "flex",
             flexDirection: "row",
@@ -90,14 +95,12 @@ class HomeLoggedOut extends Component {
 
   render() {
     return (
-      <ImageBackground
-        style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width }}
-        source={GabeBolivia}>
+      <ImageBackground style={{ height: this.props.height, width: this.props.width }} source={GabeBolivia}>
         <View
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.4)",
-            height: Dimensions.get("window").height,
-            width: Dimensions.get("window").width,
+            height: this.props.height,
+            width: this.props.width,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between"
@@ -105,6 +108,7 @@ class HomeLoggedOut extends Component {
           {this.renderTitleAndSubTitle()}
           {this.renderSignUpAndSignIn()}
         </View>
+        <Login />
       </ImageBackground>
     )
   }
@@ -113,6 +117,6 @@ class HomeLoggedOut extends Component {
 const styles = StyleSheet.create({})
 
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  mapDispatchToProps
 )(HomeLoggedOut)
