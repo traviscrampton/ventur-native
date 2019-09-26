@@ -18,12 +18,13 @@ const GearListItem = props => {
 
   return (
     <View
-      shadowColor="#323941"
+      shadowColor="gray"
       shadowOffset={{ width: 0, height: 0 }}
-      shadowOpacity={0.6}
+      shadowOpacity={0.5}
+      shadowRadius={2}
       style={{
         width: width,
-        height: 120,
+        height: 100,
         display: "flex",
         marginLeft: 20,
         marginTop: 15,
@@ -31,15 +32,25 @@ const GearListItem = props => {
         borderRadius: 5
       }}>
       <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.gearItemPress(id)}>
-        <View style={{ display: "flex", flexDirection: "row", backgroundColor: "white" }}>
-          <View style={{ width: 120, height: 120, backgroundColor: "gray" }}>
-            <ProgressiveImage style={{ width: 120, borderTopLeftRadius: 5, borderBottomLeftRadius: 5, height: 120 }} source={imageUrl} />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            backgroundColor: "white",
+            overflow: "hidden",
+            borderRadius: 5
+          }}>
+          <View style={{ width: 100, height: 100, backgroundColor: "white" }}>
+            <ProgressiveImage
+              style={{ width: 100, borderTopLeftRadius: 5, borderBottomLeftRadius: 5, height: 100 }}
+              source={imageUrl}
+            />
           </View>
           <View style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 10 }}>
             <Text style={{ fontSize: 16, width: textWidth, fontFamily: "open-sans-regular" }} numberOfLines={2}>
               {name}
             </Text>
-            <StarRating rating={rating} size={20}/>
+            <StarRating rating={rating} size={20} />
           </View>
         </View>
       </TouchableWithoutFeedback>

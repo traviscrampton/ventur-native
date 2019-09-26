@@ -5,6 +5,55 @@ import { addCreatedGearReview } from "./journals"
 import { populateGearItemReview } from "./gear_item_review"
 const uuid = require("react-native-uuid")
 
+export function getUserJournals() {
+  return async function(dispatch, getState) {
+    const { id } = getState().common.currentUser
+    try {
+      const data = await get(`/users/${id}/journals`)
+      dispatch(populateUserJournals(data.journals))
+    } catch {
+      console.log("now wat in da fuk")
+      return
+    }
+  }
+}
+
+export function handleJournalPress(id) {
+  return function(dispatch, getState) {
+    const { journalIds } = getState().gearReviewForm
+
+    if (journalIds.includes(id)) {
+      dispatch(removeFromJournalIds(id))
+    } else {
+      dispatch(addToJournalIds(id))
+    }
+  }
+}
+
+export const ADD_TO_JOURNAL_IDS = "ADD_TO_JOURNAL_IDS"
+export function addToJournalIds(payload) {
+  return {
+    type: ADD_TO_JOURNAL_IDS,
+    payload: payload
+  }
+}
+
+export const REMOVE_FROM_JOURNAL_IDS = "REMOVE_FROM_JOURNAL_IDS"
+export function removeFromJournalIds(payload) {
+  return {
+    type: REMOVE_FROM_JOURNAL_IDS,
+    payload: payload
+  }
+}
+
+export const POPULATE_USER_JOURNALS = "POPULATE_USER_JOURNALS"
+export function populateUserJournals(payload) {
+  return {
+    type: POPULATE_USER_JOURNALS,
+    payload: payload
+  }
+}
+
 export const TOGGLE_IMAGE_UPLOADING = "TOGGLE_IMAGE_UPLOADING"
 export function setImageUploadingTrue() {
   return {

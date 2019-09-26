@@ -2,8 +2,10 @@ import React, { Component } from "react"
 import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { toggleLoginModal } from "../../actions/login"
+import { toggleUserFormModal } from "../../actions/user_form"
 import { connect } from "react-redux"
 import Login from "./Login"
+import UserForm from "./UserForm"
 const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
 
 const mapStateToProps = state => ({
@@ -12,7 +14,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  toggleLoginModal: payload => dispatch(toggleLoginModal(payload))
+  toggleLoginModal: payload => dispatch(toggleLoginModal(payload)),
+  toggleUserFormModal: payload => dispatch(toggleUserFormModal(payload))
 })
 
 class HomeLoggedOut extends Component {
@@ -25,7 +28,7 @@ class HomeLoggedOut extends Component {
   }
 
   navigateToSignUp = () => {
-    this.props.navigation.navigate("UserEmailPasswordForm")
+    this.props.toggleUserFormModal(true)
   }
 
   renderTitleAndSubTitle() {
@@ -109,6 +112,7 @@ class HomeLoggedOut extends Component {
           {this.renderSignUpAndSignIn()}
         </View>
         <Login />
+        <UserForm />
       </ImageBackground>
     )
   }

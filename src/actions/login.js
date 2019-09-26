@@ -23,7 +23,7 @@ export function submitForm() {
     const { email, password } = getState().login
     try {
       const login = await post("/users/login", { email, password })
-      storeJWT(login)
+      await storeJWT(login)
       dispatch(setCurrentUser(login.user))
       dispatch(resetLoginForm())
     } catch {

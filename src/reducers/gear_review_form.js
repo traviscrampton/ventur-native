@@ -19,7 +19,10 @@ import {
   SET_GEAR_ITEMS,
   RESET_GEAR_ITEM,
   POPULATE_GEAR_ITEM_REVIEW_FORM,
-  TOGGLE_GEAR_REVIEW_FORM_MODAL
+  TOGGLE_GEAR_REVIEW_FORM_MODAL,
+  POPULATE_USER_JOURNALS,
+  ADD_TO_JOURNAL_IDS,
+  REMOVE_FROM_JOURNAL_IDS
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
@@ -42,7 +45,8 @@ const defaultGearForm = {
   newlyCreatedUris: [],
   gearItemSuggestions: [],
   dropdownOpen: false,
-  visible: false
+  visible: false,
+  userJournals: []
 }
 
 export default (state = defaultGearForm, action) => {
@@ -64,7 +68,6 @@ export default (state = defaultGearForm, action) => {
       }
 
     case POPULATE_GEAR_ITEM_REVIEW_FORM:
-      console.log("action.payload", action.payload)
       return Object.assign({}, state, action.payload)
 
     case UPDATE_GEAR_REVIEW_REVIEW:
@@ -128,6 +131,19 @@ export default (state = defaultGearForm, action) => {
         ...state,
         newlyCreatedUris: action.payload
       }
+
+    case ADD_TO_JOURNAL_IDS:
+      return {
+        ...state,
+        journalIds: [...state.journalIds, action.payload]
+      }
+    case REMOVE_FROM_JOURNAL_IDS:
+      return {
+        ...state,
+        journalIds: state.journalIds.filter(journalId => {
+          return journalId !== action.payload
+        })
+      }
     case UPDATE_ACTIVE_IMAGE_INDEX:
       return {
         ...state,
@@ -149,6 +165,11 @@ export default (state = defaultGearForm, action) => {
       return {
         ...state,
         dropdownOpen: action.payload
+      }
+    case POPULATE_USER_JOURNALS:
+      return {
+        ...state,
+        userJournals: action.payload
       }
     case UPDATE_IMAGE_IN_CAROUSEL:
       return {

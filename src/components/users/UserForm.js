@@ -1,11 +1,21 @@
 import React, { Component } from "react"
-import { StyleSheet, Button, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
-import { updateUserForm, populateUserForm } from "../../actions/user_form"
+import {
+  StyleSheet,
+  Button,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  TouchableWithoutFeedback,
+  ScrollView
+} from "react-native"
+import { updateUserForm, populateUserForm, resetUserForm, submitForm } from "../../actions/user_form"
 import { connect } from "react-redux"
-import { LinearGradient } from "expo"
+import { LinearGradient } from "expo-linear-gradient"
 import DropDownHolder from "../../utils/DropdownHolder"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { API_ROOT, setToken } from "../../agent"
+import InputScrollView from "react-native-input-scroll-view"
 import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
@@ -18,10 +28,12 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateUserForm: payload => dispatch(updateUserForm(payload)),
-  populateUserForm: payload => dispatch(populateUserForm(payload))
+  populateUserForm: payload => dispatch(populateUserForm(payload)),
+  submitForm: () => dispatch(submitForm()),
+  resetUserForm: payload => dispatch(resetUserForm(payload))
 })
 
-class UserEmailPasswordForm extends Component {
+class UserForm extends Component {
   constructor(props) {
     super(props)
 
@@ -31,33 +43,11 @@ class UserEmailPasswordForm extends Component {
   }
 
   navigateBack = () => {
-    this.props.navigation.goBack()
+    this.props.resetUserForm()
   }
 
   submitForm = async () => {
-    const token = await setToken()
-    const params = Object.assign({}, { email: this.props.email, password: this.props.password })
-    fetch(`${API_ROOT}/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        if (data.errors) {
-          throw Error(data.errors.join(", "))
-        }
-        this.props.populateUserForm({ id: data.user.id, email: data.user.email })
-        this.props.navigation.navigate("UserNameForm")
-      })
-      .catch(err => {
-        DropDownHolder.alert("error", "Error", err)
-      })
+    this.props.submitForm()
   }
 
   handleEntry = (key, text) => {
@@ -86,18 +76,17 @@ class UserEmailPasswordForm extends Component {
     return (
       <View>
         <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>
-          Email & Password
+          Welcome to Ventur
         </Text>
       </View>
     )
   }
 
-  renderForm() {
+  renderEmailField() {
     return (
-      <View style={styles.container}>
+      <React.Fragment>
         <Text style={{ color: "white" }}>EMAIL</Text>
         <TextInput
-          autoFocus={true}
           style={styles.textInput}
           editable={true}
           autoCapitalize="none"
@@ -105,8 +94,15 @@ class UserEmailPasswordForm extends Component {
           value={this.props.email}
           onChangeText={text => this.handleEntry("email", text)}
         />
+      </React.Fragment>
+    )
+  }
+
+  renderPasswordField() {
+    return (
+      <React.Fragment>
         <Text style={{ color: "white" }}>PASSWORD</Text>
-        <View style={{ position: "relative", height: 50 }}>
+        <View style={{ position: "relative", height: 50, marginBottom: 30 }}>
           <TextInput
             style={styles.textInput}
             editable={true}
@@ -121,21 +117,70 @@ class UserEmailPasswordForm extends Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <TouchableWithoutFeedback onPress={this.submitForm}>
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 30,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 50,
-              marginTop: 20
-            }}>
-            <Text style={{ color: "##FF5423", fontSize: 16 }}>CONTINUE</Text>
-          </View>
-        </TouchableWithoutFeedback>
+      </React.Fragment>
+    )
+  }
+
+  renderFirstNameField() {
+    return (
+      <React.Fragment>
+        <Text style={{ color: "white" }}>FIRST NAME</Text>
+        <TextInput
+          style={styles.textInput}
+          editable={true}
+          autoCapitalize="none"
+          maxLength={50}
+          value={this.props.firstName}
+          onChangeText={text => this.handleEntry("firstName", text)}
+        />
+      </React.Fragment>
+    )
+  }
+
+  renderLastNameField() {
+    return (
+      <React.Fragment>
+        <Text style={{ color: "white" }}>LAST NAME</Text>
+        <TextInput
+          style={styles.textInput}
+          editable={true}
+          autoCapitalize="none"
+          maxLength={50}
+          value={this.props.lastName}
+          onChangeText={text => this.handleEntry("lastName", text)}
+        />
+      </React.Fragment>
+    )
+  }
+
+  renderSubmitField() {
+    return (
+      <TouchableWithoutFeedback onPress={this.submitForm}>
+        <View
+          style={{
+            backgroundColor: "white",
+            borderRadius: 30,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 50,
+            marginTop: 20
+          }}>
+          <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderForm() {
+    return (
+      <View style={styles.container}>
+        {this.renderEmailField()}
+        {this.renderPasswordField()}
+        {this.renderFirstNameField()}
+        {this.renderLastNameField()}
+        {this.renderSubmitField()}
       </View>
     )
   }
@@ -146,9 +191,11 @@ class UserEmailPasswordForm extends Component {
         <LinearGradient
           style={{ height: this.props.height, width: this.props.width, padding: 25 }}
           colors={["#FF5423", "#E46545"]}>
-          {this.renderBackButton()}
-          {this.renderFormTitle()}
-          {this.renderForm()}
+          <InputScrollView>
+            {this.renderBackButton()}
+            {this.renderFormTitle()}
+            {this.renderForm()}
+          </InputScrollView>
         </LinearGradient>
       </FormModal>
     )
@@ -156,7 +203,9 @@ class UserEmailPasswordForm extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 200
+  },
   textInput: {
     height: 50,
     fontSize: 20,
@@ -171,4 +220,4 @@ const styles = StyleSheet.create({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserEmailPasswordForm)
+)(UserForm)

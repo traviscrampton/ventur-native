@@ -2,6 +2,7 @@ import { AsyncStorage } from "react-native"
 import { SET_CURRENT_USER } from "./actions/action_types"
 
 export const storeJWT = async obj => {
+  console.log("objecthere", obj)
   try {
     AsyncStorage.setItem("JWT", obj.token)
     AsyncStorage.setItem("currentUser", JSON.stringify(obj.user))

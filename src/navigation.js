@@ -9,13 +9,7 @@ import CameraRollContainer from "./components/editor/CameraRollContainer"
 import ImageCaptionForm from "./components/editor/ImageCaptionForm"
 import ChapterDispatch from "./components/chapters/ChapterDispatch"
 import ManageContent from "./components/editor/ManageContent"
-import JournalFormTitle from "./components/JournalForm/JournalFormTitle"
-import JournalFormLocation from "./components/JournalForm/JournalFormLocation"
-import JournalFormStatus from "./components/JournalForm/JournalFormStatus"
-import JournalFormUpload from "./components/JournalForm/JournalFormUpload"
 import Profile from "./components/users/Profile"
-import UserEmailPasswordForm from "./components/users/UserEmailPasswordForm"
-import UserNameForm from "./components/users/UserNameForm"
 import CommentForm from "./components/Comments/CommentForm"
 import JournalForm from "./components/JournalForm/JournalForm"
 import CountriesEditor from "./components/JournalForm/CountriesEditor"
@@ -33,10 +27,6 @@ const NO_FOOTER_SCREENS = [
   "CameraRollContainer",
   "ImageCaptionForm",
   "ManageContent",
-  "JournalFormTitle",
-  "JournalFormLocation",
-  "JournalFormStatus",
-  "JournalFormUpload",
   "RouteEditor",
   "RouteViewer",
   "JournalRoute",
@@ -59,13 +49,9 @@ const JournalFeedNavigator = createStackNavigator(
     ManageContent: ManageContent,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
-    JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
     GearItemReview: GearItemReview
@@ -90,11 +76,7 @@ const ProfileNavigator = createStackNavigator(
     ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
     CameraRollContainer: CameraRollContainer,
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
     ImageCaptionForm: ImageCaptionForm,
-    JournalFormUpload: JournalFormUpload,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,
     RouteEditor: RouteEditor,
@@ -117,10 +99,7 @@ const ProfileNavigator = createStackNavigator(
 
 const AuthFlow = createStackNavigator(
   {
-    HomeLoggedOut: HomeLoggedOut,
-    UserEmailPasswordForm: UserEmailPasswordForm,
-    UserNameForm: UserNameForm,
-    UserAvatarForm: UserAvatarForm
+    HomeLoggedOut: HomeLoggedOut
   },
   {
     initialRouteName: "HomeLoggedOut",
