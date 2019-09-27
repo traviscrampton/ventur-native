@@ -151,6 +151,10 @@ class GearReviewFormImageCarousel extends Component {
     return (
       <TouchableWithoutFeedback onPress={() => this.updateActiveImageIndex(index)}>
         <View
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
           style={{
             width: 120,
             height: 120,
@@ -171,6 +175,10 @@ class GearReviewFormImageCarousel extends Component {
     return (
       <TouchableWithoutFeedback onPress={() => this.openCameraRollContainer()}>
         <View
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
           style={{
             width: 120,
             height: 120,
@@ -184,7 +192,7 @@ class GearReviewFormImageCarousel extends Component {
             alignItems: "center",
             justifyContent: "space-around"
           }}>
-          <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <View style={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "hidden" }}>
             <MaterialIcons name={"file-upload"} size={32} />
             <View>
               <Text style={{ fontSize: 20 }}>Upload</Text>
@@ -197,7 +205,7 @@ class GearReviewFormImageCarousel extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 20 }}>
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "playfair", fontSize: 18, color: "#323941" }}>Photos</Text>
         </View>

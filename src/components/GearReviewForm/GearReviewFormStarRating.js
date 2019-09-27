@@ -67,7 +67,7 @@ class GearReviewFormStarRating extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 20 }}>
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Rating</Text>
         </View>

@@ -43,8 +43,7 @@ class GearReviewFormProsCons extends Component {
 
   getTitleAndCta = isPro => {
     const title = isPro ? "Pros" : "Cons"
-    const addCta = `+ Add ${title.substring(0, 3)}
-    `
+    const addCta = `+ Add ${title.substring(0, 3)}`.toUpperCase()
     return Object.assign({}, { title, addCta })
   }
 
@@ -53,6 +52,11 @@ class GearReviewFormProsCons extends Component {
       return (
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <TextInput
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            multiline
             style={{
               marginTop: 5,
               marginBottom: 5,
@@ -62,7 +66,9 @@ class GearReviewFormProsCons extends Component {
               fontFamily: "open-sans-regular",
               padding: 5,
               borderRadius: 5,
-              borderColor: "#d3d3d3"
+              backgroundColor: "white",
+              borderColor: "#d3d3d3",
+              maxWidth: this.props.width - 80
             }}
             selectionColor="#FF5423"
             onChangeText={text => this.updateProCon(text, index, isPro)}
@@ -84,8 +90,8 @@ class GearReviewFormProsCons extends Component {
         <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>{title}</Text>
         {this.renderProsCons(listItems, isPro)}
         <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(isPro)}>
-          <View>
-            <Text>{addCta}</Text>
+          <View style={{ marginTop: 5 }}>
+            <Text style={{ fontFamily: "open-sans-regular", color: "#323941" }}>{addCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -96,7 +102,7 @@ class GearReviewFormProsCons extends Component {
     const { pros, cons } = this.props
 
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 20, marginBottom: 20 }}>
         {this.renderProsConsContainer(pros, true)}
         {this.renderProsConsContainer(cons, false)}
       </View>

@@ -34,10 +34,19 @@ class GearReviewFormTitle extends Component {
     this.props.populateFormWithGearItem(gearItem)
   }
 
+  handleOnBlur = () => {
+    this.props.toggleDropdown(false)
+  }
+
   renderGearItemSuggestions() {
     let width = this.props.width - 110
+    let borderBottom = <View style={{ borderWidth: 1, borderColor: "#d3d3d3" }} />
 
     return this.props.gearItemSuggestions.map((gearItem, index) => {
+      if (this.props.gearItemSuggestions.length - 1 === index) {
+        borderBottom = <View />
+      }
+
       return (
         <React.Fragment>
           <TouchableWithoutFeedback onPressIn={() => this.populateFormWithGearItem(gearItem)}>
@@ -56,7 +65,7 @@ class GearReviewFormTitle extends Component {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          <View style={{ borderWidth: 1, borderColor: "#d3d3d3" }} />
+          {borderBottom}
         </React.Fragment>
       )
     })
@@ -68,17 +77,20 @@ class GearReviewFormTitle extends Component {
 
     return (
       <View
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
         style={{
           width: this.props.width - 40,
           top: 65,
           position: "absolute",
           backgroundColor: "white",
           borderWidth: 1,
-          borderRadius: 5,
           borderColor: "#d3d3d3",
-          borderBottomWidth: 0
+          borderRadius: 5
         }}>
-        {this.renderGearItemSuggestions()}
+        <View style={{ overflow: "hidden", borderRadius: 5 }}>{this.renderGearItemSuggestions()}</View>
       </View>
     )
   }
@@ -103,7 +115,13 @@ class GearReviewFormTitle extends Component {
           {this.renderVerifiedIcon()}
         </View>
         <TextInput
+          onBlur={this.handleOnBlur}
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
           style={{
+            backgroundColor: "white",
             fontSize: 18,
             borderWidth: 1,
             fontFamily: "open-sans-regular",

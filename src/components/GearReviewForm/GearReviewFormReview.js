@@ -24,14 +24,19 @@ class GearReviewFormReview extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 20 }}>
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Review</Text>
         </View>
         <TextInput
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
           multiline
           style={{
             fontSize: 18,
+            backgroundColor: "white",
             borderWidth: 1,
             height: 100,
             fontFamily: "open-sans-regular",

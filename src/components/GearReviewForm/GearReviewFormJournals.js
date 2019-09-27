@@ -66,8 +66,8 @@ class GearReviewFormJournals extends Component {
             justifyContent: "space-between"
           }}>
           <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Image source={{ uri: journal.cardBannerImageUrl }} style={{ width: 50, height: 50 }} />
-            <Text>{journal.title}</Text>
+            <Image source={{ uri: journal.cardBannerImageUrl }} style={{ width: 50, height: 50, marginRight: 15 }} />
+            <Text style={{ fontFamily: "playfair", color: "#323941" }}>{journal.title}</Text>
           </View>
           <MaterialCommunityIcons
             name={"check-circle-outline"}
@@ -97,10 +97,6 @@ class GearReviewFormJournals extends Component {
     )
   }
 
-  renderSelectedJournals = () => {
-    return <View />
-  }
-
   getJournalLabelText() {
     const { journalIds } = this.props
     let journal = "Journal"
@@ -113,7 +109,7 @@ class GearReviewFormJournals extends Component {
   }
 
   renderDropdownIcon() {
-    const icon = this.state.menuOpen ? "chevron-down" : "chevron-up"
+    const icon = this.state.menuOpen ? "chevron-up" : "chevron-down"
 
     return <MaterialCommunityIcons name={icon} size={20} />
   }
@@ -144,7 +140,6 @@ class GearReviewFormJournals extends Component {
           </View>
         </TouchableWithoutFeedback>
         {this.renderDropdown()}
-        {this.renderSelectedJournals()}
       </View>
     )
   }

@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native"
 import { connect } from "react-redux"
-import { persistGearReview } from "../../actions/gear_review_form"
+import { persistGearReview, defaultGearReviewForm } from "../../actions/gear_review_form"
 import InputScrollView from "react-native-input-scroll-view"
 import GearReviewFormTitle from "./GearReviewFormTitle"
 import GearReviewFormStarRating from "./GearReviewFormStarRating"
@@ -27,7 +27,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  persistGearReview: () => dispatch(persistGearReview())
+  persistGearReview: () => dispatch(persistGearReview()),
+  defaultGearReviewForm: () => dispatch(defaultGearReviewForm())
 })
 
 class GearReviewForm extends Component {
@@ -37,6 +38,10 @@ class GearReviewForm extends Component {
 
   persistGearReview = () => {
     this.props.persistGearReview()
+  }
+
+  handleCancel = () => {
+    this.props.defaultGearReviewForm()
   }
 
   renderHeader() {
@@ -54,7 +59,7 @@ class GearReviewForm extends Component {
           borderBottomWidth: 1,
           borderBottomColor: "#f8f8f8"
         }}>
-        <TouchableWithoutFeedback onPress={() => console.log("DO SOMETHING")}>
+        <TouchableWithoutFeedback onPress={this.handleCancel}>
           <View>
             <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>Cancel</Text>
           </View>
@@ -75,14 +80,19 @@ class GearReviewForm extends Component {
         animationType={"slide"}
         style={{ backgroundColor: "white", height: this.props.height }}>
         {this.renderHeader()}
-        <InputScrollView style={{ padding: 20 }}>
+        <InputScrollView
+          multilineInputStyle={{ lineHeight: 30 }}
+          topOffset={50}
+          keyboardOffset={90}
+          style={{ padding: 20 }}
+          keyboardShouldPersistTaps="always">
           <GearReviewFormTitle />
           <GearReviewFormReview />
           <GearReviewFormImageCarousel />
           <GearReviewFormStarRating />
           <GearReviewFormProsCons />
           <GearReviewFormJournals />
-          <View style={{ marginBottom: 200 }} />
+          <View style={{ marginBottom: 300 }} />
         </InputScrollView>
       </FormModal>
     )

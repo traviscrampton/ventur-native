@@ -36,7 +36,6 @@ class Ventur extends Component {
     await this.getAWSCredentials()
     this.setupDimensionsListener()
     this.setCurrentUser()
-    this.setChaptersForAsyncStorage()
     this.setUpConnectionListener()
   }
 
@@ -53,7 +52,6 @@ class Ventur extends Component {
   async getAWSCredentials() {
     return
     getCredentials().then(response => {
-      console.log("response", response)
       this.props.addApiCredentials(response)
     })
   }
@@ -67,16 +65,6 @@ class Ventur extends Component {
   handleDimensionChange = dim => {
     let heightAndWidth = { width: dim.window.width, height: dim.window.height }
     this.props.setWindowDimensions(heightAndWidth)
-  }
-
-  async setChaptersForAsyncStorage() {
-    let chapters = await AsyncStorage.getItem("chapters")
-    let journals = await AsyncStorage.getItem("journals")
-    if (!chapters) {
-      await AsyncStorage.setItem("chapters", JSON.stringify([]))
-    } else if (!journals) {
-      await AsyncStorage.setItem("journals", JSON.stringify([]))
-    }
   }
 
   async setCurrentUser() {

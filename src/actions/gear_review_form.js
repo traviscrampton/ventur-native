@@ -5,6 +5,13 @@ import { addCreatedGearReview } from "./journals"
 import { populateGearItemReview } from "./gear_item_review"
 const uuid = require("react-native-uuid")
 
+
+export const DEFAULT_GEAR_REVIEW_FORM = "DEFAULT_GEAR_REVIEW_FORM"
+export function defaultGearReviewForm(payload) {
+  return {
+    type: DEFAULT_GEAR_REVIEW_FORM
+  }
+}
 export function getUserJournals() {
   return async function(dispatch, getState) {
     const { id } = getState().common.currentUser
@@ -154,7 +161,7 @@ export function createGearReview(params) {
     )
 
     dispatch(addCreatedGearReview(payload))
-    dispatch(toggleGearReviewFormModal(false))
+    dispatch(defaultGearReviewForm())
   }
 }
 

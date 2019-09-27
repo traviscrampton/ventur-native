@@ -22,7 +22,8 @@ import {
   TOGGLE_GEAR_REVIEW_FORM_MODAL,
   POPULATE_USER_JOURNALS,
   ADD_TO_JOURNAL_IDS,
-  REMOVE_FROM_JOURNAL_IDS
+  REMOVE_FROM_JOURNAL_IDS,
+  DEFAULT_GEAR_REVIEW_FORM
 } from "../actions/gear_review_form"
 
 const defaultGearForm = {
@@ -51,6 +52,8 @@ const defaultGearForm = {
 
 export default (state = defaultGearForm, action) => {
   switch (action.type) {
+    case DEFAULT_GEAR_REVIEW_FORM:
+      return defaultGearForm
     case TOGGLE_GEAR_REVIEW_FORM_MODAL:
       return {
         ...state,
