@@ -17,6 +17,18 @@ const distanceString = distance => {
   }
 }
 
+const ChapterImage = props => {
+  if (props.imageUrl) {
+    return (
+      <View style={{ width: 80 }}>
+        <ProgressiveImage style={styles.chapterImage} source={props.imageUrl} thumbnailSource={props.thumbnailSource} />
+      </View>
+    )
+  } else {
+    return <View />
+  }
+}
+
 const ChapterCard = props => {
   let publishedStatus
   let { imageUrl, title, distance, readableDate, thumbnailSource } = props
@@ -28,9 +40,15 @@ const ChapterCard = props => {
   }
 
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
+    <TouchableWithoutFeedback key={props.id} style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
-        <View style={{ maxWidth: Dimensions.get("window").width - 140, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <View
+          style={{
+            maxWidth: Dimensions.get("window").width - 140,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between"
+          }}>
           <View>
             <Text numberOfLines={1} style={styles.chapterTitle}>
               {title}
@@ -48,9 +66,7 @@ const ChapterCard = props => {
             </View>
           </View>
         </View>
-        <View style={{ width: 80 }}>
-          <ProgressiveImage style={styles.chapterImage} source={imageUrl} thumbnailSource={thumbnailSource} />
-        </View>
+        <ChapterImage imageUrl={imageUrl} thumbnailSource={thumbnailSource} />
       </View>
     </TouchableWithoutFeedback>
   )
@@ -73,7 +89,7 @@ const styles = StyleSheet.create({
     maxWidth: Dimensions.get("window").width - 140,
     fontFamily: "open-sans-regular",
     color: "#323941",
-    fontSize: 20,
+    fontSize: 20
   },
   allIcons: {
     display: "flex",

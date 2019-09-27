@@ -18,6 +18,7 @@ const GearListItem = props => {
 
   return (
     <View
+      key={id}
       shadowColor="gray"
       shadowOffset={{ width: 0, height: 0 }}
       shadowOpacity={0.5}
