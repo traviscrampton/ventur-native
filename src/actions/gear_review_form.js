@@ -1,10 +1,9 @@
-import { ImageManipulator } from "expo"
+import * as ImageManipulator from "expo-image-manipulator"
 import { get, post, put } from "../agent"
 import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
 import { addCreatedGearReview } from "./journals"
 import { populateGearItemReview } from "./gear_item_review"
 const uuid = require("react-native-uuid")
-
 
 export const DEFAULT_GEAR_REVIEW_FORM = "DEFAULT_GEAR_REVIEW_FORM"
 export function defaultGearReviewForm(payload) {
@@ -137,31 +136,29 @@ export function createGearReview(params) {
   return async function(dispatch, getState) {
     try {
       const res = await post("/gear_item_reviews", params)
+      const {
+        id,
+        gearItem,
+        rating,
+        gearItem: { imageUrl, name }
+      } = res
+
+      const payload = Object.assign(
+        {},
+        {
+          id,
+          imageUrl,
+          name,
+          rating,
+          gearItemId: gearItem.id
+        }
+      )
+
+      dispatch(addCreatedGearReview(payload))
+      dispatch(defaultGearReviewForm())
     } catch (err) {
       console.log("ERR", err)
-      return
     }
-
-    const {
-      id,
-      gearItem,
-      rating,
-      gearItem: { imageUrl, name }
-    } = res
-
-    const payload = Object.assign(
-      {},
-      {
-        id,
-        imageUrl,
-        name,
-        rating,
-        gearItemId: gearItem.id
-      }
-    )
-
-    dispatch(addCreatedGearReview(payload))
-    dispatch(defaultGearReviewForm())
   }
 }
 
@@ -249,7 +246,7 @@ export const resizeImage = async image => {
 
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
     compress: 0,
-    format: "jpg",
+    format: "jpeg",
     base64: false
   })
 

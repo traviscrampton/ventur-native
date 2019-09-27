@@ -5,7 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import { uploadImageToCarousel, updateActiveImageIndex, removeImage } from "../../actions/gear_review_form"
 import { MaterialIndicator } from "react-native-indicators"
-import CameraRollContainer from "../editor/CameraRollContainer"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 
 const mapStateToProps = state => ({
@@ -52,14 +52,12 @@ class GearReviewFormImageCarousel extends Component {
     )
   }
 
-  openCameraRollContainer() {
+  openImagePickerContainer() {
     this.props.toggleCameraRollModal(true)
   }
 
-  renderCameraRollContainer() {
-    if (this.props.activeView !== "gear_review_form") return
-
-    return <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+  renderImagePickerContainer() {
+    return <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
   }
 
   setActiveImageIndexNull = () => {
@@ -173,7 +171,7 @@ class GearReviewFormImageCarousel extends Component {
 
   renderUploadButton = () => {
     return (
-      <TouchableWithoutFeedback onPress={() => this.openCameraRollContainer()}>
+      <TouchableWithoutFeedback onPress={() => this.openImagePickerContainer()}>
         <View
           shadowColor="gray"
           shadowOffset={{ width: 0, height: 0 }}
@@ -216,7 +214,7 @@ class GearReviewFormImageCarousel extends Component {
           data={this.props.images}
           renderItem={({ item, index }) => this.renderItem(item, index)}
         />
-        {this.renderCameraRollContainer()}
+        {this.renderImagePickerContainer()}
       </View>
     )
   }

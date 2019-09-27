@@ -8,7 +8,7 @@ import { toggleCameraRollModal } from "./camera_roll"
 import { populateOfflineChapters, dispatch } from "./user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "../utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
-import { ImageManipulator } from "expo"
+import * as ImageManipulator from "expo-image-manipulator"
 const uuid = require("react-native-uuid")
 
 export function editEntry(payload) {
@@ -185,7 +185,7 @@ export const resizeImage = async image => {
 
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
     compress: 0,
-    format: "jpg",
+    format: "jpeg",
     base64: false
   })
 

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import _ from "lodash"
 import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
-import { MapView } from "expo"
+import MapView from 'react-native-maps'
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
 import { defaultRouteViewer } from "../../actions/route_viewer"

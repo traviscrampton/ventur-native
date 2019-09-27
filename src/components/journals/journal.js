@@ -42,7 +42,7 @@ import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import GearListItem from "../GearItem/GearListItem"
 import { FloatingAction } from "react-native-floating-action"
-import CameraRollContainer from "../editor/CameraRollContainer"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 import JournalForm from "../JournalForm/JournalForm"
 import GearReviewForm from "../GearReviewForm/GearReviewForm"
 
@@ -226,7 +226,11 @@ class Journal extends Component {
 
   renderCountries() {
     return this.props.journal.countries.map((country, index) => {
-      return <Text key={country.name} style={styles.journalDescription}>{country.name}</Text>
+      return (
+        <Text key={country.name} style={styles.journalDescription}>
+          {country.name}
+        </Text>
+      )
     })
   }
 
@@ -334,7 +338,9 @@ class Journal extends Component {
 
   renderEmptyChapterState() {
     return (
-      <View key={"chapterEmptyState"} style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
+      <View
+        key={"chapterEmptyState"}
+        style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={{ marginBottom: 10 }}>
@@ -502,10 +508,10 @@ class Journal extends Component {
     )
   }
 
-  renderCameraRollContainer() {
+  renderImagePickerContainer() {
     if (this.props.activeView !== "journal") return
 
-    return <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+    return <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
   }
 
   render() {
@@ -522,7 +528,7 @@ class Journal extends Component {
         {this.renderFloatingButton()}
 
         <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
-        {this.renderCameraRollContainer()}
+        {this.renderImagePickerContainer()}
         <JournalForm />
         <GearReviewForm />
       </View>

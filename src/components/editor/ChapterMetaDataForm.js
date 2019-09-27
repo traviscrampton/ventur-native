@@ -28,7 +28,7 @@ import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { connect } from "react-redux"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
-import CameraRollContainer from "../editor/CameraRollContainer"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
@@ -267,7 +267,7 @@ class ChapterMetaDataForm extends Component {
           {this.renderTitleAndDescription()}
           {this.renderStatistics()}
         </ScrollView>
-        <CameraRollContainer imageCallback={this.uploadImage} selectSingleItem />
+        <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
       </FormModal>
     )
   }

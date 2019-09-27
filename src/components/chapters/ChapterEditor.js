@@ -37,7 +37,7 @@ import EditorToolbar from "../editor/EditorToolbar"
 import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
 import LazyImage from "../shared/LazyImage"
-import CameraRollContainer from "../editor/CameraRollContainer"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -442,10 +442,8 @@ class ChapterEditor extends Component {
     }
   }
 
-  renderCameraRollContainer() {
-    if (this.props.activeView !== "editor") return
-
-    return <CameraRollContainer imageCallback={this.uploadImages} selectSingleItem={false} />
+  renderImagePickerContainer() {
+    return <ImagePickerContainer imageCallback={this.uploadImages} selectSingleItem={false} />
   }
 
   render() {
@@ -468,7 +466,7 @@ class ChapterEditor extends Component {
           </InputScrollView>
           {this.renderEditorToolbar()}
         </View>
-        {this.renderCameraRollContainer()}
+        {this.renderImagePickerContainer()}
       </View>
     )
   }

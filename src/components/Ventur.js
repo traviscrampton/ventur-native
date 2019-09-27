@@ -40,17 +40,14 @@ class Ventur extends Component {
   }
 
   setupDimensionsListener() {
-    return
     Dimensions.addEventListener("change", this.handleDimensionChange)
   }
 
   setUpConnectionListener() {
-    return
     NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
   }
 
   async getAWSCredentials() {
-    return
     getCredentials().then(response => {
       this.props.addApiCredentials(response)
     })

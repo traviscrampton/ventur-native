@@ -297,7 +297,7 @@ class Profile extends Component {
       <SlidingTabs
         tabs={tabs}
         tabWidth={tabWidth}
-        tabBarColor="#3F88C5"
+        tabBarColor="#FF5423"
         activeIndex={this.state.activeIndex}
         onIndexChange={this.handleIndexChange}
       />

@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { Modal, SafeAreaView } from "react-native"
+import * as Permissions from "expo-permissions"
 import { addImagesToEntries, setSelectedImages } from "../../actions/editor"
 import { toggleCameraRollModal } from "../../actions/camera_roll"
 import CameraRollPicker from "react-native-camera-roll-picker"
@@ -22,15 +23,28 @@ const mapDispatchToProps = dispatch => ({
 class CameraRollContainer extends Component {
   constructor(props) {
     super(props)
-    // this.selectSingleItem = this.props.navigation.getParam("selectSingleItem", false) // change to passed in props
-    // this.singleItemCallback = this.props.navigation.getParam("singleItemCallback", null) // change to passed in props
 
     this.state = {
       selectedImages: [],
       imageSelected: false
     }
+  }
 
-    console.log("is in journal", props.selectSingleItem)
+  async componentWillMount() {
+    await this.checkCameraRollPermissions()
+  }
+
+  async checkCameraRollPermissions() {
+    const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL)
+    console.log("status", status)
+    if (status !== "granted") {
+      await this.askForCameraRollPermission()
+    }
+  }
+
+  async askForCameraRollPermission() {
+    const { status, permission } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    console.log("status", status, "permission", permission)
   }
 
   addImagesToEntries = () => {

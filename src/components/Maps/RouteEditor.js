@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import _ from "lodash"
 import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } from "react-native"
 import { connect } from "react-redux"
-import { MapView } from "expo"
+import MapView from 'react-native-maps'
 import { FloatingAction } from "react-native-floating-action"
 import RouteEditorButtons from "../Maps/RouteEditorButtons"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
