@@ -221,7 +221,6 @@ class Profile extends Component {
             paddingRight: 15,
             flexDirection: "row",
             justifyContent: "space-between",
-            flexWrap: "wrap",
             marginTop: 10
           }}
           data={this.props.journals}

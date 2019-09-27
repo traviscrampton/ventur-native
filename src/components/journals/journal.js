@@ -226,7 +226,7 @@ class Journal extends Component {
 
   renderCountries() {
     return this.props.journal.countries.map((country, index) => {
-      return <Text style={styles.journalDescription}>{country.name}</Text>
+      return <Text key={country.name} style={styles.journalDescription}>{country.name}</Text>
     })
   }
 
@@ -334,7 +334,7 @@ class Journal extends Component {
 
   renderEmptyChapterState() {
     return (
-      <View style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
+      <View key={"chapterEmptyState"} style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={{ marginBottom: 10 }}>
@@ -372,7 +372,7 @@ class Journal extends Component {
   }
 
   renderChapterLoadingIcon = () => {
-    return <MaterialIndicator style={{ marginTop: 50 }} size={40} color="#FF5423" />
+    return <MaterialIndicator key={"chapterLoading"} style={{ marginTop: 50 }} size={40} color="#FF5423" />
   }
 
   renderChapters() {
@@ -385,7 +385,7 @@ class Journal extends Component {
     }
 
     return (
-      <View style={{ marginBottom: 100, width: this.props.width }}>
+      <View key={"chapterList"} style={{ marginBottom: 100, width: this.props.width }}>
         <ChapterList
           chapters={this.props.chapters}
           user={this.props.journal.user}

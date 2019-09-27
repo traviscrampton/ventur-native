@@ -99,7 +99,7 @@ export default class SlidingTabs extends Component {
 
 const Tab = props => {
   return (
-    <TouchableWithoutFeedback onPress={props.handleTabPress}>
+    <TouchableWithoutFeedback key={props.label} onPress={props.handleTabPress}>
       <View
         style={{
           width: props.tabWidth,
