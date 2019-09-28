@@ -1,7 +1,6 @@
 import * as ImageManipulator from "expo-image-manipulator"
 import { get, post, put } from "../agent"
 import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
-import { addCreatedGearReview } from "./journals"
 import { populateGearItemReview } from "./gear_item_review"
 const uuid = require("react-native-uuid")
 
@@ -11,6 +10,15 @@ export function defaultGearReviewForm(payload) {
     type: DEFAULT_GEAR_REVIEW_FORM
   }
 }
+
+export const ADD_CREATED_GEAR_REVIEW = "ADD_CREATED_GEAR_REVIEW"
+export function addCreatedGearReview(payload) {
+  return {
+    type: ADD_CREATED_GEAR_REVIEW,
+    payload: payload
+  }
+}
+
 export function getUserJournals() {
   return async function(dispatch, getState) {
     const { id } = getState().common.currentUser
@@ -52,10 +60,10 @@ export function removeFromJournalIds(payload) {
   }
 }
 
-export const POPULATE_USER_JOURNALS = "POPULATE_USER_JOURNALS"
+export const POPULATE_GEAR_JOURNALS = "POPULATE_GEAR_JOURNALS"
 export function populateUserJournals(payload) {
   return {
-    type: POPULATE_USER_JOURNALS,
+    type: POPULATE_GEAR_JOURNALS,
     payload: payload
   }
 }

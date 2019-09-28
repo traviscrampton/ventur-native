@@ -29,15 +29,29 @@ const ChapterImage = props => {
   }
 }
 
+const PublishedStatus = props => {
+  const icon = props.published ? "done" : "publish"
+  const color = props.published ? "#3F88C5" : "#FF5423"
+  const text = props.published ? "PUBLISHED" : "UNPUBLISHED"
+
+  if (props.isCurrentUser) {
+    return (
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <MaterialIcons name={icon} color={color} size={12} />
+        <Text style={{ color: color, fontSize: 10, marginLeft: 5 }}>{text}</Text>
+      </View>
+    )
+  } else {
+    return <View />
+  }
+}
+
 const ChapterCard = props => {
   let publishedStatus
   let { imageUrl, title, distance, readableDate, thumbnailSource } = props
 
   distance = distanceString(distance)
-
-  if (props.currentUser && !props.published && props.user.id == props.currentUser.id) {
-    publishedStatus = <Text style={{ color: "orange" }}>Unpublished</Text>
-  }
+  const isCurrentUser = props.currentUser && props.user.id == props.currentUser.id
 
   return (
     <TouchableWithoutFeedback key={props.id} style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
@@ -53,7 +67,7 @@ const ChapterCard = props => {
             <Text numberOfLines={1} style={styles.chapterTitle}>
               {title}
             </Text>
-            {publishedStatus}
+            <PublishedStatus isCurrentUser={isCurrentUser} published={props.published} />
           </View>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>

@@ -5,6 +5,9 @@ import {
   POPULATE_USER_GEAR
 } from "../actions/user"
 
+import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
+import { ADD_CREATED_GEAR_REVIEW } from "../actions/gear_review_form"
+
 const defaultAppState = {
   user: {
     journals: [],
@@ -20,6 +23,12 @@ export default (state = defaultAppState, action) => {
         ...state,
         user: Object.assign({}, state.user, action.payload)
       }
+
+    case ADD_CREATED_GEAR_REVIEW:
+      return {
+        ...state,
+        user: Object.assign({}, state.user, { gear: [...state.user.gear, action.payload] })
+      }
     case POPULATE_OFFLINE_CHAPTERS:
       return {
         ...state,
@@ -29,6 +38,15 @@ export default (state = defaultAppState, action) => {
       return {
         ...state,
         user: Object.assign({}, state.user, { gear: action.payload })
+      }
+    case REMOVE_GEAR_REVIEW:
+      return {
+        ...state,
+        user: Object.assign({}, state.user, {
+          gear: state.user.gear.filter(gear => {
+            return gear.id !== action.payload
+          })
+        })
       }
     case POPULATE_USER_JOURNALS: {
       return {

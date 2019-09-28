@@ -58,7 +58,7 @@ const tripMetaData = props => {
 }
 
 const JournalCard = props => {
-  imageWidth = props.width - 20
+  imageWidth = props.width - 40
   imageHeight = Math.round(imageWidth * (240 / 350))
   const imageStyles = Object.assign({}, styles.journalImage, {
     width: imageWidth,

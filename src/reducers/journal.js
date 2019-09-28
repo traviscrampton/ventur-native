@@ -4,12 +4,12 @@ import {
   IMAGE_UPLOADING,
   POPULATE_JOURNAL_CHAPTERS,
   POPULATE_JOURNAL_GEAR,
-  UPDATE_TAB_INDEX,
-  ADD_CREATED_GEAR_REVIEW
+  UPDATE_TAB_INDEX
 } from "../actions/journals"
 import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
 import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
+import { ADD_CREATED_GEAR_REVIEW } from "../actions/gear_review_form"
 
 const defaultJournalData = {
   journal: {

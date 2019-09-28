@@ -18,10 +18,13 @@ import { populateUserPage, populateOfflineChapters, getProfilePageData } from ".
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
 import ChapterUserForm from "../chapters/ChapterUserForm"
+import { MaterialIndicator } from "react-native-indicators"
 import { updateChapterForm } from "../../actions/chapter_form"
 import { loadChapter } from "../../actions/chapter"
+import { toggleGearReviewFormModal } from "../../actions/gear_review_form"
 import { toggleJournalFormModal } from "../../actions/journal_form"
 import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import { setCurrentUser } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
 import { connect } from "react-redux"
@@ -34,6 +37,9 @@ import LoadingScreen from "../shared/LoadingScreen"
 import { WebBrowser } from "expo"
 import Expo from "expo"
 import SlidingTabs from "../shared/SlidingTabs"
+import { FloatingAction } from "react-native-floating-action"
+import GearReviewForm from "../GearReviewForm/GearReviewForm"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -55,7 +61,9 @@ const mapDispatchToProps = dispatch => ({
   resetJournalShow: () => dispatch(resetJournalShow()),
   authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
   getProfilePageData: () => dispatch(getProfilePageData()),
-  populateGearItemReview: payload => dispatch(populateGearItemReview(payload))
+  toggleGearReviewFormModal: payload => dispatch(toggleGearReviewFormModal(payload)),
+  populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
 })
 
 class Profile extends Component {
@@ -66,6 +74,23 @@ class Profile extends Component {
       activeIndex: 0
     }
   }
+
+  static actions = [
+    {
+      text: "New Journal",
+      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
+      name: "create_journal",
+      position: 0,
+      color: "#FF5423"
+    },
+    {
+      text: "New Gear Item",
+      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
+      name: "create_gear_item",
+      position: 1,
+      color: "#FF5423"
+    }
+  ]
 
   componentWillMount() {
     this.props.getProfilePageData()
@@ -105,6 +130,10 @@ class Profile extends Component {
     return this.props.currentUser.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
   }
 
+  launchImagePicker = () => {
+    this.props.toggleCameraRollModal(true)
+  }
+
   renderUserName() {
     return (
       <View style={{ height: this.props.width / 4, display: "flex", flexDirection: "column" }}>
@@ -139,6 +168,23 @@ class Profile extends Component {
     )
   }
 
+  renderProfileLoadingScreen(imgDimensions) {
+    if (true) return
+
+    return (
+      <View
+        style={{
+          width: imgDimensions,
+          position: "absolute",
+          height: imgDimensions,
+          borderRadius: imgDimensions / 2,
+          backgroundColor: "azure"
+        }}>
+        <MaterialIndicator size={25} color="#FF5423" />
+      </View>
+    )
+  }
+
   renderProfilePhoto() {
     let imgDimensions = this.props.width / 4
     const options = this.getOptions()
@@ -152,17 +198,34 @@ class Profile extends Component {
           alignItems: "top",
           paddingRight: 20
         }}>
-        <Image
+        <TouchableWithoutFeedback onPress={this.launchImagePicker}>
+        <View
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
           style={{
             width: imgDimensions,
+            position: "relative",
             height: imgDimensions,
             borderRadius: imgDimensions / 2,
-            marginRight: 10,
-            borderWidth: 1,
-            borderColor: "gray"
-          }}
-          source={{ uri: this.props.user.avatarImageUrl }}
-        />
+            backgroundColor: "azure",
+            marginRight: 10
+          }}>
+          <Image
+            style={{
+              width: imgDimensions,
+              height: imgDimensions,
+              borderRadius: imgDimensions / 2,
+              marginRight: 10,
+              borderWidth: 1,
+              borderColor: "gray"
+            }}
+            source={{ uri: this.props.user.avatarImageUrl }}
+          />
+          {this.renderProfileLoadingScreen(imgDimensions)}
+        </View>
+        </TouchableWithoutFeedback>
         <View>{this.renderUserName()}</View>
         <ThreeDotDropdown options={options} />
       </View>
@@ -176,6 +239,21 @@ class Profile extends Component {
     ]
 
     return options
+  }
+
+  navigateToGearReviewForm() {
+    this.props.toggleGearReviewFormModal(true)
+  }
+
+  navigateToForm = name => {
+    switch (name) {
+      case "create_journal":
+        return this.navigateToJournalForm()
+      case "create_gear_item":
+        return this.navigateToGearReviewForm()
+      default:
+        console.log("what in tarnation")
+    }
   }
 
   renderProfilePhotoAndMetadata() {
@@ -192,6 +270,10 @@ class Profile extends Component {
         </View>
       </View>
     )
+  }
+
+  uploadProfilePhoto = (img) => {
+    console.log("this is where we launch da party", img)
   }
 
   handleGearItemPress = id => {
@@ -236,34 +318,16 @@ class Profile extends Component {
     this.props.toggleJournalFormModal(true)
   }
 
-  renderCreateJournalCta() {
-    return (
-      <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 1, height: 1 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#FF5423",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 17,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Feather name="plus" size={32} color="white" />
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
   renderFloatingCreateButton() {
-    return this.renderCreateJournalCta()
+    return (
+      <FloatingAction
+        color={"#FF5423"}
+        actions={Profile.actions}
+        onPressItem={name => {
+          this.navigateToForm(name)
+        }}
+      />
+    )
   }
 
   handleIndexChange = activeIndex => {
@@ -317,6 +381,8 @@ class Profile extends Component {
         </ScrollView>
         {this.renderFloatingCreateButton()}
         <JournalForm />
+        <GearReviewForm />
+        <ImagePickerContainer imageCallback={this.uploadProfilePhoto} selectSingleItem />
       </View>
     )
   }

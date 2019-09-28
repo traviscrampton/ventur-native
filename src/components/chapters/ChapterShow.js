@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => ({
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
   loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
-  populateImages: payload => dispatch(populateImages(payload)),
+  populateImages: payload => dispatch(populateImages(payload))
 })
 
 class ChapterShow extends Component {
@@ -56,9 +56,28 @@ class ChapterShow extends Component {
     this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
   }
 
+  renderPublishedText(text) {
+    if (this.props.currentUser.id != this.props.chapter.user.id) return
+
+    if (this.props.chapter.published) {
+      return (
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <MaterialIcons style={{ marginRight: 5 }} size={16} name={"done"} color={"#3F88C5"} />
+          <Text style={{ padding: 2, alignSelf: "flex-start", borderRadius: 5, color: "#3F88C5" }}>PUBLISHED</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <MaterialIcons style={{ marginRight: 5 }} size={16} name={"publish"} color={"#FF5423"} />
+          <Text style={{ padding: 2, alignSelf: "flex-start", borderRadius: 5, color: "#FF5423" }}>UNPUBLISHED</Text>
+        </View>
+      )
+    }
+  }
+
   renderTitle() {
     const { title } = this.props.chapter
-    const publishedText = this.props.chapter.published ? "Published" : "Unpublished"
     return (
       <View style={styles.titleDescriptionContainer}>
         <View
@@ -70,7 +89,7 @@ class ChapterShow extends Component {
             { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
           ]}>
           <Text style={styles.title}>{title}</Text>
-          <Text>{publishedText}</Text>
+          {this.renderPublishedText()}
         </View>
       </View>
     )
@@ -96,16 +115,19 @@ class ChapterShow extends Component {
         return entry.type === "image"
       })
       .map((entry, index) => {
-        return Object.assign({}, { uri: entry.uri, caption: entry.caption, height: this.getImageHeight(entry.aspectRatio) })
+        return Object.assign(
+          {},
+          { uri: entry.uri, caption: entry.caption, height: this.getImageHeight(entry.aspectRatio) }
+        )
       })
   }
 
-  openImageSlider = (entry) => {
+  openImageSlider = entry => {
     const images = this.prepareSliderImages()
-    const activeIndex = images.findIndex((image) => {
+    const activeIndex = images.findIndex(image => {
       return image.uri === entry.uri
-    }) 
-    const payload = Object.assign({}, { images, activeIndex})
+    })
+    const payload = Object.assign({}, { images, activeIndex })
 
     this.props.populateImages(payload)
     this.props.toggleImageSliderModal(true)

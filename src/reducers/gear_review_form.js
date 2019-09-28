@@ -20,7 +20,7 @@ import {
   RESET_GEAR_ITEM,
   POPULATE_GEAR_ITEM_REVIEW_FORM,
   TOGGLE_GEAR_REVIEW_FORM_MODAL,
-  POPULATE_USER_JOURNALS,
+  POPULATE_GEAR_JOURNALS,
   ADD_TO_JOURNAL_IDS,
   REMOVE_FROM_JOURNAL_IDS,
   DEFAULT_GEAR_REVIEW_FORM
@@ -169,7 +169,7 @@ export default (state = defaultGearForm, action) => {
         ...state,
         dropdownOpen: action.payload
       }
-    case POPULATE_USER_JOURNALS:
+    case POPULATE_GEAR_JOURNALS:
       return {
         ...state,
         userJournals: action.payload
