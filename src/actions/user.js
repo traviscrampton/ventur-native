@@ -1,5 +1,56 @@
-import { get } from "../agent"
+import { get, setToken, API_ROOT } from "../agent"
 import { setLoadingTrue, setLoadingFalse } from "./common"
+
+export function uploadProfilePhoto(img) {
+  return async function(dispatch, getState) {
+    dispatch(toggleProfilePhotoLoading(true))
+    const formData = new FormData()
+    const userId = getState().user.user.id
+    let imgPost = Object.assign(
+      {},
+      {
+        uri: img.uri,
+        name: img.filename,
+        type: "multipart/form-data"
+      }
+    )
+    formData.append("avatar", imgPost)
+    const token = await setToken()
+    fetch(`${API_ROOT}/users/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw response
+        }
+      })
+      .then(data => {
+        dispatch(toggleProfilePhotoLoading(false))
+        dispatch(populateUserPage(data.user))
+        return data
+      })
+      .catch(error => {
+        handleError(error)
+
+        throw new Error()
+      })
+  }
+}
+
+export const TOGGLE_PROFILE_PHOTO_LOADING = "TOGGLE_PROFILE_PHOTO_LOADING"
+export function toggleProfilePhotoLoading(payload) {
+  return {
+    type: TOGGLE_PROFILE_PHOTO_LOADING,
+    payload: payload
+  }
+}
 
 export const POPULATE_USER_PAGE = "POPULATE_USER_PAGE"
 export function populateUserPage(payload) {

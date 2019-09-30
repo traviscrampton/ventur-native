@@ -14,7 +14,7 @@ import {
 import ChapterList from "../chapters/ChapterList"
 import GearListItem from "../GearItem/GearListItem"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
-import { populateUserPage, populateOfflineChapters, getProfilePageData } from "../../actions/user"
+import { populateUserPage, populateOfflineChapters, getProfilePageData, uploadProfilePhoto } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
 import ChapterUserForm from "../chapters/ChapterUserForm"
@@ -45,6 +45,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   stravaClientId: state.common.stravaClientId,
   user: state.user.user,
+  profilePhotoLoading: state.user.profilePhotoLoading,
   gear: state.user.user.gear,
   journals: state.user.user.journals,
   width: state.common.width
@@ -64,6 +65,7 @@ const mapDispatchToProps = dispatch => ({
   toggleGearReviewFormModal: payload => dispatch(toggleGearReviewFormModal(payload)),
   populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
+  uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload))
 })
 
 class Profile extends Component {
@@ -169,7 +171,7 @@ class Profile extends Component {
   }
 
   renderProfileLoadingScreen(imgDimensions) {
-    if (true) return
+    if (!this.props.profilePhotoLoading) return
 
     return (
       <View
@@ -199,32 +201,32 @@ class Profile extends Component {
           paddingRight: 20
         }}>
         <TouchableWithoutFeedback onPress={this.launchImagePicker}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 0, height: 0 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            width: imgDimensions,
-            position: "relative",
-            height: imgDimensions,
-            borderRadius: imgDimensions / 2,
-            backgroundColor: "azure",
-            marginRight: 10
-          }}>
-          <Image
+          <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
             style={{
               width: imgDimensions,
+              position: "relative",
               height: imgDimensions,
               borderRadius: imgDimensions / 2,
-              marginRight: 10,
-              borderWidth: 1,
-              borderColor: "gray"
-            }}
-            source={{ uri: this.props.user.avatarImageUrl }}
-          />
-          {this.renderProfileLoadingScreen(imgDimensions)}
-        </View>
+              backgroundColor: "azure",
+              marginRight: 10
+            }}>
+            <Image
+              style={{
+                width: imgDimensions,
+                height: imgDimensions,
+                borderRadius: imgDimensions / 2,
+                marginRight: 10,
+                borderWidth: 1,
+                borderColor: "gray"
+              }}
+              source={{ uri: this.props.user.avatarImageUrl }}
+            />
+            {this.renderProfileLoadingScreen(imgDimensions)}
+          </View>
         </TouchableWithoutFeedback>
         <View>{this.renderUserName()}</View>
         <ThreeDotDropdown options={options} />
@@ -234,6 +236,7 @@ class Profile extends Component {
 
   getOptions() {
     const options = [
+      { title: "Upload Profile Photo", callback: this.uploadProfilePhoto },
       { title: this.stravaCtaText(), callback: this.connectToStrava },
       { title: "Log Out", callback: this.handleLogout }
     ]
@@ -272,8 +275,8 @@ class Profile extends Component {
     )
   }
 
-  uploadProfilePhoto = (img) => {
-    console.log("this is where we launch da party", img)
+  uploadProfilePhoto = img => {
+    this.props.uploadProfilePhoto(img)
   }
 
   handleGearItemPress = id => {

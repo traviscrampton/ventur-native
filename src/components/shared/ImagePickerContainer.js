@@ -25,13 +25,8 @@ class ImagePickerContainer extends Component {
     super(props)
   }
 
-  componentDidMount() {
-  }
-
   async componentDidUpdate(prevProps, prevState) {
-    console.log("prevprops", !prevProps.visible, "props", this.props.visible)
     if (!prevProps.visible && this.props.visible) {
-      console.log("LIZZO")
       await this.checkCameraRollPermissions()
     }
   }

@@ -2,7 +2,8 @@ import {
   POPULATE_USER_PAGE,
   POPULATE_OFFLINE_CHAPTERS,
   POPULATE_USER_JOURNALS,
-  POPULATE_USER_GEAR
+  POPULATE_USER_GEAR,
+  TOGGLE_PROFILE_PHOTO_LOADING
 } from "../actions/user"
 
 import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
@@ -13,7 +14,8 @@ const defaultAppState = {
     journals: [],
     gear: []
   },
-  offlineChapters: []
+  offlineChapters: [],
+  profilePhotoLoading: false
 }
 
 export default (state = defaultAppState, action) => {
@@ -22,6 +24,11 @@ export default (state = defaultAppState, action) => {
       return {
         ...state,
         user: Object.assign({}, state.user, action.payload)
+      }
+    case TOGGLE_PROFILE_PHOTO_LOADING:
+      return {
+        ...state,
+        profilePhotoLoading: action.payload
       }
 
     case ADD_CREATED_GEAR_REVIEW:
