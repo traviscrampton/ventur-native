@@ -1,4 +1,4 @@
-import { post, put, destroy } from "../agent"
+import { post, put, destroy, API_ROOT, setToken } from "../agent"
 import { addChapterToJournals } from "./chapter_form"
 
 function convertToJson(str) {
@@ -6,6 +6,48 @@ function convertToJson(str) {
     return JSON.parse(str)
   } else {
     return str
+  }
+}
+
+export function uploadBannerPhoto(img) {
+  return async function(dispatch, getState) {
+    let formData = new FormData()
+    const { id } = getState().chapter.chapter
+    const bannerImage = Object.assign(
+      {},
+      {
+        uri: img.uri,
+        name: img.filename,
+        type: "multipart/form-data"
+      }
+    )
+    formData.append("banner_image", bannerImage)
+
+    const token = await setToken()
+    fetch(`${API_ROOT}/chapters/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw response
+        }
+      })
+      .then(data => {
+        dispatch(loadChapter(data.chapter))
+        return data
+      })
+      .catch(error => {
+        handleError(error)
+
+        throw new Error()
+      })
   }
 }
 

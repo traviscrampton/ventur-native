@@ -4,9 +4,10 @@ import { resetChapter } from "../../actions/chapter"
 import { StyleSheet, View, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
-import { loadChapter, setEditMode, editChapterPublished, deleteChapter } from "../../actions/chapter"
+import { loadChapter, setEditMode, editChapterPublished, deleteChapter, uploadBannerPhoto } from "../../actions/chapter"
 import { populateEntries, getInitialImageIds, loseChangesAndUpdate } from "../../actions/editor"
 import { updateChapterForm, toggleChapterModal, resetChapterForm } from "../../actions/chapter_form"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
 import ChapterEditor from "./ChapterEditor"
 import ChapterShow from "./ChapterShow"
 import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons"
@@ -14,6 +15,7 @@ import { get, put, destroy } from "../../agent"
 import LoadingScreen from "../shared/LoadingScreen"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
 import { sendEmails } from "../../actions/chapter"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -35,8 +37,10 @@ const mapDispatchToProps = dispatch => ({
   setEditMode: payload => dispatch(setEditMode(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   sendEmails: payload => dispatch(sendEmails(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
+  uploadBannerPhoto: payload => dispatch(uploadBannerPhoto(payload)),
   resetChapter: () => dispatch(resetChapter()),
   resetChapterForm: () => dispatch(resetChapterForm()),
   deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
@@ -61,7 +65,6 @@ class ChapterDispatch extends Component {
     }
 
     this.props.populateEntries(entries)
-    // this.props.getInitialImageIds(entries)
   }
 
   navigateBack = () => {
@@ -89,12 +92,19 @@ class ChapterDispatch extends Component {
       chapter: { id, published }
     } = this.props
 
-    console.log("id", id, "published", published)
     this.props.editChapterPublished(id, !published)
   }
 
   handleDelete = async () => {
     this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
+  }
+
+  triggerImagePicker = () => {
+    this.props.toggleCameraRollModal(true)
+  }
+
+  uploadBannerPhoto = (img) => {
+    this.props.uploadBannerPhoto(img)
   }
 
   getOptions() {
@@ -105,6 +115,10 @@ class ChapterDispatch extends Component {
       {
         title: "Edit Metadata",
         callback: this.navigateToChapterForm
+      },
+      {
+        title: "Upload Banner Image",
+        callback: this.triggerImagePicker
       },
       {
         title: "Delete Chapter",
@@ -138,7 +152,8 @@ class ChapterDispatch extends Component {
   }
 
   navigateToChapterForm = () => {
-    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
+    console.log(this.props.chapter)
+    let { id, title, distance, description, journal, imageUrl, date } = this.props.chapter
     let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
 
     let obj = Object.assign(
@@ -149,9 +164,7 @@ class ChapterDispatch extends Component {
         distance: distanceAmount,
         description: description,
         readableDistanceType: distance.readableDistanceType,
-        bannerImage: {
-          uri: imageUrl
-        },
+        date: new Date(date),
         journalId: journal.id
       }
     )
@@ -224,6 +237,7 @@ class ChapterDispatch extends Component {
         {this.renderHeader()}
         <ChapterShow navigation={this.props.navigation} />
         {this.renderEditorFloatingButton()}
+        <ImagePickerContainer imageCallback={this.uploadBannerPhoto} selectSingleItem />
       </View>
     )
   }

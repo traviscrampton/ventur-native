@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { setToken, API_ROOT } from "../agent"
+import { post, put } from "../agent"
 import { loadChapter } from "./chapter"
 import { doneUpdating } from "./editor"
 
@@ -19,85 +19,55 @@ export const mungeChapter = chapter => {
   )
 }
 
-export const updateChapter = async (params, callback, dispatch) => {
-  let formData = new FormData()
-  let { id, title, distance, date, journalId, bannerImage } = params
+export function updateChapter(params, callback, dispatch) {
+  return async function(dispatch, getState) {
+    const chapterParams = getChapterParams(params)
+    const { id } = chapterParams
 
-  formData.append("id", id)
-  formData.append("title", title)
-  formData.append("distance", distance)
-  formData.append("date", new Date(date).toUTCString())
-  formData.append("journalId", journalId)
-
-  if (bannerImage.needsUpload) {
-    formData.append("banner_image", bannerImage)
-  }
-
-  const token = await setToken()
-  fetch(`${API_ROOT}/chapters/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token
-    },
-    body: formData
-  })
-    .then(response => {
-      return response.json()
-    })
-    .then(data => {
-      if (data.errors) {
-        throw Error(data.errors.join(", "))
-      }
-      let { chapter } = data
+    try {
+      const { chapter } = await put(`/chapters/${id}`, chapterParams)
       dispatch(addChapterToJournals(chapter))
       dispatch(loadChapter(chapter))
       dispatch(doneUpdating())
       callback()
-    })
-    .catch(err => {
-      DropDownHolder.alert("error", "Error", err)
-    })
+    } catch (err) {
+      dispatch(doneUpdating())
+      console.log("wat in tarnation", err)
+    }
+  }
 }
 
-export const createChapter = async (params, callback, dispatch) => {
-  let formData = new FormData()
-  let { title, distance, date, journalId, bannerImage } = params
+function getChapterParams(params) {
+  let { id, title, distance, date, journalId } = params
+  date = new Date(date).toUTCString()
+  return Object.assign(
+    {},
+    {
+      id,
+      title,
+      distance,
+      journalId,
+      date
+    }
+  )
+}
 
-  formData.append("title", title)
-  formData.append("distance", distance)
-  formData.append("date", new Date(date).toUTCString())
-  formData.append("journalId", journalId)
+export function createChapter(params, callback) {
+  return async function(dispatch, getState) {
+    const chapterParams = getChapterParams(params)
 
-  if (bannerImage.needsUpload) {
-    formData.append("banner_image", bannerImage)
-  }
-
-  const token = await setToken()
-  fetch(`${API_ROOT}/chapters`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token
-    },
-    body: formData
-  })
-    .then(response => {
-      return response.json()
-    })
-    .then(data => {
-      if (data.errors) {
-        throw Error(data.errors.join(", "))
-      }
-      let { chapter } = data
+    try {
+      const { chapter } = await post(`/chapters`, chapterParams)
       dispatch(addChapterToJournals(chapter))
       dispatch(loadChapter(chapter))
       dispatch(doneUpdating())
       callback()
-    })
-    .catch(err => {
-      DropDownHolder.alert("error", "Error", err)
-    })
+    } catch (err) {
+      dispatch(doneUpdating())
+      console.log("here is the error", err)
+      return
+    }
+  }
 }
 
 export const setChapterToJournalChapter = (journal, newChapter) => {
