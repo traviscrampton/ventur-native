@@ -48,7 +48,7 @@ class Ventur extends Component {
   }
 
   async getAWSCredentials() {
-    return 
+    return
     getCredentials().then(response => {
       this.props.addApiCredentials(response)
     })
@@ -94,11 +94,7 @@ class Ventur extends Component {
       return null
     }
 
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <VNTR />
-      </SafeAreaView>
-    )
+    return <VNTR />
   }
 }
 

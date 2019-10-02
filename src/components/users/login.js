@@ -123,7 +123,7 @@ class Login extends Component {
 
   render() {
     return (
-      <FormModal visible={this.props.visible}>
+      <FormModal visible={this.props.visible} backgroundColor={"#FF5423"}>
         <LinearGradient
           style={{ height: this.props.height, width: this.props.width, padding: 25 }}
           colors={["#FF5423", "#E46545"]}>

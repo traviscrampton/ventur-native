@@ -1,6 +1,17 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, FlatList, Image, TouchableWithoutFeedback, TextInput, Alert } from "react-native"
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  FlatList,
+  Image,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  TextInput,
+  Alert
+} from "react-native"
 import { fetchGearItem, deleteGearReview } from "../../actions/gear_item_review"
 import { editGearItemReview } from "../../actions/gear_review_form"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
@@ -215,18 +226,20 @@ class GearItemReview extends Component {
 
   render() {
     return (
-      <View style={{ height: "100%", backgroundColor: "white" }}>
-        {this.renderHeader()}
-        <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
-          {this.renderName()}
-          {this.renderImageCarousel()}
-          {this.renderReview()}
-          {this.renderRating()}
-          {this.renderProsCons()}
-          <View style={{ marginBottom: 200 }} />
-        </ScrollView>
-        <ImageSlider />
-      </View>
+      <SafeAreaView style={{ backgroundColor: "white" }}>
+        <View style={{ height: "100%", backgroundColor: "white" }}>
+          {this.renderHeader()}
+          <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
+            {this.renderName()}
+            {this.renderImageCarousel()}
+            {this.renderReview()}
+            {this.renderRating()}
+            {this.renderProsCons()}
+            <View style={{ marginBottom: 200 }} />
+          </ScrollView>
+          <ImageSlider />
+        </View>
+      </SafeAreaView>
     )
   }
 }

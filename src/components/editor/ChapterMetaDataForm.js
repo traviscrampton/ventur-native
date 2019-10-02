@@ -97,7 +97,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   getTitleText() {
-    return this.props.chapterForm.id ? "Edit Chapter" : "Create Chapter"
+    return this.props.chapterForm.id ? "Edit Chapter" : "New Chapter"
   }
 
   navigateToChapter = () => {

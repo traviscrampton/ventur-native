@@ -5,7 +5,14 @@ import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "../../actions/route_editor"
+import {
+  toggleDrawMode,
+  togglePositionMode,
+  setShownIndex,
+  persistRoute,
+  eraseRoute,
+  setCanDraw
+} from "../../actions/route_editor"
 import { checkForExpiredToken, setStravaLoadingTrue } from "../../actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
@@ -16,6 +23,7 @@ const mapDispatchToProps = dispatch => ({
   persistRoute: () => dispatch(persistRoute()),
   eraseRoute: () => dispatch(eraseRoute()),
   checkForExpiredToken: () => dispatch(checkForExpiredToken()),
+  setCanDraw: payload => dispatch(setCanDraw(payload)),
   setStravaLoadingTrue: () => dispatch(setStravaLoadingTrue())
 })
 
@@ -29,7 +37,8 @@ const mapStateToProps = state => ({
   initialRegion: state.routeEditor.initialRegion,
   initialPolylineLength: state.routeEditor.initialPolylineLength,
   isDrawing: state.routeEditor.isDrawing,
-  isSaving: state.routeEditor.isSaving
+  isSaving: state.routeEditor.isSaving,
+  canDraw: state.routeEditor.canDraw
 })
 
 class RouteEditorButtons extends Component {
@@ -140,6 +149,11 @@ class RouteEditorButtons extends Component {
     )
   }
 
+  setCanDraw = () => {
+    const { canDraw } = this.props
+    this.props.setCanDraw(!canDraw)
+  }
+
   isInitialRoute() {
     return this.props.polylines.length > this.props.initialPolylineLength
   }
@@ -149,15 +163,15 @@ class RouteEditorButtons extends Component {
   }
 
   renderDrawButton() {
-    if (!this.props.polylineEditor || this.props.positionMode) return
+    if (!this.props.drawMode) return
 
-    const { drawMode } = this.props
-    const buttonBackground = drawMode ? { backgroundColor: "#FF5423" } : {}
-    const pencilColor = drawMode ? "white" : "#FF5423"
+    const { canDraw } = this.props
+    const buttonBackground = canDraw ? { backgroundColor: "#FF5423" } : {}
+    const pencilColor = canDraw ? "white" : "#FF5423"
 
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <TouchableWithoutFeedback onPress={this.props.toggleDrawMode}>
+        <TouchableWithoutFeedback onPress={this.setCanDraw}>
           <View
             style={[
               {
@@ -181,6 +195,7 @@ class RouteEditorButtons extends Component {
   }
 
   renderSaveButton() {
+    return
     if (this.props.drawMode || this.props.positionMode) return
     let icon = this.props.isSaving ? (
       <MaterialIndicator size={25} color="#FF5423" />
@@ -213,6 +228,7 @@ class RouteEditorButtons extends Component {
   }
 
   renderCropButton() {
+    return
     if (this.props.drawMode) return
     const { positionMode } = this.props
     const backgroundColor = positionMode ? "#3F88C5" : "white"
@@ -271,7 +287,40 @@ class RouteEditorButtons extends Component {
     )
   }
 
+  renderCancelButton() {
+    return
+    if (this.props.drawMode || this.props.positionMode) {
+      return (
+        <View
+          shadowColor="#323941"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{ position: "absolute", bottom: 30, right: 30 }}>
+          <TouchableWithoutFeedback onPress={() => console.log("CANCEL IT GDMT")}>
+            <View
+              style={{
+                height: 35,
+                width: 35,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "white",
+                borderRadius: "50%"
+              }}>
+              <MaterialIcons name="delete" size={25} color={"#323941"} />
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      )
+    } else {
+      return
+    }
+  }
+
   renderEraseButton() {
+    return
     if (this.props.positionMode) return
 
     return (
@@ -335,6 +384,7 @@ class RouteEditorButtons extends Component {
           ]}>
           {this.renderSaveButton()}
           {this.renderCropButton()}
+          {this.renderCancelButton()}
         </View>
         {this.renderStravaCta()}
         {this.renderEraseButton()}

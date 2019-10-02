@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   FlatList,
+  SafeAreaView,
   AsyncStorage,
   Dimensions,
   TouchableWithoutFeedback,
@@ -377,16 +378,18 @@ class Profile extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
-        <ScrollView>
-          {this.renderProfilePhotoAndMetadata()}
-          {this.renderSlidingTabs()}
-        </ScrollView>
-        {this.renderFloatingCreateButton()}
-        <JournalForm />
-        <GearReviewForm />
-        <ImagePickerContainer imageCallback={this.uploadProfilePhoto} selectSingleItem />
-      </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={{ backgroundColor: "white", height: "100%" }}>
+          <ScrollView>
+            {this.renderProfilePhotoAndMetadata()}
+            {this.renderSlidingTabs()}
+          </ScrollView>
+          {this.renderFloatingCreateButton()}
+          <JournalForm />
+          <GearReviewForm />
+          <ImagePickerContainer imageCallback={this.uploadProfilePhoto} selectSingleItem />
+        </View>
+      </SafeAreaView>
     )
   }
 }

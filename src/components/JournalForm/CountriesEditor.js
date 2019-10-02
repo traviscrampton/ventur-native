@@ -9,13 +9,12 @@ import { Feather } from "@expo/vector-icons"
 import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
-  includedCountries: state.journalForm.includedCountries,
   visible: state.journalForm.countriesEditorVisible
 })
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload)),
+  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload))
 })
 
 class CountriesEditor extends Component {
@@ -26,6 +25,12 @@ class CountriesEditor extends Component {
       searchText: "",
       searchResultCountries: [],
       includedCountries: props.includedCountries
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevProps.visible && this.props.visible) {
+      this.setState({ includedCountries: this.props.includedCountries })
     }
   }
 
@@ -79,7 +84,18 @@ class CountriesEditor extends Component {
     return (
       <View>
         <TextInput
-          style={{ borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 5, padding: 5, fontSize: 18 }}
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d3d3d3",
+            borderRadius: 5,
+            padding: 5,
+            fontSize: 18,
+            backgroundColor: "white"
+          }}
           autoFocus
           selectionColor="#FF5423"
           value={this.state.searchText}
@@ -103,7 +119,7 @@ class CountriesEditor extends Component {
             paddingBottom: 10
           }}
           key={searchCountry.id}>
-          <Text style={{ fontSize: 18 }}>{searchCountry.name}</Text>
+          <Text style={{ fontSize: 18, fontFamily: "open-sans-regular" }}>{searchCountry.name}</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -114,19 +130,21 @@ class CountriesEditor extends Component {
 
     return (
       <View
-        style={{
-          borderWidth: 1,
-          borderColor: "#d3d3d3",
-          borderRadius: 5,
-          marginTop: 5,
-          position: "absolute",
-          top: 35,
-          width: "100%",
-          backgroundColor: "white"
-        }}>
-        {this.state.searchResultCountries.map((searchCountry, index) => {
-          return this.renderSearchResult(searchCountry)
-        })}
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={{ position: "absolute", top: 35, marginTop: 5, position: "absolute", top: 35, width: "100%" }}>
+        <View
+          style={{
+            borderRadius: 5,
+            backgroundColor: "white",
+            overflow: "hidden"
+          }}>
+          {this.state.searchResultCountries.map((searchCountry, index) => {
+            return this.renderSearchResult(searchCountry)
+          })}
+        </View>
       </View>
     )
   }
@@ -134,10 +152,15 @@ class CountriesEditor extends Component {
   renderIncludedCountryTab(includedCountry, index) {
     return (
       <View
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
         style={{
           borderWidth: 1,
           borderColor: "#d3d3d3",
           borderRadius: 5,
+          backgroundColor: "white",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",

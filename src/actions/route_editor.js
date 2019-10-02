@@ -11,6 +11,21 @@ export function populateMap(payload) {
   }
 }
 
+export const SET_CAN_DRAW = "SET_CAN_DRAW"
+export function setCanDraw(payload) {
+  return {
+    type: SET_CAN_DRAW,
+    payload: payload
+  }
+}
+
+export const CANCEL_ALL_MODES = "CANCEL_ALL_MODES"
+export function cancelAllModes() {
+  return {
+    type: CANCEL_ALL_MODES
+  }
+}
+
 export const UPDATE_INITIAL_REGION = "UPDATE_INITIAL_REGION"
 export function updateInitialRegion() {
   return {

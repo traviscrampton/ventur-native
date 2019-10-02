@@ -2,9 +2,17 @@ import React, { Component } from "react"
 import _ from "lodash"
 import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } from "react-native"
 import { connect } from "react-redux"
-import MapView from 'react-native-maps'
+import MapView from "react-native-maps"
 import { FloatingAction } from "react-native-floating-action"
 import RouteEditorButtons from "../Maps/RouteEditorButtons"
+import {
+  toggleDrawMode,
+  togglePositionMode,
+  setShownIndex,
+  persistRoute,
+  eraseRoute,
+  cancelAllModes
+} from "../../actions/route_editor"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
 import {
@@ -19,15 +27,21 @@ import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
+  toggleDrawMode: () => dispatch(toggleDrawMode()),
+  togglePositionMode: () => dispatch(togglePositionMode()),
   drawLine: payload => dispatch(drawLine(payload)),
   setupNextDraw: () => dispatch(setupNextDraw()),
+  persistRoute: () => dispatch(persistRoute()),
+  eraseRoute: () => dispatch(eraseRoute()),
   persistCoordinates: () => dispatch(persistCoordinates()),
+  cancelAllModes: () => dispatch(cancelAllModes()),
   defaultRouteEditor: () => dispatch(defaultRouteEditor()),
   updateRegionCoordinates: coordinates => dispatch(updateRegionCoordinates(coordinates))
 })
 
 const mapStateToProps = state => ({
   polylineEditor: state.routeEditor.polylineEditor,
+  width: state.common.width,
   drawMode: state.routeEditor.drawMode,
   shownIndex: state.routeEditor.shownIndex,
   positionMode: state.routeEditor.positionMode,
@@ -38,7 +52,8 @@ const mapStateToProps = state => ({
   isLoading: state.common.isLoading,
   isSaving: state.routeEditor.isSaving,
   changedRegion: state.routeEditor.changedRegion,
-  startingPolylines: state.routeEditor.startingPolylines
+  startingPolylines: state.routeEditor.startingPolylines,
+  canDraw: state.routeEditor.canDraw
 })
 
 class RouteEditor extends Component {
@@ -46,8 +61,41 @@ class RouteEditor extends Component {
     super(props)
   }
 
+  static actions = [
+    {
+      text: "Draw Route",
+      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
+      name: "draw_route",
+      position: 0,
+      color: "#FF5423"
+    },
+    {
+      text: "Position Map",
+      icon: <MaterialIcons name={"crop-free"} color="white" size={20} />,
+      name: "position_map",
+      position: 1,
+      color: "#3F88C5"
+    },
+    {
+      text: "Upload Strava Routes",
+      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
+      name: "upload_strava",
+      position: 2,
+      color: "#FF5423"
+    },
+    {
+      text: "Clear Route",
+      icon: <MaterialIcons name="delete" color="white" size={20} />,
+      name: "erase_route",
+      position: 3,
+      color: "#FF5423"
+    }
+  ]
+
   onPanDrag = e => {
-    if (!this.props.drawMode || !this.props.isDrawing) return
+    const { drawMode, canDraw, isDrawing } = this.props
+
+    if (!drawMode || !canDraw || !isDrawing) return
     let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
     this.props.drawLine(coordinates)
   }
@@ -71,7 +119,7 @@ class RouteEditor extends Component {
   }
 
   handleOnMoveResponder = () => {
-    if (!this.props.drawMode) return
+    if (!this.props.canDraw) return
 
     if (!this.props.isDrawing) {
       this.props.setIsDrawing(true)
@@ -81,13 +129,23 @@ class RouteEditor extends Component {
   }
 
   isSaved() {
-    let { polylines, startingPolylines, shownIndex } = this.props
+    let { polylines, startingPolylines } = this.props
 
     return JSON.stringify(polylines) === JSON.stringify(startingPolylines)
   }
 
+  routeNeedsSaving() {
+    const { polylines, startingPolylines } = this.props
+
+    if (polylines.length !== startingPolylines.length) {
+      return true
+    }
+
+    return !this.isSaved()
+  }
+
   handleOnReleaseResponder = () => {
-    if (!this.props.drawMode) return
+    if (!this.props.canDraw) return
 
     this.props.setupNextDraw()
   }
@@ -97,36 +155,86 @@ class RouteEditor extends Component {
   }
 
   isChangedRegionDifferent() {
-    return JSON.stringify(this.props.initialRegion) === JSON.stringify(this.props.changedRegion)
+    return JSON.stringify(this.props.initialRegion) !== JSON.stringify(this.props.changedRegion)
+  }
+
+  handlePressItem(name) {
+    switch (name) {
+      case "draw_route":
+        return this.props.toggleDrawMode()
+      case "position_map":
+        return this.props.togglePositionMode()
+      case "erase_route":
+        return this.props.eraseRoute()
+      default:
+        console.log("wat in tarnation")
+    }
+  }
+
+  getSaveButtonProps(drawMode, positionMode) {
+    if (drawMode) {
+      return Object.assign(
+        {},
+        { onPress: this.props.persistRoute, saved: "SAVED", needsSaving: "SAVE ROUTE", color: "#FF5423" }
+      )
+    } else if (positionMode) {
+      return Object.assign(
+        {},
+        { onPress: this.props.persistCoordinates, saved: "SAVED", needsSaving: "SAVE POSITION", color: "#3F88C5" }
+      )
+    } else {
+      return Object.assign({}, {})
+    }
+  }
+
+  needsSaving(drawMode, positionMode) {
+    if (!drawMode && !positionMode) return
+
+    if (positionMode) {
+      return this.isChangedRegionDifferent()
+    } else if (drawMode) {
+      return this.routeNeedsSaving()
+    }
+
+    return false
+  }
+
+  cancelAllModes = () => {
+    this.props.cancelAllModes()
   }
 
   renderSavingButton() {
-    if (!this.props.positionMode) return
+    const { drawMode, positionMode } = this.props
+    if (!drawMode && !positionMode) return
+    const { onPress, saved, needsSaving, color } = this.getSaveButtonProps(drawMode, positionMode)
     let buttonContent
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color="#FF5423" />
-    } else if (this.isChangedRegionDifferent()) {
-      buttonContent = <Text style={{ color: "#FF5423" }}>SAVED</Text>
+      buttonContent = <MaterialIndicator size={20} color={color} />
+    } else if (this.needsSaving(drawMode, positionMode)) {
+      buttonContent = <Text style={{ color: color }}>{needsSaving}</Text>
     } else {
-      buttonContent = <Text style={{ color: "#FF5423" }}>SAVE POSITION</Text>
+      buttonContent = <Text style={{ color: color }}>{saved}</Text>
     }
-
     return (
       <View
+        shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.7}
+        shadowRadius={2}
         style={{
           position: "absolute",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          bottom: 30,
-          width: Dimensions.get("window").width
+          bottom: 65,
+          left: 60
         }}>
-        <TouchableWithoutFeedback onPress={this.props.persistCoordinates}>
+        <TouchableWithoutFeedback onPress={onPress}>
           <View
             style={{
-              width: Dimensions.get("window").width / 2,
+              width: this.props.width / 2,
               borderRadius: 30,
               height: 40,
               display: "flex",
@@ -175,6 +283,40 @@ class RouteEditor extends Component {
     )
   }
 
+  renderExitButton() {
+    if (!this.props.drawMode && !this.props.positionMode) return
+
+    return (
+      <View
+        shadowColor="#323941"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={{
+          position: "absolute",
+          bottom: 60,
+          right: 30,
+          backgroundColor: "#FF5423",
+          borderRadius: "50%",
+          overflow: "hidden"
+        }}>
+        <TouchableWithoutFeedback onPress={this.cancelAllModes}>
+          <View
+            style={{
+              height: 57,
+              width: 57,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+            <MaterialIcons name="close" size={30} color={"white"} />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
   renderPolylines() {
     let coordinates
     return this.props.polylines.map((coordinateArrays, index) => {
@@ -194,6 +336,36 @@ class RouteEditor extends Component {
     })
   }
 
+  renderPositionCoordinates() {
+    if (!this.props.positionMode) return
+
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.props.changedRegion
+    return (
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: "rgba(111, 111, 111, 0.3)",
+          padding: 5,
+          borderRadius: 5,
+          top: 60,
+          right: 30
+        }}>
+        <View>
+          <Text style={{ color: "black" }}>Latitude: {latitude}</Text>
+        </View>
+        <View>
+          <Text style={{ color: "black" }}>Longitude: {longitude}</Text>
+        </View>
+        <View>
+          <Text style={{ color: "black" }}>Lat Delta: {latitudeDelta}</Text>
+        </View>
+        <View>
+          <Text style={{ color: "black" }}>Long Delta: {longitudeDelta}</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     if (this.props.isLoading) {
       return <LoadingScreen />
@@ -208,7 +380,7 @@ class RouteEditor extends Component {
           <MapView
             onRegionChangeComplete={e => this.handleRegionChange(e)}
             style={{ flex: 1, zIndex: -1 }}
-            scrollEnabled={!this.props.drawMode}
+            scrollEnabled={!this.props.canDraw}
             onPanDrag={e => this.onPanDrag(e)}
             initialRegion={this.props.initialRegion}>
             {this.renderPreviousPolylines()}
@@ -216,8 +388,18 @@ class RouteEditor extends Component {
           </MapView>
         </View>
         {this.renderFloatingBackButton()}
-        <RouteEditorButtons navigation={this.props.navigation} />
+        <FloatingAction
+          color={"#FF5423"}
+          distanceToEdge={{ vertical: 60, horizontal: 30 }}
+          actions={RouteEditor.actions}
+          onPressItem={name => {
+            this.handlePressItem(name)
+          }}
+        />
+        {this.renderExitButton()}
         {this.renderSavingButton()}
+        {this.renderPositionCoordinates()}
+        <RouteEditorButtons navigation={this.props.navigation} />
       </View>
     )
   }

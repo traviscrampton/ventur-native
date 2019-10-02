@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, Dimensions, View, Text, FlatList } from "react-native"
+import { StyleSheet, ScrollView, SafeAreaView, Dimensions, View, Text, FlatList } from "react-native"
 import { connect } from "react-redux"
 import { get } from "../../agent"
 import { deleteS3Objects } from "../../utils/image_uploader"
@@ -46,8 +46,11 @@ class JournalFeed extends Component {
   }
 
   renderJournal(journal, index) {
+    const styles = this.props.journals.length - 1 === index ? { marginBottom: 200 } : {}
     return (
-      <JournalCard {...journal} width={this.props.width} height={this.props.height} handlePress={this.handlePress} />
+      <View style={styles}>
+        <JournalCard {...journal} width={this.props.width} height={this.props.height} handlePress={this.handlePress} />
+      </View>
     )
   }
 
@@ -63,7 +66,7 @@ class JournalFeed extends Component {
     return (
       <FlatList
         ListEmptyComponent={this.renderErrorScreen()}
-        style={{ backgroundColor: "white" }}
+        style={{ backgroundColor: "white", minHeight: this.props.height }}
         data={this.props.journals}
         refreshing={this.props.refreshing}
         onRefresh={this.handleRefresh}
@@ -78,7 +81,7 @@ class JournalFeed extends Component {
       return <LoadingScreen />
     }
 
-    return this.renderJournals()
+    return <SafeAreaView style={{ backgroundColor: "white" }}>{this.renderJournals()}</SafeAreaView>
   }
 }
 

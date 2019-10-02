@@ -6,6 +6,7 @@ import {
   Text,
   Animated,
   ScrollView,
+  SafeAreaView,
   Image,
   ImageBackground,
   TouchableHighlight,
@@ -520,18 +521,20 @@ class Journal extends Component {
     }
 
     return (
-      <View style={{ height: "100%", position: "relative" }}>
-        <ScrollView style={styles.container}>
-          {this.renderHeader()}
-          {this.renderSlidingTabs()}
-        </ScrollView>
-        {this.renderFloatingButton()}
+      <SafeAreaView style={{ backgroundColor: "white" }}>
+        <View style={{ height: "100%", position: "relative" }}>
+          <ScrollView style={styles.container}>
+            {this.renderHeader()}
+            {this.renderSlidingTabs()}
+          </ScrollView>
+          {this.renderFloatingButton()}
 
-        <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
-        {this.renderImagePickerContainer()}
-        <JournalForm />
-        <GearReviewForm />
-      </View>
+          <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
+          {this.renderImagePickerContainer()}
+          <JournalForm />
+          <GearReviewForm />
+        </View>
+      </SafeAreaView>
     )
   }
 }
@@ -541,7 +544,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   navigationContainer: {
-    marginTop: 20,
+    marginTop: 30,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",

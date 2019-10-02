@@ -23,7 +23,8 @@ import FormModal from "../shared/FormModal"
 const mapStateToProps = state => ({
   visible: state.gearReviewForm.visible,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  id: state.gearReviewForm.id
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -73,6 +74,18 @@ class GearReviewForm extends Component {
     )
   }
 
+  getTitleText() {
+    return this.props.id ? "Edit Gear Review" : "New Gear Review"
+  }
+
+  renderFormTitle() {
+    return (
+      <View style={{ marginBottom: 20 }}>
+        <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 28 }}>{this.getTitleText()}</Text>
+      </View>
+    )
+  }
+
   render() {
     return (
       <FormModal
@@ -86,6 +99,7 @@ class GearReviewForm extends Component {
           keyboardOffset={90}
           style={{ padding: 20 }}
           keyboardShouldPersistTaps="always">
+          {this.renderFormTitle()}
           <GearReviewFormTitle />
           <GearReviewFormReview />
           <GearReviewFormImageCarousel />

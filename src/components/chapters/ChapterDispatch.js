@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import _ from "lodash"
 import { resetChapter } from "../../actions/chapter"
-import { StyleSheet, View, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
+import { StyleSheet, View, SafeAreaView, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
 import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
 import { loadChapter, setEditMode, editChapterPublished, deleteChapter, uploadBannerPhoto } from "../../actions/chapter"
@@ -103,7 +103,7 @@ class ChapterDispatch extends Component {
     this.props.toggleCameraRollModal(true)
   }
 
-  uploadBannerPhoto = (img) => {
+  uploadBannerPhoto = img => {
     this.props.uploadBannerPhoto(img)
   }
 
@@ -145,7 +145,7 @@ class ChapterDispatch extends Component {
     return this.props.user.id == this.props.currentUser.id
   }
 
-    sendEmails = async () => {
+  sendEmails = async () => {
     if (this.props.chapter.emailSent) return
 
     this.props.sendEmails(this.props.chapter.id)
@@ -233,12 +233,14 @@ class ChapterDispatch extends Component {
     }
 
     return (
-      <View style={styles.chapterDispatchContainer}>
-        {this.renderHeader()}
-        <ChapterShow navigation={this.props.navigation} />
-        {this.renderEditorFloatingButton()}
-        <ImagePickerContainer imageCallback={this.uploadBannerPhoto} selectSingleItem />
-      </View>
+      <SafeAreaView style={{ backgroundColor: "white", flex: 1}}>
+        <View style={styles.chapterDispatchContainer}>
+          {this.renderHeader()}
+          <ChapterShow navigation={this.props.navigation} />
+          {this.renderEditorFloatingButton()}
+          <ImagePickerContainer imageCallback={this.uploadBannerPhoto} selectSingleItem />
+        </View>
+      </SafeAreaView>
     )
   }
 }

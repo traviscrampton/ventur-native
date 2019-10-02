@@ -1,5 +1,6 @@
 import {
   SET_DRAW_MODE,
+  SET_CAN_DRAW,
   SET_SHOWN_INDEX,
   SET_POSITION_MODE,
   SET_IS_DRAWING,
@@ -12,6 +13,7 @@ import {
   ERASE_TOTAL_ROUTE,
   UPDATE_INITIAL_REGION,
   UPDATE_STARTING_POLYLINES,
+  CANCEL_ALL_MODES,
   DEFAULT_ROUTE_EDTIOR
 } from "../actions/route_editor"
 import { POPULATE_ID } from "../actions/journal_route"
@@ -29,7 +31,8 @@ const defaultRouteData = {
   changedRegion: {},
   initialPolylineLength: 1,
   isDrawing: false,
-  isSaving: false
+  isSaving: false,
+  canDraw: false
 }
 
 export default (state = defaultRouteData, action) => {
@@ -54,6 +57,11 @@ export default (state = defaultRouteData, action) => {
         initialPolylineLength: defaultRouteData.initialPolylineLength,
         shownIndex: defaultRouteData.shownIndex
       }
+    case SET_CAN_DRAW:
+      return {
+        ...state,
+        canDraw: action.payload
+      }
 
     case SAVING_MAP_BEGIN:
       return {
@@ -67,11 +75,19 @@ export default (state = defaultRouteData, action) => {
         isSaving: false
       }
 
+    case CANCEL_ALL_MODES:
+      return {
+        ...state,
+        drawMode: false,
+        canDraw: false,
+        positionMode: false
+      }
+
     case UPDATE_STARTING_POLYLINES:
       return {
         ...state,
         startingPolylines: [...state.polylines]
-      }  
+      }
 
     case UPDATE_REGION_COORDINATES:
       return {
@@ -127,7 +143,9 @@ export default (state = defaultRouteData, action) => {
     case SET_POSITION_MODE:
       return {
         ...state,
-        positionMode: action.payload
+        positionMode: action.payload,
+        drawMode: false,
+        canDraw: false
       }
 
     case DEFAULT_ROUTE_EDTIOR:

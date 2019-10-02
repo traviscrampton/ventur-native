@@ -27,6 +27,7 @@ import FormModal from "../shared/FormModal"
 const mapStateToProps = state => ({
   id: state.journalForm.id,
   title: state.journalForm.title,
+  height: state.common.height,
   description: state.journalForm.description,
   status: state.journalForm.status,
   includedCountries: state.journalForm.includedCountries,
@@ -93,7 +94,8 @@ class JournalForm extends Component {
   }
 
   renderFormTitle() {
-    const formTitle = this.props.id === null ? "New Journal" : "Edit Journal"
+    const formTitle = this.props.id ? "Edit Journal" : "New Journal"
+
     return (
       <View style={styles.formTitle}>
         <Text style={styles.title}>{formTitle}</Text>
@@ -105,24 +107,46 @@ class JournalForm extends Component {
     return (
       <View style={{ marginBottom: 15 }}>
         <View style={{ marginBottom: 15 }}>
+          <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Title</Text>
           <TextInput
-            style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
-            placeholder={"Title"}
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={{
+              backgroundColor: "white",
+              fontSize: 18,
+              borderWidth: 1,
+              padding: 5,
+              borderRadius: 5,
+              borderColor: "#d3d3d3"
+            }}
             selectionColor="#FF5423"
             onChangeText={text => this.updateJournalForm("title", text)}
             value={this.props.title}
           />
         </View>
         <View>
+          <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Description</Text>
           <TextInput
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
             multiline
             minHeight={18 * 4}
             maxLength={200}
             value={this.props.description}
             selectionColor="#FF5423"
-            style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
+            style={{
+              backgroundColor: "white",
+              fontSize: 18,
+              borderWidth: 1,
+              padding: 5,
+              borderRadius: 5,
+              borderColor: "#d3d3d3"
+            }}
             onChangeText={text => this.updateJournalForm("description", text)}
-            placeholder={"Description"}
           />
         </View>
       </View>
@@ -134,8 +158,13 @@ class JournalForm extends Component {
 
     return (
       <View>
+        <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Distance Type</Text>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("distanceType", this.props.distanceType)}>
           <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
             style={{
               display: "flex",
               borderWidth: 1,
@@ -160,8 +189,13 @@ class JournalForm extends Component {
 
     return (
       <View>
+        <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Status</Text>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("status", this.props.status)}>
           <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
             style={{
               display: "flex",
               borderWidth: 1,
@@ -206,7 +240,7 @@ class JournalForm extends Component {
     return (
       <View>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 16 }}>Country Tags</Text>
+          <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Country Tags</Text>
           <TouchableWithoutFeedback onPress={this.navigateToCountriesEditor}>
             <View>
               <Text style={{ fontSize: 16 }}>Edit</Text>
@@ -255,14 +289,15 @@ class JournalForm extends Component {
     return (
       <FormModal visible={this.props.visible}>
         {header}
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
           {formTitle}
           {textFields}
           {status}
           {distanceType}
           {countries}
+          <View style={{ marginBottom: 200 }} />
         </ScrollView>
-        <CountriesEditor />
+        <CountriesEditor includedCountries={this.props.includedCountries} />
       </FormModal>
     )
   }

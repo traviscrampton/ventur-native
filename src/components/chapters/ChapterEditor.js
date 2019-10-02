@@ -7,6 +7,7 @@ import {
   TextInput,
   ImageBackground,
   Keyboard,
+  SafeAreaView,
   TouchableWithoutFeedback,
   Dimensions,
   AsyncStorage,
@@ -448,7 +449,7 @@ class ChapterEditor extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <SafeAreaView style={{ backgroundColor: "white" }}>
         <View style={([styles.container], this.getContainerSize())}>
           {this.renderHeader()}
           <InputScrollView
@@ -467,7 +468,7 @@ class ChapterEditor extends Component {
           {this.renderEditorToolbar()}
         </View>
         {this.renderImagePickerContainer()}
-      </View>
+      </SafeAreaView>
     )
   }
 }

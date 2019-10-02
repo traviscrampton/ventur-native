@@ -1,5 +1,13 @@
 import React, { Component } from "react"
-import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
+import {
+  StyleSheet,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  ImageBackground,
+  Dimensions
+} from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { toggleLoginModal } from "../../actions/login"
 import { toggleUserFormModal } from "../../actions/user_form"
@@ -88,7 +96,7 @@ class HomeLoggedOut extends Component {
 
   renderSignUpAndSignIn() {
     return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 10 }}>
+      <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 70 }}>
         {this.renderSignIn()}
         {this.renderSignUp()}
         {this.renderAgreementText()}
@@ -98,18 +106,26 @@ class HomeLoggedOut extends Component {
 
   render() {
     return (
-      <ImageBackground style={{ height: this.props.height, width: this.props.width }} source={GabeBolivia}>
+      <ImageBackground style={{ height: null, width: this.props.width }} source={GabeBolivia}>
         <View
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.4)",
             height: this.props.height,
             width: this.props.width,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
           }}>
-          {this.renderTitleAndSubTitle()}
-          {this.renderSignUpAndSignIn()}
+          <SafeAreaView>
+            <View
+              style={{
+                height: this.props.height,
+                width: this.props.width,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between"
+              }}>
+              {this.renderTitleAndSubTitle()}
+              {this.renderSignUpAndSignIn()}
+            </View>
+          </SafeAreaView>
         </View>
         <Login />
         <UserForm />

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
 import { updateCurrentBottomTab } from "../../actions/common"
-import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions } from "react-native"
+import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions, SafeAreaView } from "react-native"
 
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar
@@ -62,10 +62,8 @@ class BottomTabBar extends Component {
 
   renderToolbar() {
     return (
+      <SafeAreaView style={{ backgroundColor: "white"}}>
       <View
-        shadowColor="#d3d3d3"
-        shadowOffset={{ width: 0, height: 1 }}
-        shadowOpacity={0.7}
         style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           {this.props.navigation.state.routes.map((route, idx) => {
@@ -73,6 +71,7 @@ class BottomTabBar extends Component {
           })}
         </View>
       </View>
+      </SafeAreaView>
     )
   }
 
@@ -86,6 +85,8 @@ const styles = StyleSheet.create({
     height: 50,
     display: "flex",
     flexDirection: "row",
+    borderTopWidth: 1,
+    borderTopColor: "#f7f7f7",
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: "white"

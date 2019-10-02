@@ -16,13 +16,17 @@ class FormModal extends Component {
     super(props)
   }
 
+  static defaultProps = {
+    backgroundColor: "white"
+  }
+
   render() {
     return (
       <Modal
         visible={this.props.visible}
         animationType={"slide"}
-        style={{ backgroundColor: "white", height: this.props.height }}>
-        <SafeAreaView>
+        style={{ backgroundColor: this.props.backgroundColor, height: this.props.height }}>
+        <SafeAreaView style={{backgroundColor: this.props.backgroundColor}}>
           {this.props.children}
           <DropdownAlert ref={ref => DropDownHolder.setDropDown(ref)} closeInterval={4000} />
         </SafeAreaView>
