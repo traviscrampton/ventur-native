@@ -337,7 +337,9 @@ class Journal extends Component {
     return <View>{this.renderBannerAndUserImages(journal, user)}</View>
   }
 
-  renderEmptyChapterState() {
+  renderJournalEmptyState(isChapter=false) {
+    const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet"
+
     return (
       <View
         key={"chapterEmptyState"}
@@ -345,7 +347,7 @@ class Journal extends Component {
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={{ marginBottom: 10 }}>
-              <Text style={{ fontSize: 20, color: "gray" }}>No chapters yet</Text>
+              <Text style={{ fontSize: 20, color: "gray" }}>{ctaText}</Text>
             </View>
             <View
               style={{
@@ -388,7 +390,7 @@ class Journal extends Component {
     }
 
     if (this.props.chapters.length === 0) {
-      return this.renderEmptyChapterState()
+      return this.renderJournalEmptyState(true)
     }
 
     return (
@@ -462,6 +464,9 @@ class Journal extends Component {
   }
 
   renderGear() {
+    if (this.props.journal.gear.length === 0) {
+      return this.renderJournalEmptyState()
+    }
     return this.props.journal.gear.map((gearItem, index) => {
       return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })

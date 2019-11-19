@@ -130,6 +130,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderDatePicker() {
+    console.log("datepickerdropdown", DatePickerDropdown)
     if (!this.state.datePickerOpen) return
 
     return (

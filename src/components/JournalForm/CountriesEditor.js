@@ -99,6 +99,7 @@ class CountriesEditor extends Component {
           autoFocus
           selectionColor="#FF5423"
           value={this.state.searchText}
+          placeholderTextColor={"darkgray"}
           placeholder={"Type to find country"}
           onChangeText={text => this.handleTextChange(text)}
         />

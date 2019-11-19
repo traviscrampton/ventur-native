@@ -67,8 +67,13 @@ class DatePickerDropdown extends Component {
     }
 
     return (
-      <View style={{ borderWidth: 1, borderRadius: 4, borderColor: "#f8f8f8" }}>
-        <DatePickerIOS style={{ color: "white" }} mode={"date"} date={date} onDateChange={this.handleDateChange} />
+      <View style={{ borderWidth: 1, borderRadius: 4, borderColor: "gray", justifyContent: "center" }}>
+        <DatePickerIOS
+          style={{ backgroundColor: "gray", marginBottom: 5, overflow: 'hidden', borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
+          mode={"date"}
+          date={date}
+          onDateChange={this.handleDateChange}
+        />
         {this.renderConfirmOptions()}
       </View>
     )
