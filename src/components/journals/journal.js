@@ -521,7 +521,7 @@ class Journal extends Component {
     }
 
     return (
-      <SafeAreaView style={{ backgroundColor: "white" }}>
+      <React.Fragment>
         <View style={{ height: "100%", position: "relative" }}>
           <ScrollView style={styles.container}>
             {this.renderHeader()}
@@ -534,7 +534,8 @@ class Journal extends Component {
           <JournalForm />
           <GearReviewForm />
         </View>
-      </SafeAreaView>
+        <SafeAreaView style={{ backgroundColor: "white" }} />
+      </React.Fragment>
     )
   }
 }

@@ -5,6 +5,7 @@ import { connect } from "react-redux"
 import MapView from "react-native-maps"
 import { FloatingAction } from "react-native-floating-action"
 import RouteEditorButtons from "../Maps/RouteEditorButtons"
+import { authenticateStravaUser } from "../../actions/strava"
 import {
   toggleDrawMode,
   togglePositionMode,
@@ -13,6 +14,8 @@ import {
   eraseRoute,
   cancelAllModes
 } from "../../actions/route_editor"
+import * as WebBrowser from "expo-web-browser"
+import { encodeQueryString } from "../../agent"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
 import {
@@ -33,6 +36,7 @@ const mapDispatchToProps = dispatch => ({
   setupNextDraw: () => dispatch(setupNextDraw()),
   persistRoute: () => dispatch(persistRoute()),
   eraseRoute: () => dispatch(eraseRoute()),
+  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
   persistCoordinates: () => dispatch(persistCoordinates()),
   cancelAllModes: () => dispatch(cancelAllModes()),
   defaultRouteEditor: () => dispatch(defaultRouteEditor()),
@@ -53,7 +57,9 @@ const mapStateToProps = state => ({
   isSaving: state.routeEditor.isSaving,
   changedRegion: state.routeEditor.changedRegion,
   startingPolylines: state.routeEditor.startingPolylines,
-  canDraw: state.routeEditor.canDraw
+  canDraw: state.routeEditor.canDraw,
+  currentUser: state.common.currentUser,
+  stravaClientId: state.common.stravaClientId
 })
 
 class RouteEditor extends Component {
@@ -128,6 +134,27 @@ class RouteEditor extends Component {
     return true
   }
 
+  connectToStrava = async () => {
+    if (this.props.currentUser.stravaAccessToken) return
+
+    const redirect = "ventur://ventur"
+    const params = Object.assign(
+      {},
+      {
+        client_id: this.props.stravaClientId,
+        response_type: "code",
+        redirect_uri: redirect,
+        scope: "activity:read_all",
+        approval_prompt: "force"
+      }
+    )
+
+    let url = "https://www.strava.com/oauth/authorize" + encodeQueryString(params)
+    const result = await WebBrowser.openAuthSessionAsync(url)
+    console.log("RESULT", result)
+    this.props.authenticateStravaUser(result)
+  }
+
   isSaved() {
     let { polylines, startingPolylines } = this.props
 
@@ -158,7 +185,17 @@ class RouteEditor extends Component {
     return JSON.stringify(this.props.initialRegion) !== JSON.stringify(this.props.changedRegion)
   }
 
-  handlePressItem(name) {
+  async handleStravaPress() {
+    if (!this.props.currentUser.stravaAccessToken) {
+      await this.connectToStrava()
+    } else if (false) {
+      console.log("its connected")
+    } /* is connected to strava */ else {
+      console.log("its connected to strava")
+    }
+  }
+
+  async handlePressItem(name) {
     switch (name) {
       case "draw_route":
         return this.props.toggleDrawMode()
@@ -166,6 +203,8 @@ class RouteEditor extends Component {
         return this.props.togglePositionMode()
       case "erase_route":
         return this.props.eraseRoute()
+      case "upload_strava":
+        return await this.handleStravaPress()
       default:
         console.log("wat in tarnation")
     }

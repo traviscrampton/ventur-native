@@ -15,7 +15,13 @@ import {
 import ChapterList from "../chapters/ChapterList"
 import GearListItem from "../GearItem/GearListItem"
 import { MaterialIcons, Feather } from "@expo/vector-icons"
-import { populateUserPage, populateOfflineChapters, getProfilePageData, uploadProfilePhoto } from "../../actions/user"
+import {
+  populateUserPage,
+  populateOfflineChapters,
+  getProfilePageData,
+  uploadProfilePhoto,
+  setDefaultAppState
+} from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
 import ChapterUserForm from "../chapters/ChapterUserForm"
@@ -66,7 +72,8 @@ const mapDispatchToProps = dispatch => ({
   toggleGearReviewFormModal: payload => dispatch(toggleGearReviewFormModal(payload)),
   populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
-  uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload))
+  uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload)),
+  setDefaultAppState: () => dispatch(setDefaultAppState())
 })
 
 class Profile extends Component {
@@ -102,6 +109,7 @@ class Profile extends Component {
   handleLogout = async () => {
     await logOut()
     this.props.setCurrentUser(null)
+    this.props.setDefaultAppState()
   }
 
   handleJournalPress = journalId => {
@@ -111,7 +119,6 @@ class Profile extends Component {
   connectToStrava = async () => {
     if (this.props.currentUser.stravaAccessToken) return
 
-    this.setState({ userMenuOpen: false })
     const redirect = "ventur://ventur"
     const params = Object.assign(
       {},

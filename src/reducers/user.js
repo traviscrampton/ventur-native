@@ -3,7 +3,8 @@ import {
   POPULATE_OFFLINE_CHAPTERS,
   POPULATE_USER_JOURNALS,
   POPULATE_USER_GEAR,
-  TOGGLE_PROFILE_PHOTO_LOADING
+  TOGGLE_PROFILE_PHOTO_LOADING,
+  SET_DEFAULT_APP_STATE
 } from "../actions/user"
 
 import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
@@ -61,6 +62,8 @@ export default (state = defaultAppState, action) => {
         user: Object.assign({}, state.user, { journals: [...state.user.journals, action.payload] })
       }
     }
+    case SET_DEFAULT_APP_STATE:
+      return defaultAppState
     default:
       return state
   }

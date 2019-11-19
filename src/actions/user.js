@@ -95,6 +95,13 @@ export function getUserGear(id) {
   }
 }
 
+export const SET_DEFAULT_APP_STATE = "SET_DEFAULT_APP_STATE"
+export function setDefaultAppState() {
+  return {
+    type: SET_DEFAULT_APP_STATE
+  }
+}
+
 export function getProfilePageData() {
   return async function(dispatch, getState) {
     dispatch(setLoadingTrue())

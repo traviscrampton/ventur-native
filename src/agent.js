@@ -6,7 +6,7 @@ import DropDownHolder from "./utils/DropdownHolder"
 import { logOut } from "./auth"
 
 const ql = require("superagent-graphql")
-export const API_ROOT = "http://10.0.0.157:3000"
+export const API_ROOT = "http://192.168.1.169:3000"
 // export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com"
 
 const handleError = error => {
