@@ -10,7 +10,7 @@ import { updateChapterForm, toggleChapterModal, resetChapterForm } from "../../a
 import { toggleCameraRollModal } from "../../actions/camera_roll"
 import ChapterEditor from "./ChapterEditor"
 import ChapterShow from "./ChapterShow"
-import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons"
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { get, put, destroy } from "../../agent"
 import LoadingScreen from "../shared/LoadingScreen"
 import { JournalChildHeader } from "../shared/JournalChildHeader"

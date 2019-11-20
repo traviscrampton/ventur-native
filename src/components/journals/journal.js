@@ -322,7 +322,7 @@ class Journal extends Component {
           </View>
           <View>
             <TouchableWithoutFeedback onPress={this.navigateToMap}>
-              <View>
+              <View style={{paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>
                 <Feather name="map" size={20} color="white" />
               </View>
             </TouchableWithoutFeedback>

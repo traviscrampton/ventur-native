@@ -130,7 +130,6 @@ class ChapterMetaDataForm extends Component {
   }
 
   renderDatePicker() {
-    console.log("datepickerdropdown", DatePickerDropdown)
     if (!this.state.datePickerOpen) return
 
     return (
@@ -162,10 +161,6 @@ class ChapterMetaDataForm extends Component {
               size={18}
             />
             <TextInput
-              shadowColor="gray"
-              shadowOffset={{ width: 0, height: 0 }}
-              shadowOpacity={0.5}
-              shadowRadius={2}
               selectionColor={"#FF5423"}
               ref={input => {
                 this.distanceTextInput = input
@@ -174,7 +169,7 @@ class ChapterMetaDataForm extends Component {
               maxLength={6}
               value={distance.toString()}
               onChangeText={text => this.persistMetadata(text, "distance")}
-              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6 }}
+              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6, backgroundColor: "white" }}
             />
             <Text style={styles.iconText}>{`${readableDistanceType}`.toUpperCase()}</Text>
           </View>

@@ -149,7 +149,7 @@ class ChapterShow extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToMap}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <View>
+          <View style={{ paddingRight: 10}}>
             <Feather name="map" size={25} color="#323941" />
           </View>
         </View>
@@ -159,12 +159,6 @@ class ChapterShow extends Component {
 
   renderMapIconWithImage() {
     if (!this.props.chapter.imageUrl) return
-
-    return this.renderMapIconCta()
-  }
-
-  renderMapIconNoImage() {
-    if (this.props.chapter.imageUrl) return
 
     return this.renderMapIconCta()
   }

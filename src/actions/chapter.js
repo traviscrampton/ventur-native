@@ -99,14 +99,17 @@ export function sendEmails(chapterId) {
 }
 
 export const deleteChapter = async (chapterId, callback, dispatch) => {
-  const deletedChapter = await destroy(`/chapters/${chapterId}`)
+  try {
+    const deletedChapter = await destroy(`/chapters/${chapterId}`)
 
-  dispatch(removeChapterFromState(deletedChapter))
-  callback()
+    dispatch(removeChapterFromState(deletedChapter))
+    callback()
+  } catch (err) {
+    console.log(" ERR ", err)
+  }
 }
 
 export const kickOffEmails = async (chapterId, dispatch) => {
   const payload = await post(`/journal_follows/${chapterId}/send_chapter_emails`)
-  console.log("IS THERE ANYTHING HERE?", payload)
   dispatch(loadChapter(payload.chapter))
 }
