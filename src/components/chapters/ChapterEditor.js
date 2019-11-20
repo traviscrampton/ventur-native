@@ -283,6 +283,7 @@ class ChapterEditor extends Component {
 
   renderAsImage(entry, index) {
     const imageHeight = this.getImageHeight(entry.aspectRatio)
+    const uri = entry.uri ? entry.uri : entry.localUri
 
     return (
       <View
@@ -296,7 +297,7 @@ class ChapterEditor extends Component {
               style={{ width: Dimensions.get("window").width, height: imageHeight, position: "relative" }}
               yPosition={this.getYPosition(index)}
               scrollPosition={this.state.scrollPosition}
-              uri={entry.uri}
+              uri={uri}
             />
             {this.renderImageCaption(entry)}
           </View>

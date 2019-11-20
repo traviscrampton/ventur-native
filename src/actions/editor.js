@@ -216,6 +216,7 @@ export const addImagesToEntries = payload => {
     let file = Object.assign({}, { uri: image.uri, name: filename, type: "image/jpg" })
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
     const uri = await awsUpload(file, awsKeys)
+
     const allUriSizes = createUrisObject(uri, entry.aspectRatio)
     entry = Object.assign({}, entry, allUriSizes)
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
