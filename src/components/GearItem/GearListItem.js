@@ -41,7 +41,7 @@ const GearListItem = props => {
             overflow: "hidden",
             borderRadius: 5
           }}>
-          <View style={{ width: 100, height: 100, backgroundColor: "white" }}>
+          <View style={{ width: 100, height: 100, backgroundColor: "lightgray" }}>
             <ProgressiveImage
               style={{ width: 100, borderTopLeftRadius: 5, borderBottomLeftRadius: 5, height: 100 }}
               source={imageUrl}

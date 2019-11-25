@@ -48,7 +48,6 @@ class Ventur extends Component {
   }
 
   async getAWSCredentials() {
-    return // TODO: Make sure to clean this all up.
     getCredentials().then(response => {
       this.props.addApiCredentials(response)
     })

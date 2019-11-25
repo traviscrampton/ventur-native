@@ -15,6 +15,7 @@ import {
 import { fetchGearItem, deleteGearReview } from "../../actions/gear_item_review"
 import { editGearItemReview } from "../../actions/gear_review_form"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
+import { MaterialIndicator } from "react-native-indicators"
 import { ProsCons } from "./ProsCons"
 import StarRating from "../shared/StarRating"
 import ImageSlider from "../shared/ImageSlider"
@@ -25,6 +26,7 @@ const mapStateToProps = state => ({
   width: state.common.width,
   id: state.gearItemReview.id,
   userId: state.gearItemReview.userId,
+  loading: state.gearItemReview.loading,
   currentUser: state.common.currentUser,
   name: state.gearItemReview.name,
   review: state.gearItemReview.review,
@@ -78,11 +80,11 @@ class GearItemReview extends Component {
 
   getCarouselImages() {
     return [
-      this.props.gearImageUrl,
+      { largeUri: this.props.gearImageUrl, thumbnailUri: null },
       ...this.props.images
         .map((image, index) => {
           if (this.props.gearImageUrl !== image.originalUri) {
-            return image.thumbnailUri
+            return image
           }
         })
         .filter((image, index) => {
@@ -185,7 +187,7 @@ class GearItemReview extends Component {
   renderImageSlider = index => {
     const activeIndex = index
     const images = this.getCarouselImages().map(image => {
-      return Object.assign({}, { uri: image, caption: "", height: this.props.width })
+      return Object.assign({}, { uri: image.largeUri, caption: "", height: this.props.width })
     })
 
     const payload = Object.assign({}, { images, activeIndex })
@@ -199,12 +201,11 @@ class GearItemReview extends Component {
   }
 
   renderItem(item, index) {
-    if (!item) return
-
+    let { thumbnailUri, largeUri } = item
     return (
       <TouchableWithoutFeedback onPress={() => this.renderImageSlider(index)}>
-        <View>
-          <Image source={{ uri: item }} style={{ width: 120, height: 120, borderRadius: 5 }} />
+        <View style={{ marginRight: 2, width: 120, height: 120 }}>
+          <ProgressiveImage thumbnailSource={thumbnailUri} source={largeUri} style={{ width: 120, height: 120, borderRadius: 5 }} />
         </View>
       </TouchableWithoutFeedback>
     )
@@ -225,6 +226,14 @@ class GearItemReview extends Component {
   }
 
   render() {
+    if (this.props.loading) {
+      return (
+        <View style={{ position: "absolute", width: this.props.width, height: "100%", backgroundColor: "white" }}>
+          <MaterialIndicator size={40} color="#FF5423" />
+        </View>
+      )
+    }
+
     return (
       <SafeAreaView style={{ backgroundColor: "white" }}>
         <View style={{ height: "100%", backgroundColor: "white" }}>

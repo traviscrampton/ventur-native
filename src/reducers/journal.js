@@ -40,11 +40,11 @@ export default (state = defaultJournalData, action) => {
       return {
         ...state,
         subContentLoading: action.payload
-      }  
+      }
     case POPULATE_JOURNAL_CHAPTERS:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { chapters: action.payload }),
+        journal: Object.assign({}, state.journal, { chapters: action.payload })
       }
 
     case POPULATE_JOURNAL_GEAR:

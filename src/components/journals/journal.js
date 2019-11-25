@@ -226,10 +226,13 @@ class Journal extends Component {
   }
 
   renderCountries() {
-    return this.props.journal.countries.map((country, index) => {
+    let name
+    const { countries } = this.props.journal
+    return countries.map((country, index) => {
+      name = index === countries.length - 1 ? country.name : `${country.name}, `
       return (
         <Text key={country.name} style={styles.journalDescription}>
-          {country.name}
+          {name}
         </Text>
       )
     })
@@ -300,15 +303,23 @@ class Journal extends Component {
     )
   }
 
+  renderLocation() {
+    if (this.props.journal.countries.length === 0) return
+
+    return (
+      <View style={styles.locationContainer}>
+        <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
+        <Text numberOfLines={1}>{this.renderCountries()}</Text>
+      </View>
+    )
+  }
+
   renderJournalMetadata(journal) {
     const distance = this.returnDistanceString(journal.distance)
     return (
       <View style={styles.metaDataContainer}>
         <View style={styles.titleSubTitleContainer}>
-          <View style={styles.locationContainer}>
-            <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
-            {this.renderCountries()}
-          </View>
+          {this.renderLocation()}
           <Text style={styles.journalHeader}>{journal.title}</Text>
         </View>
         <View style={styles.statsAndMapContainer}>

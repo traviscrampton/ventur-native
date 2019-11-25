@@ -5,7 +5,7 @@ export function populateGearItemReview(payload) {
   return {
     type: POPULATE_GEAR_ITEM_REVIEW,
     payload: payload
-  } 
+  }
 }
 
 export function deleteGearReview() {
@@ -35,10 +35,10 @@ export function fetchGearItem(id) {
   return async function(dispatch, getState) {
     let gearItemReview = await get(`/gear_item_reviews/${id}`)
     gearItemReview = Object.assign({}, gearItemReview, {
-      images: typeof gearItemReview.images === "string" ? JSON.parse(gearItemReview.images) : gearItemReview.images
+      images: typeof gearItemReview.images === "string" ? JSON.parse(gearItemReview.images) : gearItemReview.images,
+      loading: false  
     })
-    
+
     dispatch(populateGearItemReview(gearItemReview))
   }
 }
-

@@ -6,10 +6,10 @@ import ProgressiveImage from "../shared/ProgressiveImage"
 let imageWidth
 let imageHeight
 
-const countries = names => {
+const countriesString = names => {
   return names.map((name, index) => {
     if (index !== names.length - 1) {
-      name += ","
+      name += ", "
     }
 
     return <Text style={styles.countryName}>{name}</Text>
@@ -30,16 +30,26 @@ const distanceString = distance => {
   }
 }
 
+const renderCountries = countries => {
+  if (countries.length === 0) return
+
+  return (
+    <View style={styles.iconTextContainer}>
+      <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
+      <View style={styles.countries}>
+        <Text numberOfLines={1}>{countriesString(countries)}</Text>
+      </View>
+    </View>
+  )
+}
+
 const tripMetaData = props => {
   const distance = distanceString(props.distance)
 
   return (
     <View style={styles.metadataContainer}>
       <View style={styles.marginBottomAuto}>
-        <View style={styles.iconTextContainer}>
-          <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
-          <View style={styles.countries}>{countries(props.countries)}</View>
-        </View>
+        {renderCountries(props.countries)}
         <Text numberOfLines={2} style={styles.title}>
           {props.title}
         </Text>

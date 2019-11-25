@@ -48,6 +48,8 @@ class ProgressiveImage extends Component {
 
   render() {
     const { thumbnailSource, source, style, ...props } = this.props
+    console.log("thumbnailSource", thumbnailSource)
+    console.log("source", source)
 
     return (
       <View style={styles.container}>
