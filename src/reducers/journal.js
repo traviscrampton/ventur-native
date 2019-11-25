@@ -4,7 +4,8 @@ import {
   IMAGE_UPLOADING,
   POPULATE_JOURNAL_CHAPTERS,
   POPULATE_JOURNAL_GEAR,
-  UPDATE_TAB_INDEX
+  UPDATE_TAB_INDEX,
+  SUB_CONTENT_LOADING
 } from "../actions/journals"
 import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
 import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
@@ -35,11 +36,15 @@ export default (state = defaultJournalData, action) => {
         journal: Object.assign({}, state.journal, action.payload),
         loaded: true
       }
+    case SUB_CONTENT_LOADING:
+      return {
+        ...state,
+        subContentLoading: action.payload
+      }  
     case POPULATE_JOURNAL_CHAPTERS:
       return {
         ...state,
         journal: Object.assign({}, state.journal, { chapters: action.payload }),
-        subContentLoading: false
       }
 
     case POPULATE_JOURNAL_GEAR:

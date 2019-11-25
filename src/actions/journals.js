@@ -12,6 +12,14 @@ export function resetJournalShow() {
   }
 }
 
+export const  SUB_CONTENT_LOADING = "SUB_CONTENT_LOADING"
+export function subContentLoading(payload) {
+  return {
+    type: SUB_CONTENT_LOADING,
+    payload: payload
+  }
+}
+
 export const updateBannerImage = async (journalId, img, dispatch) => {
   let formData = new FormData()
   formData.append("banner_image", img)
@@ -61,8 +69,9 @@ export function loadSingleJournal(journalId) {
     try {
       const data = await get(`/journals/${journalId}/journal_metadata`)
       dispatch(populateSingleJournal(data.journal))
-      dispatch(fetchJournalChapters(journalId))
-      dispatch(fetchJournalGear(journalId))
+      await dispatch(fetchJournalChapters(journalId))
+      await dispatch(fetchJournalGear(journalId))
+      dispatch(subContentLoading(false))
     } catch {
       dispatch(populateSingleJournal({}))
     }
@@ -97,10 +106,9 @@ export const fetchJournalChapters = journalId => {
 }
 
 export const fetchJournalGear = journalId => {
-  return function(dispatch, getState) {
-    get(`/journals/${journalId}/gear_item_reviews`).then(data => {
-      dispatch(populateJournalGear(data.gearItemReviews))
-    })
+  return async function(dispatch, getState) {
+    const data = await get(`/journals/${journalId}/gear_item_reviews`)
+    dispatch(populateJournalGear(data.gearItemReviews))
   }
 }
 

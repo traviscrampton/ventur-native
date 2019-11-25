@@ -322,7 +322,7 @@ class Journal extends Component {
           </View>
           <View>
             <TouchableWithoutFeedback onPress={this.navigateToMap}>
-              <View style={{paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>
+              <View style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
                 <Feather name="map" size={20} color="white" />
               </View>
             </TouchableWithoutFeedback>
@@ -337,7 +337,7 @@ class Journal extends Component {
     return <View>{this.renderBannerAndUserImages(journal, user)}</View>
   }
 
-  renderJournalEmptyState(isChapter=false) {
+  renderJournalEmptyState(isChapter = false) {
     const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet"
 
     return (
@@ -380,15 +380,11 @@ class Journal extends Component {
     )
   }
 
-  renderChapterLoadingIcon = () => {
+  renderSubContentLoading = () => {
     return <MaterialIndicator key={"chapterLoading"} style={{ marginTop: 50 }} size={40} color="#FF5423" />
   }
 
   renderChapters() {
-    if (this.props.subContentLoading) {
-      return this.renderChapterLoadingIcon()
-    }
-
     if (this.props.chapters.length === 0) {
       return this.renderJournalEmptyState(true)
     }
@@ -467,6 +463,7 @@ class Journal extends Component {
     if (this.props.journal.gear.length === 0) {
       return this.renderJournalEmptyState()
     }
+
     return this.props.journal.gear.map((gearItem, index) => {
       return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })
@@ -500,9 +497,12 @@ class Journal extends Component {
   }
 
   renderSlidingTabs() {
+    if (this.props.subContentLoading) {
+      return this.renderSubContentLoading()
+    }
+
     const tabs = this.getTabProps()
     const tabWidth = (this.props.width - 40) / tabs.length
-
     return (
       <SlidingTabs
         tabs={tabs}
@@ -533,7 +533,6 @@ class Journal extends Component {
             {this.renderSlidingTabs()}
           </ScrollView>
           {this.renderFloatingButton()}
-
           <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
           {this.renderImagePickerContainer()}
           <JournalForm />
