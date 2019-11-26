@@ -1,22 +1,17 @@
 import React, { Component } from "react"
-import { Feather } from "@expo/vector-icons"
+import { connect } from "react-redux"
 import {
   StyleSheet,
   View,
   Text,
-  Animated,
   ScrollView,
   SafeAreaView,
   Image,
-  ImageBackground,
   TouchableHighlight,
-  Dimensions,
-  Modal,
   TouchableWithoutFeedback
 } from "react-native"
 import ChapterList from "../chapters/ChapterList"
 import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
-import { get } from "../../agent"
 import {
   loadSingleJournal,
   requestForChapter,
@@ -25,21 +20,18 @@ import {
   imageUploading,
   updateTabIndex
 } from "../../actions/journals"
+import { Feather } from "@expo/vector-icons"
 import { populateGearItemReview } from "../../actions/gear_item_review"
 import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 import { MaterialIndicator } from "react-native-indicators"
 import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
-import { loadChapter, resetChapter } from "../../actions/chapter"
-import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
+import { resetChapter } from "../../actions/chapter"
 import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form"
 import { loadJournalMap } from "../../actions/journal_route"
 import { TabView, SceneMap, TabBar } from "react-native-tab-view"
-import { connect } from "react-redux"
-import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { MaterialIcons } from "@expo/vector-icons"
-import { updateChapterForm, addChapterToJournals, toggleChapterModal } from "../../actions/chapter_form"
+import { SimpleLineIcons, Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
-import SlidingTabs from "../shared/SlidingTabs"
 import LoadingScreen from "../shared/LoadingScreen"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import GearListItem from "../GearItem/GearListItem"
@@ -65,19 +57,15 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadChapter: payload => dispatch(loadChapter(payload)),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   triggerGearReviewFormFromJournal: payload => dispatch(triggerGearReviewFormFromJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
-  setLoadingTrue: () => dispatch(setLoadingTrue()),
   updateImageUploading: bool => dispatch(imageUploading(bool)),
-  setLoadingFalse: () => dispatch(setLoadingFalse()),
   loadJournalMap: id => dispatch(loadJournalMap(id)),
   resetJournalShow: () => dispatch(resetJournalShow()),
   uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
@@ -90,8 +78,6 @@ const mapDispatchToProps = dispatch => ({
 class Journal extends Component {
   constructor(props) {
     super(props)
-
-    this.position = new Animated.Value(0)
   }
 
   static actions = [
@@ -131,16 +117,6 @@ class Journal extends Component {
   navigateBack = () => {
     this.props.navigation.goBack()
     setTimeout(this.props.resetJournalShow, 300)
-  }
-
-  getBannerHeight() {
-    let { height, width } = this.props
-
-    if (width > height) {
-      return this.props.height / 2
-    } else {
-      return this.props.height / 4
-    }
   }
 
   navigateToMap = () => {
@@ -235,20 +211,6 @@ class Journal extends Component {
     })
   }
 
-  renderImageOrEdit(user) {
-    if (user.id == this.props.currentUser.id) {
-      return (
-        <TouchableHighlight onPress={this.renderJournalEditForm}>
-          <View style={{ padding: 20 }}>
-            <Text style={{ color: "white" }}>EDIT</Text>
-          </View>
-        </TouchableHighlight>
-      )
-    } else {
-      return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
-    }
-  }
-
   renderThreeDotMenu(user) {
     if (user.id == this.props.currentUser.id) {
       const options = this.getJournalOptions()
@@ -276,7 +238,7 @@ class Journal extends Component {
     if (!this.props.imageUploading) return
 
     return (
-      <View style={{ position: "absolute", width: this.props.width, height: "100%" }}>
+      <View style={[styles.imageUploadingScreen, { width: this.props.width }]}>
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
@@ -288,7 +250,7 @@ class Journal extends Component {
         <ProgressiveImage
           source={journal.cardBannerImageUrl}
           thumbnailSource={journal.thumbnailSource}
-          style={{ width: this.props.width, height: 220, zIndex: 0 }}
+          style={[styles.bannerAndUser, { width: this.props.width }]}
         />
         <View style={[styles.banner, { width: this.props.width }]}>
           {this.renderImageUploadingScreen()}
@@ -329,7 +291,7 @@ class Journal extends Component {
           </View>
           <View>
             <TouchableWithoutFeedback onPress={this.navigateToMap}>
-              <View style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
+              <View style={styles.mapPadding}>
                 <Feather name="map" size={20} color="white" />
               </View>
             </TouchableWithoutFeedback>
@@ -346,55 +308,59 @@ class Journal extends Component {
 
   renderJournalEmptyState(isChapter = false) {
     const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet"
+    const { width, height } = this.props
+    const halfHeight = height / 2
+    const thirdWidth = width / 3
+    const fifthWidth = width / 5
 
     return (
       <View
         key={"chapterEmptyState"}
-        style={{
-          marginTop: 10,
-          width: this.props.width,
-          height: this.props.height / 2,
-          paddingRight: 20,
-          paddingLeft: 20
-        }}>
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        style={[
+          styles.childEmptyState,
+          {
+            width: width,
+            height: halfHeight
+          }
+        ]}>
+        <View style={styles.flexAndDirection}>
           <View>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{ fontSize: 20, color: "gray" }}>{ctaText}</Text>
+            <View style={styles.emptyStateCtaContainer}>
+              <Text style={styles.ctaText}>{ctaText}</Text>
             </View>
             <View
-              style={{
-                width: Dimensions.get("window").width / 3,
-                marginBottom: 5,
-                height: 15,
-                backgroundColor: "lightgray"
-              }}
+              style={[
+                styles.emptyBar,
+                {
+                  width: thirdWidth
+                }
+              ]}
             />
             <View
-              style={{
-                width: Dimensions.get("window").width / 5,
-                marginBottom: 5,
-                height: 15,
-                backgroundColor: "lightgray"
-              }}
+              style={[
+                styles.emptyBar,
+                {
+                  width: fifthWidth
+                }
+              ]}
             />
             <View
-              style={{
-                width: Dimensions.get("window").width / 5,
-                marginBottom: 5,
-                height: 15,
-                backgroundColor: "lightgray"
-              }}
+              style={[
+                styles.emptyBar,
+                {
+                  width: fifthWidth
+                }
+              ]}
             />
           </View>
-          <View style={{ width: 80, height: 100, backgroundColor: "lightgray", borderRadius: 4 }} />
+          <View style={styles.emptyImage} />
         </View>
       </View>
     )
   }
 
   renderSubContentLoading = () => {
-    return <MaterialIndicator key={"chapterLoading"} style={{ marginTop: 50 }} size={40} color="#FF5423" />
+    return <MaterialIndicator key={"chapterLoading"} style={styles.marginTop50} size={40} color="#FF5423" />
   }
 
   renderChapters() {
@@ -403,7 +369,7 @@ class Journal extends Component {
     }
 
     return (
-      <View key={"chapterList"} style={{ marginBottom: 100, width: this.props.width }}>
+      <View key={"chapterList"} style={[styles.marginBottom100, { width: this.props.width }]}>
         <ChapterList
           chapters={this.props.chapters}
           user={this.props.journal.user}
@@ -476,6 +442,7 @@ class Journal extends Component {
     if (this.props.journal.gear.length === 0) {
       return this.renderJournalEmptyState()
     }
+
     return (
       <View style={{ height: this.props.height }}>
         {this.props.journal.gear.map((gearItem, index) => {
@@ -513,7 +480,7 @@ class Journal extends Component {
     return Object.assign({}, { index, routes })
   }
 
-  renderSlidingTabs() {
+  renderTabView() {
     if (this.props.subContentLoading) {
       return this.renderSubContentLoading()
     }
@@ -560,10 +527,10 @@ class Journal extends Component {
 
     return (
       <React.Fragment>
-        <View style={{ height: "100%", position: "relative" }}>
+        <View style={styles.containerContainer}>
           <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             {this.renderHeader()}
-            {this.renderSlidingTabs()}
+            {this.renderTabView()}
           </ScrollView>
           {this.renderFloatingButton()}
           <ChapterMetaDataForm navigateToChapter={this.requestForChapter} />
@@ -571,15 +538,45 @@ class Journal extends Component {
           <JournalForm />
           <GearReviewForm />
         </View>
-        <SafeAreaView style={{ backgroundColor: "white" }} />
+        <SafeAreaView style={styles.backgroundWhite} />
       </React.Fragment>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  containerContainer: {
+    height: "100%",
+    position: "relative"
+  },
+  backgroundWhite: {
+    backgroundColor: "white"
+  },
   container: {
     backgroundColor: "white"
+  },
+  bannerAndUser: {
+    height: 220,
+    zIndex: 0
+  },
+  childEmptyState: {
+    marginTop: 10,
+    paddingRight: 20,
+    paddingLeft: 20
+  },
+  imageUploadingScreen: {
+    position: "absolute",
+    height: "100%"
+  },
+  mapPadding: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10
+  },
+  emptyBar: {
+    marginBottom: 5,
+    height: 15,
+    backgroundColor: "lightgray"
   },
   navigationContainer: {
     marginTop: 30,
@@ -590,6 +587,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     zIndex: 10
   },
+  emptyStateCtaContainer: {
+    marginBottom: 10
+  },
+  ctaText: {
+    fontSize: 20,
+    color: "gray"
+  },
   backButton: {
     padding: 20,
     height: 50,
@@ -597,6 +601,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 25,
     position: "relative"
+  },
+  emptyImage: {
+    width: 80,
+    height: 100,
+    backgroundColor: "lightgray",
+    borderRadius: 4
   },
   metaDataContainer: {
     padding: 16,
@@ -642,10 +652,21 @@ const styles = StyleSheet.create({
   banner: {
     backgroundColor: "rgba(0, 0, 0, 0.5)"
   },
+  flexAndDirection: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
   bannerUserImage: {
     overflow: "hidden",
     position: "relative",
     backgroundColor: "white"
+  },
+  marginTop50: {
+    marginTop: 50
+  },
+  marginBottom100: {
+    marginBottom: 100
   },
   locationContainer: {
     display: "flex",

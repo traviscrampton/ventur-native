@@ -1,10 +1,7 @@
 import React from "react"
-import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import ProgressiveImage from "../shared/ProgressiveImage"
-
-let imageWidth
-let imageHeight
 
 const countriesString = names => {
   return names.map((name, index) => {
@@ -54,11 +51,7 @@ const tripMetaData = props => {
           {props.title}
         </Text>
       </View>
-      <View
-        style={{
-          marginTop: 20,
-          display: "flex"
-        }}>
+      <View style={styles.metadataStyles}>
         <Text style={{ fontFamily: "overpass" }}>
           {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${props.journalFollowsCount} followers`.toUpperCase()}
         </Text>
@@ -68,8 +61,8 @@ const tripMetaData = props => {
 }
 
 const JournalCard = props => {
-  imageWidth = props.width - 40
-  imageHeight = Math.round(imageWidth * (240 / 350))
+  const imageWidth = props.width - 40
+  const imageHeight = Math.round(imageWidth * (240 / 350))
   const imageStyles = Object.assign({}, styles.journalImage, {
     width: imageWidth,
     height: imageHeight,
@@ -79,7 +72,7 @@ const JournalCard = props => {
   return (
     <TouchableWithoutFeedback key={props.id} onPress={() => props.handlePress(props.id)}>
       <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <View style={[styles.card, { width: imageWidth, borderRadius: 10, overflow: "hidden" }]}>
+        <View style={[styles.card, { width: imageWidth }]}>
           <ProgressiveImage thumbnailSource={props.thumbnailImageUrl} source={props.cardImageUrl} style={imageStyles} />
           <View>{tripMetaData(props)}</View>
         </View>
@@ -94,7 +87,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: "auto",
     marginRight: "auto",
-    position: "relative"
+    position: "relative",
+    borderRadius: 10,
+    overflow: "hidden"
   },
   journalImage: {
     position: "relative"
@@ -127,6 +122,10 @@ const styles = StyleSheet.create({
   iconPosition: {
     marginRight: 5,
     paddingBottom: 2
+  },
+  metadataStyles: {
+    marginTop: 20,
+    display: "flex"
   },
   countries: {
     display: "flex",

@@ -1,8 +1,6 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, SafeAreaView, Dimensions, View, Text, FlatList } from "react-native"
+import { StyleSheet, SafeAreaView, View, FlatList } from "react-native"
 import { connect } from "react-redux"
-import { get } from "../../agent"
-import { deleteS3Objects } from "../../utils/image_uploader"
 import { loadJournalFeed, resetJournalShow, toggleRefreshAndRefresh } from "../../actions/journals"
 import JournalCard from "./JournalCard"
 import LoadingScreen from "../shared/LoadingScreen"
@@ -17,7 +15,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
   refreshing: state.journalFeed.refreshing,
-  currentUser: state.common.currentUser,
   isLoading: state.common.isLoading,
   width: state.common.width,
   height: state.common.height
@@ -66,7 +63,7 @@ class JournalFeed extends Component {
     return (
       <FlatList
         ListEmptyComponent={this.renderErrorScreen()}
-        style={{ backgroundColor: "white", minHeight: this.props.height }}
+        style={[styles.backgroundWhite, { minHeight: this.props.height }]}
         data={this.props.journals}
         refreshing={this.props.refreshing}
         onRefresh={this.handleRefresh}
@@ -81,7 +78,7 @@ class JournalFeed extends Component {
       return <LoadingScreen />
     }
 
-    return <SafeAreaView style={{ backgroundColor: "white" }}>{this.renderJournals()}</SafeAreaView>
+    return <SafeAreaView style={styles.backgroundWhite}>{this.renderJournals()}</SafeAreaView>
   }
 }
 
@@ -92,6 +89,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     paddingBottom: 50
+  },
+  backgroundWhite: {
+    backgroundColor: "white"
   }
 })
 

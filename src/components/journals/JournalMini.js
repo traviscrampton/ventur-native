@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, ImageBackground, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { StyleSheet, View, Text, TouchableWithoutFeedback, Dimensions } from "react-native"
 import ProgressiveImage from "../shared/ProgressiveImage"
 
 const pad = Dimensions.get("window").width * 0.04
@@ -43,11 +43,11 @@ const JournalMini = props => {
         borderRadius: 10
       }}>
       <ProgressiveImage
-        style={[styles.imageBackground, { borderRadius: 10, borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 10 }]}
+        style={styles.imageBackground}
         thumbnailSource={props.thumbnailSource}
         source={props.cardBannerImageUrl}
       />
-      <TouchableWithoutFeedback style={{ zIndex: 100 }} onPress={() => props.handlePress(props.id)}>
+      <TouchableWithoutFeedback style={styles.zIndexHunnit} onPress={() => props.handlePress(props.id)}>
         <View style={styles.metadataContainer}>
           <Text numberOfLines={2} style={styles.title}>
             {props.title}
@@ -62,8 +62,12 @@ const JournalMini = props => {
 const styles = StyleSheet.create({
   imageBackground: {
     width: imageWidth,
-    height: imageWidth
+    height: imageWidth,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#d3d3d3"
   },
+  zIndexHunnit: { zIndex: 100 },
   borderRadius: {
     borderRadius: 10
   },
