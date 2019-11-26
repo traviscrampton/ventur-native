@@ -23,32 +23,14 @@ const GearListItem = props => {
       shadowOffset={{ width: 0, height: 0 }}
       shadowOpacity={0.5}
       shadowRadius={2}
-      style={{
-        width: width,
-        height: 100,
-        display: "flex",
-        marginLeft: 20,
-        marginTop: 15,
-        backgroundColor: "white",
-        borderRadius: 5
-      }}>
-      <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => props.gearItemPress(id)}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            backgroundColor: "white",
-            overflow: "hidden",
-            borderRadius: 5
-          }}>
-          <View style={{ width: 100, height: 100, backgroundColor: "lightgray" }}>
-            <ProgressiveImage
-              style={{ width: 100, borderTopLeftRadius: 5, borderBottomLeftRadius: 5, height: 100 }}
-              source={imageUrl}
-            />
+      style={[styles.container, { width: width }]}>
+      <TouchableWithoutFeedback style={styles.flex1} onPress={() => props.gearItemPress(id)}>
+        <View style={styles.gearItemBox}>
+          <View style={styles.imageContainer}>
+            <ProgressiveImage style={styles.progressiveImageStyles} source={imageUrl} />
           </View>
-          <View style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 10 }}>
-            <Text style={{ fontSize: 16, width: textWidth, fontFamily: "open-sans-regular" }} numberOfLines={2}>
+          <View style={styles.nameContainer}>
+            <Text style={[styles.textStyles, { width: textWidth }]} numberOfLines={2}>
               {name}
             </Text>
             <StarRating rating={rating} size={20} />
@@ -59,6 +41,46 @@ const GearListItem = props => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    height: 100,
+    display: "flex",
+    marginLeft: 20,
+    marginTop: 15,
+    backgroundColor: "white",
+    borderRadius: 5
+  },
+  textStyles: {
+    fontSize: 16,
+    fontFamily: "open-sans-regular"
+  },
+  nameContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: 10
+  },
+  gearItemBox: {
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "white",
+    overflow: "hidden",
+    borderRadius: 5
+  },
+  progressiveImageStyles: {
+    width: 100,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+    height: 100
+  },
+  flex1: {
+    flex: 1
+  },
+  imageContainer: {
+    width: 100,
+    height: 100,
+    backgroundColor: "lightgray"
+  }
+})
 
 export default GearListItem

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Alert, Text, FlatList, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
+import { View, Alert, Text, FlatList, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import { uploadImageToCarousel, updateActiveImageIndex, removeImage } from "../../actions/gear_review_form"
@@ -66,32 +66,17 @@ class GearReviewFormImageCarousel extends Component {
 
   renderDeleteCover() {
     return (
-      <View
-        style={{
-          width: 120,
-          padding: 20,
-          position: "absolute",
-          zIndex: 11,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 120,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-        }}>
+      <View style={styles.deleteCover}>
         <TouchableWithoutFeedback onPress={this.handleImageRemove}>
-          <View style={{ display: "flex", height: 60, flexDirection: "row", alignItems: "center" }}>
+          <View style={styles.deleteIconContainer}>
             <MaterialIcons name="delete" size={20} color="white" />
-            <Text style={{ color: "white" }}>DELETE</Text>
+            <Text style={styles.colorWhite}>DELETE</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.setActiveImageIndexNull}>
-          <View style={{ display: "flex", height: 60, flexDirection: "row", alignItems: "center" }}>
-            <MaterialIcons name="cancel" style={{ marginRight: 2 }} size={20} color="white" />
-            <Text style={{ color: "white" }}>Cancel</Text>
+          <View style={styles.deleteIconContainer}>
+            <MaterialIcons name="cancel" style={styles.marginRight2} size={20} color="white" />
+            <Text style={styles.colorWhite}>Cancel</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -100,22 +85,7 @@ class GearReviewFormImageCarousel extends Component {
 
   renderLoadingCover() {
     return (
-      <View
-        style={{
-          width: 120,
-          padding: 20,
-          position: "absolute",
-          zIndex: 11,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 120,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center"
-        }}>
+      <View style={styles.loadingCover}>
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
@@ -153,17 +123,9 @@ class GearReviewFormImageCarousel extends Component {
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={{
-            width: 120,
-            height: 120,
-            backgroundColor: "white",
-            marginRight: 10,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: "#d3d3d3"
-          }}>
+          style={styles.imageContainer}>
           {this.renderImageCover(imageIsLoading, isActiveImage)}
-          <ProgressiveImage source={sourceUri} style={{ width: 120, height: 120 }} />
+          <ProgressiveImage source={sourceUri} style={styles.progressiveImageStyles} />
         </View>
       </TouchableWithoutFeedback>
     )
@@ -177,23 +139,11 @@ class GearReviewFormImageCarousel extends Component {
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={{
-            width: 120,
-            height: 120,
-            backgroundColor: "white",
-            marginRight: 10,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: "#d3d3d3",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around"
-          }}>
-          <View style={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "hidden" }}>
+          style={styles.uploadButtonContainer}>
+          <View style={styles.uploadIcon}>
             <MaterialIcons name={"file-upload"} size={32} />
             <View>
-              <Text style={{ fontSize: 20 }}>Upload</Text>
+              <Text style={styles.uploadLabel}>Upload</Text>
             </View>
           </View>
         </View>
@@ -203,9 +153,9 @@ class GearReviewFormImageCarousel extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "playfair", fontSize: 18, color: "#323941" }}>Photos</Text>
+      <View style={styles.marginTop20}>
+        <View style={styles.marginBottom5}>
+          <Text style={styles.photoLabel}>Photos</Text>
         </View>
         <FlatList
           ListHeaderComponent={this.renderUploadButton}
@@ -219,6 +169,95 @@ class GearReviewFormImageCarousel extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  photoLabel: {
+    fontFamily: "playfair",
+    fontSize: 18,
+    color: "#323941"
+  },
+  deleteCover: {
+    width: 120,
+    padding: 20,
+    position: "absolute",
+    zIndex: 11,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 120,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  marginTop20: {
+    marginTop: 20
+  },
+  marginBottom5: {
+    marginBottom: 5
+  },
+  loadingCover: {
+    width: 120,
+    padding: 20,
+    position: "absolute",
+    zIndex: 11,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 120,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  colorWhite: { color: "white" },
+  deleteIconContainer: {
+    display: "flex",
+    height: 60,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  imageContainer: {
+    width: 120,
+    height: 120,
+    backgroundColor: "white",
+    marginRight: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
+  },
+  progressiveImageStyles: {
+    width: 120,
+    height: 120
+  },
+  uploadLabel: {
+    fontSize: 20
+  },
+  uploadButtonContainer: {
+    width: 120,
+    height: 120,
+    backgroundColor: "white",
+    marginRight: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#d3d3d3",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  uploadIcon: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    overflow: "hidden"
+  },
+  marginRight2: {
+    marginRight: 2
+  }
+})
 
 export default connect(
   mapStateToProps,

@@ -6,10 +6,8 @@ import {
   View,
   Text,
   FlatList,
-  Image,
   SafeAreaView,
   TouchableWithoutFeedback,
-  TextInput,
   Alert
 } from "react-native"
 import { fetchGearItem, deleteGearReview } from "../../actions/gear_item_review"
@@ -153,7 +151,7 @@ class GearItemReview extends Component {
   renderName = () => {
     return (
       <View>
-        <Text style={{ fontFamily: "playfair", fontSize: 28, color: "#323941" }}>{this.props.name}</Text>
+        <Text style={styles.name}>{this.props.name}</Text>
       </View>
     )
   }
@@ -162,11 +160,11 @@ class GearItemReview extends Component {
     if (this.props.review.length === 0) return
 
     return (
-      <View style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontSize: 18, color: "#323941", fontFamily: "playfair" }}>Review: </Text>
+      <View style={styles.marginTop20}>
+        <View style={styles.marginBottom5}>
+          <Text style={styles.reviewLabel}>Review: </Text>
         </View>
-        <Text style={{ fontSize: 16, color: "#323941", fontFamily: "open-sans-regular" }}>{this.props.review}</Text>
+        <Text style={styles.review}>{this.props.review}</Text>
       </View>
     )
   }
@@ -175,10 +173,10 @@ class GearItemReview extends Component {
     const starText = this.getStarText()
 
     return (
-      <View style={{ marginTop: 20, display: "flex", flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.ratingContainer}>
         <StarRating rating={this.props.rating} size={44} />
-        <View style={{ marginLeft: 10 }}>
-          <Text style={{ color: "#323941", fontFamily: "open-sans-regular" }}>{starText}</Text>
+        <View style={styles.marginLeft10}>
+          <Text style={styles.starText}>{starText}</Text>
         </View>
       </View>
     )
@@ -204,8 +202,8 @@ class GearItemReview extends Component {
     let { thumbnailUri, largeUri } = item
     return (
       <TouchableWithoutFeedback onPress={() => this.renderImageSlider(index)}>
-        <View style={{ marginRight: 2, width: 120, height: 120 }}>
-          <ProgressiveImage thumbnailSource={thumbnailUri} source={largeUri} style={{ width: 120, height: 120, borderRadius: 5 }} />
+        <View style={styles.imageContainer}>
+          <ProgressiveImage thumbnailSource={thumbnailUri} source={largeUri} style={styles.progressiveImageStyles} />
         </View>
       </TouchableWithoutFeedback>
     )
@@ -216,7 +214,7 @@ class GearItemReview extends Component {
     if (carouselImages.length === 1 && carouselImages[0].largeUri.length === 0) return
 
     return (
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.marginTop20}>
         <FlatList
           horizontal={true}
           data={carouselImages}
@@ -229,23 +227,23 @@ class GearItemReview extends Component {
   render() {
     if (this.props.loading) {
       return (
-        <View style={{ position: "absolute", width: this.props.width, height: "100%", backgroundColor: "white" }}>
+        <View style={[styles.loadingSpinner, { width: this.props.width }]}>
           <MaterialIndicator size={40} color="#FF5423" />
         </View>
       )
     }
 
     return (
-      <SafeAreaView style={{ backgroundColor: "white" }}>
-        <View style={{ height: "100%", backgroundColor: "white" }}>
+      <SafeAreaView style={styles.backgroundColorWhite}>
+        <View style={styles.headerContainer}>
           {this.renderHeader()}
-          <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
+          <ScrollView style={styles.scrollViewContainer}>
             {this.renderName()}
             {this.renderImageCarousel()}
             {this.renderReview()}
             {this.renderRating()}
             {this.renderProsCons()}
-            <View style={{ marginBottom: 200 }} />
+            <View style={styles.marginBottom200} />
           </ScrollView>
           <ImageSlider />
         </View>
@@ -259,8 +257,70 @@ const styles = StyleSheet.create({
     padding: 25,
     marginTop: 10
   },
-  formTitle: {},
-  title: {}
+  marginBottom200: {
+    marginBottom: 200
+  },
+  scrollViewContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    padding: 20
+  },
+  headerContainer: {
+    height: "100%",
+    backgroundColor: "white"
+  },
+  backgroundColorWhite: {
+    backgroundColor: "white"
+  },
+  marginTop20: {
+    marginTop: 20
+  },
+  loadingSpinner: {
+    position: "absolute",
+    height: "100%",
+    backgroundColor: "white"
+  },
+  name: {
+    fontFamily: "playfair",
+    fontSize: 28,
+    color: "#323941"
+  },
+  marginBottom5: {
+    marginBottom: 5
+  },
+  progressiveImageStyles: {
+    width: 120,
+    height: 120,
+    borderRadius: 5
+  },
+  reviewLabel: {
+    fontSize: 18,
+    color: "#323941",
+    fontFamily: "playfair"
+  },
+  marginLeft10: {
+    marginLeft: 10
+  },
+  starText: {
+    color: "#323941",
+    fontFamily: "open-sans-regular"
+  },
+  imageContainer: {
+    marginRight: 2,
+    width: 120,
+    height: 120
+  },
+  ratingContainer: {
+    marginTop: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  review: {
+    fontSize: 16,
+    color: "#323941",
+    fontFamily: "open-sans-regular"
+  }
 })
 
 export default connect(

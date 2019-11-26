@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import { ScrollView, TextInput, View, Modal, Dimensions, Text, FlatList, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
+import { TextInput, View, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import {
   updateGearReviewFormProCon,
@@ -50,32 +50,20 @@ class GearReviewFormProsCons extends Component {
   renderProsCons = (prosCons, isPro) => {
     return prosCons.map((proCon, index) => {
       return (
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View style={styles.proConContainer}>
           <TextInput
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
             shadowRadius={2}
             multiline
-            style={{
-              marginTop: 5,
-              marginBottom: 5,
-              fontSize: 16,
-              flexGrow: 1,
-              borderWidth: 1,
-              fontFamily: "open-sans-regular",
-              padding: 5,
-              borderRadius: 5,
-              backgroundColor: "white",
-              borderColor: "#d3d3d3",
-              maxWidth: this.props.width - 80
-            }}
+            style={[styles.prosCons, { maxWidth: this.props.width - 80 }]}
             selectionColor="#FF5423"
             onChangeText={text => this.updateProCon(text, index, isPro)}
             value={proCon.text}
           />
           <TouchableWithoutFeedback onPress={() => this.handleProConDelete(index, isPro)}>
-            <MaterialIcons name="delete" size={20} style={{ width: 40, textAlign: "right" }} />
+            <MaterialIcons name="delete" size={20} style={styles.icons} />
           </TouchableWithoutFeedback>
         </View>
       )
@@ -86,12 +74,12 @@ class GearReviewFormProsCons extends Component {
     const { title, addCta } = this.getTitleAndCta(isPro)
 
     return (
-      <View style={{ marginBottom: 5 }}>
-        <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>{title}</Text>
+      <View style={styles.marginBottom5}>
+        <Text style={styles.label}>{title}</Text>
         {this.renderProsCons(listItems, isPro)}
         <TouchableWithoutFeedback onPress={() => this.addGearReviewFormProCon(isPro)}>
-          <View style={{ marginTop: 5 }}>
-            <Text style={{ fontFamily: "open-sans-regular", color: "#323941" }}>{addCta}</Text>
+          <View style={styles.marginTop5}>
+            <Text style={styles.addCta}>{addCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -102,13 +90,53 @@ class GearReviewFormProsCons extends Component {
     const { pros, cons } = this.props
 
     return (
-      <View style={{ marginTop: 20, marginBottom: 20 }}>
+      <View style={style.marginTopBottom20}>
         {this.renderProsConsContainer(pros, true)}
         {this.renderProsConsContainer(cons, false)}
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  proConContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  marginTopBottom20: {
+    marginTop: 20,
+    marginBottom: 20
+  },
+  addCta: {
+    fontFamily: "open-sans-regular",
+    color: "#323941"
+  },
+  marginTop5: {
+    marginTop: 5
+  },
+  marginBottom5: {
+    marginBottom: 5
+  },
+  label: { fontFamily: "playfair", color: "#323941", fontSize: 18 },
+  icons: {
+    width: 40,
+    textAlign: "right"
+  },
+  prosCons: {
+    marginTop: 5,
+    marginBottom: 5,
+    fontSize: 16,
+    flexGrow: 1,
+    borderWidth: 1,
+    fontFamily: "open-sans-regular",
+    padding: 5,
+    borderRadius: 5,
+    backgroundColor: "white",
+    borderColor: "#d3d3d3"
+  }
+})
 
 export default connect(
   mapStateToProps,

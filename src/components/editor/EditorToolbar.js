@@ -8,8 +8,7 @@ const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
   activeAttribute: state.editor.activeAttribute,
   activeIndex: state.editor.activeIndex,
-  entries: state.editor.entries,
-  keyboardShowing: state.editor.keyboardShowing
+  entries: state.editor.entries
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -71,15 +70,11 @@ class EditorToolbar extends Component {
   renderManageContent() {
     return (
       <TouchableWithoutFeedback onPress={this.props.openManageContent}>
-        <View style={{ textAlign: "center" }}>
-          <Text style={{ fontSize: 18 }}>MANAGE CONTENT</Text>
+        <View style={styles.textAlignCenter}>
+          <Text style={styles.labelText}>MANAGE CONTENT</Text>
         </View>
       </TouchableWithoutFeedback>
     )
-  }
-
-  dispatchRender() {
-    return <React.Fragment />
   }
 
   render() {
@@ -117,6 +112,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  textAlignCenter: {
+    textAlign: "center"
+  },
+  labelText: {
+    fontSize: 18
   },
   option: {
     fontSize: 20,

@@ -1,18 +1,8 @@
 import React, { Component } from "react"
-import {
-  ScrollView,
-  View,
-  Modal,
-  SafeAreaView,
-  Image,
-  Dimensions,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback
-} from "react-native"
+import { View, Image, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { connect } from "react-redux"
 import { getUserJournals, handleJournalPress } from "../../actions/gear_review_form"
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -55,19 +45,10 @@ class GearReviewFormJournals extends Component {
 
     return (
       <TouchableWithoutFeedback key={journal.id} onPress={() => this.handleJournalPress(journal.id)}>
-        <View
-          key={journal.id}
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            paddingRight: 10,
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}>
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Image source={{ uri: journal.cardBannerImageUrl }} style={{ width: 50, height: 50, marginRight: 15 }} />
-            <Text style={{ fontFamily: "playfair", color: "#323941" }}>{journal.title}</Text>
+        <View key={journal.id} style={styles.journalOptionContainer}>
+          <View style={styles.flexRowCenter}>
+            <Image source={{ uri: journal.cardBannerImageUrl }} style={styles.journalImage} />
+            <Text style={styles.journalTitle}>{journal.title}</Text>
           </View>
           <MaterialCommunityIcons
             name={"check-circle-outline"}
@@ -90,9 +71,7 @@ class GearReviewFormJournals extends Component {
 
     return (
       <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <View style={{ backgroundColor: "white", borderRadius: 5, marginTop: 10, overflow: "hidden" }}>
-          {this.renderJournalOptions()}
-        </View>
+        <View style={styles.journalsContainer}>{this.renderJournalOptions()}</View>
       </View>
     )
   }
@@ -119,18 +98,7 @@ class GearReviewFormJournals extends Component {
       <View>
         <TouchableWithoutFeedback onPress={this.toggleMenu}>
           <View
-            style={{
-              height: 50,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "white",
-              alignItems: "center",
-              paddingRight: 15,
-              paddingLeft: 15,
-              width: "100%",
-              borderRadius: 5
-            }}
+            style={styles.menu}
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
@@ -144,6 +112,49 @@ class GearReviewFormJournals extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  menu: {
+    height: 50,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    alignItems: "center",
+    paddingRight: 15,
+    paddingLeft: 15,
+    width: "100%",
+    borderRadius: 5
+  },
+  journalOptionContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    paddingRight: 10,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  journalsContainer: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    marginTop: 10,
+    overflow: "hidden"
+  },
+  journalImage: {
+    width: 50,
+    height: 50,
+    marginRight: 15
+  },
+  flexRowCenter: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  journalTitle: {
+    fontFamily: "playfair",
+    color: "#323941"
+  }
+})
 
 export default connect(
   mapStateToProps,

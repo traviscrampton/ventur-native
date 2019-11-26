@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { ScrollView, View, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
+import { View, Text, TextInput, Image, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import {
   updateGearReviewFormTitle,
   searchForGearItems,
@@ -40,7 +40,7 @@ class GearReviewFormTitle extends Component {
 
   renderGearItemSuggestions() {
     let width = this.props.width - 110
-    let borderBottom = <View style={{ borderWidth: 1, borderColor: "#d3d3d3" }} />
+    let borderBottom = <View style={styles.borderBottom} />
 
     return this.props.gearItemSuggestions.map((gearItem, index) => {
       if (this.props.gearItemSuggestions.length - 1 === index) {
@@ -50,17 +50,9 @@ class GearReviewFormTitle extends Component {
       return (
         <React.Fragment>
           <TouchableWithoutFeedback onPressIn={() => this.populateFormWithGearItem(gearItem)}>
-            <View
-              style={{
-                padding: 10,
-                display: "flex",
-                backgroundColor: "white",
-                flexDirection: "row",
-                alignItems: "center",
-                width: width
-              }}>
-              <Image style={{ width: 50, height: 50, marginRight: 20 }} source={{ uri: gearItem.imageUrl }} />
-              <View style={{ backgroundColor: "white" }}>
+            <View style={[styles.gearImageContainer, { width }]}>
+              <Image style={styles.imageSizing} source={{ uri: gearItem.imageUrl }} />
+              <View style={styles.backgroundWhite}>
                 <Text>{gearItem.name}</Text>
               </View>
             </View>
@@ -81,16 +73,13 @@ class GearReviewFormTitle extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{
-          width: this.props.width - 40,
-          top: 65,
-          position: "absolute",
-          backgroundColor: "white",
-          borderWidth: 1,
-          borderColor: "#d3d3d3",
-          borderRadius: 5
-        }}>
-        <View style={{ overflow: "hidden", borderRadius: 5 }}>{this.renderGearItemSuggestions()}</View>
+        style={[
+          styles.gearDropdownContainer,
+          {
+            width: this.props.width - 40
+          }
+        ]}>
+        <View style={styles.gearItemSuggestions}>{this.renderGearItemSuggestions()}</View>
       </View>
     )
   }
@@ -104,14 +93,14 @@ class GearReviewFormTitle extends Component {
   renderVerifiedIcon() {
     if (!this.props.gearItem.id) return
 
-    return <MaterialIcons style={{ marginLeft: 10 }} color="#3F88C5" name="verified-user" size={16} />
+    return <MaterialIcons style={styles.marginLeft10} color="#3F88C5" name="verified-user" size={16} />
   }
 
   render() {
     return (
-      <View style={{ position: "relative", zIndex: 11 }}>
-        <View style={{ marginBottom: 5, display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Name</Text>
+      <View style={styles.container}>
+        <View style={styles.nameAndIcon}>
+          <Text style={styles.nameText}>Name</Text>
           {this.renderVerifiedIcon()}
         </View>
         <TextInput
@@ -120,15 +109,7 @@ class GearReviewFormTitle extends Component {
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={{
-            backgroundColor: "white",
-            fontSize: 18,
-            borderWidth: 1,
-            fontFamily: "open-sans-regular",
-            padding: 5,
-            borderRadius: 5,
-            borderColor: "#d3d3d3"
-          }}
+          style={styles.textInput}
           selectionColor="#FF5423"
           onChangeText={text => this.updateGearReviewFormTitle(text)}
           value={this.props.name}
@@ -138,6 +119,67 @@ class GearReviewFormTitle extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  nameText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 18
+  },
+  nameAndIcon: {
+    marginBottom: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  textInput: {
+    backgroundColor: "white",
+    fontSize: 18,
+    borderWidth: 1,
+    fontFamily: "open-sans-regular",
+    padding: 5,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
+  },
+  container: {
+    position: "relative",
+    zIndex: 11
+  },
+  borderBottom: {
+    borderWidth: 1,
+    borderColor: "#d3d3d3"
+  },
+  gearImageContainer: {
+    padding: 10,
+    display: "flex",
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  gearItemSuggestions: {
+    overflow: "hidden",
+    borderRadius: 5
+  },
+  gearDropdownContainer: {
+    top: 65,
+    position: "absolute",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5
+  },
+  marginLeft10: {
+    marginLeft: 10
+  },
+  imageSizing: {
+    width: 50,
+    height: 50,
+    marginRight: 20
+  },
+  backgroundWhite: {
+    backgroundColor: "white"
+  }
+})
 
 export default connect(
   mapStateToProps,

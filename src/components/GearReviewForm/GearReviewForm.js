@@ -1,14 +1,5 @@
 import React, { Component } from "react"
-import {
-  ScrollView,
-  View,
-  Modal,
-  SafeAreaView,
-  Dimensions,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback
-} from "react-native"
+import { View, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { connect } from "react-redux"
 import { persistGearReview, defaultGearReviewForm } from "../../actions/gear_review_form"
 import InputScrollView from "react-native-input-scroll-view"
@@ -47,27 +38,15 @@ class GearReviewForm extends Component {
 
   renderHeader() {
     return (
-      <View
-        style={{
-          height: 45,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingRight: 20,
-          paddingLeft: 20,
-          backgroundColor: "white",
-          borderBottomWidth: 1,
-          borderBottomColor: "#f8f8f8"
-        }}>
+      <View style={styles.headerContainer}>
         <TouchableWithoutFeedback onPress={this.handleCancel}>
           <View>
-            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>Cancel</Text>
+            <Text style={styles.headerOptions}>Cancel</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.persistGearReview}>
           <View>
-            <Text style={{ fontFamily: "playfair", fontSize: 14, color: "#323941" }}>Save</Text>
+            <Text style={styles.headerOptions}>Save</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -80,8 +59,8 @@ class GearReviewForm extends Component {
 
   renderFormTitle() {
     return (
-      <View style={{ marginBottom: 20 }}>
-        <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 28 }}>{this.getTitleText()}</Text>
+      <View style={styles.marginBottom20}>
+        <Text style={styles.titleText}>{this.getTitleText()}</Text>
       </View>
     )
   }
@@ -91,13 +70,13 @@ class GearReviewForm extends Component {
       <FormModal
         visible={this.props.visible}
         animationType={"slide"}
-        style={{ backgroundColor: "white", height: this.props.height }}>
+        style={[styles.backgroundColorWhite, { height: this.props.height }]}>
         {this.renderHeader()}
         <InputScrollView
           multilineInputStyle={{ lineHeight: 30 }}
           topOffset={50}
           keyboardOffset={90}
-          style={{ padding: 20 }}
+          style={styles.padding20}
           keyboardShouldPersistTaps="always">
           {this.renderFormTitle()}
           <GearReviewFormTitle />
@@ -106,12 +85,49 @@ class GearReviewForm extends Component {
           <GearReviewFormStarRating />
           <GearReviewFormProsCons />
           <GearReviewFormJournals />
-          <View style={{ marginBottom: 300 }} />
+          <View style={styles.marginBottom300} />
         </InputScrollView>
       </FormModal>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    height: 45,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingRight: 20,
+    paddingLeft: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f8f8f8"
+  },
+  headerOptions: {
+    fontFamily: "playfair",
+    fontSize: 14,
+    color: "#323941"
+  },
+  backgroundColorWhite: {
+    backgroundColor: "white"
+  },
+  titleText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 28
+  },
+  marginBottom20: {
+    marginBottom: 20
+  },
+  padding20: {
+    padding: 20
+  },
+  marginBottom300: {
+    marginBottom: 300
+  }
+})
 
 export default connect(
   mapStateToProps,

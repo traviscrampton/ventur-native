@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { View, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { connect } from "react-redux"
 import { MaterialIcons } from "@expo/vector-icons"
 import { updateGearReviewFormStarRating } from "../../actions/gear_review_form"
@@ -49,8 +49,8 @@ class GearReviewFormStarRating extends Component {
     const text = this.getStarText()
 
     return (
-      <View style={{ marginLeft: 10 }}>
-        <Text style={{ fontFamily: "open-sans-regular" }}>{text}</Text>
+      <View style={styles.marginLeft10}>
+        <Text style={styles.openSansRegular}>{text}</Text>
       </View>
     )
   }
@@ -67,11 +67,11 @@ class GearReviewFormStarRating extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Rating</Text>
+      <View style={styles.marginTop20}>
+        <View style={styles.marginBottom5}>
+          <Text style={styles.ratingLabel}>Rating</Text>
         </View>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.flexRowCenter}>
           {this.renderStars()}
           {this.renderText()}
         </View>
@@ -79,6 +79,31 @@ class GearReviewFormStarRating extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  marginLeft10: {
+    marginLeft: 10
+  },
+  flexRowCenter: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  marginTop20: {
+    marginTop: 20
+  },
+  ratingLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 18
+  },
+  marginBottom5: {
+    marginBottom: 5
+  },
+  openSansRegular: {
+    fontFamily: "open-sans-regular"
+  }
+})
 
 export default connect(
   mapStateToProps,

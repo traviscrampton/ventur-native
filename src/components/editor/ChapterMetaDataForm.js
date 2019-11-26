@@ -1,30 +1,11 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { doneUpdating, startUpdating } from "../../actions/editor"
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Modal,
-  Text,
-  TextInput,
-  Image,
-  TouchableWithoutFeedback
-} from "react-native"
-import {
-  updateChapterForm,
-  addChapterToJournals,
-  resetChapterForm,
-  toggleChapterModal
-} from "../../actions/chapter_form"
-import { StackActions, NavigationActions } from "react-navigation"
-import _ from "lodash"
-import { loadChapter } from "../../actions/chapter"
+import { startUpdating } from "../../actions/editor"
+import { StyleSheet, View, ScrollView, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { updateChapterForm, resetChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import { updateChapter, createChapter } from "../../actions/chapter_form"
 import { Header } from "./header"
 import DatePickerDropdown from "./DatePickerDropdown"
-import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
 import FormModal from "../shared/FormModal"
@@ -34,18 +15,13 @@ const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
   width: state.common.width,
   height: state.common.height,
-  isUpdating: state.editor.isUpdating,
-  currentRoot: state.common.currentBottomTab,
   visible: state.chapterForm.modalVisible
 })
 
 const mapDispatchToProps = dispatch => ({
   startUpdating: payload => dispatch(startUpdating()),
-  doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
   resetChapterForm: () => dispatch(resetChapterForm()),
   updateChapter: (params, callback) => dispatch(updateChapter(params, callback, dispatch)),
   createChapter: (params, callback) => dispatch(createChapter(params, callback, dispatch))
@@ -113,7 +89,7 @@ class ChapterMetaDataForm extends Component {
 
     return (
       <View>
-        <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Date</Text>
+        <Text style={styles.dateText}>Date</Text>
         <TouchableWithoutFeedback onPress={this.toggleDatePicker}>
           <View
             shadowColor="gray"
@@ -145,8 +121,8 @@ class ChapterMetaDataForm extends Component {
     const { distance, readableDistanceType } = this.props.chapterForm
 
     return (
-      <View style={{ marginTop: 15 }}>
-        <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Distance</Text>
+      <View style={styles.marginTop15}>
+        <Text style={styles.distanceLabel}>Distance</Text>
         <TouchableWithoutFeedback onPress={() => this.focusDistanceTextInput()}>
           <View
             shadowColor="gray"
@@ -169,7 +145,7 @@ class ChapterMetaDataForm extends Component {
               maxLength={6}
               value={distance.toString()}
               onChangeText={text => this.persistMetadata(text, "distance")}
-              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6, backgroundColor: "white" }}
+              style={styles.distanceTextInput}
             />
             <Text style={styles.iconText}>{`${readableDistanceType}`.toUpperCase()}</Text>
           </View>
@@ -193,7 +169,7 @@ class ChapterMetaDataForm extends Component {
     return (
       <View style={styles.titleAndDescriptionContainer}>
         <View>
-          <Text style={{ fontFamily: "playfair", color: "#323941", marginBottom: 5, fontSize: 16 }}>Title</Text>
+          <Text style={styles.titleText}>Title</Text>
         </View>
         <TextInput
           multiline
@@ -227,8 +203,8 @@ class ChapterMetaDataForm extends Component {
 
   renderFormTitle() {
     return (
-      <View style={{ padding: 20, marginBottom: 10 }}>
-        <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 28 }}>{this.getTitleText()}</Text>
+      <View style={styles.formTitleContainer}>
+        <Text style={styles.titleTextForm}>{this.getTitleText()}</Text>
       </View>
     )
   }
@@ -251,6 +227,10 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     backgroundColor: "white"
+  },
+  formTitleContainer: {
+    padding: 20,
+    marginBottom: 10
   },
   statsContainer: {
     padding: 20,
@@ -281,9 +261,42 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 3
   },
+  titleTextForm: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 28
+  },
+  dateText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  marginTop15: {
+    marginTop: 15
+  },
+  distanceLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
   iconText: {
     fontFamily: "overpass",
     fontSize: 20
+  },
+  distanceTextInput: {
+    textAlign: "right",
+    fontSize: 20,
+    marginRight: 5,
+    paddingBottom: 6,
+    backgroundColor: "white"
+  },
+  titleText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
   },
   titleAndDescriptionContainer: {
     padding: 20,

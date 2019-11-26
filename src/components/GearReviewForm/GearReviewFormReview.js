@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, Text, TextInput } from "react-native"
+import { View, Text, TextInput, StyleSheet } from "react-native"
 import { connect } from "react-redux"
 import { updateGearReviewFormReview } from "../../actions/gear_review_form"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
@@ -24,9 +24,9 @@ class GearReviewFormReview extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontFamily: "playfair", color: "#323941", fontSize: 18 }}>Review</Text>
+      <View style={styles.marginTop20}>
+        <View style={styles.marginBottm5}>
+          <Text style={styles.reviewLabel}>Review</Text>
         </View>
         <TextInput
           shadowColor="gray"
@@ -34,16 +34,7 @@ class GearReviewFormReview extends Component {
           shadowOpacity={0.5}
           shadowRadius={2}
           multiline
-          style={{
-            fontSize: 18,
-            backgroundColor: "white",
-            borderWidth: 1,
-            height: 100,
-            fontFamily: "open-sans-regular",
-            padding: 5,
-            borderRadius: 5,
-            borderColor: "#d3d3d3"
-          }}
+          style={styles.textInput}
           selectionColor="#FF5423"
           onChangeText={text => this.updateGearReviewFormReview(text)}
           value={this.props.review}
@@ -52,6 +43,30 @@ class GearReviewFormReview extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  marginTop20: {
+    marginTop: 20
+  },
+  marginBottom5: {
+    marginBottom: 5
+  },
+  reviewLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 18
+  },
+  textInput: {
+    fontSize: 18,
+    backgroundColor: "white",
+    borderWidth: 1,
+    height: 100,
+    fontFamily: "open-sans-regular",
+    padding: 5,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
+  }
+})
 
 export default connect(
   mapStateToProps,
