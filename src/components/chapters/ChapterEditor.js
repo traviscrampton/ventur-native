@@ -77,7 +77,9 @@ const mapStateToProps = state => ({
   activeView: state.cameraRoll.activeView,
   deletedUrls: state.editor.deletedUrls,
   activeContentCreator: state.editor.activeContentCreator,
-  newlyAddedImageUrls: state.editor.newlyAddedImageUrls
+  newlyAddedImageUrls: state.editor.newlyAddedImageUrls,
+  width: state.common.width,
+  height: state.common.height
 })
 
 class ChapterEditor extends Component {
@@ -85,7 +87,7 @@ class ChapterEditor extends Component {
     super(props)
 
     this.state = {
-      containerHeight: Dimensions.get("window").height - 80,
+      containerHeight: props.height - 80,
       offlineMode: false,
       imagesNeededOffline: [],
       scrollPosition: 0,
@@ -126,7 +128,7 @@ class ChapterEditor extends Component {
 
   keyboardWillShow(e) {
     this.setState({
-      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 40
+      containerHeight: this.props.height - e.endCoordinates.height - 87
     })
   }
 
@@ -247,7 +249,7 @@ class ChapterEditor extends Component {
   }
 
   getImageHeight(aspectRatio) {
-    return aspectRatio * Dimensions.get("window").width
+    return aspectRatio * this.props.width
   }
 
   getAllImageIds = () => {
@@ -294,7 +296,7 @@ class ChapterEditor extends Component {
           <View>
             {this.renderOpacCover(index, imageHeight, entry)}
             <LazyImage
-              style={{ width: Dimensions.get("window").width, height: imageHeight, position: "relative" }}
+              style={{ width: this.props.width, height: imageHeight, position: "relative" }}
               yPosition={this.getYPosition(index)}
               scrollPosition={this.state.scrollPosition}
               uri={uri}
@@ -402,10 +404,16 @@ class ChapterEditor extends Component {
   }
 
   getToolbarPositioning() {
+    console.log(
+      "this.props.showEditorToolbar",
+      this.props.showEditorToolbar,
+      "this.state.containerHeight",
+      this.state.containerHeight
+    )
     if (this.props.showEditorToolbar) {
-      return { width: Dimensions.get("window").width, position: "absolute", top: this.state.containerHeight }
+      return { width: this.props.width, position: "absolute", top: this.state.containerHeight }
     } else {
-      return { width: Dimensions.get("window").width }
+      return { width: this.props.width }
     }
   }
 
@@ -438,9 +446,9 @@ class ChapterEditor extends Component {
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: Dimensions.get("window").height - 40 }
+      return { height: this.props.height - 40 }
     } else {
-      return { height: Dimensions.get("window").height }
+      return { height: this.props.height }
     }
   }
 

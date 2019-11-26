@@ -269,6 +269,17 @@ class Profile extends Component {
     }
   }
 
+  renderEmptyState(isJournal = true) {
+    const content = isJournal ? "Journals" : "Gear Items"
+    const message = `No ${content} yet, press the action button to get started`
+
+    return (
+      <View style={{ height: this.props.height, padding: 20 }}>
+        <Text style={{ fontSize: 20 }}>{message}</Text>
+      </View>
+    )
+  }
+
   renderProfilePhotoAndMetadata() {
     return (
       <View
@@ -297,12 +308,20 @@ class Profile extends Component {
   }
 
   renderGear() {
+    if (this.props.gear.length === 0) {
+      return this.renderEmptyState(false)
+    }
+
     return this.props.gear.map((gearItem, index) => {
       return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })
   }
 
   renderProfileJournals() {
+    if (this.props.journals.length === 0) {
+      return this.renderEmptyState()
+    }
+
     const pad = this.props.width * 0.035
 
     return (

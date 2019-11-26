@@ -350,7 +350,13 @@ class Journal extends Component {
     return (
       <View
         key={"chapterEmptyState"}
-        style={{ marginTop: 10, width: this.props.width, paddingRight: 20, paddingLeft: 20 }}>
+        style={{
+          marginTop: 10,
+          width: this.props.width,
+          height: this.props.height / 2,
+          paddingRight: 20,
+          paddingLeft: 20
+        }}>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={{ marginBottom: 10 }}>
@@ -555,7 +561,7 @@ class Journal extends Component {
     return (
       <React.Fragment>
         <View style={{ height: "100%", position: "relative" }}>
-          <ScrollView style={styles.container}>
+          <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             {this.renderHeader()}
             {this.renderSlidingTabs()}
           </ScrollView>

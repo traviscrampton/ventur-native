@@ -213,6 +213,7 @@ class GearItemReview extends Component {
 
   renderImageCarousel() {
     const carouselImages = this.getCarouselImages()
+    if (carouselImages.length === 1 && carouselImages[0].largeUri.length === 0) return
 
     return (
       <View style={{ marginTop: 20 }}>
