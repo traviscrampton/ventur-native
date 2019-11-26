@@ -1,20 +1,7 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TextInput,
-  ImageBackground,
-  Keyboard,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-  Dimensions,
-  AsyncStorage,
-  Alert
-} from "react-native"
-import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
+import { StyleSheet, View, Text, TextInput, Keyboard, SafeAreaView, TouchableWithoutFeedback } from "react-native"
+import { MaterialIndicator } from "react-native-indicators"
 import {
   editEntry,
   updateFormatBar,
@@ -63,21 +50,15 @@ const mapStateToProps = state => ({
   loaded: state.chapter.loaded,
   currentUser: state.common.currentUser,
   entries: state.editor.entries,
-  activeAttribute: state.editor.activeAttribute,
-  focusedEntryIndex: state.editor.focusedEntryIndex,
   activeIndex: state.editor.activeIndex,
   initialImageIds: state.editor.initialImageIds,
-  cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
   initialEntries: state.editor.initialEntries,
   showEditorToolbar: state.editor.showEditorToolbar,
-  isOffline: state.common.isOffline,
   uploadIsImage: state.editor.uploadIsImage,
-  activeView: state.cameraRoll.activeView,
   deletedUrls: state.editor.deletedUrls,
   activeContentCreator: state.editor.activeContentCreator,
-  newlyAddedImageUrls: state.editor.newlyAddedImageUrls,
   width: state.common.width,
   height: state.common.height
 })
@@ -93,10 +74,6 @@ class ChapterEditor extends Component {
       scrollPosition: 0,
       imageYPositions: []
     }
-  }
-
-  componentDidUpdate() {
-    console.log("this.props.newlyAddedImageUrls", this.props.newlyAddedImageUrls)
   }
 
   componentWillMount() {
@@ -213,11 +190,7 @@ class ChapterEditor extends Component {
 
   renderImageLoadingCover(index, imageHeight) {
     return (
-      <View
-        style={[
-          styles.opacCover,
-          { height: imageHeight, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }
-        ]}>
+      <View style={[styles.opacCover, styles.loadingOpacCover, { height: imageHeight, width: this.props.width }]}>
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
@@ -232,7 +205,7 @@ class ChapterEditor extends Component {
 
     return (
       <TouchableWithoutFeedback style={{ height: imageHeight }} onPress={e => this.updateActiveIndex(e, null)}>
-        <View style={[styles.opacCover, { height: imageHeight }]}>
+        <View style={[styles.opacCover, { height: imageHeight, width: this.props.width }]}>
           <TouchableWithoutFeedback onPress={() => this.handleImageDelete(index)}>
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
@@ -276,11 +249,7 @@ class ChapterEditor extends Component {
       return localUri
     }
 
-    if (lowResUri) {
-      return lowResUri
-    } else {
-      return uri
-    }
+    return lowResUri ? lowResUri : uri
   }
 
   renderAsImage(entry, index) {
@@ -404,12 +373,6 @@ class ChapterEditor extends Component {
   }
 
   getToolbarPositioning() {
-    console.log(
-      "this.props.showEditorToolbar",
-      this.props.showEditorToolbar,
-      "this.state.containerHeight",
-      this.state.containerHeight
-    )
     if (this.props.showEditorToolbar) {
       return { width: this.props.width, position: "absolute", top: this.state.containerHeight }
     } else {
@@ -519,7 +482,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   opacCover: {
-    width: Dimensions.get("window").width,
     padding: 20,
     position: "absolute",
     zIndex: 11,
@@ -531,6 +493,12 @@ const styles = StyleSheet.create({
   positionRelative: {
     position: "relative",
     backgroundColor: "white"
+  },
+  loadingOpacCover: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
   },
   captionPadding: {
     paddingLeft: 20,

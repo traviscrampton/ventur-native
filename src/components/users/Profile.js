@@ -24,7 +24,6 @@ import {
 } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
-import ChapterUserForm from "../chapters/ChapterUserForm"
 import { MaterialIndicator } from "react-native-indicators"
 import { updateChapterForm } from "../../actions/chapter_form"
 import { loadChapter } from "../../actions/chapter"

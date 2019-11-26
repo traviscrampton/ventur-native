@@ -1,12 +1,12 @@
 import React, { Component } from "react"
-import { ScrollView, View, Modal, Dimensions, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { connect } from "react-redux"
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
 import {
   resetCommentForm,
   updateCommentContent,
   createComment,
   toggleCommentFormModal
 } from "../../actions/comment_form"
-import { connect } from "react-redux"
 import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
@@ -40,31 +40,15 @@ class CommentForm extends Component {
 
   renderHeader() {
     return (
-      <View
-        style={{
-          height: 45,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingRight: 20,
-          paddingLeft: 20,
-          backgroundColor: "white",
-          borderBottomWidth: 1,
-          borderBottomColor: "#f8f8f8"
-        }}>
+      <View style={styles.header}>
         <TouchableWithoutFeedback onPress={this.handleCancelAndNavigate}>
           <View>
-            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
-              Cancel
-            </Text>
+            <Text style={styles.headerOptions}>Cancel</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.handleCommentPersistance}>
           <View>
-            <Text style={{ fontFamily: "open-sans-bold", fontWeight: "600", fontSize: 14, color: "#323941" }}>
-              Post
-            </Text>
+            <Text style={styles.headerOptions}>Post</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -77,29 +61,20 @@ class CommentForm extends Component {
         shadowColor="#d3d3d3"
         shadowOffset={{ width: 1, height: 1 }}
         shadowOpacity={0.7}
-        style={{
-          margin: 20,
-          borderColor: "#d3d3d3",
-          borderWidth: 1,
-          borderRadius: 3,
-          backgroundColor: "white",
-          padding: 10
-        }}>
-        <Text style={{ fontWeight: "bold", marginBottom: 5, fontFamily: "open-sans-regular" }}>
-          {this.props.commentable.commentableTitle}
-        </Text>
-        <Text style={{ fontFamily: "open-sans-regular" }}>By: {this.props.commentable.commentableUser.fullName}</Text>
+        style={styles.commentablePreviewContainer}>
+        <Text style={styles.commentableTitle}>{this.props.commentable.commentableTitle}</Text>
+        <Text style={styles.openSansRegular}>By: {this.props.commentable.commentableUser.fullName}</Text>
       </View>
     )
   }
 
   renderTextBox() {
     return (
-      <View style={{ padding: 20 }}>
+      <View style={styles.padding20}>
         <TextInput
           multiline
           autoFocus
-          style={{ fontSize: 16, fontFamily: "open-sans-regular" }}
+          style={styles.textBox}
           selectionColor={"#FF5423"}
           onChangeText={text => this.props.updateCommentContent(text)}
           value={this.props.content}
@@ -120,6 +95,50 @@ class CommentForm extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  header: {
+    height: 45,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingRight: 20,
+    paddingLeft: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f8f8f8"
+  },
+  padding20: {
+    padding: 20
+  },
+  textBox: {
+    fontSize: 16,
+    fontFamily: "open-sans-regular"
+  },
+  headerOptions: {
+    fontFamily: "open-sans-bold",
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#323941"
+  },
+  commentableTitle: {
+    fontWeight: "bold",
+    marginBottom: 5,
+    fontFamily: "open-sans-regular"
+  },
+  openSansRegular: {
+    fontFamily: "open-sans-regular"
+  },
+  commentablePreviewContainer: {
+    margin: 20,
+    borderColor: "#d3d3d3",
+    borderWidth: 1,
+    borderRadius: 3,
+    backgroundColor: "white",
+    padding: 10
+  }
+})
 
 export default connect(
   mapStateToProps,

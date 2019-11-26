@@ -1,16 +1,13 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { resetChapter } from "../../actions/chapter"
-import { StyleSheet, View, SafeAreaView, Text, TouchableHighlight, TouchableWithoutFeedback, Alert } from "react-native"
 import { connect } from "react-redux"
-import { loadChapter, setEditMode, editChapterPublished, deleteChapter, uploadBannerPhoto } from "../../actions/chapter"
-import { populateEntries, getInitialImageIds, loseChangesAndUpdate } from "../../actions/editor"
-import { updateChapterForm, toggleChapterModal, resetChapterForm } from "../../actions/chapter_form"
+import { StyleSheet, View, SafeAreaView, Text, TouchableWithoutFeedback, Alert } from "react-native"
+import { resetChapter, editChapterPublished, deleteChapter, uploadBannerPhoto } from "../../actions/chapter"
+import { populateEntries } from "../../actions/editor"
+import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import { toggleCameraRollModal } from "../../actions/camera_roll"
 import ChapterEditor from "./ChapterEditor"
 import ChapterShow from "./ChapterShow"
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { get, put, destroy } from "../../agent"
+import { MaterialIcons } from "@expo/vector-icons"
 import LoadingScreen from "../shared/LoadingScreen"
 import { JournalChildHeader } from "../shared/JournalChildHeader"
 import { sendEmails } from "../../actions/chapter"
@@ -19,39 +16,26 @@ import ImagePickerContainer from "../shared/ImagePickerContainer"
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
   chapter: state.chapter.chapter,
-  entries: state.editor.entries,
-  initialImageIds: state.editor.initialImageIds,
-  deletedIds: state.editor.deletedIds,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
-  width: state.common.width,
-  editMode: state.chapter.editMode
+  width: state.common.width
 })
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
-  getInitialImageIds: payload => dispatch(getInitialImageIds(payload)),
-  setEditMode: payload => dispatch(setEditMode(payload)),
-  loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   sendEmails: payload => dispatch(sendEmails(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   uploadBannerPhoto: payload => dispatch(uploadBannerPhoto(payload)),
   resetChapter: () => dispatch(resetChapter()),
-  resetChapterForm: () => dispatch(resetChapterForm()),
   deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
 })
 
 class ChapterDispatch extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      initialChapterForm: this.initialChapterForm
-    }
   }
 
   populateEditorAndSwitch = content => {
@@ -151,7 +135,6 @@ class ChapterDispatch extends Component {
   }
 
   navigateToChapterForm = () => {
-    console.log(this.props.chapter)
     let { id, title, distance, description, journal, imageUrl, date } = this.props.chapter
     let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
 
@@ -208,18 +191,7 @@ class ChapterDispatch extends Component {
           shadowOffset={{ width: 1, height: 1 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#FF5423",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 30,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          style={styles.editorFloatingButton}>
           <MaterialIcons name="edit" size={32} color="white" />
         </View>
       </TouchableWithoutFeedback>
@@ -232,7 +204,7 @@ class ChapterDispatch extends Component {
     }
 
     return (
-      <SafeAreaView style={{ backgroundColor: "white", flex: 1}}>
+      <SafeAreaView style={styles.safeContainer}>
         <View style={styles.chapterDispatchContainer}>
           {this.renderHeader()}
           <ChapterShow navigation={this.props.navigation} />
@@ -249,6 +221,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     position: "relative",
     height: "100%"
+  },
+  safeContainer: {
+    backgroundColor: "white",
+    flex: 1
   },
   chapterNavigationContainer: {
     display: "flex",
@@ -270,6 +246,18 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 5
+  },
+  editorFloatingButton: {
+    position: "absolute",
+    backgroundColor: "#FF5423",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    bottom: 30,
+    right: 20,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   journalTitle: {
     fontFamily: "open-sans-semi",

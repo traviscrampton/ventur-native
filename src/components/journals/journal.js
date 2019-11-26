@@ -314,44 +314,15 @@ class Journal extends Component {
     const fifthWidth = width / 5
 
     return (
-      <View
-        key={"chapterEmptyState"}
-        style={[
-          styles.childEmptyState,
-          {
-            width: width,
-            height: halfHeight
-          }
-        ]}>
+      <View key={"chapterEmptyState"} style={[styles.childEmptyState, { width: width, height: halfHeight }]}>
         <View style={styles.flexAndDirection}>
           <View>
             <View style={styles.emptyStateCtaContainer}>
               <Text style={styles.ctaText}>{ctaText}</Text>
             </View>
-            <View
-              style={[
-                styles.emptyBar,
-                {
-                  width: thirdWidth
-                }
-              ]}
-            />
-            <View
-              style={[
-                styles.emptyBar,
-                {
-                  width: fifthWidth
-                }
-              ]}
-            />
-            <View
-              style={[
-                styles.emptyBar,
-                {
-                  width: fifthWidth
-                }
-              ]}
-            />
+            <View style={[styles.emptyBar, { width: thirdWidth }]} />
+            <View style={[styles.emptyBar, { width: fifthWidth }]} />
+            <View style={[styles.emptyBar, { width: fifthWidth }]} />
           </View>
           <View style={styles.emptyImage} />
         </View>

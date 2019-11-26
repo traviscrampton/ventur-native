@@ -1,33 +1,18 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Alert
-} from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
+import { StyleSheet, View, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
 import { loadRouteEditor } from "../../actions/route_editor"
 import { loadRouteViewer } from "../../actions/route_viewer"
-import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
 import CommentsContainer from "../Comments/CommentsContainer"
-import { editChapterPublished, deleteChapter } from "../../actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
-import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "../../utils/offline_helpers"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import LazyImage from "../shared/LazyImage"
 import ImageSlider from "../shared/ImageSlider"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
-  loaded: state.chapter.loaded,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
@@ -35,7 +20,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
   loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
@@ -61,16 +45,16 @@ class ChapterShow extends Component {
 
     if (this.props.chapter.published) {
       return (
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <MaterialIcons style={{ marginRight: 5 }} size={16} name={"done"} color={"#3F88C5"} />
-          <Text style={{ padding: 2, alignSelf: "flex-start", borderRadius: 5, color: "#3F88C5" }}>PUBLISHED</Text>
+        <View style={styles.flexRowCenter}>
+          <MaterialIcons style={styles.iconPosition} size={16} name={"done"} color={"#3F88C5"} />
+          <Text style={[styles.publishedStyle, { color: "#3F88C5" }]}>PUBLISHED</Text>
         </View>
       )
     } else {
       return (
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <MaterialIcons style={{ marginRight: 5 }} size={16} name={"publish"} color={"#FF5423"} />
-          <Text style={{ padding: 2, alignSelf: "flex-start", borderRadius: 5, color: "#FF5423" }}>UNPUBLISHED</Text>
+        <View style={styles.flexRowCenter}>
+          <MaterialIcons style={styles.iconPosition} size={16} name={"publish"} color={"#FF5423"} />
+          <Text style={[styles.publishedStyle, { color: "#FF5423" }]}>UNPUBLISHED</Text>
         </View>
       )
     }
@@ -80,14 +64,7 @@ class ChapterShow extends Component {
     const { title } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
-        <View
-          style={[
-            {
-              display: "flex",
-              flexDirection: "column"
-            },
-            { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
-          ]}>
+        <View style={[styles.flexColumn, { marginTop: this.props.chapter.imageUrl ? 0 : 20 }]}>
           <Text style={styles.title}>{title}</Text>
           {this.renderPublishedText()}
         </View>
@@ -148,8 +125,8 @@ class ChapterShow extends Component {
   renderMapIconCta() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToMap}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <View style={{ paddingRight: 10}}>
+        <View style={styles.flexRowCenter}>
+          <View style={{ paddingRight: 10 }}>
             <Feather name="map" size={25} color="#323941" />
           </View>
         </View>
@@ -196,18 +173,7 @@ class ChapterShow extends Component {
   }
 
   renderDivider() {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 3,
-          borderBottomColor: "#323941",
-          width: 90,
-          marginTop: 10,
-          marginLeft: 20,
-          marginBottom: 30
-        }}
-      />
-    )
+    return <View style={styles.dividerStyles} />
   }
 
   getInputStyling(entry) {
@@ -233,12 +199,8 @@ class ChapterShow extends Component {
     if (entry.caption.length === 0) return
 
     return (
-      <View
-        style={{
-          paddingLeft: 20,
-          paddingRight: 20
-        }}>
-        <Text style={{ textAlign: "center" }}>{entry.caption}</Text>
+      <View style={styles.paddingRightLeft}>
+        <Text style={styles.textAlignCenter}>{entry.caption}</Text>
       </View>
     )
   }
@@ -276,7 +238,7 @@ class ChapterShow extends Component {
         onLayout={e => this.handleLayout(e, index)}
         key={`image${index}`}
         yPosition={this.state.imageYPositions[index]}
-        style={{ position: "relative", marginBottom: 20 }}>
+        style={styles.imageEntryStyle}>
         <TouchableWithoutFeedback onPress={() => this.openImageSlider(entry)}>
           <View style={{ height }}>
             <LazyImage
@@ -299,16 +261,7 @@ class ChapterShow extends Component {
         style={{
           padding: 20
         }}>
-        <Text
-          multiline
-          key={index}
-          style={[
-            {
-              fontSize: 20,
-              fontFamily: "open-sans-regular"
-            },
-            this.getInputStyling(entry)
-          ]}>
+        <Text multiline key={index} style={[styles.textEntryText, this.getInputStyling(entry)]}>
           {entry.content}
         </Text>
       </View>
@@ -340,21 +293,7 @@ class ChapterShow extends Component {
   }
 
   renderIconAndThreeDotMenu() {
-    return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingRight: 20,
-          paddingLeft: 20,
-          marginBottom: 5,
-          position: "relative",
-          zIndex: 100
-        }}>
-        {this.renderMapIconCta()}
-      </View>
-    )
+    return <View style={styles.threeDotMenu}>{this.renderMapIconCta()}</View>
   }
 
   renderCommentContainer() {
@@ -378,7 +317,7 @@ class ChapterShow extends Component {
         style={[styles.container, { minHeight: this.props.height }]}
         scrollEventThrottle={100}
         onScroll={event => this.handleScroll(event)}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View style={styles.flexRowSpaceBetween}>
           {this.renderChapterImage()}
           {this.renderMapIconWithImage()}
         </View>
@@ -386,10 +325,8 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
-        <View style={{ marginBottom: 100, minHeight: 200, position: "relative", zIndex: 0 }}>
-          {this.renderBodyContent()}
-        </View>
-        <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
+        <View style={styles.bodyContainer}>{this.renderBodyContent()}</View>
+        <View style={styles.marginBottom200}>{this.renderCommentContainer()}</View>
         <ChapterMetaDataForm />
         <ImageSlider />
       </ScrollView>
@@ -401,6 +338,51 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     marginBottom: 100
+  },
+  textEntryText: {
+    fontSize: 20,
+    fontFamily: "open-sans-regular"
+  },
+  flexRowSpaceBetween: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  bodyContainer: {
+    marginBottom: 100,
+    minHeight: 200,
+    position: "relative",
+    zIndex: 0
+  },
+  paddingRightLeft: {
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  marginBottom200: {
+    marginBottom: 200
+  },
+  dividerStyles: {
+    borderBottomWidth: 3,
+    borderBottomColor: "#323941",
+    width: 90,
+    marginTop: 10,
+    marginLeft: 20,
+    marginBottom: 30
+  },
+  flexRowCenter: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  publishedStyle: {
+    padding: 2,
+    alignSelf: "flex-start",
+    borderRadius: 5
+  },
+  flexColumn: {
+    display: "flex",
+    flexDirection: "column"
   },
   titleDescriptionContainer: {
     padding: 20,
@@ -417,13 +399,30 @@ const styles = StyleSheet.create({
     color: "#c3c3c3",
     fontFamily: "open-sans-semi"
   },
+  imageEntryStyle: {
+    position: "relative",
+    marginBottom: 20
+  },
   statisticsContainer: {
     display: "flex",
     flexDirection: "row",
     paddingTop: 5
   },
+  threeDotMenu: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 20,
+    paddingLeft: 20,
+    marginBottom: 5,
+    position: "relative",
+    zIndex: 100
+  },
   iconPosition: {
     marginRight: 5
+  },
+  textAlignCenter: {
+    textAlign: "center"
   },
   statisticsPadding: {
     padding: 20,

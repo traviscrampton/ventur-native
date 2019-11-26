@@ -1,12 +1,13 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native"
 import { loadComments } from "../../actions/comments"
 import { populateCommentForm } from "../../actions/comment_form"
 import CommentsSection from "./CommentsSection"
 
 const mapStateToProps = state => ({
-  comments: state.comments.comments
+  comments: state.comments.comments,
+  width: state.common.width
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -51,9 +52,9 @@ class CommentsContainer extends Component {
 
   renderCommentsCTA() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignContent: "center" }}>
+      <View style={styles.commentCtaContainer}>
         <TouchableWithoutFeedback onPress={this.loadComments}>
-          <View style={styles.showCommentCta}>
+          <View style={[styles.showCommentCta, { width: this.props.width - 40 }]}>
             <Text style={styles.showCommentCtaText}>Show Comments ({this.props.commentCount})</Text>
           </View>
         </TouchableWithoutFeedback>
@@ -63,7 +64,12 @@ class CommentsContainer extends Component {
 
   render() {
     if (this.state.showComments) {
-      return <CommentsSection commentableUser={this.props.commentableUser} navigateAndPopulateCommentForm={this.navigateAndPopulateCommentForm} />
+      return (
+        <CommentsSection
+          commentableUser={this.props.commentableUser}
+          navigateAndPopulateCommentForm={this.navigateAndPopulateCommentForm}
+        />
+      )
     } else {
       return this.renderCommentsCTA()
     }
@@ -83,8 +89,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderColor: "#505050",
     borderWidth: 1,
-    borderRadius: 3,
-    width: Dimensions.get("window").width - 40
+    borderRadius: 3
+  },
+  commentCtaContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center"
   },
   showCommentCtaText: {
     letterSpacing: 1.8,

@@ -1,6 +1,6 @@
 import React from "react"
-import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
-import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
+import { StyleSheet, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
 import ProgressiveImage from "../shared/ProgressiveImage"
 
 const distanceString = distance => {
@@ -36,9 +36,9 @@ const PublishedStatus = props => {
 
   if (props.isCurrentUser) {
     return (
-      <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.publishedStatusContainer}>
         <MaterialIcons name={icon} color={color} size={12} />
-        <Text style={{ color: color, fontSize: 10, marginLeft: 5 }}>{text}</Text>
+        <Text style={[styles.publishedStatusText, { color: color }]}>{text}</Text>
       </View>
     )
   } else {
@@ -57,12 +57,12 @@ const ChapterCard = props => {
     <TouchableWithoutFeedback key={props.id} style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
       <View style={styles.chapterCardContainer}>
         <View
-          style={{
-            maxWidth: Dimensions.get("window").width - 140,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
-          }}>
+          style={[
+            styles.flexColumn,
+            {
+              maxWidth: Dimensions.get("window").width - 140
+            }
+          ]}>
           <View>
             <Text numberOfLines={1} style={styles.chapterTitle}>
               {title}
@@ -99,6 +99,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#d3d3d3",
     minHeight: 120
   },
+  publishedStatusContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
   chapterTitle: {
     maxWidth: Dimensions.get("window").width - 140,
     fontFamily: "open-sans-regular",
@@ -110,9 +115,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between"
   },
+  publishedStatusText: {
+    fontSize: 10,
+    marginLeft: 5
+  },
   individualIconTextContainer: {
     display: "flex",
     flexDirection: "row"
+  },
+  flexColumn: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between"
   },
   textStats: {
     fontFamily: "overpass",
