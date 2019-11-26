@@ -40,6 +40,7 @@ import { populateGearItemReview } from "../../actions/gear_item_review"
 import { logOut } from "../../auth"
 import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
 import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
+import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import LoadingScreen from "../shared/LoadingScreen"
 import { WebBrowser } from "expo"
 import Expo from "expo"
@@ -55,7 +56,8 @@ const mapStateToProps = state => ({
   profilePhotoLoading: state.user.profilePhotoLoading,
   gear: state.user.user.gear,
   journals: state.user.user.journals,
-  width: state.common.width
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -314,7 +316,8 @@ class Profile extends Component {
             paddingRight: 15,
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 10
+            marginTop: 10,
+            flexWrap: "wrap"
           }}
           data={this.props.journals}
           keyExtractor={item => item.id}
@@ -345,36 +348,42 @@ class Profile extends Component {
     this.setState({ activeIndex })
   }
 
-  getTabProps = () => {
+  getNavigationState = () => {
     return Object.assign(
-      [],
-      [
-        Object.assign(
-          {},
-          {
-            label: "JOURNALS",
-            view: this.renderProfileJournals()
-          }
-        ),
-        Object.assign({
-          label: "GEAR",
-          view: this.renderGear()
-        })
-      ]
+      {},
+      {
+        index: this.state.activeIndex,
+        routes: [{ key: "journals", title: "Journals" }, { key: "gear", title: "Gear" }]
+      }
     )
   }
 
   renderSlidingTabs() {
-    const tabs = this.getTabProps()
-    const tabWidth = (this.props.width - 40) / tabs.length
-
     return (
-      <SlidingTabs
-        tabs={tabs}
-        tabWidth={tabWidth}
-        tabBarColor="#FF5423"
-        activeIndex={this.state.activeIndex}
+      <TabView
+        navigationState={this.getNavigationState()}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case "journals":
+              return this.renderProfileJournals()
+            case "gear":
+              return this.renderGear()
+            default:
+              return null
+          }
+        }}
         onIndexChange={this.handleIndexChange}
+        initialLayout={{ width: this.props.width, minHeight: this.props.height }}
+        renderTabBar={props => (
+          <TabBar
+            {...props}
+            tabStyle={{ color: "#FF5423" }}
+            activeColor="#FF5423"
+            inactiveColor="#FF5423"
+            indicatorStyle={{ backgroundColor: "#FF5423" }}
+            style={{ backgroundColor: "white" }}
+          />
+        )}
       />
     )
   }

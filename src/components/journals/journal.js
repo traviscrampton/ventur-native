@@ -33,6 +33,7 @@ import { loadChapter, resetChapter } from "../../actions/chapter"
 import { setLoadingTrue, setLoadingFalse } from "../../actions/common"
 import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form"
 import { loadJournalMap } from "../../actions/journal_route"
+import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import { connect } from "react-redux"
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { MaterialIcons } from "@expo/vector-icons"
@@ -179,10 +180,6 @@ class Journal extends Component {
   updateBannerImage = () => {
     this.props.updateActiveView("journal")
     this.props.toggleCameraRollModal(true)
-    // this.props.navigation.navigate("CameraRollContainer", {
-    //   selectSingleItem: true,
-    //   singleItemCallback: img => this.uploadImage(img)
-    // })
   }
 
   returnDistanceString(distance) {
@@ -253,9 +250,8 @@ class Journal extends Component {
   }
 
   renderThreeDotMenu(user) {
-    let options
     if (user.id == this.props.currentUser.id) {
-      options = this.getJournalOptions()
+      const options = this.getJournalOptions()
       return <ThreeDotDropdown options={options} />
     } else {
       return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
@@ -474,18 +470,17 @@ class Journal extends Component {
     if (this.props.journal.gear.length === 0) {
       return this.renderJournalEmptyState()
     }
-
-    return this.props.journal.gear.map((gearItem, index) => {
-      return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
-    })
+    return (
+      <View style={{ height: this.props.height }}>
+        {this.props.journal.gear.map((gearItem, index) => {
+          return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
+        })}
+      </View>
+    )
   }
 
   updateTabIndex = index => {
     this.props.updateTabIndex(index)
-  }
-
-  handleTabPress = index => {
-    console.log("index")
   }
 
   getTabProps = () => {
@@ -507,20 +502,41 @@ class Journal extends Component {
     )
   }
 
+  getNavigationState() {
+    const { index, routes } = this.props
+    return Object.assign({}, { index, routes })
+  }
+
   renderSlidingTabs() {
     if (this.props.subContentLoading) {
       return this.renderSubContentLoading()
     }
 
-    const tabs = this.getTabProps()
-    const tabWidth = (this.props.width - 40) / tabs.length
     return (
-      <SlidingTabs
-        tabs={tabs}
-        tabWidth={tabWidth}
-        tabBarColor="#3F88C5"
-        activeIndex={this.props.index}
+      <TabView
+        navigationState={this.getNavigationState()}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case "chapters":
+              return this.renderChapters()
+            case "gear":
+              return this.renderGear()
+            default:
+              return null
+          }
+        }}
         onIndexChange={this.updateTabIndex}
+        initialLayout={{ width: this.props.width, height: this.props.height }}
+        renderTabBar={props => (
+          <TabBar
+            {...props}
+            tabStyle={{ color: "#3F88C5" }}
+            activeColor="#3F88C5"
+            inactiveColor="#3F88C5"
+            indicatorStyle={{ backgroundColor: "#3F88C5" }}
+            style={{ backgroundColor: "white" }}
+          />
+        )}
       />
     )
   }
