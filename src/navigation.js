@@ -12,7 +12,6 @@ import Profile from "./components/users/Profile"
 import CommentForm from "./components/Comments/CommentForm"
 import JournalForm from "./components/JournalForm/JournalForm"
 import CountriesEditor from "./components/JournalForm/CountriesEditor"
-import UserAvatarForm from "./components/users/UserAvatarForm"
 import RouteEditor from "./components/Maps/RouteEditor"
 import StravaRouteSelector from "./components/Maps/StravaRouteSelector"
 import RouteViewer from "./components/Maps/RouteViewer"
@@ -67,7 +66,10 @@ const JournalFeedNavigator = createStackNavigator(
 
 const ProfileNavigator = createStackNavigator(
   {
-    Profile: Profile,
+    Profile: {
+      screen: Profile,
+      path: "/profile"
+    },
     Journal: Journal,
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,

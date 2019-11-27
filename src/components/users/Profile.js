@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback
 } from "react-native"
+import { Linking } from 'expo';
 import GearListItem from "../GearItem/GearListItem"
 import { MaterialIcons } from "@expo/vector-icons"
 import { getProfilePageData, uploadProfilePhoto, setDefaultAppState } from "../../actions/user"
@@ -28,8 +29,7 @@ import { logOut } from "../../auth"
 import { encodeQueryString } from "../../agent"
 import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import LoadingScreen from "../shared/LoadingScreen"
-import { WebBrowser } from "expo"
-import Expo from "expo"
+import * as WebBrowser from "expo-web-browser"
 import { FloatingAction } from "react-native-floating-action"
 import GearReviewForm from "../GearReviewForm/GearReviewForm"
 import ImagePickerContainer from "../shared/ImagePickerContainer"
@@ -101,7 +101,8 @@ class Profile extends Component {
   connectToStrava = async () => {
     if (this.props.currentUser.stravaAccessToken) return
 
-    const redirect = "ventur://ventur"
+    const redirect = "ventur://ventur/profile"
+    console.log("redirect", redirect)
     const params = Object.assign(
       {},
       {
