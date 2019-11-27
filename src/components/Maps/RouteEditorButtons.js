@@ -1,21 +1,20 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
+import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { FloatingAction } from "react-native-floating-action"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { toggleDrawMode, togglePositionMode, setShownIndex, persistRoute, eraseRoute } from "../../actions/route_editor"
+import { togglePositionMode, setShownIndex, persistRoute, eraseRoute, setCanDraw } from "../../actions/route_editor"
 import { checkForExpiredToken, setStravaLoadingTrue } from "../../actions/strava_activity_import"
 import { MaterialIndicator } from "react-native-indicators"
 
 const mapDispatchToProps = dispatch => ({
-  toggleDrawMode: () => dispatch(toggleDrawMode()),
   togglePositionMode: () => dispatch(togglePositionMode()),
   setShownIndex: payload => dispatch(setShownIndex(payload)),
   persistRoute: () => dispatch(persistRoute()),
   eraseRoute: () => dispatch(eraseRoute()),
   checkForExpiredToken: () => dispatch(checkForExpiredToken()),
+  setCanDraw: payload => dispatch(setCanDraw(payload)),
   setStravaLoadingTrue: () => dispatch(setStravaLoadingTrue())
 })
 
@@ -29,7 +28,8 @@ const mapStateToProps = state => ({
   initialRegion: state.routeEditor.initialRegion,
   initialPolylineLength: state.routeEditor.initialPolylineLength,
   isDrawing: state.routeEditor.isDrawing,
-  isSaving: state.routeEditor.isSaving
+  isSaving: state.routeEditor.isSaving,
+  canDraw: state.routeEditor.canDraw
 })
 
 class RouteEditorButtons extends Component {
@@ -93,19 +93,7 @@ class RouteEditorButtons extends Component {
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.handleUndoPress}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%"
-              }
-            ]}>
+          <View style={styles.undoButton}>
             <Ionicons name="ios-undo" size={25} color={"#323941"} />
           </View>
         </TouchableWithoutFeedback>
@@ -119,25 +107,17 @@ class RouteEditorButtons extends Component {
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.handleRedoPress}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginLeft: 10
-              }
-            ]}>
+          <View style={styles.redoButton}>
             <Ionicons name="ios-redo" size={25} color={"#323941"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
+  }
+
+  setCanDraw = () => {
+    const { canDraw } = this.props
+    this.props.setCanDraw(!canDraw)
   }
 
   isInitialRoute() {
@@ -149,30 +129,16 @@ class RouteEditorButtons extends Component {
   }
 
   renderDrawButton() {
-    if (!this.props.polylineEditor || this.props.positionMode) return
+    if (!this.props.drawMode) return
 
-    const { drawMode } = this.props
-    const buttonBackground = drawMode ? { backgroundColor: "#FF5423" } : {}
-    const pencilColor = drawMode ? "white" : "#FF5423"
+    const { canDraw } = this.props
+    const buttonBackground = canDraw ? { backgroundColor: "#FF5423" } : {}
+    const pencilColor = canDraw ? "white" : "#FF5423"
 
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <TouchableWithoutFeedback onPress={this.props.toggleDrawMode}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 50,
-                width: 50,
-                marginLeft: 10,
-                borderRadius: "50%"
-              },
-              buttonBackground
-            ]}>
+        <TouchableWithoutFeedback onPress={this.setCanDraw}>
+          <View style={[styles.drawButton, buttonBackground]}>
             <MaterialIcons name="edit" size={30} color={pencilColor} />
           </View>
         </TouchableWithoutFeedback>
@@ -180,39 +146,8 @@ class RouteEditorButtons extends Component {
     )
   }
 
-  renderSaveButton() {
-    if (this.props.drawMode || this.props.positionMode) return
-    let icon = this.props.isSaving ? (
-      <MaterialIndicator size={25} color="#FF5423" />
-    ) : (
-      <MaterialIcons name="save" size={25} color={"#323941"} />
-    )
-
-    return (
-      <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <TouchableWithoutFeedback onPress={this.props.persistRoute}>
-          <View
-            style={[
-              {
-                backgroundColor: "white",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginBottom: 10
-              }
-            ]}>
-            {icon}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
   renderCropButton() {
+    return
     if (this.props.drawMode) return
     const { positionMode } = this.props
     const backgroundColor = positionMode ? "#3F88C5" : "white"
@@ -221,20 +156,7 @@ class RouteEditorButtons extends Component {
     return (
       <View shadowColor="#323941" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
         <TouchableWithoutFeedback onPress={this.props.togglePositionMode}>
-          <View
-            style={[
-              {
-                backgroundColor: backgroundColor,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginBottom: 10
-              }
-            ]}>
+          <View style={[styles.cropButton, { backgroundColor: backgroundColor }]}>
             <MaterialIcons name="crop-free" size={25} color={iconColor} />
           </View>
         </TouchableWithoutFeedback>
@@ -251,49 +173,10 @@ class RouteEditorButtons extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{ position: "absolute", bottom: 100, right: 30 }}>
+        style={styles.stravaButtonContainer}>
         <TouchableWithoutFeedback onPress={this.loadStravaAndNavigate}>
-          <View
-            style={{
-              height: 35,
-              width: 35,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white",
-              borderRadius: "50%"
-            }}>
+          <View style={styles.stravaCtaInner}>
             <Text>S</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
-  }
-
-  renderEraseButton() {
-    if (this.props.positionMode) return
-
-    return (
-      <View
-        shadowColor="#323941"
-        shadowOffset={{ width: 0, height: 0 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}
-        style={{ position: "absolute", bottom: 30, right: 30 }}>
-        <TouchableWithoutFeedback onPress={() => this.eraseRoute()}>
-          <View
-            style={{
-              height: 35,
-              width: 35,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white",
-              borderRadius: "50%"
-            }}>
-            <MaterialIcons name="delete" size={25} color={"#323941"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -306,44 +189,95 @@ class RouteEditorButtons extends Component {
 
     return (
       <React.Fragment>
-        <View
-          style={{
-            position: "absolute",
-            right: 20,
-            top: 60,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end"
-          }}>
+        <View style={styles.container}>
           {this.renderUndoButton()}
           {this.renderRedoButton()}
           {this.renderDrawButton()}
         </View>
-        <View
-          style={[
-            {
-              position: "absolute",
-              right: 28,
-              top: 120,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-end"
-            },
-            cropPosition
-          ]}>
-          {this.renderSaveButton()}
-          {this.renderCropButton()}
-        </View>
+        <View style={[styles.mainAim, cropPosition]}>{this.renderCropButton()}</View>
         {this.renderStravaCta()}
-        {this.renderEraseButton()}
       </React.Fragment>
     )
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    right: 20,
+    top: 60,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end"
+  },
+  mainAim: {
+    position: "absolute",
+    right: 28,
+    top: 120,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-end"
+  },
+  undoButton: {
+    backgroundColor: "white",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 35,
+    width: 35,
+    borderRadius: 17.5
+  },
+  redoButton: {
+    backgroundColor: "white",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 35,
+    width: 35,
+    borderRadius: 17.5,
+    marginLeft: 10
+  },
+  drawButton: {
+    backgroundColor: "white",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    width: 50,
+    marginLeft: 10,
+    borderRadius: 25
+  },
+  stravaCtaInner: {
+    height: 35,
+    width: 35,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    borderRadius: 17.5
+  },
+  cropButton: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 35,
+    width: 35,
+    borderRadius: 17.5,
+    marginBottom: 10
+  },
+  stravaButtonContainer: {
+    position: "absolute",
+    bottom: 100,
+    right: 30
+  }
+})
 
 export default connect(
   mapStateToProps,

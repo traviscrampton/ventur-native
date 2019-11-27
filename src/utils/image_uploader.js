@@ -1,19 +1,35 @@
 import { RNS3 } from "react-native-aws3"
-
-// const file = {
-//   // `uri` can also be a file system path (i.e. file://)
-//   uri: "assets-library://asset/asset.PNG?id=655DBE66-8008-459C-9358-914E1FB532DD&ext=PNG",
-//   name: "image.png",
-//   type: "image/png"
-// }
+const AWS = require("aws-sdk/dist/aws-sdk-react-native")
 
 const cloudFrontUrl = "d2965tkwq0s5g3.cloudfront.net"
 export const cloudFrontUrlLength = `https://${cloudFrontUrl}`.length
 
 let options = {
   bucket: "ventur-serverless",
-  region: 'us-east-1',
+  region: "us-east-1",
   successActionStatus: 201
+}
+
+export const deleteS3Objects = async (imageUrls, awsKeys) => {
+  let deleteParam = {
+    Bucket: "ventur-serverless",
+    Delete: {
+      Objects: imageUrls.map((url, i) => {
+        return Object.assign({}, { Key: url.substring(cloudFrontUrlLength + 1) })
+      })
+    }
+  }
+
+  const s3 = new AWS.S3({
+    region: "us-east-1",
+    secretAccessKey: awsKeys.awsSecretKey,
+    accessKeyId: awsKeys.awsAccessKey
+  })
+
+  s3.deleteObjects(deleteParam, function(err, data) {
+    if (err) console.log("errord oot", err, err.stack)
+    else console.log("delete", data)
+  })
 }
 
 export const awsUpload = async (file, awsKeys) => {
@@ -39,6 +55,6 @@ export const awsUpload = async (file, awsKeys) => {
   //    *     location: "https://your-bucket.s3.amazonaws.com/uploads%2Fimage.png"
   //    *   }
   //    * }
-     
+
   // })
 }

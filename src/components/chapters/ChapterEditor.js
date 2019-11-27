@@ -1,19 +1,7 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TextInput,
-  ImageBackground,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Dimensions,
-  AsyncStorage,
-  Alert
-} from "react-native"
-import { MaterialIndicator } from "react-native-indicators"
 import { connect } from "react-redux"
+import { StyleSheet, View, Text, TextInput, Keyboard, SafeAreaView, TouchableWithoutFeedback } from "react-native"
+import { MaterialIndicator } from "react-native-indicators"
 import {
   editEntry,
   updateFormatBar,
@@ -25,9 +13,10 @@ import {
   updateKeyboardState,
   populateEntries,
   setInitialEditorState,
-  addImageToDeletedIds,
+  addToDeletedUrls,
   doneEditingAndPersist,
-  loseChangesAndUpdate
+  loseChangesAndUpdate,
+  addImagesToEntries
 } from "../../actions/editor"
 import { Header } from "../editor/header"
 import InputScrollView from "react-native-input-scroll-view"
@@ -36,6 +25,7 @@ import EditorToolbar from "../editor/EditorToolbar"
 import ContentCreator from "../editor/ContentCreator"
 import { FontAwesome } from "@expo/vector-icons"
 import LazyImage from "../shared/LazyImage"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -50,7 +40,8 @@ const mapDispatchToProps = dispatch => ({
   populateEntries: payload => dispatch(populateEntries(payload)),
   loseChangesAndUpdate: payload => dispatch(loseChangesAndUpdate(payload)),
   doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
-  addImageToDeletedIds: payload => dispatch(addImageToDeletedIds(payload))
+  addImagesToEntries: payload => dispatch(addImagesToEntries(payload)),
+  addToDeletedUrls: payload => dispatch(addToDeletedUrls(payload))
 })
 
 const mapStateToProps = state => ({
@@ -59,17 +50,17 @@ const mapStateToProps = state => ({
   loaded: state.chapter.loaded,
   currentUser: state.common.currentUser,
   entries: state.editor.entries,
-  activeAttribute: state.editor.activeAttribute,
-  focusedEntryIndex: state.editor.focusedEntryIndex,
   activeIndex: state.editor.activeIndex,
   initialImageIds: state.editor.initialImageIds,
-  cursorPosition: state.editor.cursorPosition,
   containerHeight: state.editor.containerHeight,
   newIndex: state.editor.newIndex,
   initialEntries: state.editor.initialEntries,
   showEditorToolbar: state.editor.showEditorToolbar,
-  isOffline: state.common.isOffline,
-  uploadIsImage: state.editor.uploadIsImage
+  uploadIsImage: state.editor.uploadIsImage,
+  deletedUrls: state.editor.deletedUrls,
+  activeContentCreator: state.editor.activeContentCreator,
+  width: state.common.width,
+  height: state.common.height
 })
 
 class ChapterEditor extends Component {
@@ -77,7 +68,7 @@ class ChapterEditor extends Component {
     super(props)
 
     this.state = {
-      containerHeight: Dimensions.get("window").height - 80,
+      containerHeight: props.height - 80,
       offlineMode: false,
       imagesNeededOffline: [],
       scrollPosition: 0,
@@ -114,7 +105,7 @@ class ChapterEditor extends Component {
 
   keyboardWillShow(e) {
     this.setState({
-      containerHeight: Dimensions.get("window").height - e.endCoordinates.height - 40
+      containerHeight: this.props.height - e.endCoordinates.height - 87
     })
   }
 
@@ -166,6 +157,10 @@ class ChapterEditor extends Component {
     }
   }
 
+  uploadImages = selectedImages => {
+    this.props.addImagesToEntries({ images: selectedImages, index: this.props.activeContentCreator })
+  }
+
   handleImageDelete = index => {
     Alert.alert(
       "Are you sure?",
@@ -176,9 +171,9 @@ class ChapterEditor extends Component {
   }
 
   deleteImage = index => {
-    // let imageId = this.props.entries[index].id
+    let uri = this.props.entries[index].originalUri
 
-    // this.props.addImageToDeletedIds(imageId)
+    this.props.addToDeletedUrls(uri)
     this.props.removeEntryAndFocus(index)
   }
 
@@ -195,11 +190,7 @@ class ChapterEditor extends Component {
 
   renderImageLoadingCover(index, imageHeight) {
     return (
-      <View
-        style={[
-          styles.opacCover,
-          { height: imageHeight, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }
-        ]}>
+      <View style={[styles.opacCover, styles.loadingOpacCover, { height: imageHeight, width: this.props.width }]}>
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
     )
@@ -214,7 +205,7 @@ class ChapterEditor extends Component {
 
     return (
       <TouchableWithoutFeedback style={{ height: imageHeight }} onPress={e => this.updateActiveIndex(e, null)}>
-        <View style={[styles.opacCover, { height: imageHeight }]}>
+        <View style={[styles.opacCover, { height: imageHeight, width: this.props.width }]}>
           <TouchableWithoutFeedback onPress={() => this.handleImageDelete(index)}>
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
@@ -231,7 +222,7 @@ class ChapterEditor extends Component {
   }
 
   getImageHeight(aspectRatio) {
-    return aspectRatio * Dimensions.get("window").width
+    return aspectRatio * this.props.width
   }
 
   getAllImageIds = () => {
@@ -258,15 +249,12 @@ class ChapterEditor extends Component {
       return localUri
     }
 
-    if (lowResUri) {
-      return lowResUri
-    } else {
-      return uri
-    }
+    return lowResUri ? lowResUri : uri
   }
 
   renderAsImage(entry, index) {
     const imageHeight = this.getImageHeight(entry.aspectRatio)
+    const uri = entry.uri ? entry.uri : entry.localUri
 
     return (
       <View
@@ -277,10 +265,10 @@ class ChapterEditor extends Component {
           <View>
             {this.renderOpacCover(index, imageHeight, entry)}
             <LazyImage
-              style={{ width: Dimensions.get("window").width, height: imageHeight, position: "relative" }}
+              style={{ width: this.props.width, height: imageHeight, position: "relative" }}
               yPosition={this.getYPosition(index)}
               scrollPosition={this.state.scrollPosition}
-              uri={entry.uri}
+              uri={uri}
             />
             {this.renderImageCaption(entry)}
           </View>
@@ -386,9 +374,9 @@ class ChapterEditor extends Component {
 
   getToolbarPositioning() {
     if (this.props.showEditorToolbar) {
-      return { width: Dimensions.get("window").width, position: "absolute", top: this.state.containerHeight }
+      return { width: this.props.width, position: "absolute", top: this.state.containerHeight }
     } else {
-      return { width: Dimensions.get("window").width }
+      return { width: this.props.width }
     }
   }
 
@@ -421,15 +409,19 @@ class ChapterEditor extends Component {
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: Dimensions.get("window").height - 40 }
+      return { height: this.props.height - 40 }
     } else {
-      return { height: Dimensions.get("window").height }
+      return { height: this.props.height }
     }
+  }
+
+  renderImagePickerContainer() {
+    return <ImagePickerContainer imageCallback={this.uploadImages} selectSingleItem={false} />
   }
 
   render() {
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <SafeAreaView style={{ backgroundColor: "white" }}>
         <View style={([styles.container], this.getContainerSize())}>
           {this.renderHeader()}
           <InputScrollView
@@ -447,7 +439,8 @@ class ChapterEditor extends Component {
           </InputScrollView>
           {this.renderEditorToolbar()}
         </View>
-      </View>
+        {this.renderImagePickerContainer()}
+      </SafeAreaView>
     )
   }
 }
@@ -489,7 +482,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   opacCover: {
-    width: Dimensions.get("window").width,
     padding: 20,
     position: "absolute",
     zIndex: 11,
@@ -501,6 +493,12 @@ const styles = StyleSheet.create({
   positionRelative: {
     position: "relative",
     backgroundColor: "white"
+  },
+  loadingOpacCover: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
   },
   captionPadding: {
     paddingLeft: 20,

@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import _ from "lodash"
 import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
@@ -18,7 +17,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   activities: state.stravaActivityImport.activities,
   selectedIds: state.stravaActivityImport.selectedIds,
-  stravaLoading: state.stravaActivityImport.stravaLoading
+  stravaLoading: state.stravaActivityImport.stravaLoading,
+  width: state.common.width
 })
 
 class StravaRouteSelector extends Component {
@@ -70,37 +70,20 @@ class StravaRouteSelector extends Component {
     return (
       <TouchableWithoutFeedback key={activity.id} onPress={() => this.handlePanelClick(activity.id, isIncluded)}>
         <View
-          style={{
-            marginBottom: 20,
-            padding: 10,
-            backgroundColor: "white",
-            borderRadius: 5,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
+          style={styles.activityContainer}
           shadowColor={this.renderShadowColor(isIncluded)}
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
           shadowRadius={2}>
           <View>
-            <Text
-              numberOfLines={1}
-              style={{
-                maxWidth: Dimensions.get("window").width - 140,
-                fontFamily: "open-sans-regular",
-                color: "#323941",
-                fontSize: 18,
-                marginBottom: 10
-              }}>
+            <Text numberOfLines={1} style={[styles.activityInner, { maxWidth: this.props.width - 140 }]}>
               {activity.name}
             </Text>
-            <View style={{ display: "flex", flexDirection: "row" }}>
+            <View style={styles.flexRow}>
               <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
               <Text style={styles.textStats}>{`${activity.date}`.toUpperCase()}</Text>
             </View>
-            <View style={{ display: "flex", flexDirection: "row" }}>
+            <View style={styles.flexRow}>
               <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
               <Text style={styles.textStats}>{`${activity.distance}`.toUpperCase()}</Text>
             </View>
@@ -125,9 +108,9 @@ class StravaRouteSelector extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <View style={styles.hunnit}>
         {this.renderHeader()}
-        <ScrollView style={{ padding: 20, backgroundColor: "white" }}>{this.renderStravaActivities()}</ScrollView>
+        <ScrollView style={styles.whitePadding}>{this.renderStravaActivities()}</ScrollView>
       </View>
     )
   }
@@ -136,6 +119,34 @@ class StravaRouteSelector extends Component {
 const styles = StyleSheet.create({
   iconMargin: {
     marginRight: 5
+  },
+  whitePadding: {
+    padding: 20,
+    backgroundColor: "white"
+  },
+  activityContainer: {
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  hunnit: {
+    backgroundColor: "white",
+    height: "100%"
+  },
+  flexRow: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  activityInner: {
+    fontFamily: "open-sans-regular",
+    color: "#323941",
+    fontSize: 18,
+    marginBottom: 10
   },
   textStats: {
     fontFamily: "overpass",

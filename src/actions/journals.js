@@ -12,6 +12,14 @@ export function resetJournalShow() {
   }
 }
 
+export const  SUB_CONTENT_LOADING = "SUB_CONTENT_LOADING"
+export function subContentLoading(payload) {
+  return {
+    type: SUB_CONTENT_LOADING,
+    payload: payload
+  }
+}
+
 export const updateBannerImage = async (journalId, img, dispatch) => {
   let formData = new FormData()
   formData.append("banner_image", img)
@@ -57,11 +65,16 @@ export function imageUploading(payload) {
 }
 
 export function loadSingleJournal(journalId) {
-  return function(dispatch, getState) {
-    get(`/journals/${journalId}/journal_metadata`).then(data => {
+  return async function(dispatch, getState) {
+    try {
+      const data = await get(`/journals/${journalId}/journal_metadata`)
       dispatch(populateSingleJournal(data.journal))
-      dispatch(fetchJournalChapters(journalId))
-    })
+      await dispatch(fetchJournalChapters(journalId))
+      await dispatch(fetchJournalGear(journalId))
+      dispatch(subContentLoading(false))
+    } catch {
+      dispatch(populateSingleJournal({}))
+    }
   }
 }
 
@@ -82,10 +95,51 @@ export function populateJournalChapters(payload) {
 }
 
 export const fetchJournalChapters = journalId => {
-  return function(dispatch, getState) {
-    get(`/journals/${journalId}/chapters`).then(data => {
+  return async function(dispatch, getState) {
+    try {
+      const data = await get(`/journals/${journalId}/chapters`)
       dispatch(populateJournalChapters(data.chapters))
-    })
+    } catch {
+      console.log("we should populate something here")
+    }
+  }
+}
+
+export const fetchJournalGear = journalId => {
+  return async function(dispatch, getState) {
+    const data = await get(`/journals/${journalId}/gear_item_reviews`)
+    dispatch(populateJournalGear(data.gearItemReviews))
+  }
+}
+
+export const POPULATE_JOURNAL_GEAR = "POPULATE_JOURNAL_GEAR"
+export const populateJournalGear = payload => {
+  return {
+    type: POPULATE_JOURNAL_GEAR,
+    payload: payload
+  }
+}
+
+export const TOGGLE_REFRESH = "TOGGLE_REFRESH"
+export function toggleRefresh(payload) {
+  return {
+    type: TOGGLE_REFRESH,
+    payload: payload
+  }
+}
+
+export function toggleRefreshAndRefresh(payload) {
+  return async function(dispatch, getState) {
+    dispatch(toggleRefresh(true))
+
+    try {
+      const data = await get("/journals")
+      dispatch(populateJournalFeed(data.journals))
+    } catch {
+      console.log("didn't work")
+    }
+
+    dispatch(toggleRefresh(false))
   }
 }
 
@@ -101,11 +155,24 @@ export function requestForChapter(chapterId) {
 }
 
 export function loadJournalFeed() {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(setLoadingTrue())
-    get("/journals").then(data => {
+
+    try {
+      const data = await get("/journals")
       dispatch(populateJournalFeed(data.journals))
-      dispatch(setLoadingFalse())
-    })
+    } catch {
+      dispatch(populateJournalFeed([]))
+    }
+
+    dispatch(setLoadingFalse())
+  }
+}
+
+export const UPDATE_TAB_INDEX = "UPDATE_TAB_INDEX"
+export function updateTabIndex(payload) {
+  return {
+    type: UPDATE_TAB_INDEX,
+    payload: payload
   }
 }

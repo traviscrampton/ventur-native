@@ -23,17 +23,18 @@ import {
   START_UPDATING,
   SET_INITIAL_EDITOR_STATE,
   UPDATE_ACTIVE_CREATOR,
-  ADD_IMAGE_TO_DELETED_IDS,
-  RESET_DELETED_IDS,
+  ADD_TO_DELETED_URLS,
+  RESET_DELETED_URLS,
   SET_INITAL_IMAGE_IDS,
-  UPLOAD_IS_IMAGE
+  UPLOAD_IS_IMAGE,
+  ADD_TO_NEWLY_ADDED_IMAGE_URLS
 } from "../actions/editor"
 
 const defaultTextData = {
   activeAttribute: "",
   entries: [],
   initialEntries: [],
-  deletedIds: [],
+  deletedUrls: [],
   initialImageIds: [],
   activeIndex: null,
   toolbarOptions: ["H1", "QUOTE"],
@@ -45,7 +46,8 @@ const defaultTextData = {
   manageContentEntries: [],
   entriesSortBase: [],
   isUpdating: false,
-  uploadIsImage: false
+  uploadIsImage: false,
+  newlyAddedImageUrls: []
 }
 let newState
 export default (state = defaultTextData, action) => {
@@ -84,16 +86,16 @@ export default (state = defaultTextData, action) => {
         manageContentEntries: newArray
       }
 
-    case ADD_IMAGE_TO_DELETED_IDS:
+    case ADD_TO_DELETED_URLS:
       return {
         ...state,
-        deletedIds: [...state.deletedIds, action.payload]
+        deletedUrls: [...state.deletedUrls, action.payload]
       }
 
-    case RESET_DELETED_IDS:
+    case RESET_DELETED_URLS:
       return {
         ...state,
-        deletedIds: []
+        deletedUrls: []
       }
 
     case PREP_MANAGE_CONTENT:
@@ -155,6 +157,12 @@ export default (state = defaultTextData, action) => {
           action.payload.images,
           ...state.entries.slice(action.payload.index)
         ])
+      }
+
+    case ADD_TO_NEWLY_ADDED_IMAGE_URLS:
+      return {
+        ...state,
+        newlyAddedImageUrls: [...state.newlyAddedImageUrls, action.payload]
       }
     case UPDATE_KEYBOARD_STATE:
       return {

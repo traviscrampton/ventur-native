@@ -1,31 +1,18 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ImageBackground,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Alert
-} from "react-native"
 import { connect } from "react-redux"
-import { updateChapterForm } from "../../actions/chapter_form"
-import { sendEmails } from "../../actions/chapter"
+import { StyleSheet, View, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
+import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
 import { loadRouteEditor } from "../../actions/route_editor"
 import { loadRouteViewer } from "../../actions/route_viewer"
-import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
 import CommentsContainer from "../Comments/CommentsContainer"
-import { editChapterPublished, deleteChapter } from "../../actions/chapter"
 import { MaterialCommunityIcons, MaterialIcons, Feather } from "@expo/vector-icons"
-import { persistChapterToAsyncStorage, removeChapterFromAsyncStorage } from "../../utils/offline_helpers"
 import ProgressiveImage from "../shared/ProgressiveImage"
 import LazyImage from "../shared/LazyImage"
+import ImageSlider from "../shared/ImageSlider"
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
-  loaded: state.chapter.loaded,
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width,
@@ -33,12 +20,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   loadRouteEditor: payload => dispatch(loadRouteEditor(payload)),
   loadRouteViewer: payload => dispatch(loadRouteViewer(payload)),
-  sendEmails: payload => dispatch(sendEmails(payload)),
-  editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
-  deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
+  toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
+  populateImages: payload => dispatch(populateImages(payload))
 })
 
 class ChapterShow extends Component {
@@ -51,127 +36,37 @@ class ChapterShow extends Component {
     }
   }
 
-  navigateBack = () => {
-    this.props.navigation.goBack()
-  }
-
-  componentDidMount() {}
-
-  openDeleteAlert = () => {
-    Alert.alert(
-      "Are you sure?",
-      "Deleting this chapter will erase all images and content",
-      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
-      { cancelable: true }
-    )
-  }
-
-  navigateToChapterForm = () => {
-    let { id, title, distance, description, journal, imageUrl } = this.props.chapter
-    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
-
-    let obj = Object.assign(
-      {},
-      {
-        id: id,
-        title: title,
-        distance: distanceAmount,
-        description: description,
-        readableDistanceType: distance.readableDistanceType,
-        bannerImage: {
-          uri: imageUrl
-        },
-        journalId: journal.id
-      }
-    )
-
-    this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterMetaDataForm")
-  }
-
-  handleDelete = async () => {
-    this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
-  }
-
   handleScroll = event => {
     this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
   }
 
-  sendEmails = async () => {
-    if (this.props.chapter.emailSent) return
-
-    this.props.sendEmails(this.props.chapter.id)
-  }
-
-  getEmailToggle() {
-    if (this.props.chapter.emailSent) {
-      return "Email Sent"
-    } else {
-      return "Send Email"
-    }
-  }
-
-  getChapterUserFormProps() {
-    let optionsProps = [
-      {
-        type: "touchable",
-        iconName: "edit",
-        title: "Edit Metadata",
-        callback: this.navigateToChapterForm,
-        closeMenuOnClick: true
-      },
-      {
-        type: "touchable",
-        iconName: "delete",
-        title: "Delete Chapter",
-        callback: this.openDeleteAlert,
-        closeMenuOnClick: true
-      },
-      {
-        type: "switch",
-        title: "Published",
-        iconName: "publish",
-        value: this.props.chapter.published,
-        callback: this.updatePublishedStatus,
-        closeMenuOnClick: false
-      }
-    ]
+  renderPublishedText(text) {
+    if (this.props.currentUser.id != this.props.chapter.user.id) return
 
     if (this.props.chapter.published) {
-      const emailOption = {
-        type: "touchable",
-        iconName: "mail-outline",
-        title: this.getEmailToggle(),
-        callback: this.sendEmails
-      }
-      optionsProps.push(emailOption)
+      return (
+        <View style={styles.flexRowCenter}>
+          <MaterialIcons style={styles.iconPosition} size={16} name={"done"} color={"#3F88C5"} />
+          <Text style={[styles.publishedStyle, { color: "#3F88C5" }]}>PUBLISHED</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.flexRowCenter}>
+          <MaterialIcons style={styles.iconPosition} size={16} name={"publish"} color={"#FF5423"} />
+          <Text style={[styles.publishedStyle, { color: "#FF5423" }]}>UNPUBLISHED</Text>
+        </View>
+      )
     }
-
-    return optionsProps
-  }
-
-  updatePublishedStatus = async () => {
-    const {
-      chapter: { id, published }
-    } = this.props
-    this.props.editChapterPublished(id, !published)
   }
 
   renderTitle() {
     const { title } = this.props.chapter
     return (
       <View style={styles.titleDescriptionContainer}>
-        <View
-          style={[
-            {
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center"
-            },
-            { marginTop: this.props.chapter.imageUrl ? 0 : 20 }
-          ]}>
+        <View style={[styles.flexColumn, { marginTop: this.props.chapter.imageUrl ? 0 : 20 }]}>
           <Text style={styles.title}>{title}</Text>
+          {this.renderPublishedText()}
         </View>
       </View>
     )
@@ -191,6 +86,30 @@ class ChapterShow extends Component {
     }
   }
 
+  prepareSliderImages() {
+    return this.props.chapter.editorBlob.content
+      .filter((entry, index) => {
+        return entry.type === "image"
+      })
+      .map((entry, index) => {
+        return Object.assign(
+          {},
+          { uri: entry.uri, caption: entry.caption, height: this.getImageHeight(entry.aspectRatio) }
+        )
+      })
+  }
+
+  openImageSlider = entry => {
+    const images = this.prepareSliderImages()
+    const activeIndex = images.findIndex(image => {
+      return image.uri === entry.uri
+    })
+    const payload = Object.assign({}, { images, activeIndex })
+
+    this.props.populateImages(payload)
+    this.props.toggleImageSliderModal(true)
+  }
+
   navigateToMap = async () => {
     const { cycleRouteId } = this.props.chapter
 
@@ -206,8 +125,8 @@ class ChapterShow extends Component {
   renderMapIconCta() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToMap}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-          <View>
+        <View style={styles.flexRowCenter}>
+          <View style={{ paddingRight: 10 }}>
             <Feather name="map" size={25} color="#323941" />
           </View>
         </View>
@@ -217,12 +136,6 @@ class ChapterShow extends Component {
 
   renderMapIconWithImage() {
     if (!this.props.chapter.imageUrl) return
-
-    return this.renderMapIconCta()
-  }
-
-  renderMapIconNoImage() {
-    if (this.props.chapter.imageUrl) return
 
     return this.renderMapIconCta()
   }
@@ -260,18 +173,7 @@ class ChapterShow extends Component {
   }
 
   renderDivider() {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 3,
-          borderBottomColor: "#323941",
-          width: 90,
-          marginTop: 10,
-          marginLeft: 20,
-          marginBottom: 30
-        }}
-      />
-    )
+    return <View style={styles.dividerStyles} />
   }
 
   getInputStyling(entry) {
@@ -297,12 +199,8 @@ class ChapterShow extends Component {
     if (entry.caption.length === 0) return
 
     return (
-      <View
-        style={{
-          paddingLeft: 20,
-          paddingRight: 20
-        }}>
-        <Text style={{ textAlign: "center" }}>{entry.caption}</Text>
+      <View style={styles.paddingRightLeft}>
+        <Text style={styles.textAlignCenter}>{entry.caption}</Text>
       </View>
     )
   }
@@ -340,16 +238,18 @@ class ChapterShow extends Component {
         onLayout={e => this.handleLayout(e, index)}
         key={`image${index}`}
         yPosition={this.state.imageYPositions[index]}
-        style={{ position: "relative", marginBottom: 20 }}>
-        <View style={{ height }}>
-          <LazyImage
-            style={{ width: this.props.width, height }}
-            yPosition={this.getYPosition(index)}
-            scrollPosition={this.state.scrollPosition}
-            thumbnailSource={entry.thumbnailUri}
-            uri={entry.uri}
-          />
-        </View>
+        style={styles.imageEntryStyle}>
+        <TouchableWithoutFeedback onPress={() => this.openImageSlider(entry)}>
+          <View style={{ height }}>
+            <LazyImage
+              style={{ width: this.props.width, height }}
+              yPosition={this.getYPosition(index)}
+              scrollPosition={this.state.scrollPosition}
+              thumbnailSource={entry.thumbnailUri}
+              uri={entry.uri}
+            />
+          </View>
+        </TouchableWithoutFeedback>
         {this.renderImageCaption(entry)}
       </View>
     )
@@ -361,16 +261,7 @@ class ChapterShow extends Component {
         style={{
           padding: 20
         }}>
-        <Text
-          multiline
-          key={index}
-          style={[
-            {
-              fontSize: 20,
-              fontFamily: "open-sans-regular"
-            },
-            this.getInputStyling(entry)
-          ]}>
+        <Text multiline key={index} style={[styles.textEntryText, this.getInputStyling(entry)]}>
           {entry.content}
         </Text>
       </View>
@@ -401,38 +292,8 @@ class ChapterShow extends Component {
     })
   }
 
-  renderThreeDotMenu() {
-    if (this.props.user.id != this.props.currentUser.id) {
-      return <View />
-    }
-    const options = this.getChapterUserFormProps()
-
-    return (
-      <ThreeDotDropdown
-        menuPosition={"below"}
-        options={options}
-        openMenuStyling={{ borderWidth: 1, borderColor: "#D7D7D7", borderRadius: 4, backgroundColor: "#f8f8f8" }}
-      />
-    )
-  }
-
   renderIconAndThreeDotMenu() {
-    return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingRight: 20,
-          paddingLeft: 20,
-          marginBottom: 5,
-          position: "relative",
-          zIndex: 100
-        }}>
-        {this.renderMapIconCta()}
-        {this.renderThreeDotMenu()}
-      </View>
-    )
+    return <View style={styles.threeDotMenu}>{this.renderMapIconCta()}</View>
   }
 
   renderCommentContainer() {
@@ -456,7 +317,7 @@ class ChapterShow extends Component {
         style={[styles.container, { minHeight: this.props.height }]}
         scrollEventThrottle={100}
         onScroll={event => this.handleScroll(event)}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View style={styles.flexRowSpaceBetween}>
           {this.renderChapterImage()}
           {this.renderMapIconWithImage()}
         </View>
@@ -464,10 +325,10 @@ class ChapterShow extends Component {
         {this.renderStatistics()}
         {this.renderIconAndThreeDotMenu()}
         {this.renderDivider()}
-        <View style={{ marginBottom: 100, minHeight: 200, position: "relative", zIndex: 0 }}>
-          {this.renderBodyContent()}
-        </View>
-        <View style={{ marginBottom: 200 }}>{this.renderCommentContainer()}</View>
+        <View style={styles.bodyContainer}>{this.renderBodyContent()}</View>
+        <View style={styles.marginBottom200}>{this.renderCommentContainer()}</View>
+        <ChapterMetaDataForm />
+        <ImageSlider />
       </ScrollView>
     )
   }
@@ -477,6 +338,51 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     marginBottom: 100
+  },
+  textEntryText: {
+    fontSize: 20,
+    fontFamily: "open-sans-regular"
+  },
+  flexRowSpaceBetween: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  bodyContainer: {
+    marginBottom: 100,
+    minHeight: 200,
+    position: "relative",
+    zIndex: 0
+  },
+  paddingRightLeft: {
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  marginBottom200: {
+    marginBottom: 200
+  },
+  dividerStyles: {
+    borderBottomWidth: 3,
+    borderBottomColor: "#323941",
+    width: 90,
+    marginTop: 10,
+    marginLeft: 20,
+    marginBottom: 30
+  },
+  flexRowCenter: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  publishedStyle: {
+    padding: 2,
+    alignSelf: "flex-start",
+    borderRadius: 5
+  },
+  flexColumn: {
+    display: "flex",
+    flexDirection: "column"
   },
   titleDescriptionContainer: {
     padding: 20,
@@ -493,13 +399,30 @@ const styles = StyleSheet.create({
     color: "#c3c3c3",
     fontFamily: "open-sans-semi"
   },
+  imageEntryStyle: {
+    position: "relative",
+    marginBottom: 20
+  },
   statisticsContainer: {
     display: "flex",
     flexDirection: "row",
     paddingTop: 5
   },
+  threeDotMenu: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 20,
+    paddingLeft: 20,
+    marginBottom: 5,
+    position: "relative",
+    zIndex: 100
+  },
   iconPosition: {
     marginRight: 5
+  },
+  textAlignCenter: {
+    textAlign: "center"
   },
   statisticsPadding: {
     padding: 20,

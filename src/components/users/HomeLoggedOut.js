@@ -1,36 +1,44 @@
 import React, { Component } from "react"
-import { StyleSheet, TouchableWithoutFeedback, View, Text, ImageBackground, Dimensions } from "react-native"
-import { LinearGradient } from "expo"
 import { connect } from "react-redux"
+import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, Text, ImageBackground } from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { toggleLoginModal } from "../../actions/login"
+import { toggleUserFormModal } from "../../actions/user_form"
+import Login from "./Login"
+import UserForm from "./UserForm"
 const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  width: state.common.width,
+  height: state.common.height
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  toggleLoginModal: payload => dispatch(toggleLoginModal(payload)),
+  toggleUserFormModal: payload => dispatch(toggleUserFormModal(payload))
+})
 
 class HomeLoggedOut extends Component {
   constructor(props) {
     super(props)
   }
 
-  navigateToSignIn = () => {
-    this.props.navigation.navigate("Login")
+  toggleLoginModal = () => {
+    this.props.toggleLoginModal(true)
   }
 
   navigateToSignUp = () => {
-    this.props.navigation.navigate("UserEmailPasswordForm")
+    this.props.toggleUserFormModal(true)
   }
 
   renderTitleAndSubTitle() {
     return (
-      <View style={{ marginTop: Dimensions.get("window").height / 7 }}>
+      <View style={{ marginTop: this.props.height / 7 }}>
         <View>
-          <Text style={{ fontSize: 60, color: "white", textAlign: "center" }}>Ventur</Text>
+          <Text style={styles.headerText}>Ventur</Text>
         </View>
-        <View style={{ padding: 40, paddingTop: 10 }}>
-          <Text style={{ fontSize: 22, color: "white", textAlign: "center" }}>
-            Bike touring built for you, online and offline
-          </Text>
+        <View style={styles.subHeaderContainer}>
+          <Text style={styles.subHeaderText}>Bike touring built for you</Text>
         </View>
       </View>
     )
@@ -39,7 +47,7 @@ class HomeLoggedOut extends Component {
   renderAgreementText() {
     return (
       <View>
-        <Text style={{ color: "white", textAlign: "center", fontSize: 8 }}>
+        <Text style={styles.agreementText}>
           *By tapping get started, you agree to our privacy policy and service agreement.
         </Text>
       </View>
@@ -48,9 +56,9 @@ class HomeLoggedOut extends Component {
 
   renderSignIn() {
     return (
-      <TouchableWithoutFeedback onPress={this.navigateToSignIn}>
+      <TouchableWithoutFeedback onPress={this.toggleLoginModal}>
         <View>
-          <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>Sign in</Text>
+          <Text style={styles.signInButton}>Sign in</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -59,20 +67,8 @@ class HomeLoggedOut extends Component {
   renderSignUp() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToSignUp}>
-        <LinearGradient
-          style={{
-            marginTop: 10,
-            marginBottom: 20,
-            width: Dimensions.get("window").width - 40,
-            height: 50,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 30
-          }}
-          colors={["#FF5423", "#E46545"]}>
-          <Text style={{ textAlign: "center", color: "white", fontWeight: "bold", fontSize: 20 }}>Get Started</Text>
+        <LinearGradient style={[styles.signUp, { width: this.props.width - 40 }]} colors={["#FF5423", "#E46545"]}>
+          <Text style={styles.signUpText}>Get Started</Text>
         </LinearGradient>
       </TouchableWithoutFeedback>
     )
@@ -80,7 +76,7 @@ class HomeLoggedOut extends Component {
 
   renderSignUpAndSignIn() {
     return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 10 }}>
+      <View style={styles.signInAndSignUpContainer}>
         {this.renderSignIn()}
         {this.renderSignUp()}
         {this.renderAgreementText()}
@@ -89,30 +85,79 @@ class HomeLoggedOut extends Component {
   }
 
   render() {
+    const { width, height } = this.props
     return (
-      <ImageBackground
-        style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width }}
-        source={GabeBolivia}>
-        <View
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            height: Dimensions.get("window").height,
-            width: Dimensions.get("window").width,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
-          }}>
-          {this.renderTitleAndSubTitle()}
-          {this.renderSignUpAndSignIn()}
+      <ImageBackground style={{ height: null, width }} source={GabeBolivia}>
+        <View style={{ backgroundColor: "rgba(0, 0, 0, 0.4)", height, width }}>
+          <SafeAreaView>
+            <View style={[styles.flexSpaceBetween, { height, width }]}>
+              {this.renderTitleAndSubTitle()}
+              {this.renderSignUpAndSignIn()}
+            </View>
+          </SafeAreaView>
         </View>
+        <Login />
+        <UserForm />
       </ImageBackground>
     )
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  headerText: {
+    fontSize: 60,
+    color: "white",
+    textAlign: "center"
+  },
+  subHeaderContainer: {
+    padding: 40,
+    paddingTop: 10
+  },
+  subHeaderText: {
+    fontSize: 22,
+    color: "white",
+    textAlign: "center"
+  },
+  agreementText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 8
+  },
+  signInButton: {
+    fontSize: 20,
+    color: "white",
+    fontWeight: "bold"
+  },
+  signUp: {
+    marginTop: 10,
+    marginBottom: 20,
+    height: 50,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 30
+  },
+  flexSpaceBetween: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between"
+  },
+  signUpText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  signInAndSignUpContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: 70
+  }
+})
 
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  mapDispatchToProps
 )(HomeLoggedOut)

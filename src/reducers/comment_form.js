@@ -1,4 +1,9 @@
-import { POPULATE_COMMENT_FORM, RESET_COMMENT_FORM, UPDATE_COMMENT_CONTENT } from "../actions/comment_form"
+import {
+  POPULATE_COMMENT_FORM,
+  RESET_COMMENT_FORM,
+  UPDATE_COMMENT_CONTENT,
+  TOGGLE_COMMENT_FORM_MODAL
+} from "../actions/comment_form"
 
 const defaultCommentForm = {
   id: null,
@@ -8,7 +13,8 @@ const defaultCommentForm = {
     commentableId: null,
     title: ""
   },
-  content: ""
+  content: "",
+  visible: false
 }
 
 export default (state = defaultCommentForm, action) => {
@@ -19,6 +25,8 @@ export default (state = defaultCommentForm, action) => {
       return Object.assign({}, state, { content: action.payload })
     case RESET_COMMENT_FORM:
       return Object.assign({}, state, defaultCommentForm)
+    case TOGGLE_COMMENT_FORM_MODAL:
+      return Object.assign({}, state, { visible: action.payload })
     default:
       return state
   }

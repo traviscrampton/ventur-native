@@ -27,7 +27,6 @@ class ProgressiveImage extends Component {
     }
   }
 
-
   handleThumbnailLoad = () => {
     Animated.timing(this.state.thumbnailAnimated, {
       toValue: 1
@@ -41,9 +40,9 @@ class ProgressiveImage extends Component {
   }
 
   handleOnloadEnd = () => {
-    if(this.props.onLoadEnd) {
+    if (this.props.onLoadEnd) {
       this.props.onLoadEnd()
-    } 
+    }
   }
 
   render() {
@@ -53,14 +52,14 @@ class ProgressiveImage extends Component {
       <View style={styles.container}>
         <Animated.Image
           {...props}
-          source={{uri: thumbnailSource}}
-          style={[styles.imageOverlay, { opacity: this.state.thumbnailAnimated}]}
+          source={{ uri: thumbnailSource }}
+          style={[styles.imageOverlay, { opacity: this.state.thumbnailAnimated }]}
           onLoad={this.handleThumbnailLoad}
           blurRadius={1}
         />
         <Animated.Image
           {...props}
-          source={{uri: source}}
+          source={{ uri: source }}
           style={[styles.imageOverlay, { opacity: this.state.imageAnimated }, style]}
           onLoad={this.onImageLoad}
           onLoadEnd={this.handleOnloadEnd}

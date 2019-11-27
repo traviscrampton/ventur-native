@@ -61,8 +61,8 @@ class ImageCaptionForm extends Component {
   renderForm() {
     return (
       <View key="captionForm">
-        <View style={{ padding: 20 }}>
-          <Text style={{fontWeight: "bold"}}>{this.props.activeCaption.length} / 200</Text>
+        <View style={styles.padding20}>
+          <Text style={styles.fontWeightBold}>{this.props.activeCaption.length} / 200</Text>
         </View>
         <TextInput
           autoFocus
@@ -79,7 +79,7 @@ class ImageCaptionForm extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: "white", height: this.props.height }}>
+      <View style={[styles.backgroundWhite, { height: this.props.height }]}>
         {this.renderHeader()}
         {this.renderImage()}
         {this.renderForm()}
@@ -91,6 +91,15 @@ class ImageCaptionForm extends Component {
 const styles = StyleSheet.create({
   image: {
     height: 250
+  },
+  padding20: {
+    padding: 20
+  },
+  backgroundWhite: {
+    backgroundColor: "white"
+  },
+  fontWeightBold: {
+    fontWeight: "bold"
   },
   textAlignCenter: {
     padding: 20,

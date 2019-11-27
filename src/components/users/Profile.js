@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { connect } from "react-redux"
 import {
   StyleSheet,
   View,
@@ -6,49 +7,55 @@ import {
   ScrollView,
   Image,
   FlatList,
-  AsyncStorage,
-  Dimensions,
-  TouchableWithoutFeedback,
-  Linking
+  SafeAreaView,
+  TouchableWithoutFeedback
 } from "react-native"
-import ChapterList from "../chapters/ChapterList"
-import { MaterialIcons, Feather } from "@expo/vector-icons"
-import { populateUserPage, populateOfflineChapters } from "../../actions/user"
+import { Linking } from 'expo';
+import GearListItem from "../GearItem/GearListItem"
+import { MaterialIcons } from "@expo/vector-icons"
+import { getProfilePageData, uploadProfilePhoto, setDefaultAppState } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
-import ChapterUserForm from "../chapters/ChapterUserForm"
-import { updateChapterForm } from "../../actions/chapter_form"
-import { loadChapter } from "../../actions/chapter"
-import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
-import { setCurrentUser, setLoadingTrue, setLoadingFalse } from "../../actions/common"
+import JournalForm from "../JournalForm/JournalForm"
+import { MaterialIndicator } from "react-native-indicators"
+import { toggleGearReviewFormModal } from "../../actions/gear_review_form"
+import { toggleJournalFormModal } from "../../actions/journal_form"
+import { resetJournalShow } from "../../actions/journals"
+import { toggleCameraRollModal } from "../../actions/camera_roll"
+import { setCurrentUser } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
-import { connect } from "react-redux"
-import { addJournalsToAsyncStorage } from "../../utils/offline_helpers"
+import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import { populateGearItemReview } from "../../actions/gear_item_review"
 import { logOut } from "../../auth"
-import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
-import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
+import { encodeQueryString } from "../../agent"
+import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import LoadingScreen from "../shared/LoadingScreen"
-import { WebBrowser } from "expo"
-import Expo from "expo"
+import * as WebBrowser from "expo-web-browser"
+import { FloatingAction } from "react-native-floating-action"
+import GearReviewForm from "../GearReviewForm/GearReviewForm"
+import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
   stravaClientId: state.common.stravaClientId,
   user: state.user.user,
-  offlineChapters: state.user.offlineChapters,
-  isLoading: state.common.isLoading
+  profilePhotoLoading: state.user.profilePhotoLoading,
+  gear: state.user.user.gear,
+  journals: state.user.user.journals,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
-  populateUserPage: payload => dispatch(populateUserPage(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
-  setLoadingTrue: () => dispatch(setLoadingTrue()),
-  setLoadingFalse: () => dispatch(setLoadingFalse()),
-  loadChapter: payload => dispatch(loadChapter(payload)),
-  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
+  toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   resetJournalShow: () => dispatch(resetJournalShow()),
-  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload))
+  authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
+  getProfilePageData: () => dispatch(getProfilePageData()),
+  toggleGearReviewFormModal: payload => dispatch(toggleGearReviewFormModal(payload)),
+  populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
+  uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload)),
+  setDefaultAppState: () => dispatch(setDefaultAppState())
 })
 
 class Profile extends Component {
@@ -56,86 +63,46 @@ class Profile extends Component {
     super(props)
 
     this.state = {
-      activeTab: "journals",
-      userMenuOpen: false
+      activeIndex: 0
     }
   }
+
+  static actions = [
+    {
+      text: "New Journal",
+      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
+      name: "create_journal",
+      position: 0,
+      color: "#FF5423"
+    },
+    {
+      text: "New Gear Item",
+      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
+      name: "create_gear_item",
+      position: 1,
+      color: "#FF5423"
+    }
+  ]
 
   componentWillMount() {
-    this.props.setLoadingTrue()
-    Expo.ScreenOrientation.allow("PORTRAIT_UP")
-    this.getProfilePageData()
-    this.getOfflineChapters()
-  }
-
-  getProfilePageData() {
-    get(`/users/${this.props.currentUser.id}`).then(res => {
-      const { user } = res
-      this.props.populateUserPage(user)
-      addJournalsToAsyncStorage(user.journals)
-      this.props.setLoadingFalse()
-    })
-  }
-
-  async getOfflineChapters() {
-    let offlineChapters = await AsyncStorage.getItem("chapters")
-    offlineChapters = JSON.parse(offlineChapters)
-    this.props.populateOfflineChapters(offlineChapters)
-  }
-
-  switchActiveTab = newTab => {
-    this.setState({
-      activeTab: newTab
-    })
-  }
-
-  isActiveTab(tab) {
-    if (this.state.activeTab === tab) {
-      return { backgroundColor: "#FF5423", color: "white", borderColor: "#FF5423" }
-    }
+    this.props.getProfilePageData()
   }
 
   handleLogout = async () => {
-    await AsyncStorage.setItem("chapters", JSON.stringify([]))
-    await AsyncStorage.setItem("journals", JSON.stringify([]))
     await logOut()
     this.props.setCurrentUser(null)
+    this.props.setDefaultAppState()
   }
 
   handleJournalPress = journalId => {
     this.props.navigation.navigate("Journal", { journalId })
   }
 
-  toggleUserMenu = () => {
-    let { userMenuOpen } = this.state
-    this.setState({
-      userMenuOpen: !userMenuOpen
-    })
-  }
-
-  selectChapter = async chapterId => {
-    let chapters = await AsyncStorage.getItem("chapters")
-    chapters = JSON.parse(chapters)
-    let chapter
-    chapter = chapters.find(chapter => {
-      return chapter.id === chapterId
-    })
-    this.props.loadChapter(chapter)
-    this.props.navigation.navigate("Chapter")
-  }
-
-  populateJournalsAndBeginNavigation = async () => {
-    const journals = await AsyncStorage.getItem("journals")
-    const obj = { journals: JSON.parse(journals), offline: true }
-    this.props.updateChapterForm(obj)
-    this.props.navigation.navigate("ChapterFormJournals")
-  }
-
   connectToStrava = async () => {
     if (this.props.currentUser.stravaAccessToken) return
 
-    this.setState({ userMenuOpen: false })
-    const redirect = "ventur://ventur"
+    const redirect = "ventur://ventur/profile"
+    console.log("redirect", redirect)
     const params = Object.assign(
       {},
       {
@@ -156,16 +123,18 @@ class Profile extends Component {
     return this.props.currentUser.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
   }
 
+  launchImagePicker = () => {
+    this.props.toggleCameraRollModal(true)
+  }
+
   renderUserName() {
     return (
-      <View style={{ height: Dimensions.get("window").width / 4, display: "flex", flexDirection: "column" }}>
+      <View style={[styles.userNameContainer, { height: this.props.width / 4 }]}>
         <View>
-          <Text style={{ fontFamily: "playfair", fontSize: 22, marginBottom: 5, fontWeight: "bold" }}>
-            Hi {this.props.user.firstName}!
-          </Text>
+          <Text style={styles.userNameText}>Hi {this.props.user.firstName}!</Text>
         </View>
         <View>
-          <Text style={{ width: Dimensions.get("window").width * 0.68 - 30 }}>Go on and git and ride some bikes</Text>
+          <Text style={{ width: this.props.width * 0.68 - 40 }} />
         </View>
       </View>
     )
@@ -174,232 +143,160 @@ class Profile extends Component {
   renderLogOut() {
     return (
       <TouchableWithoutFeedback onPress={this.handleLogout}>
-        <View
-          style={{
-            borderWidth: 1,
-            borderRadius: 30,
-            borderColor: "gray",
-            paddingTop: 2.5,
-            paddingBottom: 2.5,
-            paddingLeft: 10,
-            paddingRight: 10
-          }}>
+        <View style={styles.logoutButton}>
           <Text>Log Out</Text>
         </View>
       </TouchableWithoutFeedback>
     )
   }
 
-  renderProfilePhoto() {
-    let imgDimensions = Dimensions.get("window").width / 4
+  renderProfileLoadingScreen(imgDimensions) {
+    if (!this.props.profilePhotoLoading) return
 
     return (
       <View
         style={{
-          display: "flex",
-          width: Dimensions.get("window").width - 30,
-          flexDirection: "row",
-          alignItems: "top"
+          width: imgDimensions,
+          position: "absolute",
+          height: imgDimensions,
+          borderRadius: imgDimensions / 2,
+          backgroundColor: "azure"
         }}>
-        <Image
-          style={{
-            width: imgDimensions,
-            height: imgDimensions,
-            borderRadius: imgDimensions / 2,
-            marginRight: 10,
-            borderWidth: 1,
-            borderColor: "gray"
-          }}
-          source={{ uri: this.props.user.avatarImageUrl }}
-        />
-        <View>{this.renderUserName()}</View>
-        <TouchableWithoutFeedback onPress={this.toggleUserMenu}>
-          <MaterialIcons name="settings" color="#333" size={24} />
-        </TouchableWithoutFeedback>
-        {this.renderDropdown()}
+        <MaterialIndicator size={25} color="#FF5423" />
       </View>
     )
   }
 
-  renderDropdown() {
-    if (!this.state.userMenuOpen) return
+  renderProfilePhoto() {
+    let imgDimensions = this.props.width / 4
+    const options = this.getOptions()
 
+    return (
+      <View
+        style={[
+          styles.profileContainer,
+          {
+            width: this.props.width - 30
+          }
+        ]}>
+        <TouchableWithoutFeedback onPress={this.launchImagePicker}>
+          <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={{
+              width: imgDimensions,
+              position: "relative",
+              height: imgDimensions,
+              borderRadius: imgDimensions / 2,
+              backgroundColor: "azure",
+              marginRight: 10
+            }}>
+            <Image
+              style={{
+                width: imgDimensions,
+                height: imgDimensions,
+                borderRadius: imgDimensions / 2,
+                marginRight: 10,
+                borderWidth: 1,
+                borderColor: "gray"
+              }}
+              source={{ uri: this.props.user.avatarImageUrl }}
+            />
+            {this.renderProfileLoadingScreen(imgDimensions)}
+          </View>
+        </TouchableWithoutFeedback>
+        <View>{this.renderUserName()}</View>
+        <ThreeDotDropdown options={options} />
+      </View>
+    )
+  }
+
+  getOptions() {
     const options = [
-      { type: "touchable", title: "Log Out", callback: this.handleLogout },
-      { type: "touchable", title: this.stravaCtaText(), callback: this.connectToStrava }
+      { title: "Upload Profile Photo", callback: this.uploadProfilePhoto },
+      { title: this.stravaCtaText(), callback: this.connectToStrava },
+      { title: "Log Out", callback: this.handleLogout }
     ]
-    return <ChapterUserForm options={options} />
+
+    return options
+  }
+
+  navigateToGearReviewForm() {
+    this.props.toggleGearReviewFormModal(true)
+  }
+
+  navigateToForm = name => {
+    switch (name) {
+      case "create_journal":
+        return this.navigateToJournalForm()
+      case "create_gear_item":
+        return this.navigateToGearReviewForm()
+      default:
+        console.log("what in tarnation")
+    }
+  }
+
+  renderEmptyState(isJournal = true) {
+    const content = isJournal ? "Journals" : "Gear Items"
+    const message = `No ${content} yet, press the action button to get started`
+
+    return (
+      <View style={{ height: this.props.height, padding: 20 }}>
+        <Text style={styles.fontSize20}>{message}</Text>
+      </View>
+    )
   }
 
   renderProfilePhotoAndMetadata() {
     return (
       <View
-        style={{
-          padding: 15,
-          marginTop: 20,
-          backgroundColor: "white",
-          width: Dimensions.get("window").width - 30
-        }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
-          {this.renderProfilePhoto()}
-        </View>
+        style={[
+          styles.metadataContainer,
+          {
+            width: this.props.width - 30
+          }
+        ]}>
+        <View style={styles.profileView}>{this.renderProfilePhoto()}</View>
       </View>
     )
   }
 
-  renderProfileTabBar() {
-    return (
-      <View
-        shadowColor="#d3d3d3"
-        shadowOffset={{ width: 0, height: 3 }}
-        shadowOpacity={0.3}
-        style={{
-          marginBottom: 10,
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-around",
-          height: 45
-        }}>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("journals")}>
-          <View
-            style={[
-              {
-                borderColor: "#D1D1D1",
-                height: 40,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: Dimensions.get("window").width / 2.2,
-                borderRadius: 30,
-                borderWidth: 1,
-                marginBottom: 5
-              },
-              this.isActiveTab("journals")
-            ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("journals")]}>
-              MY TRIPS ({this.props.user.journals.length})
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => this.switchActiveTab("offlineChapters")}>
-          <View
-            style={[
-              {
-                borderColor: "#D1D1D1",
-                height: 40,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: Dimensions.get("window").width / 2.2,
-                borderRadius: 30,
-                borderWidth: 1,
-                marginBottom: 5
-              },
-              this.isActiveTab("offlineChapters")
-            ]}>
-            <Text style={[{ fontSize: 16 }, this.isActiveTab("offlineChapters")]}>
-              MY CHAPTERS ({this.props.offlineChapters.length})
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
+  uploadProfilePhoto = img => {
+    this.props.uploadProfilePhoto(img)
   }
 
-  renderOfflineChapter(chapter, index) {
-    return (
-      <View>
-        <Text>{chapter.title}</Text>
-      </View>
-    )
+  handleGearItemPress = id => {
+    const payload = Object.assign({}, { id, loading: true })
+
+    this.props.populateGearItemReview(payload)
+    this.props.navigation.navigate("GearItemReview")
   }
 
-  persistOfflineChapter = async chapterId => {
-    const offlineChapter = await getChapterFromStorage(chapterId)
-
-    let selectedImage
-    const formData = new FormData()
-    const token = await setToken()
-    const newImages = offlineChapter.content.filter(entry => {
-      return entry.type === "image" && entry.id === null
-    })
-    if (newImages) {
-      for (let image of newImages) {
-        selectedImage = {
-          uri: image.uri,
-          name: image.filename,
-          type: "multipart/form-data"
-        }
-        formData.append("files[]", selectedImage)
-      }
+  renderGear() {
+    if (this.props.gear.length === 0) {
+      return this.renderEmptyState(false)
     }
 
-    if (offlineChapter.bannerImage.uri) {
-      formData.append("banner_image", offlineChapter.bannerImage)
-    }
-
-    formData.append("title", offlineChapter.title)
-    formData.append("status", offlineChapter.status)
-    formData.append("journalId", offlineChapter.journalId)
-    formData.append("offline", offlineChapter.offline)
-    formData.append("date", offlineChapter.date)
-    formData.append("distance", offlineChapter.distance)
-    formData.append("content", JSON.stringify(offlineChapter.content))
-
-    fetch(`${API_ROOT}/chapters/upload_offline_chapter`, {
-      method: "post",
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: token
-      },
-      body: formData
+    return this.props.gear.map((gearItem, index) => {
+      return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
     })
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        updateOfflineChapters(data, this.props.populateOfflineChapters, { id: chapterId })
-      })
-      .catch(err => {
-        console.log("error", err)
-      })
-  }
-
-  renderOfflineChapters() {
-    return (
-      <View style={{ marginBottom: 100 }}>
-        <ChapterList
-          chapters={this.props.offlineChapters}
-          user={this.props.user}
-          currentUser={this.props.currentUser}
-          persistOfflineChapter={this.persistOfflineChapter}
-          handleSelectChapter={this.selectChapter}
-        />
-      </View>
-    )
   }
 
   renderProfileJournals() {
-    const pad = Dimensions.get("window").width * 0.035
+    if (this.props.journals.length === 0) {
+      return this.renderEmptyState()
+    }
+
+    const pad = this.props.width * 0.035
 
     return (
-      <View style={{ position: "relative", backgroundColor: "white" }}>
+      <View style={styles.relativeWhite}>
         <FlatList
           scrollEnabled={true}
-          contentContainerStyle={{
-            display: "flex",
-            backgroundColor: "white",
-            paddingLeft: 15,
-            paddingRight: 15,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            flexWrap: "wrap"
-          }}
-          data={this.props.user.journals}
+          contentContainerStyle={styles.contentContainerStyle}
+          data={this.props.journals}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalMini {...item} handlePress={this.handleJournalPress} />}
         />
@@ -409,80 +306,62 @@ class Profile extends Component {
 
   navigateToJournalForm = () => {
     this.props.resetJournalShow()
-    this.props.navigation.navigate("JournalForm")
-  }
-
-  renderCreateJournalCta() {
-    return (
-      <TouchableWithoutFeedback onPress={this.navigateToJournalForm}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 1, height: 1 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#FF5423",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 17,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Feather name="plus" size={32} color="white" />
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
-  renderRelatedProfileContent() {
-    switch (this.state.activeTab) {
-      case "journals":
-        return this.renderProfileJournals()
-      case "offlineChapters":
-        return this.renderOfflineChapters()
-      default:
-        console.log("WHAT IS THIS", this.state.activeTab)
-    }
+    this.props.toggleJournalFormModal(true)
   }
 
   renderFloatingCreateButton() {
-    switch (this.state.activeTab) {
-      case "journals":
-        return this.renderCreateJournalCta()
-      case "offlineChapters":
-        return this.createOfflineChapters()
-    }
+    return (
+      <FloatingAction
+        color={"#FF5423"}
+        actions={Profile.actions}
+        onPressItem={name => {
+          this.navigateToForm(name)
+        }}
+      />
+    )
   }
 
-  createOfflineChapters() {
-    if (!this.props.currentUser.canCreate) return
+  handleIndexChange = activeIndex => {
+    this.setState({ activeIndex })
+  }
 
+  getNavigationState = () => {
+    return Object.assign(
+      {},
+      {
+        index: this.state.activeIndex,
+        routes: [{ key: "journals", title: "Journals" }, { key: "gear", title: "Gear" }]
+      }
+    )
+  }
+
+  renderSlidingTabs() {
     return (
-      <TouchableWithoutFeedback onPress={this.populateJournalsAndBeginNavigation}>
-        <View
-          shadowColor="gray"
-          shadowOffset={{ width: 1, height: 1 }}
-          shadowOpacity={0.5}
-          shadowRadius={2}
-          style={{
-            position: "absolute",
-            backgroundColor: "#3F88C5",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            bottom: 17,
-            right: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <Feather name="plus" size={32} color="white" />
-        </View>
-      </TouchableWithoutFeedback>
+      <TabView
+        navigationState={this.getNavigationState()}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case "journals":
+              return this.renderProfileJournals()
+            case "gear":
+              return this.renderGear()
+            default:
+              return null
+          }
+        }}
+        onIndexChange={this.handleIndexChange}
+        initialLayout={{ width: this.props.width, minHeight: this.props.height }}
+        renderTabBar={props => (
+          <TabBar
+            {...props}
+            tabStyle={{ color: "#FF5423" }}
+            activeColor="#FF5423"
+            inactiveColor="#FF5423"
+            indicatorStyle={{ backgroundColor: "#FF5423" }}
+            style={{ backgroundColor: "white" }}
+          />
+        )}
+      />
     )
   }
 
@@ -492,15 +371,85 @@ class Profile extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
-        {this.renderProfilePhotoAndMetadata()}
-        {this.renderProfileTabBar()}
-        <ScrollView>{this.renderRelatedProfileContent()}</ScrollView>
-        {this.renderFloatingCreateButton()}
-      </View>
+      <SafeAreaView style={styles.flexWhite}>
+        <View style={styles.white100}>
+          <ScrollView>
+            {this.renderProfilePhotoAndMetadata()}
+            {this.renderSlidingTabs()}
+          </ScrollView>
+          {this.renderFloatingCreateButton()}
+          <JournalForm />
+          <GearReviewForm />
+          <ImagePickerContainer imageCallback={this.uploadProfilePhoto} selectSingleItem />
+        </View>
+      </SafeAreaView>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  white100: {
+    backgroundColor: "white",
+    height: "100%"
+  },
+  flexWhite: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  userNameContainer: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  userNameText: {
+    fontFamily: "playfair",
+    fontSize: 22,
+    marginBottom: 5,
+    fontWeight: "bold"
+  },
+  logoutButton: {
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: "gray",
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  profileContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingRight: 20
+  },
+  contentContainerStyle: {
+    display: "flex",
+    backgroundColor: "white",
+    paddingLeft: 15,
+    paddingRight: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    flexWrap: "wrap"
+  },
+  relativeWhite: {
+    position: "relative",
+    backgroundColor: "white"
+  },
+  metadataContainer: {
+    padding: 15,
+    marginTop: 20,
+    backgroundColor: "white"
+  },
+  fontSize20: {
+    fontSize: 20
+  },
+  profileView: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between"
+  }
+})
 
 export default connect(
   mapStateToProps,

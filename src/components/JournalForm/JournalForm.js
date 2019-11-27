@@ -1,24 +1,33 @@
 import React, { Component } from "react"
-import { LinearGradient } from "expo"
 import { connect } from "react-redux"
 import { Header } from "../editor/header"
-import { StackActions, NavigationActions } from "react-navigation"
 import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
-import { setToken, API_ROOT } from "../../agent"
-import { updateJournalForm, resetJournalForm, persistJournal } from "../../actions/journal_form"
+import {
+  updateJournalForm,
+  resetJournalForm,
+  persistJournal,
+  toggleJournalFormModal,
+  toggleCountriesEditorModal
+} from "../../actions/journal_form"
+import CountriesEditor from "./CountriesEditor"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
   title: state.journalForm.title,
+  height: state.common.height,
   description: state.journalForm.description,
   status: state.journalForm.status,
   includedCountries: state.journalForm.includedCountries,
   distanceType: state.journalForm.distanceType,
-  currentRoot: state.common.currentBottomTab
+  currentRoot: state.common.currentBottomTab,
+  visible: state.journalForm.visible
 })
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
+  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload)),
   resetJournalForm: () => dispatch(resetJournalForm()),
   persistJournal: callback => dispatch(persistJournal(callback))
 })
@@ -36,33 +45,17 @@ class JournalForm extends Component {
     this.props.updateJournalForm(payload)
   }
 
-  getFirstRoute() {
-    if (this.props.currentRoot === "Profile") {
-      return "Profile"
-    } else if (this.props.currentRoot === "Explore") {
-      return "JournalFeed"
-    }
-  }
-
   saveJournal = () => {
     this.props.persistJournal(this.navigateToJournal)
   }
 
   navigateToJournal = () => {
-    const journalId = this.props.id
-    const resetAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
-        NavigationActions.navigate({ routeName: "Journal", params: { journalId } })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)
+    this.props.toggleJournalFormModal(false)
   }
 
   handleGoBack = () => {
+    this.props.toggleJournalFormModal(false)
     this.props.resetJournalForm()
-    this.props.navigation.goBack()
   }
 
   toggleFormButton = (buttonType, currentOption) => {
@@ -74,7 +67,7 @@ class JournalForm extends Component {
   }
 
   navigateToCountriesEditor = () => {
-    this.props.navigation.navigate("CountriesEditor")
+    this.props.toggleCountriesEditorModal(true)
   }
 
   getOptionArray(buttonType) {
@@ -89,7 +82,8 @@ class JournalForm extends Component {
   }
 
   renderFormTitle() {
-    const formTitle = this.props.id === null ? "New Journal" : "Edit Journal"
+    const formTitle = this.props.id ? "Edit Journal" : "New Journal"
+
     return (
       <View style={styles.formTitle}>
         <Text style={styles.title}>{formTitle}</Text>
@@ -99,26 +93,34 @@ class JournalForm extends Component {
 
   renderTextFields() {
     return (
-      <View style={{ marginBottom: 15 }}>
-        <View style={{ marginBottom: 15 }}>
+      <View style={styles.marginBottom15}>
+        <View style={styles.marginBottom15}>
+          <Text style={styles.journalTitleLabel}>Title</Text>
           <TextInput
-            style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
-            placeholder={"Title"}
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={styles.journalTitleTextInput}
             selectionColor="#FF5423"
             onChangeText={text => this.updateJournalForm("title", text)}
             value={this.props.title}
           />
         </View>
         <View>
+          <Text style={styles.journalDescriptionLabel}>Description</Text>
           <TextInput
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
             multiline
             minHeight={18 * 4}
             maxLength={200}
             value={this.props.description}
             selectionColor="#FF5423"
-            style={{ fontSize: 18, borderWidth: 1, padding: 5, borderRadius: 5, borderColor: "#d3d3d3" }}
+            style={styles.journalDescriptionTextInput}
             onChangeText={text => this.updateJournalForm("description", text)}
-            placeholder={"Description"}
           />
         </View>
       </View>
@@ -127,24 +129,18 @@ class JournalForm extends Component {
 
   renderDistanceType() {
     const distanceType = this.props.distanceType.toUpperCase()
-    
+
     return (
       <View>
+        <Text style={styles.distanceTypeLabel}>Distance Type</Text>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("distanceType", this.props.distanceType)}>
           <View
-            style={{
-              display: "flex",
-              borderWidth: 1,
-              backgroundColor: "white",
-              padding: 7,
-              borderRadius: 5,
-              borderColor: "#d3d3d3",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 15
-            }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{distanceType}</Text>
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={styles.distanceTypeView}>
+            <Text style={styles.distanceTypeText}>{distanceType}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -156,21 +152,15 @@ class JournalForm extends Component {
 
     return (
       <View>
+        <Text style={styles.statusLabel}>Status</Text>
         <TouchableWithoutFeedback onPress={() => this.toggleFormButton("status", this.props.status)}>
           <View
-            style={{
-              display: "flex",
-              borderWidth: 1,
-              backgroundColor: "white",
-              padding: 7,
-              borderRadius: 5,
-              borderColor: "#d3d3d3",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 15
-            }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{status}</Text>
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={styles.statusView}>
+            <Text style={styles.status}>{status}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -179,21 +169,8 @@ class JournalForm extends Component {
 
   renderIncludedCountry(includedCountry) {
     return (
-      <View
-        style={{
-          borderWidth: 1,
-          borderColor: "#d3d3d3",
-          borderRadius: 5,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 5,
-          marginRight: 10,
-          marginBottom: 10
-        }}
-        key={includedCountry.id}>
-        <Text style={{ fontSize: 18 }}>{includedCountry.name}</Text>
+      <View style={styles.includedCountry} key={includedCountry.id}>
+        <Text style={styles.fontSize18}>{includedCountry.name}</Text>
       </View>
     )
   }
@@ -201,15 +178,15 @@ class JournalForm extends Component {
   renderCountries() {
     return (
       <View>
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 16 }}>Country Tags</Text>
+        <View style={styles.countriesContainer}>
+          <Text style={styles.countriesLabel}>Country Tags</Text>
           <TouchableWithoutFeedback onPress={this.navigateToCountriesEditor}>
             <View>
-              <Text style={{ fontSize: 16 }}>Edit</Text>
+              <Text style={styles.fontSize16}>Edit</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <View style={{ marginTop: 10, display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        <View style={styles.includedCountriesView}>
           {this.props.includedCountries.map((includedCountry, index) => {
             return this.renderIncludedCountry(includedCountry)
           })}
@@ -249,16 +226,18 @@ class JournalForm extends Component {
   render() {
     const { formTitle, textFields, status, header, distanceType, countries } = this.renderFormComponents()
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <FormModal visible={this.props.visible}>
         {header}
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
           {formTitle}
           {textFields}
           {status}
           {distanceType}
           {countries}
+          <View style={styles.marginBottom200} />
         </ScrollView>
-      </View>
+        <CountriesEditor includedCountries={this.props.includedCountries} />
+      </FormModal>
     )
   }
 }
@@ -268,8 +247,117 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingTop: 15
   },
+  marginBottom200: {
+    marginBottom: 200
+  },
+  journalTitleLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  marginBottom15: {
+    marginBottom: 15
+  },
+  fontSize16: {
+    fontSize: 16
+  },
+  countriesContainer: { display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  journalDescriptionLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  journalTitleTextInput: {
+    backgroundColor: "white",
+    fontSize: 18,
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
+  },
   formTitle: {
     marginBottom: 25
+  },
+  includedCountry: {
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 5,
+    marginRight: 10,
+    marginBottom: 10
+  },
+  distanceTypeView: {
+    display: "flex",
+    borderWidth: 1,
+    backgroundColor: "white",
+    padding: 7,
+    borderRadius: 5,
+    borderColor: "#d3d3d3",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15
+  },
+  statusView: {
+    display: "flex",
+    borderWidth: 1,
+    backgroundColor: "white",
+    padding: 7,
+    borderRadius: 5,
+    borderColor: "#d3d3d3",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15
+  },
+  includedCountriesView: {
+    marginTop: 10,
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap"
+  },
+  distanceTypeText: {
+    fontSize: 18,
+    fontWeight: "bold"
+  },
+  distanceTypeLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  journalDescriptionTextInput: {
+    backgroundColor: "white",
+    fontSize: 18,
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
+  },
+  countriesLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  fontSize18: {
+    fontSize: 18
+  },
+  status: {
+    fontSize: 18,
+    fontWeight: "bold"
+  },
+  statusLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
   },
   title: {
     fontSize: 25,

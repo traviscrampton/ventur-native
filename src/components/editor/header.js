@@ -6,15 +6,8 @@ export const Header = props => {
     <View key="header" style={styles.container}>
       <View>
         <TouchableWithoutFeedback onPress={props.handleGoBack}>
-          <View
-            style={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
-            <Text style={{ fontFamily: "open-sans-regular", fontWeight: "bold", fontSize: 14, color: "#323941" }}>{props.goBackCta}</Text>
+          <View style={styles.options}>
+            <Text style={styles.text}>{props.goBackCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -23,15 +16,8 @@ export const Header = props => {
       </View>
       <View>
         <TouchableWithoutFeedback onPress={props.handleConfirm}>
-          <View
-            style={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
-            <Text style={{ fontFamily: "open-sans-regular", fontWeight: "bold", fontSize: 14, color: "#323941" }}>{props.confirmCta}</Text>
+          <View style={styles.options}>
+            <Text style={styles.text}>{props.confirmCta}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -51,5 +37,17 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderBottomWidth: 1,
     borderBottomColor: "#f8f8f8"
+  },
+  text: {
+    fontFamily: "playfair",
+    fontSize: 14,
+    color: "#323941"
+  },
+  options: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
   }
 })

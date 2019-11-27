@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { createNewTextEntry, updateActiveCreator } from "../../actions/editor"
 import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
+import { createNewTextEntry, updateActiveCreator } from "../../actions/editor"
+import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
 import { MaterialIcons, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
@@ -11,7 +12,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createNewTextEntry: payload => dispatch(createNewTextEntry(payload)),
-  updateActiveCreator: payload => dispatch(updateActiveCreator(payload))
+  toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
+  updateActiveCreator: payload => dispatch(updateActiveCreator(payload)),
+  updateActiveView: payload => dispatch(updateActiveView(payload))
 })
 class ContentCreator extends Component {
   constructor(props) {
@@ -35,10 +38,8 @@ class ContentCreator extends Component {
   }
 
   openCameraRoll = e => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      index: this.props.index,
-      selectSingleItem: true
-    })
+    this.props.updateActiveView("editor")
+    this.props.toggleCameraRollModal(true)
   }
 
   updateActiveCreator = () => {
@@ -62,9 +63,9 @@ class ContentCreator extends Component {
   renderInitialState() {
     return (
       <TouchableWithoutFeedback style={{ width: this.props.width }} onPress={this.updateActiveCreator}>
-        <View style={[styles.initialState, { display: "flex", flexDirection: "row", alignItems: "center" }]}>
-          <MaterialIcons style={{ marginRight: 7 }} color="#d3d3d3" name="add-circle-outline" size={20} />
-          <Text style={{ color: "#d3d3d3" }}>Add Content</Text>
+        <View style={[styles.initialState, styles.isInitial]}>
+          <MaterialIcons style={styles.marginRight7} color="#d3d3d3" name="add-circle-outline" size={20} />
+          <Text style={styles.textColor}>Add Content</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -72,30 +73,21 @@ class ContentCreator extends Component {
 
   renderTextOrImage() {
     return (
-      <View
-        style={[
-          styles.initialState,
-          { display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around" }
-        ]}>
+      <View style={[styles.initialState, styles.initialStateTextOrImage]}>
         <TouchableWithoutFeedback onPress={() => this.createNewTextEntry()}>
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <MaterialIcons style={{ marginRight: 4 }} color="darkgray" name="text-fields" size={20} />
-            <Text style={{ color: "darkgray" }}>Text</Text>
+          <View style={styles.flexRowCenter}>
+            <MaterialIcons style={styles.marginRight4} color="darkgray" name="text-fields" size={20} />
+            <Text style={styles.darkGray}>Text</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.openCameraRoll}>
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Entypo style={{ marginRight: 4 }} name="image" size={20} color={"darkgray"} />
-            <Text style={{ color: "darkgray" }}>Image</Text>
+          <View style={styles.flexRowCenter}>
+            <Entypo style={styles.marginRight4} name="image" size={20} color={"darkgray"} />
+            <Text style={styles.darkGray}>Image</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
     )
-  }
-
-  renderOrHidden() {
-    return null
-    // return this.renderOptionState()
   }
 
   render() {
@@ -116,12 +108,40 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 50
   },
+  darkGray: {
+    color: "darkgray"
+  },
+  marginRight4: {
+    marginRight: 4
+  },
+  flexRowCenter: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  initialstateTextOrImage: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  marginRight7: {
+    marginRight: 7
+  },
+  isInitial: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
   optionState: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingLeft: 20,
     height: 50
+  },
+  textColor: {
+    color: "#d3d3d3"
   },
   optionContainer: {
     paddingTop: 10,

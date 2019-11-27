@@ -6,6 +6,7 @@ import { setCurrentUser } from "./common"
 
 export const authenticateStravaUser = result => {
   return async (dispatch, getState) => {
+    console.log("WHAT IS THE RESULT HERE", result)
     const code = getCodeFromUrl(result)
     dispatch(validateUser(code)).then(response => {
       dispatch(persistAccessToken(response))

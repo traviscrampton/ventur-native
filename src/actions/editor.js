@@ -1,14 +1,15 @@
 import _ from "lodash"
 import { setToken, API_ROOT } from "../agent"
 import DropDownHolder from "../utils/DropdownHolder"
-import { awsUpload, cloudFrontUrlLength } from "../utils/image_uploader"
+import { awsUpload, cloudFrontUrlLength, deleteS3Objects } from "../utils/image_uploader"
 import { loadChapter, setEditMode } from "./chapter"
 import { resetChapterForm, addChapterToJournals } from "./chapter_form"
+import { toggleCameraRollModal } from "./camera_roll"
 import { populateOfflineChapters, dispatch } from "./user"
 import { persistChapterToAsyncStorage, useLocalStorage } from "../utils/offline_helpers"
 import { CameraRoll, NetInfo } from "react-native"
-import { ImageManipulator } from "expo"
-const uuid = require('react-native-uuid');
+import * as ImageManipulator from "expo-image-manipulator"
+const uuid = require("react-native-uuid")
 
 export function editEntry(payload) {
   return function(dispatch, getState) {
@@ -24,13 +25,27 @@ export function updateEntryState(payload) {
 }
 
 export function loseChangesAndUpdate(payload) {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(startUpdating())
-    updateBackToDraft(payload.id, payload.deletedIds, dispatch)
+    const {
+      common: { awsAccessKey, awsSecretKey },
+      editor: { newlyAddedImageUrls }
+    } = getState()
+
+    await deleteDeletedUrls(newlyAddedImageUrls, awsAccessKey, awsSecretKey)
+    updateBackToDraft(payload.id, dispatch)
   }
 }
 
-export const updateBackToDraft = async (id, deletedIds, dispatch) => {
+export const ADD_TO_NEWLY_ADDED_IMAGE_URLS = "ADD_TO_NEWLY_ADDED_IMAGE_URLS"
+export function addToNewlyAddedImageUrls(payload) {
+  return {
+    type: ADD_TO_NEWLY_ADDED_IMAGE_URLS,
+    payload: payload
+  }
+}
+
+export const updateBackToDraft = async (id, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
@@ -62,21 +77,35 @@ export const updateBackToDraft = async (id, deletedIds, dispatch) => {
 }
 
 export function doneEditingAndPersist() {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(startUpdating())
-    const { entries, deletedIds } = getState().editor
-    const { chapter } = getState().chapter
-    finalizeDraft(chapter.editorBlob.id, entries, deletedIds, chapter, dispatch)
+    const {
+      editor: { entries, deletedUrls },
+      common: { awsAccessKey, awsSecretKey },
+      chapter: {
+        chapter,
+        chapter: {
+          editorBlob: { id }
+        }
+      }
+    } = getState()
+
+    await deleteDeletedUrls(deletedUrls, awsAccessKey, awsSecretKey)
+    finalizeDraft(id, entries, chapter, dispatch)
   }
 }
 
-export const finalizeDraft = async (id, entries, deletedIds, chapter, dispatch) => {
+export const deleteDeletedUrls = async (deletedUrls, awsAccessKey, awsSecretKey) => {
+  if (deletedUrls.length === 0) return
+
+  const awsKeys = Object.assign({}, { awsAccessKey, awsSecretKey })
+  const deleted = await deleteS3Objects(deletedUrls, awsKeys)
+}
+
+export const finalizeDraft = async (id, entries, chapter, dispatch) => {
   let selectedImage
   const formData = new FormData()
   const token = await setToken()
-  if (deletedIds.length > 0) {
-    formData.append("deletedIds", JSON.stringify(deletedIds))
-  }
 
   formData.append("content", JSON.stringify(entries))
   fetch(`${API_ROOT}/editor_blobs/${id}/update_blob_done`, {
@@ -156,7 +185,7 @@ export const resizeImage = async image => {
 
   let updatedImage = await ImageManipulator.manipulateAsync(image.uri, [{ resize: { width: width, height: height } }], {
     compress: 0,
-    format: "jpg",
+    format: "jpeg",
     base64: false
   })
 
@@ -182,14 +211,16 @@ export const addImagesToEntries = payload => {
       }
     )
 
-    payload.goBack()
+    dispatch(toggleCameraRollModal(false))
     let filename = image.filename.split(".")[0] + uuid.v1() + "." + "jpg" // hack for this server shite
     let file = Object.assign({}, { uri: image.uri, name: filename, type: "image/jpg" })
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }))
     const uri = await awsUpload(file, awsKeys)
+
     const allUriSizes = createUrisObject(uri, entry.aspectRatio)
     entry = Object.assign({}, entry, allUriSizes)
     dispatch(updateEntryState({ entry: entry, index: payload.index }))
+    dispatch(addToNewlyAddedImageUrls(entry.originalUri))
     dispatchPersist(getState().editor.entries, true, getState().chapter.chapter, dispatch)
   }
 }
@@ -248,10 +279,10 @@ export const setInitalImageIds = ids => {
   }
 }
 
-export const RESET_DELETED_IDS = "RESET_DELETED_IDS"
-export const resetDeletedIds = () => {
+export const RESET_DELETED_URLS = "RESET_DELETED_URLS"
+export const resetDeletedUrls = () => {
   return {
-    type: RESET_DELETED_IDS
+    type: RESET_DELETED_URLS
   }
 }
 
@@ -323,10 +354,10 @@ export const editChapterOfflineMode = async (chapter, offline, dispatch) => {
     })
 }
 
-export const ADD_IMAGE_TO_DELETED_IDS = "ADD_IMAGE_TO_DELETED_IDS"
-export const addImageToDeletedIds = imageId => {
+export const ADD_TO_DELETED_URLS = "ADD_TO_DELETED_URLS"
+export const addToDeletedUrls = imageId => {
   return {
-    type: ADD_IMAGE_TO_DELETED_IDS,
+    type: ADD_TO_DELETED_URLS,
     payload: imageId
   }
 }

@@ -6,11 +6,12 @@ import {
   updateConnectionType,
   addApiCredentials
 } from "../actions/common"
-import { Font } from "expo"
-import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
-import { RootNavigator } from "../navigation"
 import { connect } from "react-redux"
-import { get, getCredentials } from "../agent"
+import * as Font from "expo-font"
+import { SafeAreaView } from "react-native"
+import { AsyncStorage, Dimensions, NetInfo } from "react-native"
+import { RootNavigator } from "../navigation"
+import { getCredentials } from "../agent"
 import Expo from "expo"
 
 const mapStateToProps = state => ({
@@ -32,11 +33,10 @@ const mapDispatchToProps = dispatch => ({
 class Ventur extends Component {
   async componentWillMount() {
     await this.setUpFonts()
+    await this.getAWSCredentials()
     this.setupDimensionsListener()
     this.setCurrentUser()
-    this.setChaptersForAsyncStorage()
     this.setUpConnectionListener()
-    this.getAWSCredentials()
   }
 
   setupDimensionsListener() {
@@ -47,11 +47,8 @@ class Ventur extends Component {
     NetInfo.addEventListener("connectionChange", this.handleConnectionChange)
   }
 
-  getAWSCredentials() {
-    // if (this.props.awsSecretKey && this.props.awsAccessKey) return
-
+  async getAWSCredentials() {
     getCredentials().then(response => {
-      console.log("response", response)
       this.props.addApiCredentials(response)
     })
   }
@@ -65,16 +62,6 @@ class Ventur extends Component {
   handleDimensionChange = dim => {
     let heightAndWidth = { width: dim.window.width, height: dim.window.height }
     this.props.setWindowDimensions(heightAndWidth)
-  }
-
-  async setChaptersForAsyncStorage() {
-    let chapters = await AsyncStorage.getItem("chapters")
-    let journals = await AsyncStorage.getItem("journals")
-    if (!chapters) {
-      await AsyncStorage.setItem("chapters", JSON.stringify([]))
-    } else if (!journals) {
-      await AsyncStorage.setItem("journals", JSON.stringify([]))
-    }
   }
 
   async setCurrentUser() {
@@ -106,12 +93,7 @@ class Ventur extends Component {
       return null
     }
 
-    return (
-      <React.Fragment>
-        <StatusBar hidden={true} />
-        <VNTR />
-      </React.Fragment>
-    )
+    return <VNTR />
   }
 }
 

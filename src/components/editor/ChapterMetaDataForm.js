@@ -1,33 +1,27 @@
 import React, { Component } from "react"
-import { doneUpdating, startUpdating } from "../../actions/editor"
-import { StyleSheet, View, ScrollView, Text, TextInput, Image, TouchableWithoutFeedback } from "react-native"
-import { updateChapterForm, addChapterToJournals, resetChapterForm } from "../../actions/chapter_form"
-import { StackActions, NavigationActions } from "react-navigation"
-import _ from "lodash"
-import { loadChapter } from "../../actions/chapter"
+import { connect } from "react-redux"
+import { startUpdating } from "../../actions/editor"
+import { StyleSheet, View, ScrollView, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { updateChapterForm, resetChapterForm, toggleChapterModal } from "../../actions/chapter_form"
 import { updateChapter, createChapter } from "../../actions/chapter_form"
 import { Header } from "./header"
 import DatePickerDropdown from "./DatePickerDropdown"
-import { MaterialIndicator } from "react-native-indicators"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
-import { connect } from "react-redux"
 import { generateReadableDate } from "../../utils/chapter_form_helper"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
   chapter: state.chapter.chapter,
   width: state.common.width,
   height: state.common.height,
-  isUpdating: state.editor.isUpdating,
-  currentRoot: state.common.currentBottomTab
+  visible: state.chapterForm.modalVisible
 })
 
 const mapDispatchToProps = dispatch => ({
   startUpdating: payload => dispatch(startUpdating()),
-  doneUpdating: payload => dispatch(doneUpdating()),
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload)),
-  addChapterToJournals: payload => dispatch(addChapterToJournals(payload)),
+  toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   resetChapterForm: () => dispatch(resetChapterForm()),
   updateChapter: (params, callback) => dispatch(updateChapter(params, callback, dispatch)),
   createChapter: (params, callback) => dispatch(createChapter(params, callback, dispatch))
@@ -51,25 +45,7 @@ class ChapterMetaDataForm extends Component {
   }
 
   handleGoBack = () => {
-    this.props.navigation.goBack()
-  }
-
-  uploadImage(img) {
-    let imgPost = {
-      uri: img.uri,
-      name: img.filename,
-      type: "multipart/form-data",
-      needsUpload: true
-    }
-
-    this.props.updateChapterForm({ bannerImage: imgPost })
-  }
-
-  updateImage = () => {
-    this.props.navigation.navigate("CameraRollContainer", {
-      selectSingleItem: true,
-      singleItemCallback: img => this.uploadImage(img)
-    })
+    this.props.toggleChapterModal(false)
   }
 
   toggleDatePicker = () => {
@@ -96,25 +72,37 @@ class ChapterMetaDataForm extends Component {
     this.distanceTextInput.focus()
   }
 
-  getFirstRoute() {
-    if (this.props.currentRoot === "Profile") {
-      return "Profile"
-    } else if (this.props.currentRoot === "Explore") {
-      return "JournalFeed"
-    }
+  getTitleText() {
+    return this.props.chapterForm.id ? "Edit Chapter" : "New Chapter"
   }
 
   navigateToChapter = () => {
-    const { journalId, id } = this.props.chapterForm
-    const resetAction = StackActions.reset({
-      index: 2,
-      actions: [
-        NavigationActions.navigate({ routeName: this.getFirstRoute() }),
-        NavigationActions.navigate({ routeName: "Journal", params: { journalId } }),
-        NavigationActions.navigate({ routeName: "Chapter" })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)
+    if (this.props.navigateToChapter) {
+      this.props.navigateToChapter(this.props.chapter.id)
+    }
+
+    this.props.toggleChapterModal(false)
+  }
+
+  renderDateField() {
+    let readableDate = generateReadableDate(this.props.chapterForm.date)
+
+    return (
+      <View>
+        <Text style={styles.dateText}>Date</Text>
+        <TouchableWithoutFeedback onPress={this.toggleDatePicker}>
+          <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={styles.iconsAndText}>
+            <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
+            <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    )
   }
 
   renderDatePicker() {
@@ -129,21 +117,19 @@ class ChapterMetaDataForm extends Component {
     )
   }
 
-  renderStatistics() {
+  renderDistanceField() {
     const { distance, readableDistanceType } = this.props.chapterForm
-    let readableDate = generateReadableDate(this.props.chapterForm.date)
 
     return (
-      <View style={styles.statsContainer}>
-        <TouchableWithoutFeedback onPress={this.toggleDatePicker}>
-          <View style={styles.iconsAndText}>
-            <MaterialCommunityIcons name="calendar" size={18} style={styles.iconPositioning} />
-            <Text style={styles.iconText}>{`${readableDate}`.toUpperCase()}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        {this.renderDatePicker()}
+      <View style={styles.marginTop15}>
+        <Text style={styles.distanceLabel}>Distance</Text>
         <TouchableWithoutFeedback onPress={() => this.focusDistanceTextInput()}>
-          <View style={styles.iconsAndText}>
+          <View
+            shadowColor="gray"
+            shadowOffset={{ width: 0, height: 0 }}
+            shadowOpacity={0.5}
+            shadowRadius={2}
+            style={styles.iconsAndText}>
             <MaterialIcons
               style={styles.iconPositioning}
               name="directions-bike"
@@ -159,11 +145,21 @@ class ChapterMetaDataForm extends Component {
               maxLength={6}
               value={distance.toString()}
               onChangeText={text => this.persistMetadata(text, "distance")}
-              style={{ textAlign: "right", fontSize: 20, marginRight: 5, paddingBottom: 6 }}
+              style={styles.distanceTextInput}
             />
             <Text style={styles.iconText}>{`${readableDistanceType}`.toUpperCase()}</Text>
           </View>
         </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+
+  renderStatistics() {
+    return (
+      <View style={styles.statsContainer}>
+        {this.renderDateField()}
+        {this.renderDatePicker()}
+        {this.renderDistanceField()}
       </View>
     )
   }
@@ -173,15 +169,20 @@ class ChapterMetaDataForm extends Component {
     return (
       <View style={styles.titleAndDescriptionContainer}>
         <View>
-          <TextInput
-            multiline
-            selectionColor={"#FF5423"}
-            placeholder={"Chapter Title"}
-            style={styles.title}
-            value={title}
-            onChangeText={text => this.persistMetadata(text, "title")}
-          />
+          <Text style={styles.titleText}>Title</Text>
         </View>
+        <TextInput
+          multiline
+          selectionColor={"#FF5423"}
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          selectionColor="#FF5423"
+          style={styles.title}
+          value={title}
+          onChangeText={text => this.persistMetadata(text, "title")}
+        />
       </View>
     )
   }
@@ -200,69 +201,24 @@ class ChapterMetaDataForm extends Component {
     return <Header key="header" {...headerProps} />
   }
 
-  renderLoadingSpinner(fourthWindowWidth) {
-    if (this.props.isUpdating && this.props.chapterForm.bannerImage.needsUpload) {
-      return (
-        <View style={{ position: "absolute", zIndex: 200, width: this.props.width, top: fourthWindowWidth / 3 }}>
-          <MaterialIndicator size={40} color="#FF5423" />
-        </View>
-      )
-    }
-  }
-
-  renderChapterImage() {
-    let fourthWindowWidth = this.props.width / 2.5
-    let { uri } = this.props.chapterForm.bannerImage
-    const spinner = this.renderLoadingSpinner(fourthWindowWidth)
-
+  renderFormTitle() {
     return (
-      <View style={{ position: "relative", marginBottom: 20, height: fourthWindowWidth, width: this.props.width }}>
-        <View
-          style={{
-            position: "absolute",
-            borderColor: "#323941",
-            borderRadius: "50%",
-            borderWidth: 1,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "white",
-            width: 50,
-            height: 50,
-            bottom: 20,
-            right: 20,
-            zIndex: 10
-          }}>
-          <TouchableWithoutFeedback onPress={this.updateImage}>
-            <MaterialIcons name="cloud-upload" color="#323941" size={30} />
-          </TouchableWithoutFeedback>
-        </View>
-        {spinner}
-        <TouchableWithoutFeedback onPress={this.updateImage}>
-          <Image
-            style={{
-              width: this.props.width,
-              height: fourthWindowWidth,
-              backgroundColor: "#f8f8f8"
-            }}
-            source={{ uri: uri }}
-          />
-        </TouchableWithoutFeedback>
+      <View style={styles.formTitleContainer}>
+        <Text style={styles.titleTextForm}>{this.getTitleText()}</Text>
       </View>
     )
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <FormModal visible={this.props.visible}>
         {this.renderHeader()}
         <ScrollView>
-          {this.renderChapterImage()}
+          {this.renderFormTitle()}
           {this.renderTitleAndDescription()}
           {this.renderStatistics()}
         </ScrollView>
-      </View>
+      </FormModal>
     )
   }
 }
@@ -271,6 +227,10 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     backgroundColor: "white"
+  },
+  formTitleContainer: {
+    padding: 20,
+    marginBottom: 10
   },
   statsContainer: {
     padding: 20,
@@ -281,14 +241,13 @@ const styles = StyleSheet.create({
     paddingBottom: 2
   },
   title: {
-    fontSize: 28,
-    fontFamily: "playfair",
-    color: "#323941",
-    borderColor: "#d3d3d3",
-    borderWidth: 1,
-    borderRadius: 5,
     backgroundColor: "white",
-    padding: 5
+    fontSize: 18,
+    borderWidth: 1,
+    fontFamily: "open-sans-regular",
+    padding: 10,
+    borderRadius: 5,
+    borderColor: "#d3d3d3"
   },
   iconsAndText: {
     display: "flex",
@@ -302,14 +261,48 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 3
   },
+  titleTextForm: {
+    fontFamily: "playfair",
+    color: "#323941",
+    fontSize: 28
+  },
+  dateText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
+  marginTop15: {
+    marginTop: 15
+  },
+  distanceLabel: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
   iconText: {
     fontFamily: "overpass",
     fontSize: 20
   },
+  distanceTextInput: {
+    textAlign: "right",
+    fontSize: 20,
+    marginRight: 5,
+    paddingBottom: 6,
+    backgroundColor: "white"
+  },
+  titleText: {
+    fontFamily: "playfair",
+    color: "#323941",
+    marginBottom: 5,
+    fontSize: 16
+  },
   titleAndDescriptionContainer: {
     padding: 20,
     paddingTop: 0,
-    paddingBottom: 10
+    paddingBottom: 10,
+    marginBottom: 15
   }
 })
 

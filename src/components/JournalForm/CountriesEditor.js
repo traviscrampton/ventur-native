@@ -1,18 +1,19 @@
 import React, { Component } from "react"
-import { LinearGradient } from "expo"
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
 import { get } from "../../agent"
 import { Header } from "../editor/header"
-import { updateJournalForm } from "../../actions/journal_form"
+import { updateJournalForm, toggleCountriesEditorModal } from "../../actions/journal_form"
 import { Feather } from "@expo/vector-icons"
+import FormModal from "../shared/FormModal"
 
 const mapStateToProps = state => ({
-  includedCountries: state.journalForm.includedCountries
+  visible: state.journalForm.countriesEditorVisible
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateJournalForm: payload => dispatch(updateJournalForm(payload))
+  updateJournalForm: payload => dispatch(updateJournalForm(payload)),
+  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload))
 })
 
 class CountriesEditor extends Component {
@@ -23,6 +24,12 @@ class CountriesEditor extends Component {
       searchText: "",
       searchResultCountries: [],
       includedCountries: props.includedCountries
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevProps.visible && this.props.visible) {
+      this.setState({ includedCountries: this.props.includedCountries })
     }
   }
 
@@ -54,7 +61,7 @@ class CountriesEditor extends Component {
   handleGoBack = () => {
     const { includedCountries } = this.props
     this.setState({ includedCountries })
-    this.props.navigation.goBack()
+    this.props.toggleCountriesEditorModal(false)
   }
 
   includeCountry = searchCountry => {
@@ -76,10 +83,15 @@ class CountriesEditor extends Component {
     return (
       <View>
         <TextInput
-          style={{ borderWidth: 1, borderColor: "#d3d3d3", borderRadius: 5, padding: 5, fontSize: 18 }}
+          shadowColor="gray"
+          shadowOffset={{ width: 0, height: 0 }}
+          shadowOpacity={0.5}
+          shadowRadius={2}
+          style={styles.searchBarTextInput}
           autoFocus
           selectionColor="#FF5423"
           value={this.state.searchText}
+          placeholderTextColor={"darkgray"}
           placeholder={"Type to find country"}
           onChangeText={text => this.handleTextChange(text)}
         />
@@ -90,17 +102,8 @@ class CountriesEditor extends Component {
   renderSearchResult(searchCountry) {
     return (
       <TouchableWithoutFeedback onPress={() => this.includeCountry(searchCountry)}>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            backgroundColor: "white",
-            borderBottomColor: "#d3d3d3",
-            padding: 5,
-            paddingTop: 10,
-            paddingBottom: 10
-          }}
-          key={searchCountry.id}>
-          <Text style={{ fontSize: 18 }}>{searchCountry.name}</Text>
+        <View style={styles.searchResult} key={searchCountry.id}>
+          <Text style={styles.countryName}>{searchCountry.name}</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -111,19 +114,16 @@ class CountriesEditor extends Component {
 
     return (
       <View
-        style={{
-          borderWidth: 1,
-          borderColor: "#d3d3d3",
-          borderRadius: 5,
-          marginTop: 5,
-          position: "absolute",
-          top: 35,
-          width: "100%",
-          backgroundColor: "white"
-        }}>
-        {this.state.searchResultCountries.map((searchCountry, index) => {
-          return this.renderSearchResult(searchCountry)
-        })}
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={styles.searchResultsContainer}>
+        <View style={styles.searchResultView}>
+          {this.state.searchResultCountries.map((searchCountry, index) => {
+            return this.renderSearchResult(searchCountry)
+          })}
+        </View>
       </View>
     )
   }
@@ -131,22 +131,15 @@ class CountriesEditor extends Component {
   renderIncludedCountryTab(includedCountry, index) {
     return (
       <View
-        style={{
-          borderWidth: 1,
-          borderColor: "#d3d3d3",
-          borderRadius: 5,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 5,
-          marginRight: 10,
-          marginBottom: 10
-        }}
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+        style={styles.includedCountriesTab}
         key={includedCountry.id}>
-        <Text style={{ fontSize: 18 }}>{includedCountry.name}</Text>
+        <Text style={styles.fontSize18}>{includedCountry.name}</Text>
         <TouchableWithoutFeedback onPress={() => this.removeCountry(includedCountry)}>
-          <Feather style={{ marginLeft: 15 }} name="x" size={18} />
+          <Feather style={styles.marginLeft15} name="x" size={18} />
         </TouchableWithoutFeedback>
       </View>
     )
@@ -168,7 +161,7 @@ class CountriesEditor extends Component {
 
   renderIncludedCountries() {
     return (
-      <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", marginTop: 20 }}>
+      <View style={styles.alreadyIncludedCountries}>
         {this.state.includedCountries.map((includedCountry, index) => {
           return this.renderIncludedCountryTab(includedCountry, index)
         })}
@@ -192,16 +185,16 @@ class CountriesEditor extends Component {
     const { searchBar, searchResults, includedCountries, header } = this.renderComponents()
 
     return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
+      <FormModal visible={this.props.visible}>
         {header}
         <View style={styles.container}>
-          <View style={{ position: "relative", zIndex: 10 }}>
+          <View style={styles.searchBarAndResult}>
             {searchBar}
             {searchResults}
           </View>
           {includedCountries}
         </View>
-      </View>
+      </FormModal>
     )
   }
 }
@@ -210,6 +203,68 @@ const styles = StyleSheet.create({
   container: {
     padding: 25,
     marginTop: 10
+  },
+  searchBarAndResult: {
+    position: "relative",
+    zIndex: 10
+  },
+  alreadyIncludedCountries: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 20
+  },
+  fontSize18: {
+    fontSize: 18
+  },
+  includedCountriesTab: {
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5,
+    backgroundColor: "white",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 5,
+    marginRight: 10,
+    marginBottom: 10
+  },
+  searchBarTextInput: {
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 5,
+    padding: 5,
+    fontSize: 18,
+    backgroundColor: "white"
+  },
+  searchResult: {
+    borderBottomWidth: 1,
+    backgroundColor: "white",
+    borderBottomColor: "#d3d3d3",
+    padding: 5,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  searchResultsContainer: {
+    position: "absolute",
+    top: 35,
+    marginTop: 5,
+    position: "absolute",
+    top: 35,
+    width: "100%"
+  },
+  marginLeft15: {
+    marginLeft: 15
+  },
+  searchResultView: {
+    borderRadius: 5,
+    backgroundColor: "white",
+    overflow: "hidden"
+  },
+  countryName: {
+    fontSize: 18,
+    fontFamily: "open-sans-regular"
   },
   formTitle: {},
   title: {}

@@ -1,8 +1,7 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback, Linking } from "react-native"
-import { WebBrowser } from "expo"
 import { connect } from "react-redux"
+import { View, Text, TouchableWithoutFeedback, Linking } from "react-native"
+import { WebBrowser } from "expo"
 import { AuthSession } from "expo"
 import { encodeQueryString } from "../../agent"
 
@@ -129,7 +128,6 @@ class StravaLogin extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
 
 export default connect(
   mapStateToProps,

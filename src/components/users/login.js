@@ -1,31 +1,25 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
-import { LinearGradient } from "expo"
-import { UPDATE_LOGIN_FORM, SET_CURRENT_USER } from "../../actions/action_types"
-import { post } from "../../agent"
-import { setCurrentUser } from "../../actions/common"
-import DropDownHolder from "../../utils/DropdownHolder"
-import { storeJWT } from "../../auth"
+import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { updateLoginForm, submitForm, toggleLoginModal, resetLoginForm } from "../../actions/login"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import FormModal from "../shared/FormModal"
 TextInput.defaultProps.selectionColor = "white"
 
 const mapStateToProps = state => ({
   email: state.login.email,
-  password: state.login.password
+  password: state.login.password,
+  visible: state.login.visible,
+  width: state.common.width,
+  height: state.common.height
 })
 
 const mapDispatchToProps = dispatch => ({
-  emailEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "email", value: text })
-  },
-
-  passwordEntry: text => {
-    dispatch({ type: UPDATE_LOGIN_FORM, key: "password", value: text })
-  },
-
-  setCurrentUser: payload => dispatch(setCurrentUser(payload))
+  updateLoginForm: payload => dispatch(updateLoginForm(payload)),
+  submitForm: () => dispatch(submitForm()),
+  toggleLoginModal: payload => dispatch(toggleLoginModal(payload)),
+  resetLoginForm: () => dispatch(resetLoginForm())
 })
 
 class Login extends Component {
@@ -37,16 +31,17 @@ class Login extends Component {
     }
   }
 
-  navigateBack = () => {
-    this.props.navigation.goBack()
+  toggleLoginModal = () => {
+    this.props.resetLoginForm()
+  }
+
+  updateLoginForm = (value, key) => {
+    const payload = Object.assign({}, { value, key })
+    this.props.updateLoginForm(payload)
   }
 
   submitForm = () => {
-    const { email, password } = this.props
-    post("/users/login", { email, password }).then(login => {
-      storeJWT(login)
-      this.props.setCurrentUser(login.user)
-    })
+    this.props.submitForm()
   }
 
   toggleHidePassword = () => {
@@ -58,10 +53,8 @@ class Login extends Component {
     return (
       <TouchableWithoutFeedback
         underlayColor="rgba(111, 111, 111, 0.5)"
-        style={{
-          position: "relative"
-        }}
-        onPress={this.navigateBack}>
+        style={styles.positionRelative}
+        onPress={this.toggleLoginModal}>
         <Ionicons name="ios-arrow-back" size={35} color="white" />
       </TouchableWithoutFeedback>
     )
@@ -70,7 +63,7 @@ class Login extends Component {
   renderFormTitle() {
     return (
       <View>
-        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>Login</Text>
+        <Text style={styles.formTitle}>Login</Text>
       </View>
     )
   }
@@ -78,44 +71,34 @@ class Login extends Component {
   renderForm() {
     return (
       <View style={styles.container}>
-        <Text style={{ color: "white" }}>EMAIL</Text>
+        <Text style={styles.colorWhite}>EMAIL</Text>
         <TextInput
           style={styles.textInput}
           editable={true}
           autoCapitalize="none"
           maxLength={50}
           value={this.props.email}
-          onChangeText={text => this.props.emailEntry(text)}
+          onChangeText={text => this.updateLoginForm(text, "email")}
         />
-        <Text style={{ color: "white" }}>PASSWORD</Text>
-        <View style={{ position: "relative", height: 50 }}>
+        <Text style={styles.colorWhite}>PASSWORD</Text>
+        <View style={styles.passwordContainer}>
           <TextInput
             style={styles.textInput}
             editable={true}
             secureTextEntry={this.state.hidePassword}
             maxLength={50}
             value={this.props.password}
-            onChangeText={text => this.props.passwordEntry(text)}
+            onChangeText={text => this.updateLoginForm(text, "password")}
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
-            <View style={{ position: "absolute", right: 0, top: 50 / 4 }}>
+            <View style={styles.iconContainer}>
               <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
             </View>
           </TouchableWithoutFeedback>
         </View>
         <TouchableWithoutFeedback onPress={this.submitForm}>
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 30,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 50,
-              marginTop: 20
-            }}>
-            <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
+          <View style={styles.continueContainer}>
+            <Text style={styles.continueText}>CONTINUE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -124,13 +107,15 @@ class Login extends Component {
 
   render() {
     return (
-      <LinearGradient
-        style={{ height: Dimensions.get("window").height, width: Dimensions.get("window").width, padding: 25 }}
-        colors={["#FF5423", "#E46545"]}>
-        {this.renderBackButton()}
-        {this.renderFormTitle()}
-        {this.renderForm()}
-      </LinearGradient>
+      <FormModal visible={this.props.visible} backgroundColor={"#FF5423"}>
+        <LinearGradient
+          style={{ height: this.props.height, width: this.props.width, padding: 25 }}
+          colors={["#FF5423", "#E46545"]}>
+          {this.renderBackButton()}
+          {this.renderFormTitle()}
+          {this.renderForm()}
+        </LinearGradient>
+      </FormModal>
     )
   }
 }
@@ -145,6 +130,42 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     marginBottom: 30
+  },
+  continueContainer: {
+    backgroundColor: "white",
+    borderRadius: 30,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    marginTop: 20
+  },
+  passwordContainer: {
+    position: "relative",
+    height: 50
+  },
+  positionRelative: {
+    position: "relative"
+  },
+  continueText: {
+    color: "#FF5423",
+    fontSize: 16
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 0,
+    top: 12.5
+  },
+  colorWhite: {
+    color: "white"
+  },
+  formTitle: {
+    fontSize: 35,
+    marginTop: 5,
+    marginBottom: 20,
+    color: "white",
+    fontWeight: "bold"
   }
 })
 

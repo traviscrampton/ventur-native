@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import { StyleSheet, View, Image, Dimensions, Text, TouchableWithoutFeedback, Alert } from "react-native"
 import { connect } from "react-redux"
+import { StyleSheet, View, Image, Text, TouchableWithoutFeedback, Alert } from "react-native"
 import { deleteComment } from "../../actions/comments"
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
 const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
@@ -59,7 +59,7 @@ class Comment extends Component {
         <TouchableWithoutFeedback onPress={this.toggleSubComments}>
           <View style={styles.flexRow}>
             <Text style={styles.repliesCtaText}>Replies ({subCommentCount})</Text>
-            <MaterialCommunityIcons style={{ paddingTop: 2 }} name={chevron} size={18} color={"rgba(0,0,0,.65)"} />
+            <MaterialCommunityIcons style={styles.paddingTop2} name={chevron} size={18} color={"rgba(0,0,0,.65)"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -70,7 +70,7 @@ class Comment extends Component {
     if (!this.isCurrentUsersComment() && !this.currentUserOwnsCommentable()) return
 
     return (
-      <View style={{ marginLeft: 5 }}>
+      <View style={styles.marginLeft5}>
         <TouchableWithoutFeedback onPress={() => this.handleDeleteComment(this.props.id)}>
           <View>
             <MaterialIcons name="delete" size={16} color="rgba(0,0,0,.65)" />
@@ -104,7 +104,7 @@ class Comment extends Component {
 
   renderCommentContent() {
     return (
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.marginTop20}>
         <Text style={styles.commentContent}>{this.props.content}</Text>
       </View>
     )
@@ -172,7 +172,7 @@ const SubComment = props => {
         </View>
         {props.canDelete ? deleteCta : ""}
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.marginTop20}>
         <Text>{props.content}</Text>
       </View>
     </View>
@@ -194,6 +194,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
+  },
+  paddingTop2: {
+    paddingTop: 2
   },
   repliesCtaText: {
     fontSize: 14,
@@ -218,6 +221,12 @@ const styles = StyleSheet.create({
     borderRadius: 17.5,
     borderWidth: 1,
     borderColor: "#d3d3d3"
+  },
+  marginTop20: {
+    marginTop: 20
+  },
+  marginLeft5: {
+    marginLeft: 5
   },
   userAndDate: {
     display: "flex",

@@ -2,46 +2,28 @@ import React, { Component } from "react"
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
 import JournalFeed from "./components/journals/JournalFeed"
 import Journal from "./components/journals/journal"
-import Login from "./components/users/login"
 import StravaLogin from "./components/users/StravaLogin"
 import HomeLoggedOut from "./components/users/HomeLoggedOut"
 import BottomTabBar from "./components/shared/BottomTabBar"
-import CameraRollContainer from "./components/editor/CameraRollContainer"
 import ImageCaptionForm from "./components/editor/ImageCaptionForm"
 import ChapterDispatch from "./components/chapters/ChapterDispatch"
 import ManageContent from "./components/editor/ManageContent"
-import JournalFormTitle from "./components/JournalForm/JournalFormTitle"
-import JournalFormLocation from "./components/JournalForm/JournalFormLocation"
-import JournalFormStatus from "./components/JournalForm/JournalFormStatus"
-import JournalFormUpload from "./components/JournalForm/JournalFormUpload"
 import Profile from "./components/users/Profile"
-import UserEmailPasswordForm from "./components/users/UserEmailPasswordForm"
-import UserNameForm from "./components/users/UserNameForm"
 import CommentForm from "./components/Comments/CommentForm"
 import JournalForm from "./components/JournalForm/JournalForm"
 import CountriesEditor from "./components/JournalForm/CountriesEditor"
-import UserAvatarForm from "./components/users/UserAvatarForm"
 import RouteEditor from "./components/Maps/RouteEditor"
 import StravaRouteSelector from "./components/Maps/StravaRouteSelector"
 import RouteViewer from "./components/Maps/RouteViewer"
 import JournalRoute from "./components/Maps/JournalRoute"
 import ChapterMetaDataForm from "./components/editor/ChapterMetaDataForm"
 import ChapterEditor from "./components/chapters/ChapterEditor"
+import GearItemReview from "./components/GearItemReview/GearItemReview"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
-  "ChapterFormTitle",
-  "ChapterFormDate",
-  "ChapterFormDistance",
-  "ChapterFormUpload",
-  "CameraRollContainer",
   "ImageCaptionForm",
   "ManageContent",
-  "Login",
-  "JournalFormTitle",
-  "JournalFormLocation",
-  "JournalFormStatus",
-  "JournalFormUpload",
   "RouteEditor",
   "RouteViewer",
   "JournalRoute",
@@ -59,20 +41,16 @@ const JournalFeedNavigator = createStackNavigator(
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
-    CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
     RouteEditor: RouteEditor,
     RouteViewer: RouteViewer,
     JournalRoute: JournalRoute,
-    JournalFormUpload: JournalFormUpload,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
+    GearItemReview: GearItemReview
   },
   {
     initialRouteName: "JournalFeed",
@@ -88,17 +66,15 @@ const JournalFeedNavigator = createStackNavigator(
 
 const ProfileNavigator = createStackNavigator(
   {
-    Profile: Profile,
+    Profile: {
+      screen: Profile,
+      path: "/profile"
+    },
     Journal: Journal,
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
-    CameraRollContainer: CameraRollContainer,
-    JournalFormTitle: JournalFormTitle,
-    JournalFormLocation: JournalFormLocation,
-    JournalFormStatus: JournalFormStatus,
     ImageCaptionForm: ImageCaptionForm,
-    JournalFormUpload: JournalFormUpload,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,
     RouteEditor: RouteEditor,
@@ -107,6 +83,7 @@ const ProfileNavigator = createStackNavigator(
     ManageContent: ManageContent,
     ChapterEditor: ChapterEditor,
     StravaRouteSelector: StravaRouteSelector,
+    GearItemReview: GearItemReview
   },
   {
     initialRouteName: "Profile",
@@ -120,11 +97,7 @@ const ProfileNavigator = createStackNavigator(
 
 const AuthFlow = createStackNavigator(
   {
-    HomeLoggedOut: HomeLoggedOut,
-    Login: Login,
-    UserEmailPasswordForm: UserEmailPasswordForm,
-    UserNameForm: UserNameForm,
-    UserAvatarForm: UserAvatarForm
+    HomeLoggedOut: HomeLoggedOut
   },
   {
     initialRouteName: "HomeLoggedOut",
