@@ -4,7 +4,7 @@ import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, Text, ImageBa
 import { LinearGradient } from "expo-linear-gradient"
 import { toggleLoginModal } from "../../actions/login"
 import { toggleUserFormModal } from "../../actions/user_form"
-import Login from "./login"
+import Login from "./Login"
 import UserForm from "./UserForm"
 const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
 
