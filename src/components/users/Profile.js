@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { connect } from "react-redux"
 import {
   StyleSheet,
   View,
@@ -7,43 +8,28 @@ import {
   Image,
   FlatList,
   SafeAreaView,
-  AsyncStorage,
-  Dimensions,
-  TouchableWithoutFeedback,
-  Linking
+  TouchableWithoutFeedback
 } from "react-native"
-import ChapterList from "../chapters/ChapterList"
 import GearListItem from "../GearItem/GearListItem"
-import { MaterialIcons, Feather } from "@expo/vector-icons"
-import {
-  populateUserPage,
-  populateOfflineChapters,
-  getProfilePageData,
-  uploadProfilePhoto,
-  setDefaultAppState
-} from "../../actions/user"
+import { MaterialIcons } from "@expo/vector-icons"
+import { getProfilePageData, uploadProfilePhoto, setDefaultAppState } from "../../actions/user"
 import JournalMini from "../journals/JournalMini"
 import JournalForm from "../JournalForm/JournalForm"
 import { MaterialIndicator } from "react-native-indicators"
-import { updateChapterForm } from "../../actions/chapter_form"
-import { loadChapter } from "../../actions/chapter"
 import { toggleGearReviewFormModal } from "../../actions/gear_review_form"
 import { toggleJournalFormModal } from "../../actions/journal_form"
-import { loadSingleJournal, resetJournalShow } from "../../actions/journals"
+import { resetJournalShow } from "../../actions/journals"
 import { toggleCameraRollModal } from "../../actions/camera_roll"
 import { setCurrentUser } from "../../actions/common"
 import { authenticateStravaUser } from "../../actions/strava"
-import { connect } from "react-redux"
 import ThreeDotDropdown from "../shared/ThreeDotDropdown"
 import { populateGearItemReview } from "../../actions/gear_item_review"
 import { logOut } from "../../auth"
-import { getChapterFromStorage, updateOfflineChapters } from "../../utils/offline_helpers"
-import { setToken, API_ROOT, encodeQueryString, get } from "../../agent"
+import { encodeQueryString } from "../../agent"
 import { TabView, SceneMap, TabBar } from "react-native-tab-view"
 import LoadingScreen from "../shared/LoadingScreen"
 import { WebBrowser } from "expo"
 import Expo from "expo"
-import SlidingTabs from "../shared/SlidingTabs"
 import { FloatingAction } from "react-native-floating-action"
 import GearReviewForm from "../GearReviewForm/GearReviewForm"
 import ImagePickerContainer from "../shared/ImagePickerContainer"
@@ -60,13 +46,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  populateUserPage: payload => dispatch(populateUserPage(payload)),
-  populateOfflineChapters: payload => dispatch(populateOfflineChapters(payload)),
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
-  loadChapter: payload => dispatch(loadChapter(payload)),
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
-  updateChapterForm: payload => dispatch(updateChapterForm(payload)),
-  loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
   resetJournalShow: () => dispatch(resetJournalShow()),
   authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
   getProfilePageData: () => dispatch(getProfilePageData()),
@@ -147,11 +128,9 @@ class Profile extends Component {
 
   renderUserName() {
     return (
-      <View style={{ height: this.props.width / 4, display: "flex", flexDirection: "column" }}>
+      <View style={[styles.userNameContainer, { height: this.props.width / 4 }]}>
         <View>
-          <Text style={{ fontFamily: "playfair", fontSize: 22, marginBottom: 5, fontWeight: "bold" }}>
-            Hi {this.props.user.firstName}!
-          </Text>
+          <Text style={styles.userNameText}>Hi {this.props.user.firstName}!</Text>
         </View>
         <View>
           <Text style={{ width: this.props.width * 0.68 - 40 }} />
@@ -163,16 +142,7 @@ class Profile extends Component {
   renderLogOut() {
     return (
       <TouchableWithoutFeedback onPress={this.handleLogout}>
-        <View
-          style={{
-            borderWidth: 1,
-            borderRadius: 30,
-            borderColor: "gray",
-            paddingTop: 2.5,
-            paddingBottom: 2.5,
-            paddingLeft: 10,
-            paddingRight: 10
-          }}>
+        <View style={styles.logoutButton}>
           <Text>Log Out</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -202,13 +172,12 @@ class Profile extends Component {
 
     return (
       <View
-        style={{
-          display: "flex",
-          width: this.props.width - 30,
-          flexDirection: "row",
-          alignItems: "top",
-          paddingRight: 20
-        }}>
+        style={[
+          styles.profileContainer,
+          {
+            width: this.props.width - 30
+          }
+        ]}>
         <TouchableWithoutFeedback onPress={this.launchImagePicker}>
           <View
             shadowColor="gray"
@@ -274,7 +243,7 @@ class Profile extends Component {
 
     return (
       <View style={{ height: this.props.height, padding: 20 }}>
-        <Text style={{ fontSize: 20 }}>{message}</Text>
+        <Text style={styles.fontSize20}>{message}</Text>
       </View>
     )
   }
@@ -282,15 +251,13 @@ class Profile extends Component {
   renderProfilePhotoAndMetadata() {
     return (
       <View
-        style={{
-          padding: 15,
-          marginTop: 20,
-          backgroundColor: "white",
-          width: this.props.width - 30
-        }}>
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
-          {this.renderProfilePhoto()}
-        </View>
+        style={[
+          styles.metadataContainer,
+          {
+            width: this.props.width - 30
+          }
+        ]}>
+        <View style={styles.profileView}>{this.renderProfilePhoto()}</View>
       </View>
     )
   }
@@ -324,19 +291,10 @@ class Profile extends Component {
     const pad = this.props.width * 0.035
 
     return (
-      <View style={{ position: "relative", backgroundColor: "white" }}>
+      <View style={styles.relativeWhite}>
         <FlatList
           scrollEnabled={true}
-          contentContainerStyle={{
-            display: "flex",
-            backgroundColor: "white",
-            paddingLeft: 15,
-            paddingRight: 15,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 10,
-            flexWrap: "wrap"
-          }}
+          contentContainerStyle={styles.contentContainerStyle}
           data={this.props.journals}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <JournalMini {...item} handlePress={this.handleJournalPress} />}
@@ -412,8 +370,8 @@ class Profile extends Component {
     }
 
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <View style={{ backgroundColor: "white", height: "100%" }}>
+      <SafeAreaView style={styles.flexWhite}>
+        <View style={styles.white100}>
           <ScrollView>
             {this.renderProfilePhotoAndMetadata()}
             {this.renderSlidingTabs()}
@@ -427,6 +385,70 @@ class Profile extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  white100: {
+    backgroundColor: "white",
+    height: "100%"
+  },
+  flexWhite: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  userNameContainer: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  userNameText: {
+    fontFamily: "playfair",
+    fontSize: 22,
+    marginBottom: 5,
+    fontWeight: "bold"
+  },
+  logoutButton: {
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: "gray",
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  profileContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "top",
+    paddingRight: 20
+  },
+  contentContainerStyle: {
+    display: "flex",
+    backgroundColor: "white",
+    paddingLeft: 15,
+    paddingRight: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    flexWrap: "wrap"
+  },
+  relativeWhite: {
+    position: "relative",
+    backgroundColor: "white"
+  },
+  metadataContainer: {
+    padding: 15,
+    marginTop: 20,
+    backgroundColor: "white"
+  },
+  fontSize20: {
+    fontSize: 20
+  },
+  profileView: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "top",
+    justifyContent: "space-between"
+  }
+})
 
 export default connect(
   mapStateToProps,

@@ -1,12 +1,8 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, Text, TextInput, Dimensions, TouchableWithoutFeedback } from "react-native"
 import { connect } from "react-redux"
+import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { updateLoginForm, submitForm, toggleLoginModal, resetLoginForm } from "../../actions/login"
-import { post } from "../../agent"
-import DropDownHolder from "../../utils/DropdownHolder"
-import { storeJWT } from "../../auth"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import FormModal from "../shared/FormModal"
 TextInput.defaultProps.selectionColor = "white"
@@ -57,9 +53,7 @@ class Login extends Component {
     return (
       <TouchableWithoutFeedback
         underlayColor="rgba(111, 111, 111, 0.5)"
-        style={{
-          position: "relative"
-        }}
+        style={styles.positionRelative}
         onPress={this.toggleLoginModal}>
         <Ionicons name="ios-arrow-back" size={35} color="white" />
       </TouchableWithoutFeedback>
@@ -69,7 +63,7 @@ class Login extends Component {
   renderFormTitle() {
     return (
       <View>
-        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>Login</Text>
+        <Text style={styles.formTitle}>Login</Text>
       </View>
     )
   }
@@ -77,7 +71,7 @@ class Login extends Component {
   renderForm() {
     return (
       <View style={styles.container}>
-        <Text style={{ color: "white" }}>EMAIL</Text>
+        <Text style={styles.colorWhite}>EMAIL</Text>
         <TextInput
           style={styles.textInput}
           editable={true}
@@ -86,8 +80,8 @@ class Login extends Component {
           value={this.props.email}
           onChangeText={text => this.updateLoginForm(text, "email")}
         />
-        <Text style={{ color: "white" }}>PASSWORD</Text>
-        <View style={{ position: "relative", height: 50 }}>
+        <Text style={styles.colorWhite}>PASSWORD</Text>
+        <View style={styles.passwordContainer}>
           <TextInput
             style={styles.textInput}
             editable={true}
@@ -97,24 +91,14 @@ class Login extends Component {
             onChangeText={text => this.updateLoginForm(text, "password")}
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
-            <View style={{ position: "absolute", right: 0, top: 50 / 4 }}>
+            <View style={styles.iconContainer}>
               <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
             </View>
           </TouchableWithoutFeedback>
         </View>
         <TouchableWithoutFeedback onPress={this.submitForm}>
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 30,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 50,
-              marginTop: 20
-            }}>
-            <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
+          <View style={styles.continueContainer}>
+            <Text style={styles.continueText}>CONTINUE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -146,6 +130,42 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     marginBottom: 30
+  },
+  continueContainer: {
+    backgroundColor: "white",
+    borderRadius: 30,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    marginTop: 20
+  },
+  passwordContainer: {
+    position: "relative",
+    height: 50
+  },
+  positionRelative: {
+    position: "relative"
+  },
+  continueText: {
+    color: "#FF5423",
+    fontSize: 16
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 0,
+    top: 12.5
+  },
+  colorWhite: {
+    color: "white "
+  },
+  formTitle: {
+    fontSize: 35,
+    marginTop: 5,
+    marginBottom: 20,
+    color: "white",
+    fontWeight: "bold"
   }
 })
 

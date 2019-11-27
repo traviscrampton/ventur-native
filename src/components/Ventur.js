@@ -6,12 +6,12 @@ import {
   updateConnectionType,
   addApiCredentials
 } from "../actions/common"
+import { connect } from "react-redux"
 import * as Font from "expo-font"
 import { SafeAreaView } from "react-native"
-import { AsyncStorage, Dimensions, NetInfo, StatusBar, Linking } from "react-native"
+import { AsyncStorage, Dimensions, NetInfo } from "react-native"
 import { RootNavigator } from "../navigation"
-import { connect } from "react-redux"
-import { get, getCredentials } from "../agent"
+import { getCredentials } from "../agent"
 import Expo from "expo"
 
 const mapStateToProps = state => ({

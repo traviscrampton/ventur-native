@@ -1,17 +1,9 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-  View,
-  Text,
-  ImageBackground,
-  Dimensions
-} from "react-native"
+import { connect } from "react-redux"
+import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, Text, ImageBackground } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { toggleLoginModal } from "../../actions/login"
 import { toggleUserFormModal } from "../../actions/user_form"
-import { connect } from "react-redux"
 import Login from "./Login"
 import UserForm from "./UserForm"
 const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
@@ -43,10 +35,10 @@ class HomeLoggedOut extends Component {
     return (
       <View style={{ marginTop: this.props.height / 7 }}>
         <View>
-          <Text style={{ fontSize: 60, color: "white", textAlign: "center" }}>Ventur</Text>
+          <Text style={styles.headerText}>Ventur</Text>
         </View>
-        <View style={{ padding: 40, paddingTop: 10 }}>
-          <Text style={{ fontSize: 22, color: "white", textAlign: "center" }}>Bike touring built for you</Text>
+        <View style={styles.subHeaderContainer}>
+          <Text style={styles.subHeaderText}>Bike touring built for you</Text>
         </View>
       </View>
     )
@@ -55,7 +47,7 @@ class HomeLoggedOut extends Component {
   renderAgreementText() {
     return (
       <View>
-        <Text style={{ color: "white", textAlign: "center", fontSize: 8 }}>
+        <Text style={styles.agreementText}>
           *By tapping get started, you agree to our privacy policy and service agreement.
         </Text>
       </View>
@@ -66,7 +58,7 @@ class HomeLoggedOut extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.toggleLoginModal}>
         <View>
-          <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>Sign in</Text>
+          <Text style={styles.signInButton}>Sign in</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -75,20 +67,8 @@ class HomeLoggedOut extends Component {
   renderSignUp() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToSignUp}>
-        <LinearGradient
-          style={{
-            marginTop: 10,
-            marginBottom: 20,
-            width: this.props.width - 40,
-            height: 50,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 30
-          }}
-          colors={["#FF5423", "#E46545"]}>
-          <Text style={{ textAlign: "center", color: "white", fontWeight: "bold", fontSize: 20 }}>Get Started</Text>
+        <LinearGradient style={[styles.signUp, { width: this.props.width - 40 }]} colors={["#FF5423", "#E46545"]}>
+          <Text style={styles.signUpText}>Get Started</Text>
         </LinearGradient>
       </TouchableWithoutFeedback>
     )
@@ -96,7 +76,7 @@ class HomeLoggedOut extends Component {
 
   renderSignUpAndSignIn() {
     return (
-      <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 70 }}>
+      <View style={styles.signInAndSignUpContainer}>
         {this.renderSignIn()}
         {this.renderSignUp()}
         {this.renderAgreementText()}
@@ -105,23 +85,12 @@ class HomeLoggedOut extends Component {
   }
 
   render() {
+    const { width, height } = this.props
     return (
-      <ImageBackground style={{ height: null, width: this.props.width }} source={GabeBolivia}>
-        <View
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            height: this.props.height,
-            width: this.props.width,
-          }}>
+      <ImageBackground style={{ height: null, width }} source={GabeBolivia}>
+        <View style={{ backgroundColor: "rgba(0, 0, 0, 0.4)", height, width }}>
           <SafeAreaView>
-            <View
-              style={{
-                height: this.props.height,
-                width: this.props.width,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between"
-              }}>
+            <View style={[styles.flexSpaceBetween, { height, width }]}>
               {this.renderTitleAndSubTitle()}
               {this.renderSignUpAndSignIn()}
             </View>
@@ -134,7 +103,59 @@ class HomeLoggedOut extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  headerText: {
+    fontSize: 60,
+    color: "white",
+    textAlign: "center"
+  },
+  subHeaderContainer: {
+    padding: 40,
+    paddingTop: 10
+  },
+  subHeaderText: {
+    fontSize: 22,
+    color: "white",
+    textAlign: "center"
+  },
+  agreementText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 8
+  },
+  signInButton: {
+    fontSize: 20,
+    color: "white",
+    fontWeight: "bold"
+  },
+  signUp: {
+    marginTop: 10,
+    marginBottom: 20,
+    height: 50,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 30
+  },
+  flexSpaceBetween: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between"
+  },
+  signUpText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  signInAndSignUpContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: 70
+  }
+})
 
 export default connect(
   mapStateToProps,

@@ -1,20 +1,9 @@
 import React, { Component } from "react"
-import {
-  StyleSheet,
-  Button,
-  View,
-  Text,
-  TextInput,
-  Dimensions,
-  TouchableWithoutFeedback,
-  ScrollView
-} from "react-native"
-import { updateUserForm, populateUserForm, resetUserForm, submitForm } from "../../actions/user_form"
 import { connect } from "react-redux"
+import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import { updateUserForm, resetUserForm, submitForm } from "../../actions/user_form"
 import { LinearGradient } from "expo-linear-gradient"
-import DropDownHolder from "../../utils/DropdownHolder"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import { API_ROOT, setToken } from "../../agent"
 import InputScrollView from "react-native-input-scroll-view"
 import FormModal from "../shared/FormModal"
 
@@ -28,7 +17,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateUserForm: payload => dispatch(updateUserForm(payload)),
-  populateUserForm: payload => dispatch(populateUserForm(payload)),
   submitForm: () => dispatch(submitForm()),
   resetUserForm: payload => dispatch(resetUserForm(payload))
 })
@@ -51,7 +39,7 @@ class UserForm extends Component {
   }
 
   handleEntry = (key, text) => {
-    this.props.updateUserForm({ key: key, text: text })
+    this.props.updateUserForm({ key, text })
   }
 
   toggleHidePassword = () => {
@@ -63,9 +51,7 @@ class UserForm extends Component {
     return (
       <TouchableWithoutFeedback
         underlayColor="rgba(111, 111, 111, 0.5)"
-        style={{
-          position: "relative"
-        }}
+        style={styles.positionRelative}
         onPress={this.navigateBack}>
         <Ionicons name="ios-arrow-back" size={35} color="white" />
       </TouchableWithoutFeedback>
@@ -75,9 +61,7 @@ class UserForm extends Component {
   renderFormTitle() {
     return (
       <View>
-        <Text style={{ fontSize: 35, marginTop: 5, marginBottom: 20, color: "white", fontWeight: "bold" }}>
-          Welcome to Ventur
-        </Text>
+        <Text style={styles.venturFormTitle}>Welcome to Ventur</Text>
       </View>
     )
   }
@@ -85,7 +69,7 @@ class UserForm extends Component {
   renderEmailField() {
     return (
       <React.Fragment>
-        <Text style={{ color: "white" }}>EMAIL</Text>
+        <Text style={styles.colorWhite}>EMAIL</Text>
         <TextInput
           style={styles.textInput}
           editable={true}
@@ -101,8 +85,8 @@ class UserForm extends Component {
   renderPasswordField() {
     return (
       <React.Fragment>
-        <Text style={{ color: "white" }}>PASSWORD</Text>
-        <View style={{ position: "relative", height: 50, marginBottom: 30 }}>
+        <Text style={styles.colorWhite}>PASSWORD</Text>
+        <View style={styles.passwordFormContainer}>
           <TextInput
             style={styles.textInput}
             editable={true}
@@ -112,7 +96,7 @@ class UserForm extends Component {
             onChangeText={text => this.handleEntry("password", text)}
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
-            <View style={{ position: "absolute", right: 0, top: 50 / 4 }}>
+            <View style={styles.iconContainer}>
               <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
             </View>
           </TouchableWithoutFeedback>
@@ -124,7 +108,7 @@ class UserForm extends Component {
   renderFirstNameField() {
     return (
       <React.Fragment>
-        <Text style={{ color: "white" }}>FIRST NAME</Text>
+        <Text style={styles.colorWhite}>FIRST NAME</Text>
         <TextInput
           style={styles.textInput}
           editable={true}
@@ -140,7 +124,7 @@ class UserForm extends Component {
   renderLastNameField() {
     return (
       <React.Fragment>
-        <Text style={{ color: "white" }}>LAST NAME</Text>
+        <Text style={styles.colorWhite}>LAST NAME</Text>
         <TextInput
           style={styles.textInput}
           editable={true}
@@ -156,17 +140,7 @@ class UserForm extends Component {
   renderSubmitField() {
     return (
       <TouchableWithoutFeedback onPress={this.submitForm}>
-        <View
-          style={{
-            backgroundColor: "white",
-            borderRadius: 30,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            height: 50,
-            marginTop: 20
-          }}>
+        <View style={styles.submitField}>
           <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -206,6 +180,19 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 200
   },
+  colorWhite: {
+    color: "white"
+  },
+  venturFormTitle: {
+    fontSize: 35,
+    marginTop: 5,
+    marginBottom: 20,
+    color: "white",
+    fontWeight: "bold"
+  },
+  positionRelative: {
+    position: "relative"
+  },
   textInput: {
     height: 50,
     fontSize: 20,
@@ -214,6 +201,26 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     marginBottom: 30
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 0,
+    top: 12.5
+  },
+  passwordFormContainer: {
+    position: "relative",
+    height: 50,
+    marginBottom: 30
+  },
+  submitField: {
+    backgroundColor: "white",
+    borderRadius: 30,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    marginTop: 20
   }
 })
 
