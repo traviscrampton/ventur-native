@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import { Modal, SafeAreaView } from "react-native"
 import { connect } from "react-redux"
+import { Modal, SafeAreaView } from "react-native"
 import DropdownAlert from "react-native-dropdownalert"
 import DropDownHolder from "../../utils/DropdownHolder"
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, TouchableWithoutFeedback } from "react-native"
+import { View, TouchableWithoutFeedback, StyleSheet } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { connectActionSheet } from "@expo/react-native-action-sheet"
 
@@ -27,18 +27,17 @@ class ThreeDotDropdown extends Component {
       buttonIndex => {
         if (buttonIndex === cancelButtonIndex) return
 
-        this.props.options[buttonIndex].callback()  
+        this.props.options[buttonIndex].callback()
       }
     )
-    
   }
 
   render() {
     return (
-      <View style={{ position: "relative" }}>
+      <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.openActionSheet}>
-          <View style={{ paddingTop: 2, width: 40, height: 40 }}>
-            <MaterialCommunityIcons style={{ textAlign: "center" }} name="dots-vertical" size={32} color="#D7D7D7" />
+          <View style={styles.inner}>
+            <MaterialCommunityIcons style={styles.textAlignCenter} name="dots-vertical" size={32} color="#D7D7D7" />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -46,5 +45,10 @@ class ThreeDotDropdown extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  container: { position: "relative" },
+  inner: { paddingTop: 2, width: 40, height: 40 },
+  textAlignCenter: { textAlign: "center" }
+})
 
 export default connectActionSheet(ThreeDotDropdown)

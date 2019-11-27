@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { MaterialIcons, Feather, Ionicons, Entypo } from "@expo/vector-icons"
-import { updateCurrentBottomTab } from "../../actions/common"
 import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions, SafeAreaView } from "react-native"
+import { updateCurrentBottomTab } from "../../actions/common"
+import { MaterialIcons, Feather, Entypo } from "@expo/vector-icons"
 
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar
@@ -25,10 +25,6 @@ class BottomTabBar extends Component {
         return <MaterialIcons name="explore" color={color} size={30} />
       case "Profile":
         return <Feather name="user" color={color} size={30} />
-      case "My Trips":
-        return <Ionicons name="ios-bicycle" color={color} size={30} />
-      case "Gear":
-        return <Entypo name="tools" color={color} size={30} />
     }
   }
 
@@ -62,15 +58,14 @@ class BottomTabBar extends Component {
 
   renderToolbar() {
     return (
-      <SafeAreaView style={{ backgroundColor: "white"}}>
-      <View
-        style={styles.outerContainer}>
-        <View style={styles.innerContainer}>
-          {this.props.navigation.state.routes.map((route, idx) => {
-            return this.renderStandardTab(route, idx)
-          })}
+      <SafeAreaView style={styles.safeContainer}>
+        <View style={styles.outerContainer}>
+          <View style={styles.innerContainer}>
+            {this.props.navigation.state.routes.map((route, idx) => {
+              return this.renderStandardTab(route, idx)
+            })}
+          </View>
         </View>
-      </View>
       </SafeAreaView>
     )
   }
@@ -81,6 +76,9 @@ class BottomTabBar extends Component {
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    backgroundColor: "white"
+  },
   outerContainer: {
     height: 50,
     display: "flex",

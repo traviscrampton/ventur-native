@@ -1,10 +1,8 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
-import MapView from 'react-native-maps'
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { MaterialIndicator } from "react-native-indicators"
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native"
+import MapView from "react-native-maps"
+import { Ionicons } from "@expo/vector-icons"
 import { defaultRouteViewer } from "../../actions/route_viewer"
 import LoadingScreen from "../shared/LoadingScreen"
 
@@ -35,25 +33,9 @@ class RouteViewer extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{
-          position: "absolute",
-          top: 60,
-          left: 20,
-          backgroundColor: "white",
-          borderRadius: "50%"
-        }}>
+        style={styles.floatingButtonContainer}>
         <TouchableWithoutFeedback onPress={this.navigateBack}>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingRight: 2,
-              paddingTop: 1
-            }}>
+          <View style={styles.floatingButtonInner}>
             <Ionicons name="ios-arrow-back" size={30} />
           </View>
         </TouchableWithoutFeedback>
@@ -70,7 +52,9 @@ class RouteViewer extends Component {
         return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
       })
 
-      return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
+      return (
+        <MapView.Polyline style={styles.zIndex10} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
+      )
     })
   }
 
@@ -80,9 +64,9 @@ class RouteViewer extends Component {
     }
 
     return (
-      <View style={{ position: "relative", flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <MapView style={{ flex: 1, zIndex: -1 }} initialRegion={this.props.initialRegion}>
+      <View style={styles.relativeFlex}>
+        <View style={styles.flex}>
+          <MapView style={styles.flexZindex} initialRegion={this.props.initialRegion}>
             {this.renderPolylines()}
           </MapView>
         </View>
@@ -93,12 +77,43 @@ class RouteViewer extends Component {
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1
+  },
+  flexZindex: {
+    flex: 1,
+    zIndex: -1
+  },
   container: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     backgroundColor: "white",
     paddingBottom: 50
+  },
+  zIndex10: {
+    zindex: 10
+  },
+  floatingButtonInner: {
+    height: 40,
+    width: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 2,
+    paddingTop: 1
+  },
+  relativeFlex: {
+    position: "relative",
+    flex: 1
+  },
+  floatingButtonContainer: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+    backgroundColor: "white",
+    borderRadius: "50%"
   }
 })
 

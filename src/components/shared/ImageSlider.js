@@ -15,7 +15,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
-  resetImages: () => dispatch(resetImages()),
+  resetImages: () => dispatch(resetImages())
 })
 
 class ImageSlider extends Component {
@@ -31,7 +31,7 @@ class ImageSlider extends Component {
   renderExit() {
     return (
       <TouchableWithoutFeedback onPress={this.exitImageSlider}>
-        <View style={{ height: 50, padding: 10, marginBottom: 10 }}>
+        <View style={styles.exit}>
           <Feather name="x" color="white" size={32} />
         </View>
       </TouchableWithoutFeedback>
@@ -43,8 +43,8 @@ class ImageSlider extends Component {
       return (
         <View>
           <Image style={{ width: this.props.width, height: image.height }} source={{ uri: image.uri }} />
-          <View style={{ padding: 20 }}>
-            <Text style={{ color: "white", fontFamily: "open-sans-regular" }}>{image.caption}</Text>
+          <View style={styles.padding20}>
+            <Text style={styles.imageCaption}>{image.caption}</Text>
           </View>
         </View>
       )
@@ -54,17 +54,40 @@ class ImageSlider extends Component {
   render() {
     return (
       <Modal animationType="fade" visible={this.props.visible}>
-        <SafeAreaView
-          style={{ flex: 1, display: "flex", flexDirection: "row", alignItems: "center", backgroundColor: "black" }}>
+        <SafeAreaView style={styles.safeAreaView}>
           <View>
             {this.renderExit()}
-            <Swiper showsPagination={false} index={this.props.activeIndex}>{this.renderImages()}</Swiper>
+            <Swiper showsPagination={false} index={this.props.activeIndex}>
+              {this.renderImages()}
+            </Swiper>
           </View>
         </SafeAreaView>
       </Modal>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  exit: {
+    height: 50,
+    padding: 10,
+    marginBottom: 10
+  },
+  safeAreaView: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "black"
+  },
+  imageCaption: {
+    color: "white",
+    fontFamily: "open-sans-regular"
+  },
+  padding20: {
+    padding: 20
+  }
+})
 
 export default connect(
   mapStateToProps,

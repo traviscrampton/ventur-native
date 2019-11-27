@@ -1,7 +1,6 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text, Alert } from "react-native"
 import { connect } from "react-redux"
+import { StyleSheet, View, TouchableWithoutFeedback, Text, Alert } from "react-native"
 import MapView from "react-native-maps"
 import { FloatingAction } from "react-native-floating-action"
 import RouteEditorButtons from "../Maps/RouteEditorButtons"
@@ -9,7 +8,6 @@ import { authenticateStravaUser } from "../../actions/strava"
 import {
   toggleDrawMode,
   togglePositionMode,
-  setShownIndex,
   persistRoute,
   eraseRoute,
   cancelAllModes
@@ -251,9 +249,9 @@ class RouteEditor extends Component {
     if (this.props.isSaving) {
       buttonContent = <MaterialIndicator size={20} color={color} />
     } else if (this.needsSaving(drawMode, positionMode)) {
-      buttonContent = <Text style={{ color: color }}>{needsSaving}</Text>
+      buttonContent = <Text style={{ color }}>{needsSaving}</Text>
     } else {
-      buttonContent = <Text style={{ color: color }}>{saved}</Text>
+      buttonContent = <Text style={{ color }}>{saved}</Text>
     }
     return (
       <View
@@ -261,29 +259,9 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.7}
         shadowRadius={2}
-        style={{
-          position: "absolute",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          bottom: 65,
-          left: 60
-        }}>
+        style={styles.savingButton}>
         <TouchableWithoutFeedback onPress={onPress}>
-          <View
-            style={{
-              width: this.props.width / 2,
-              borderRadius: 30,
-              height: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white"
-            }}>
-            {buttonContent}
-          </View>
+          <View style={[styles.savingButtonContainer, { width: this.props.width / 2 }]}>{buttonContent}</View>
         </TouchableWithoutFeedback>
       </View>
     )
@@ -296,25 +274,9 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{
-          position: "absolute",
-          top: 60,
-          left: 20,
-          backgroundColor: "white",
-          borderRadius: "50%"
-        }}>
+        style={styles.floatingButtonContainer}>
         <TouchableWithoutFeedback onPress={this.checkForSaveAndNavigateBack}>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingRight: 2,
-              paddingTop: 1
-            }}>
+          <View style={styles.floatingInner}>
             <Ionicons name="ios-arrow-back" size={30} />
           </View>
         </TouchableWithoutFeedback>
@@ -331,24 +293,9 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{
-          position: "absolute",
-          bottom: 60,
-          right: 30,
-          backgroundColor: "#FF5423",
-          borderRadius: "50%",
-          overflow: "hidden"
-        }}>
+        style={styles.exitButtonContainer}>
         <TouchableWithoutFeedback onPress={this.cancelAllModes}>
-          <View
-            style={{
-              height: 57,
-              width: 57,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
+          <View style={styles.exitButtonInner}>
             <MaterialIcons name="close" size={30} color={"white"} />
           </View>
         </TouchableWithoutFeedback>
@@ -365,13 +312,15 @@ class RouteEditor extends Component {
         return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
       })
 
-      return <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
+      return (
+        <MapView.Polyline style={styles.zIndex10} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
+      )
     })
   }
 
   renderPreviousPolylines() {
     return this.props.previousPolylines.map((coordinates, index) => {
-      return <MapView.Polyline style={{ zIndex: 9 }} coordinates={coordinates} strokeWidth={2} strokeColor="#3F88C5" />
+      return <MapView.Polyline style={styles.zIndex9} coordinates={coordinates} strokeWidth={2} strokeColor="#3F88C5" />
     })
   }
 
@@ -380,26 +329,18 @@ class RouteEditor extends Component {
 
     const { latitude, longitude, latitudeDelta, longitudeDelta } = this.props.changedRegion
     return (
-      <View
-        style={{
-          position: "absolute",
-          backgroundColor: "rgba(111, 111, 111, 0.3)",
-          padding: 5,
-          borderRadius: 5,
-          top: 60,
-          right: 30
-        }}>
+      <View style={styles.positionCoordinates}>
         <View>
-          <Text style={{ color: "black" }}>Latitude: {latitude}</Text>
+          <Text style={styles.colorBlack}>Latitude: {latitude}</Text>
         </View>
         <View>
-          <Text style={{ color: "black" }}>Longitude: {longitude}</Text>
+          <Text style={styles.colorBlack}>Longitude: {longitude}</Text>
         </View>
         <View>
-          <Text style={{ color: "black" }}>Lat Delta: {latitudeDelta}</Text>
+          <Text style={styles.colorBlack}>Lat Delta: {latitudeDelta}</Text>
         </View>
         <View>
-          <Text style={{ color: "black" }}>Long Delta: {longitudeDelta}</Text>
+          <Text style={styles.colorBlack}>Long Delta: {longitudeDelta}</Text>
         </View>
       </View>
     )
@@ -411,14 +352,14 @@ class RouteEditor extends Component {
     }
 
     return (
-      <View style={{ position: "relative", flex: 1 }}>
+      <View style={styles.relativeFlex}>
         <View
           onMoveShouldSetResponder={this.handleOnMoveResponder}
           onResponderRelease={this.handleOnReleaseResponder}
           style={{ flex: 1 }}>
           <MapView
             onRegionChangeComplete={e => this.handleRegionChange(e)}
-            style={{ flex: 1, zIndex: -1 }}
+            style={styles.positiveFlex}
             scrollEnabled={!this.props.canDraw}
             onPanDrag={e => this.onPanDrag(e)}
             initialRegion={this.props.initialRegion}>
@@ -451,6 +392,82 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     paddingBottom: 50
+  },
+  savingButton: {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 65,
+    left: 60
+  },
+  savingButtonContainer: {
+    borderRadius: 30,
+    height: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white"
+  },
+  floatingInner: {
+    height: 40,
+    width: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 2,
+    paddingTop: 1
+  },
+  exitButtonContainer: {
+    position: "absolute",
+    bottom: 60,
+    right: 30,
+    backgroundColor: "#FF5423",
+    borderRadius: "50%",
+    overflow: "hidden"
+  },
+  exitButtonInner: {
+    height: 57,
+    width: 57,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  zindex10: {
+    zIndex: 10
+  },
+  positionCoordinates: {
+    position: "absolute",
+    backgroundColor: "rgba(111, 111, 111, 0.3)",
+    padding: 5,
+    borderRadius: 5,
+    top: 60,
+    right: 30
+  },
+  relativeFlex: {
+    position: "relative",
+    flex: 1
+  },
+  positiveFlex: {
+    flex: 1,
+    zIndex: -1
+  },
+  colorBlack: {
+    color: "black"
+  },
+  zIndex9: {
+    zIndex: 9
+  },
+  floatingButtonContainer: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+    backgroundColor: "white",
+    borderRadius: "50%"
   }
 })
 

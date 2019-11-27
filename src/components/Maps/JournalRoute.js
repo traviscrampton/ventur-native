@@ -1,7 +1,6 @@
 import React, { Component } from "react"
-import _ from "lodash"
-import { StyleSheet, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
 import { connect } from "react-redux"
+import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native"
 import MapView from "react-native-maps"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { MaterialIndicator } from "react-native-indicators"
@@ -31,7 +30,9 @@ const mapStateToProps = state => ({
   changedRegion: state.routeEditor.changedRegion,
   isSaving: state.routeEditor.isSaving,
   currentUser: state.common.currentUser,
-  journalUser: state.journal.journal.user
+  journalUser: state.journal.journal.user,
+  height: state.common.height,
+  width: state.common.width
 })
 
 class JournalRoute extends Component {
@@ -56,25 +57,9 @@ class JournalRoute extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={{
-          position: "absolute",
-          top: 60,
-          left: 20,
-          backgroundColor: "white",
-          borderRadius: "50%"
-        }}>
+        style={styles.floatingBackButton}>
         <TouchableWithoutFeedback onPress={this.navigateBack}>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingRight: 2,
-              paddingTop: 1
-            }}>
+          <View style={styles.iconPositionBackButton}>
             <Ionicons name="ios-arrow-back" color={"#323941"} size={30} />
           </View>
         </TouchableWithoutFeedback>
@@ -90,26 +75,14 @@ class JournalRoute extends Component {
     const iconColor = positionMode ? "white" : "#3F88C5"
 
     return (
-      <View style={{ position: "absolute", top: 60, right: 30 }}>
+      <View style={styles.cropButtonContainer}>
         <TouchableWithoutFeedback onPress={this.props.togglePositionMode}>
           <View
             shadowColor="#323941"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
             shadowRadius={2}
-            style={[
-              {
-                backgroundColor: backgroundColor,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 35,
-                width: 35,
-                borderRadius: "50%",
-                marginBottom: 10
-              }
-            ]}>
+            style={[styles.cropButtonPosition, { backgroundColor: backgroundColor }]}>
             <MaterialIcons name="crop-free" size={25} color={iconColor} />
           </View>
         </TouchableWithoutFeedback>
@@ -134,36 +107,15 @@ class JournalRoute extends Component {
     if (this.props.isSaving) {
       buttonContent = <MaterialIndicator size={20} color="#FF5423" />
     } else if (this.isChangedRegionDifferent()) {
-      buttonContent = <Text style={{ color: "#FF5423" }}>SAVED</Text>
+      buttonContent = <Text style={styles.savedColor}>SAVED</Text>
     } else {
-      buttonContent = <Text style={{ color: "#FF5423" }}>SAVE POSITION</Text>
+      buttonContent = <Text style={styles.savedColor}>SAVE POSITION</Text>
     }
 
     return (
-      <View
-        style={{
-          position: "absolute",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          bottom: 30,
-          width: Dimensions.get("window").width
-        }}>
+      <View style={[styles.savingButtonContainer, { width: this.props.width }]}>
         <TouchableWithoutFeedback onPress={this.props.persistCoordinates}>
-          <View
-            style={{
-              width: Dimensions.get("window").width / 2,
-              borderRadius: 30,
-              height: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white"
-            }}>
-            {buttonContent}
-          </View>
+          <View style={[styles.savingButtonContent, { width: this.props.width / 2 }]}>{buttonContent}</View>
         </TouchableWithoutFeedback>
       </View>
     )
@@ -178,7 +130,7 @@ class JournalRoute extends Component {
         })
 
         return (
-          <MapView.Polyline style={{ zIndex: 10 }} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
+          <MapView.Polyline style={styles.zIndex10} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
         )
       })
     })
@@ -190,10 +142,10 @@ class JournalRoute extends Component {
     }
 
     return (
-      <View style={{ position: "relative", flex: 1 }}>
-        <View style={{ flex: 1 }}>
+      <View style={styles.relativeFlex}>
+        <View style={styles.flex1}>
           <MapView
-            style={{ flex: 1, zIndex: -1 }}
+            style={styles.flexAndZ}
             onRegionChangeComplete={e => this.handleRegionChange(e)}
             initialRegion={this.props.initialRegion}>
             {this.renderPolylines()}
@@ -207,7 +159,74 @@ class JournalRoute extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  floatingBackButton: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+    backgroundColor: "white",
+    borderRadius: "50%"
+  },
+  iconPositionBackButton: {
+    height: 40,
+    width: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 2,
+    paddingTop: 1
+  },
+  cropButtonPosition: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 35,
+    width: 35,
+    borderRadius: "50%",
+    marginBottom: 10
+  },
+  savingButtonContainer: {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 30
+  },
+  savedColor: {
+    color: "#FF5423"
+  },
+  relativeFlex: {
+    position: "relative",
+    flex: 1
+  },
+  savingButtonContent: {
+    borderRadius: 30,
+    height: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white"
+  },
+  flex1: {
+    flex: 1
+  },
+  flexAndZ: {
+    flex: 1,
+    zIndex: -1
+  },
+  zIndex10: {
+    zIndex: 10
+  },
+  cropButtonContainer: {
+    position: "absolute",
+    top: 60,
+    right: 30
+  }
+})
 
 export default connect(
   mapStateToProps,
