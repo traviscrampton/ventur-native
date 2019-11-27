@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 35,
     width: 35,
-    borderRadius: "50%"
+    borderRadius: 17.5
   },
   redoButton: {
     backgroundColor: "white",
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 35,
     width: 35,
-    borderRadius: "50%",
+    borderRadius: 17.5,
     marginLeft: 10
   },
   drawButton: {
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     marginLeft: 10,
-    borderRadius: "50%"
+    borderRadius: 25
   },
   stravaCtaInner: {
     height: 35,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-    borderRadius: "50%"
+    borderRadius: 17.5
   },
   cropButton: {
     display: "flex",
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 35,
     width: 35,
-    borderRadius: "50%",
+    borderRadius: 17.5,
     marginBottom: 10
   },
   stravaButtonContainer: {

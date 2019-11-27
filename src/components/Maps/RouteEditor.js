@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     right: 30,
     backgroundColor: "#FF5423",
-    borderRadius: "50%",
+    borderRadius: 57 / 2,
     overflow: "hidden"
   },
   exitButtonInner: {
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     backgroundColor: "white",
-    borderRadius: "50%"
+    borderRadius: 20
   }
 })
 

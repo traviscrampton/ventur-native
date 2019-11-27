@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "top",
+    alignItems: "flex-start",
     paddingRight: 20
   },
   contentContainerStyle: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   profileView: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "top",
+    alignItems: "flex-start",
     justifyContent: "space-between"
   }
 })

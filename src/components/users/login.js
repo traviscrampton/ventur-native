@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     top: 12.5
   },
   colorWhite: {
-    color: "white "
+    color: "white"
   },
   formTitle: {
     fontSize: 35,

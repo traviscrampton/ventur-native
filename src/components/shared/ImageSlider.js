@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, Modal, SafeAreaView, Image, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, Modal, SafeAreaView, Image, Text, TouchableWithoutFeedback } from "react-native"
 import { toggleImageSliderModal, resetImages } from "../../actions/image_slider"
 import Swiper from "react-native-swiper"
 import { Feather } from "@expo/vector-icons"

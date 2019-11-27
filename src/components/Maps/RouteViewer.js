@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50
   },
   zIndex10: {
-    zindex: 10
+    zIndex: 10
   },
   floatingButtonInner: {
     height: 40,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     backgroundColor: "white",
-    borderRadius: "50%"
+    borderRadius: 20
   }
 })
 

@@ -5,7 +5,6 @@ import Journal from "./components/journals/journal"
 import StravaLogin from "./components/users/StravaLogin"
 import HomeLoggedOut from "./components/users/HomeLoggedOut"
 import BottomTabBar from "./components/shared/BottomTabBar"
-import CameraRollContainer from "./components/editor/CameraRollContainer"
 import ImageCaptionForm from "./components/editor/ImageCaptionForm"
 import ChapterDispatch from "./components/chapters/ChapterDispatch"
 import ManageContent from "./components/editor/ManageContent"
@@ -24,7 +23,6 @@ import GearItemReview from "./components/GearItemReview/GearItemReview"
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
-  "CameraRollContainer",
   "ImageCaptionForm",
   "ManageContent",
   "RouteEditor",
@@ -44,7 +42,6 @@ const JournalFeedNavigator = createStackNavigator(
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
-    CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     ManageContent: ManageContent,
     JournalForm: JournalForm,
@@ -75,7 +72,6 @@ const ProfileNavigator = createStackNavigator(
     Chapter: ChapterDispatch,
     ChapterMetaDataForm: ChapterMetaDataForm,
     CommentForm: CommentForm,
-    CameraRollContainer: CameraRollContainer,
     ImageCaptionForm: ImageCaptionForm,
     JournalForm: JournalForm,
     CountriesEditor: CountriesEditor,

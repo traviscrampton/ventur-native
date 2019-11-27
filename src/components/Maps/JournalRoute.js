@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     backgroundColor: "white",
-    borderRadius: "50%"
+    borderRadius: 20
   },
   iconPositionBackButton: {
     height: 40,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 35,
     width: 35,
-    borderRadius: "50%",
+    borderRadius: 17.5,
     marginBottom: 10
   },
   savingButtonContainer: {
