@@ -140,7 +140,10 @@ export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
     {
       AuthFlow: AuthFlow,
-      BottomNavigator: BottomNavigator
+      BottomNavigator: {
+        screen: BottomNavigator,
+        path: "bottomnavigator"
+      }
     },
     {
       initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
@@ -150,7 +153,11 @@ export const RootNavigator = (signedIn = false) =>
 const BottomNavigator = createBottomTabNavigator(
   {
     Explore: JournalFeedNavigator,
-    Profile: ProfileNavigator
+    Profile: {
+      screen: ProfileNavigator,
+      path: "profile"
+    }
+    // Profile: ProfileNavigator
   },
   {
     initialRouteName: "Explore",

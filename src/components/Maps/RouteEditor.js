@@ -98,8 +98,9 @@ class RouteEditor extends Component {
 
   onPanDrag = e => {
     const { drawMode, canDraw, isDrawing } = this.props
+    // console.log("drawMode", drawMode, "canDraw", canDraw, "isDrawing", isDrawing)
 
-    if (!drawMode || !canDraw || !isDrawing) return
+    if (!drawMode || !canDraw) return
     let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
     this.props.drawLine(coordinates)
   }
@@ -123,6 +124,7 @@ class RouteEditor extends Component {
   }
 
   handleOnMoveResponder = () => {
+    console.log("handleOnMoveResponder")
     if (!this.props.canDraw) return
 
     if (!this.props.isDrawing) {
@@ -353,20 +355,16 @@ class RouteEditor extends Component {
 
     return (
       <View style={styles.relativeFlex}>
-        <View
-          onMoveShouldSetResponder={this.handleOnMoveResponder}
-          onResponderRelease={this.handleOnReleaseResponder}
-          style={{ flex: 1 }}>
-          <MapView
-            onRegionChangeComplete={e => this.handleRegionChange(e)}
-            style={styles.positiveFlex}
-            scrollEnabled={!this.props.canDraw}
-            onPanDrag={e => this.onPanDrag(e)}
-            initialRegion={this.props.initialRegion}>
-            {this.renderPreviousPolylines()}
-            {this.renderPolylines()}
-          </MapView>
-        </View>
+        <MapView
+          onRegionChangeComplete={e => this.handleRegionChange(e)}
+          style={styles.positiveFlex}
+          scrollEnabled={!this.props.canDraw}
+          onPanDrag={e => this.onPanDrag(e)}
+          onTouchStart={this.handleOnReleaseResponder}
+          initialRegion={this.props.initialRegion}>
+          {this.renderPreviousPolylines()}
+          {this.renderPolylines()}
+        </MapView>
         {this.renderFloatingBackButton()}
         <FloatingAction
           color={"#FF5423"}

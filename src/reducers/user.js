@@ -4,6 +4,7 @@ import {
   POPULATE_USER_JOURNALS,
   POPULATE_USER_GEAR,
   TOGGLE_PROFILE_PHOTO_LOADING,
+  TOGGLE_IS_LOADING,
   SET_DEFAULT_APP_STATE
 } from "../actions/user"
 
@@ -16,7 +17,8 @@ const defaultAppState = {
     gear: []
   },
   offlineChapters: [],
-  profilePhotoLoading: false
+  profilePhotoLoading: false,
+  isLoading: false
 }
 
 export default (state = defaultAppState, action) => {
@@ -55,6 +57,11 @@ export default (state = defaultAppState, action) => {
             return gear.id !== action.payload
           })
         })
+      }
+    case TOGGLE_IS_LOADING:
+      return {
+        ...state,
+        isLoading: action.payload
       }
     case POPULATE_USER_JOURNALS: {
       return {

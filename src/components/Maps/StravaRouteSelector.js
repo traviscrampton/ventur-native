@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Dimensions, Text } from "react-native"
+import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, SafeAreaView, Text } from "react-native"
 import { connect } from "react-redux"
 import { MapView } from "expo"
 import { MaterialIndicator } from "react-native-indicators"
@@ -108,10 +108,12 @@ class StravaRouteSelector extends Component {
     }
 
     return (
-      <View style={styles.hunnit}>
-        {this.renderHeader()}
-        <ScrollView style={styles.whitePadding}>{this.renderStravaActivities()}</ScrollView>
-      </View>
+      <SafeAreaView style={styles.safeAreaView}>
+        <View style={styles.hunnit}>
+          {this.renderHeader()}
+          <ScrollView style={styles.whitePadding}>{this.renderStravaActivities()}</ScrollView>
+        </View>
+      </SafeAreaView>
     )
   }
 }
@@ -119,6 +121,10 @@ class StravaRouteSelector extends Component {
 const styles = StyleSheet.create({
   iconMargin: {
     marginRight: 5
+  },
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: "white"
   },
   whitePadding: {
     padding: 20,

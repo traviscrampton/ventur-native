@@ -90,7 +90,7 @@ class GearReviewFormProsCons extends Component {
     const { pros, cons } = this.props
 
     return (
-      <View style={style.marginTopBottom20}>
+      <View style={styles.marginTopBottom20}>
         {this.renderProsConsContainer(pros, true)}
         {this.renderProsConsContainer(cons, false)}
       </View>

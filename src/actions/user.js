@@ -1,5 +1,5 @@
 import { get, setToken, API_ROOT } from "../agent"
-import { setLoadingTrue, setLoadingFalse } from "./common"
+import { setLoadingFalse } from "./common"
 
 export function uploadProfilePhoto(img) {
   return async function(dispatch, getState) {
@@ -102,9 +102,17 @@ export function setDefaultAppState() {
   }
 }
 
+export const TOGGLE_IS_LOADING = "TOGGLE_IS_LOADING"
+export function toggleIsLoading(payload) {
+  return {
+    type: TOGGLE_IS_LOADING,
+    payload: payload
+  }
+}
+
 export function getProfilePageData() {
   return async function(dispatch, getState) {
-    dispatch(setLoadingTrue())
+    dispatch(toggleIsLoading(true))
     const currentUserId = getState().common.currentUser.id
     try {
       const res = await get(`/users/${currentUserId}`)
@@ -114,6 +122,6 @@ export function getProfilePageData() {
       console.log("rut roh")
     }
 
-    dispatch(setLoadingFalse())
+    dispatch(toggleIsLoading(false))
   }
 }
