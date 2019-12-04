@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback
 } from "react-native"
-import { Linking } from 'expo';
+import { Linking } from "expo"
 import GearListItem from "../GearItem/GearListItem"
 import { MaterialIcons } from "@expo/vector-icons"
 import { getProfilePageData, uploadProfilePhoto, setDefaultAppState } from "../../actions/user"
@@ -42,7 +42,8 @@ const mapStateToProps = state => ({
   gear: state.user.user.gear,
   journals: state.user.user.journals,
   width: state.common.width,
-  height: state.common.height
+  height: state.common.height,
+  isLoading: state.user.isLoading
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -101,7 +102,9 @@ class Profile extends Component {
   connectToStrava = async () => {
     if (this.props.currentUser.stravaAccessToken) return
 
-    const redirect = "ventur://ventur/profile"
+    // const redirect = "ventur://ventur/--/profile"
+    const redirect = Linking.makeUrl("/bottomnavigator/profile")
+
     console.log("redirect", redirect)
     const params = Object.assign(
       {},
@@ -134,6 +137,7 @@ class Profile extends Component {
           <Text style={styles.userNameText}>Hi {this.props.user.firstName}!</Text>
         </View>
         <View>
+          <Text>{Linking.makeUrl("/bottomnavigator/profile")}</Text>
           <Text style={{ width: this.props.width * 0.68 - 40 }} />
         </View>
       </View>
