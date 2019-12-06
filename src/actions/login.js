@@ -1,5 +1,6 @@
 import { setCurrentUser } from "./common"
-import { storeJWT } from "../auth"
+import { addStravaToCurrentUser } from "./strava"
+import { storeJWT, storeStravaCredentials } from "../auth"
 import { post } from "../agent"
 
 export const UPDATE_LOGIN_FORM = "UPDATE_LOGIN_FORM"
@@ -18,13 +19,21 @@ export function resetLoginForm(payload) {
   }
 }
 
+export async function storeUserInformationOnDevice(login, stravaObject) {
+    await storeJWT(login)
+    await storeStravaCredentials(stravaObject)
+}
+
 export function submitForm() {
   return async function(dispatch, getState) {
     const { email, password } = getState().login
     try {
       const login = await post("/users/login", { email, password })
-      await storeJWT(login)
-      dispatch(setCurrentUser(login.user))
+      const { user, stravaAccessToken, stravaRefreshToken, stravaExpiresAt } = login
+      const stravaObject = Object.assign({}, { stravaAccessToken, stravaRefreshToken, stravaExpiresAt })
+      await storeUserInformationOnDevice(login, stravaObject)
+      dispatch(setCurrentUser(user))
+      dispatch(addStravaToCurrentUser(stravaObject))
       dispatch(resetLoginForm())
     } catch {
       return

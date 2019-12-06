@@ -90,24 +90,6 @@ export const requestForStravaActivity = async (activityId, stravaAccessToken) =>
     map: { polyline }
   } = data
   return Object.assign({}, { id, polyline })
-
-  // .then(response => {
-  //   return response.json()
-  // })
-  // .then(data => {
-  //   let {
-  //     id,
-  //     map: { polyline }
-  //   } = data
-  //   return Object.assign({}, { id, polyline })
-  // })
-  // .catch(err => {
-  //   console.log("error!", err)
-  //   if (err.status === 401) {
-  //     console.log("error 401")
-  //     // return logout()
-  //   }
-  // })
 }
 
 export const ADD_TO_ACTIVITY_TO_IMPORT = "ADD_TO_ACTIVITY_TO_IMPORT"
@@ -121,12 +103,9 @@ export const addToActivitesToImport = payload => {
 
 export const checkForExpiredToken = () => {
   return async (dispatch, getState) => {
-    console.log("What in tarnation", getState().common.currentUser.stravaExpiresAt, Date.now())
-    if (getState().common.currentUser.stravaExpiresAt < new Date().getTime() / 1000) {
-      console.log("its expired!")
+    if (getState().common.stravaExpiresAt < new Date().getTime() / 1000) {
       dispatch(refreshAccessToken())
     } else {
-      console.log("its still good")
       dispatch(loadInitialStravaData())
     }
   }
@@ -134,8 +113,7 @@ export const checkForExpiredToken = () => {
 
 export const refreshAccessToken = () => {
   return async (dispatch, getState) => {
-    const { stravaRefreshToken } = getState().common.currentUser
-    const { stravaClientId, stravaClientSecret } = getState().common
+    const { stravaRefreshToken, stravaClientId, stravaClientSecret } = getState().common
     let url = "https://www.strava.com/oauth/token"
     let params = Object.assign(
       {},
@@ -171,8 +149,8 @@ export const refreshAccessToken = () => {
 export const loadInitialStravaData = () => {
   return async (dispatch, getState) => {
     const url = "https://www.strava.com/api/v3/athlete/activities?per_page=50"
-    const { stravaAccessToken } = getState().common.currentUser
-    const distance = getState().chapter.chapter.distance
+    const { stravaAccessToken } = getState().common
+    const { distance } = getState().chapter.chapter
 
     fetch(url, {
       method: "GET",

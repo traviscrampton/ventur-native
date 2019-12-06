@@ -10,9 +10,11 @@ import {
   SET_LOADING_FALSE,
   ADD_API_CREDENTIALS
 } from "../actions/common"
+import { ADD_STRAVA_TO_CURRENT_USER } from "../actions/strava"
 
 const defaultAppState = {
   currentUser: null,
+  stravaAccessToken: null,
   hideTabBar: false,
   initialAppLoaded: false,
   currentBottomTab: "Explore",
@@ -47,6 +49,8 @@ export default (state = defaultAppState, action) => {
         stravaClientId: action.payload.stravaClientId,
         stravaClientSecret: action.payload.stravaClientSecret
       }
+    case ADD_STRAVA_TO_CURRENT_USER:
+      return Object.assign({}, state, action.payload)
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {
         ...state,

@@ -1,12 +1,12 @@
 import { Linking } from "react-native"
 import { encodeQueryString, post } from "../agent"
+import { storeStravaCredentials } from "../auth"
 import { WebBrowser } from "expo"
 import { AsyncStorage } from "react-native"
 import { setCurrentUser } from "./common"
 
 export const authenticateStravaUser = result => {
   return async (dispatch, getState) => {
-    console.log("WHAT IS THE RESULT HERE", result)
     const code = getCodeFromUrl(result)
     dispatch(validateUser(code)).then(response => {
       dispatch(persistAccessToken(response))
@@ -20,20 +20,29 @@ const getCodeFromUrl = result => {
   return params.code
 }
 
+export const ADD_STRAVA_TO_CURRENT_USER = "ADD_STRAVA_TO_CURRENT_USER"
+export function addStravaToCurrentUser(payload) {
+  return {
+    type: ADD_STRAVA_TO_CURRENT_USER,
+    payload: payload
+  }
+}
+
 export const persistAccessToken = response => {
   return async (dispatch, getState) => {
-    console.log("are we here", response)
     let user
     let params = Object.assign(
       {},
-      { stravaAccessToken: response.access_token, stravaRefreshToken: response.refresh_token, stravaExpiresAt: response.expires_at }
+      {
+        stravaAccessToken: response.access_token,
+        stravaRefreshToken: response.refresh_token,
+        stravaExpiresAt: response.expires_at
+      }
     )
 
-    post("/strava_auths", params).then(response => {
-      user = Object.assign({}, getState().common.currentUser, response)
-      AsyncStorage.setItem("currentUser", JSON.stringify(user))
-      dispatch(setCurrentUser(user))
-    })
+    await post("/strava_auths", params)
+    await storeStravaCredentials(params)
+    dispatch(addStravaToCurrentUser(params))
   }
 }
 

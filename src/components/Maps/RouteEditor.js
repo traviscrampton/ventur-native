@@ -24,11 +24,14 @@ import {
   updateRegionCoordinates,
   defaultRouteEditor
 } from "../../actions/route_editor"
+import { checkForExpiredToken, setStravaLoadingTrue } from "../../actions/strava_activity_import"
 import LoadingScreen from "../shared/LoadingScreen"
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
   toggleDrawMode: () => dispatch(toggleDrawMode()),
+  checkForExpiredToken: () => dispatch(checkForExpiredToken()),
+  setStravaLoadingTrue: () => dispatch(setStravaLoadingTrue()),
   togglePositionMode: () => dispatch(togglePositionMode()),
   drawLine: payload => dispatch(drawLine(payload)),
   setupNextDraw: () => dispatch(setupNextDraw()),
@@ -46,6 +49,7 @@ const mapStateToProps = state => ({
   width: state.common.width,
   drawMode: state.routeEditor.drawMode,
   shownIndex: state.routeEditor.shownIndex,
+  stravaAccessToken: state.common.stravaAccessToken,
   positionMode: state.routeEditor.positionMode,
   polylines: state.routeEditor.polylines,
   previousPolylines: state.routeEditor.previousPolylines,
@@ -98,7 +102,6 @@ class RouteEditor extends Component {
 
   onPanDrag = e => {
     const { drawMode, canDraw, isDrawing } = this.props
-    // console.log("drawMode", drawMode, "canDraw", canDraw, "isDrawing", isDrawing)
 
     if (!drawMode || !canDraw) return
     let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
@@ -124,7 +127,6 @@ class RouteEditor extends Component {
   }
 
   handleOnMoveResponder = () => {
-    console.log("handleOnMoveResponder")
     if (!this.props.canDraw) return
 
     if (!this.props.isDrawing) {
@@ -132,27 +134,6 @@ class RouteEditor extends Component {
     }
 
     return true
-  }
-
-  connectToStrava = async () => {
-    if (this.props.currentUser.stravaAccessToken) return
-
-    const redirect = "ventur://ventur"
-    const params = Object.assign(
-      {},
-      {
-        client_id: this.props.stravaClientId,
-        response_type: "code",
-        redirect_uri: redirect,
-        scope: "activity:read_all",
-        approval_prompt: "force"
-      }
-    )
-
-    let url = "https://www.strava.com/oauth/authorize" + encodeQueryString(params)
-    const result = await WebBrowser.openAuthSessionAsync(url)
-    console.log("RESULT", result)
-    this.props.authenticateStravaUser(result)
   }
 
   isSaved() {
@@ -185,13 +166,33 @@ class RouteEditor extends Component {
     return JSON.stringify(this.props.initialRegion) !== JSON.stringify(this.props.changedRegion)
   }
 
+  alertAboutStrava() {
+    Alert.alert(
+      "Strava Not Connected",
+      "To upload strava routes go to the profile page",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    )
+  }
+
+  loadStravaAndNavigate = () => {
+    this.props.setStravaLoadingTrue()
+    this.props.navigation.navigate("StravaRouteSelector")
+    this.props.checkForExpiredToken()
+  }
+
   async handleStravaPress() {
-    if (!this.props.currentUser.stravaAccessToken) {
-      await this.connectToStrava()
-    } else if (false) {
-      console.log("its connected")
-    } /* is connected to strava */ else {
-      console.log("its connected to strava")
+    if (!this.props.stravaAccessToken) {
+      this.alertAboutStrava()
+    } else {
+      this.loadStravaAndNavigate()
     }
   }
 
