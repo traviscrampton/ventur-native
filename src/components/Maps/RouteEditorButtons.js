@@ -165,7 +165,7 @@ class RouteEditorButtons extends Component {
   }
 
   renderStravaCta() {
-    if (!this.props.stravaAccessToken) return
+    return
 
     return (
       <View

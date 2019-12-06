@@ -146,7 +146,8 @@ export const RootNavigator = (signedIn = false) =>
       }
     },
     {
-      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow"
+      initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow",
+      path: "ventur"
     }
   )
 
@@ -157,10 +158,9 @@ const BottomNavigator = createBottomTabNavigator(
       screen: ProfileNavigator,
       path: "profile"
     }
-    // Profile: ProfileNavigator
   },
   {
-    initialRouteName: "Explore",
+    initialRouteName: "Profile",
     tabBarComponent: BottomTabBar
   }
 )

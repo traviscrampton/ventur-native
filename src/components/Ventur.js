@@ -6,6 +6,7 @@ import {
   updateConnectionType,
   addApiCredentials
 } from "../actions/common"
+import { addStravaToCurrentUser } from "../actions/strava"
 import { connect } from "react-redux"
 import * as Font from "expo-font"
 import { SafeAreaView } from "react-native"
@@ -27,6 +28,7 @@ const mapDispatchToProps = dispatch => ({
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
   setWindowDimensions: payload => dispatch(setWindowDimensions(payload)),
   updateConnectionType: payload => dispatch(updateConnectionType(payload)),
+  addStravaToCurrentUser: payload => dispatch(addStravaToCurrentUser(payload)),
   addApiCredentials: payload => dispatch(addApiCredentials(payload))
 })
 
@@ -67,8 +69,11 @@ class Ventur extends Component {
   async setCurrentUser() {
     try {
       let user = await AsyncStorage.getItem("currentUser")
+      let stravaCredentials = await AsyncStorage.getItem("stravaCredentials")
       user = JSON.parse(user)
+      stravaCredentials = JSON.parse(stravaCredentials)
       this.props.setCurrentUser(user)
+      this.props.addStravaToCurrentUser(stravaCredentials)
       this.props.initialAppLoaded()
     } catch (err) {
       this.props.setCurrentUser(null)

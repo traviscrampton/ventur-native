@@ -3,10 +3,18 @@ import { SET_CURRENT_USER } from "./actions/action_types"
 
 export const storeJWT = async obj => {
   try {
-    AsyncStorage.setItem("JWT", obj.token)
-    AsyncStorage.setItem("currentUser", JSON.stringify(obj.user))
+    await AsyncStorage.setItem("JWT", obj.token)
+    await AsyncStorage.setItem("currentUser", JSON.stringify(obj.user))
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const storeStravaCredentials = async obj => {
+  try {
+    await AsyncStorage.setItem("stravaCredentials", JSON.stringify(obj))
+  } catch (error) {
+    console.log(" there has been a grave error", error)
   }
 }
 
@@ -22,6 +30,7 @@ export const logOut = async () => {
   try {
     AsyncStorage.removeItem("JWT")
     AsyncStorage.removeItem("currentUser")
+    AsyncStorage.removeItem("stravaCredentials")
   } catch (error) {
     console.log(error)
   }

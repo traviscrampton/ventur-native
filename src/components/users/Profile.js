@@ -36,6 +36,7 @@ import ImagePickerContainer from "../shared/ImagePickerContainer"
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
+  stravaAccessToken: state.common.stravaAccessToken,
   stravaClientId: state.common.stravaClientId,
   user: state.user.user,
   profilePhotoLoading: state.user.profilePhotoLoading,
@@ -100,12 +101,8 @@ class Profile extends Component {
   }
 
   connectToStrava = async () => {
-    if (this.props.currentUser.stravaAccessToken) return
-
-    // const redirect = "ventur://ventur/--/profile"
-    const redirect = Linking.makeUrl("/bottomnavigator/profile")
-
-    console.log("redirect", redirect)
+    if (this.props.stravaAccessToken) return
+    const redirect = "ventur://ventur"
     const params = Object.assign(
       {},
       {
@@ -123,7 +120,7 @@ class Profile extends Component {
   }
 
   stravaCtaText() {
-    return this.props.currentUser.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
+    return this.props.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
   }
 
   launchImagePicker = () => {
@@ -137,8 +134,9 @@ class Profile extends Component {
           <Text style={styles.userNameText}>Hi {this.props.user.firstName}!</Text>
         </View>
         <View>
-          <Text>{Linking.makeUrl("/bottomnavigator/profile")}</Text>
-          <Text style={{ width: this.props.width * 0.68 - 40 }} />
+          <Text style={{ width: this.props.width * 0.68 - 40 }}>
+            Welcome to Ventur, here you can create trips and gear reviews
+          </Text>
         </View>
       </View>
     )
@@ -379,6 +377,7 @@ class Profile extends Component {
         <View style={styles.white100}>
           <ScrollView>
             {this.renderProfilePhotoAndMetadata()}
+            <View style={[styles.borderBarrier, { width: this.props.width }]} />
             {this.renderSlidingTabs()}
           </ScrollView>
           {this.renderFloatingCreateButton()}
@@ -395,6 +394,10 @@ const styles = StyleSheet.create({
   white100: {
     backgroundColor: "white",
     height: "100%"
+  },
+  borderBarrier: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#f8f8f8"
   },
   flexWhite: {
     flex: 1,
