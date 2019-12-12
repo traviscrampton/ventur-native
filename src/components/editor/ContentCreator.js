@@ -10,7 +10,8 @@ import { MaterialIcons, Entypo } from "@expo/vector-icons";
 
 const mapStateToProps = state => ({
   activeContentCreator: state.editor.activeContentCreator,
-  uploadIsImage: state.editor.uploadIsImage
+  uploadIsImage: state.editor.uploadIsImage,
+  width: state.common.width
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -76,35 +77,39 @@ class ContentCreator extends Component {
             name="add-circle-outline"
             size={20}
           />
-          <Text style={styles.textColor}>Add Content</Text>
+          <Text style={styles.addContentCta}>ADD CONTENT</Text>
         </View>
       </TouchableWithoutFeedback>
     );
   }
 
   renderTextOrImage() {
+    const buttonStyles = [
+      styles.flexRowCenter,
+      { width: this.props.width / 2 }
+    ];
     return (
-      <View style={[styles.initialState, styles.initialStateTextOrImage]}>
+      <View style={[styles.initialStateTextOrImage]}>
         <TouchableWithoutFeedback onPress={() => this.createNewTextEntry()}>
-          <View style={styles.flexRowCenter}>
+          <View style={buttonStyles}>
             <MaterialIcons
               style={styles.marginRight4}
               color="darkgray"
               name="text-fields"
               size={20}
             />
-            <Text style={styles.darkGray}>Text</Text>
+            <Text style={styles.darkGray}>TEXT</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={this.openCameraRoll}>
-          <View style={styles.flexRowCenter}>
+          <View style={buttonStyles}>
             <Entypo
               style={styles.marginRight4}
               name="image"
               size={20}
               color={"darkgray"}
             />
-            <Text style={styles.darkGray}>Image</Text>
+            <Text style={styles.darkGray}>IMAGES</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -138,13 +143,14 @@ const styles = StyleSheet.create({
   flexRowCenter: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50
   },
-  initialstateTextOrImage: {
+  initialStateTextOrImage: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around"
+    alignItems: "center"
   },
   marginRight7: {
     marginRight: 7
@@ -161,8 +167,10 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     height: 50
   },
-  textColor: {
-    color: "#d3d3d3"
+  addContentCta: {
+    color: "#d3d3d3",
+    fontFamily: "overpass",
+    paddingTop: 2
   },
   optionContainer: {
     paddingTop: 10,
@@ -172,7 +180,8 @@ const styles = StyleSheet.create({
   grayText: {
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: "white"
+    backgroundColor: "white",
+    fontFamily: "overpass"
   }
 });
 

@@ -5,8 +5,8 @@ import DropDownHolder from "./utils/DropdownHolder";
 import { logOut } from "./auth";
 
 const ql = require("superagent-graphql");
-// export const API_ROOT = "http://10.0.0.107:3000"
-export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com";
+export const API_ROOT = "http://10.0.0.107:3000";
+// export const API_ROOT = "https://aqueous-sea-94280.herokuapp.com";
 
 const handleError = error => {
   if (error.message === "Network request failed") {

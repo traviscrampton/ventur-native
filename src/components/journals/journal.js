@@ -314,7 +314,10 @@ class Journal extends Component {
           <View>
             <View>
               <Text style={styles.stats}>
-                {`${journal.status} \u2022 ${distance}`.toUpperCase()}
+                {`${journal.status.replace(
+                  "_",
+                  " "
+                )} \u2022 ${distance}`.toUpperCase()}
               </Text>
             </View>
             <View>

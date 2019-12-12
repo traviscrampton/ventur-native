@@ -1,4 +1,3 @@
-import React, { Component } from "react";
 import {
   createStackNavigator,
   createSwitchNavigator,
@@ -6,7 +5,6 @@ import {
 } from "react-navigation";
 import JournalFeed from "./components/journals/JournalFeed";
 import Journal from "./components/journals/journal";
-import StravaLogin from "./components/users/StravaLogin";
 import HomeLoggedOut from "./components/users/HomeLoggedOut";
 import BottomTabBar from "./components/shared/BottomTabBar";
 import ImageCaptionForm from "./components/editor/ImageCaptionForm";

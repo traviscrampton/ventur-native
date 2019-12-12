@@ -3,6 +3,7 @@ import {
   RESET_CHAPTER_FORM,
   TOGGLE_CHAPTER_MODAL
 } from "../actions/chapter_form";
+import _ from "lodash";
 
 const defaultChapterFormData = {
   id: null,
