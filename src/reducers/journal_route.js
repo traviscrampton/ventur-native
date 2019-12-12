@@ -1,10 +1,13 @@
-import { POPULATE_JOURNAL_ROUTE, DEFAULT_JOURNAL_ROUTE } from "../actions/journal_route"
+import {
+  POPULATE_JOURNAL_ROUTE,
+  DEFAULT_JOURNAL_ROUTE
+} from "../actions/journal_route";
 
 const defaultRouteData = {
   id: null,
   polylines: [[]],
   initialRegion: {}
-}
+};
 
 export default (state = defaultRouteData, action) => {
   switch (action.type) {
@@ -14,12 +17,12 @@ export default (state = defaultRouteData, action) => {
         initialRegion: action.payload.initialRegion,
         polylines: action.payload.polylines,
         id: action.payload.id
-      }
+      };
 
     case DEFAULT_JOURNAL_ROUTE:
-      return defaultRouteData
+      return defaultRouteData;
 
     default:
-      return state
+      return state;
   }
-}
+};

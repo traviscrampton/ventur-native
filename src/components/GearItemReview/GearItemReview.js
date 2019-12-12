@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   ScrollView,
@@ -9,16 +9,22 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Alert
-} from "react-native"
-import { fetchGearItem, deleteGearReview } from "../../actions/gear_item_review"
-import { editGearItemReview } from "../../actions/gear_review_form"
-import { JournalChildHeader } from "../shared/JournalChildHeader"
-import { MaterialIndicator } from "react-native-indicators"
-import { ProsCons } from "./ProsCons"
-import StarRating from "../shared/StarRating"
-import ImageSlider from "../shared/ImageSlider"
-import ProgressiveImage from "../shared/ProgressiveImage"
-import { toggleImageSliderModal, populateImages } from "../../actions/image_slider"
+} from "react-native";
+import {
+  fetchGearItem,
+  deleteGearReview
+} from "../../actions/gear_item_review";
+import { editGearItemReview } from "../../actions/gear_review_form";
+import { JournalChildHeader } from "../shared/JournalChildHeader";
+import { MaterialIndicator } from "react-native-indicators";
+import { ProsCons } from "./ProsCons";
+import StarRating from "../shared/StarRating";
+import ImageSlider from "../shared/ImageSlider";
+import ProgressiveImage from "../shared/ProgressiveImage";
+import {
+  toggleImageSliderModal,
+  populateImages
+} from "../../actions/image_slider";
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -34,7 +40,7 @@ const mapStateToProps = state => ({
   pros: state.gearItemReview.pros,
   cons: state.gearItemReview.cons,
   journalTitle: state.journal.journal.title
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   fetchGearItem: payload => dispatch(fetchGearItem(payload)),
@@ -42,89 +48,92 @@ const mapDispatchToProps = dispatch => ({
   populateImages: payload => dispatch(populateImages(payload)),
   editGearItemReview: payload => dispatch(editGearItemReview(payload)),
   deleteGearReview: payload => dispatch(deleteGearReview(payload))
-})
+});
 
 class GearItemReview extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
-  static MAX_STARS = 5
+  static MAX_STARS = 5;
 
   componentWillMount() {
-    this.props.fetchGearItem(this.props.id)
+    this.props.fetchGearItem(this.props.id);
   }
 
   getStarText() {
     switch (this.props.rating) {
       case 1:
-        return "Bad"
+        return "Bad";
       case 2:
-        return "Meh"
+        return "Meh";
       case 3:
-        return "Decent"
+        return "Decent";
       case 4:
-        return "Pretty Good"
+        return "Pretty Good";
       case 5:
-        return "Excellent"
+        return "Excellent";
       default:
-        return ""
+        return "";
     }
   }
 
   navigateBack = () => {
-    this.props.navigation.goBack()
-  }
+    this.props.navigation.goBack();
+  };
 
   getCarouselImages() {
     return [
       { largeUri: this.props.gearImageUrl, thumbnailUri: null },
       ...this.props.images
-        .map((image, index) => {
+        .map(image => {
           if (this.props.gearImageUrl !== image.originalUri) {
-            return image
+            return image;
           }
         })
-        .filter((image, index) => {
-          return image
+        .filter(image => {
+          return image;
         })
-    ]
+    ];
   }
 
   isCurrentUser = () => {
-    return this.props.userId == this.props.currentUser.id
-  }
+    return this.props.userId == this.props.currentUser.id;
+  };
 
   editGearReview = () => {
-    this.props.editGearItemReview()
-  }
+    this.props.editGearItemReview();
+  };
 
   handleDelete = () => {
-    this.props.deleteGearReview()
-    this.navigateBack()
-  }
+    this.props.deleteGearReview();
+    this.navigateBack();
+  };
 
   deleteGearReview = () => {
     Alert.alert(
       "Are you sure?",
       "Deleting this gear review will erase all images and content",
-      [{ text: "Delete Gear Review", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
+      [
+        { text: "Delete Gear Review", onPress: this.handleDelete },
+        { text: "Cancel", style: "cancel" }
+      ],
       { cancelable: true }
-    )
-  }
+    );
+  };
 
   getOptions = isCurrentUser => {
-    if (!isCurrentUser) return
+    if (!isCurrentUser) return;
 
     return [
       { title: "Edit Gear Review", callback: this.editGearReview },
       { title: "Delete Gear Review", callback: this.deleteGearReview }
-    ]
-  }
+    ];
+  };
 
   getDropdownProps = () => {
-    const isCurrentUser = this.isCurrentUser()
-    const options = this.getOptions(isCurrentUser)
+    const isCurrentUser = this.isCurrentUser();
+    const options = this.getOptions(isCurrentUser);
 
     return Object.assign(
       {},
@@ -132,11 +141,11 @@ class GearItemReview extends Component {
         isCurrentUser,
         options
       }
-    )
-  }
+    );
+  };
 
   renderHeader = () => {
-    const dropdownProps = this.getDropdownProps()
+    const dropdownProps = this.getDropdownProps();
 
     return (
       <JournalChildHeader
@@ -145,19 +154,19 @@ class GearItemReview extends Component {
         navigateBack={this.navigateBack}
         dropdownProps={dropdownProps}
       />
-    )
-  }
+    );
+  };
 
   renderName = () => {
     return (
       <View>
         <Text style={styles.name}>{this.props.name}</Text>
       </View>
-    )
-  }
+    );
+  };
 
   renderReview() {
-    if (this.props.review.length === 0) return
+    if (this.props.review.length === 0) return;
 
     return (
       <View style={styles.marginTop20}>
@@ -166,11 +175,11 @@ class GearItemReview extends Component {
         </View>
         <Text style={styles.review}>{this.props.review}</Text>
       </View>
-    )
+    );
   }
 
   renderRating() {
-    const starText = this.getStarText()
+    const starText = this.getStarText();
 
     return (
       <View style={styles.ratingContainer}>
@@ -179,39 +188,47 @@ class GearItemReview extends Component {
           <Text style={styles.starText}>{starText}</Text>
         </View>
       </View>
-    )
+    );
   }
 
   renderImageSlider = index => {
-    const activeIndex = index
+    const activeIndex = index;
     const images = this.getCarouselImages().map(image => {
-      return Object.assign({}, { uri: image.largeUri, caption: "", height: this.props.width })
-    })
+      return Object.assign(
+        {},
+        { uri: image.largeUri, caption: "", height: this.props.width }
+      );
+    });
 
-    const payload = Object.assign({}, { images, activeIndex })
+    const payload = Object.assign({}, { images, activeIndex });
 
-    this.props.populateImages(payload)
-    this.props.toggleImageSliderModal(true)
-  }
+    this.props.populateImages(payload);
+    this.props.toggleImageSliderModal(true);
+  };
 
   renderProsCons() {
-    return <ProsCons pros={this.props.pros} cons={this.props.cons} />
+    return <ProsCons pros={this.props.pros} cons={this.props.cons} />;
   }
 
   renderItem(item, index) {
-    let { thumbnailUri, largeUri } = item
+    let { thumbnailUri, largeUri } = item;
     return (
       <TouchableWithoutFeedback onPress={() => this.renderImageSlider(index)}>
         <View style={styles.imageContainer}>
-          <ProgressiveImage thumbnailSource={thumbnailUri} source={largeUri} style={styles.progressiveImageStyles} />
+          <ProgressiveImage
+            thumbnailSource={thumbnailUri}
+            source={largeUri}
+            style={styles.progressiveImageStyles}
+          />
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderImageCarousel() {
-    const carouselImages = this.getCarouselImages()
-    if (carouselImages.length === 1 && carouselImages[0].largeUri.length === 0) return
+    const carouselImages = this.getCarouselImages();
+    if (carouselImages.length === 1 && carouselImages[0].largeUri.length === 0)
+      return;
 
     return (
       <View style={styles.marginTop20}>
@@ -221,7 +238,7 @@ class GearItemReview extends Component {
           renderItem={({ item, index }) => this.renderItem(item, index)}
         />
       </View>
-    )
+    );
   }
 
   render() {
@@ -230,7 +247,7 @@ class GearItemReview extends Component {
         <View style={[styles.loadingSpinner, { width: this.props.width }]}>
           <MaterialIndicator size={40} color="#FF5423" />
         </View>
-      )
+      );
     }
 
     return (
@@ -248,7 +265,7 @@ class GearItemReview extends Component {
           <ImageSlider />
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -321,9 +338,9 @@ const styles = StyleSheet.create({
     color: "#323941",
     fontFamily: "open-sans-regular"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GearItemReview)
+)(GearItemReview);

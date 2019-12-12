@@ -1,16 +1,20 @@
-import React, { Component } from "react"
-import { StyleSheet, SafeAreaView, View, FlatList } from "react-native"
-import { connect } from "react-redux"
-import { loadJournalFeed, resetJournalShow, toggleRefreshAndRefresh } from "../../actions/journals"
-import JournalCard from "./JournalCard"
-import LoadingScreen from "../shared/LoadingScreen"
-import RetryRequestScreen from "../shared/RetryRequestScreen"
+import React, { Component } from "react";
+import { StyleSheet, SafeAreaView, View, FlatList } from "react-native";
+import { connect } from "react-redux";
+import {
+  loadJournalFeed,
+  resetJournalShow,
+  toggleRefreshAndRefresh
+} from "../../actions/journals";
+import JournalCard from "./JournalCard";
+import LoadingScreen from "../shared/LoadingScreen";
+import RetryRequestScreen from "../shared/RetryRequestScreen";
 
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),
   resetJournalShow: () => dispatch(resetJournalShow()),
   toggleRefreshAndRefresh: payload => dispatch(toggleRefreshAndRefresh(payload))
-})
+});
 
 const mapStateToProps = state => ({
   journals: state.journalFeed.allJournals,
@@ -18,37 +22,43 @@ const mapStateToProps = state => ({
   isLoading: state.common.isLoading,
   width: state.common.width,
   height: state.common.height
-})
+});
 
 class JournalFeed extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   componentWillMount() {
-    this.loadJournalFeed()
+    this.loadJournalFeed();
   }
 
   loadJournalFeed = () => {
-    this.props.loadJournalFeed()
-  }
+    this.props.loadJournalFeed();
+  };
 
   handlePress = journalId => {
-    this.props.resetJournalShow()
-    this.props.navigation.navigate("Journal", { journalId })
-  }
+    this.props.resetJournalShow();
+    this.props.navigation.navigate("Journal", { journalId });
+  };
 
   handleRefresh = () => {
-    this.props.toggleRefreshAndRefresh()
-  }
+    this.props.toggleRefreshAndRefresh();
+  };
 
   renderJournal(journal, index) {
-    const styles = this.props.journals.length - 1 === index ? { marginBottom: 200 } : {}
+    const styles =
+      this.props.journals.length - 1 === index ? { marginBottom: 200 } : {};
     return (
       <View style={styles}>
-        <JournalCard {...journal} width={this.props.width} height={this.props.height} handlePress={this.handlePress} />
+        <JournalCard
+          {...journal}
+          width={this.props.width}
+          height={this.props.height}
+          handlePress={this.handlePress}
+        />
       </View>
-    )
+    );
   }
 
   renderErrorScreen = () => {
@@ -56,8 +66,8 @@ class JournalFeed extends Component {
       <View style={{ marginTop: this.props.height / 2.5 }}>
         <RetryRequestScreen reload={this.loadJournalFeed} />
       </View>
-    )
-  }
+    );
+  };
 
   renderJournals() {
     return (
@@ -70,15 +80,19 @@ class JournalFeed extends Component {
         renderItem={({ item, index }) => this.renderJournal(item, index)}
         keyExtractor={item => item.id}
       />
-    )
+    );
   }
 
   render() {
     if (this.props.isLoading) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
-    return <SafeAreaView style={styles.backgroundWhite}>{this.renderJournals()}</SafeAreaView>
+    return (
+      <SafeAreaView style={styles.backgroundWhite}>
+        {this.renderJournals()}
+      </SafeAreaView>
+    );
   }
 }
 
@@ -93,9 +107,9 @@ const styles = StyleSheet.create({
   backgroundWhite: {
     backgroundColor: "white"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(JournalFeed)
+)(JournalFeed);

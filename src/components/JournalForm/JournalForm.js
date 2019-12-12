@@ -1,16 +1,23 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { Header } from "../editor/header"
-import { StyleSheet, ScrollView, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Header } from "../editor/header";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  TextInput
+} from "react-native";
 import {
   updateJournalForm,
   resetJournalForm,
   persistJournal,
   toggleJournalFormModal,
   toggleCountriesEditorModal
-} from "../../actions/journal_form"
-import CountriesEditor from "./CountriesEditor"
-import FormModal from "../shared/FormModal"
+} from "../../actions/journal_form";
+import CountriesEditor from "./CountriesEditor";
+import FormModal from "../shared/FormModal";
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -22,73 +29,77 @@ const mapStateToProps = state => ({
   distanceType: state.journalForm.distanceType,
   currentRoot: state.common.currentBottomTab,
   visible: state.journalForm.visible
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
-  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload)),
+  toggleCountriesEditorModal: payload =>
+    dispatch(toggleCountriesEditorModal(payload)),
   resetJournalForm: () => dispatch(resetJournalForm()),
   persistJournal: callback => dispatch(persistJournal(callback))
-})
+});
 
 class JournalForm extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
-  static STATUS_OPTIONS = ["not_started", "active", "paused", "completed"]
-  static DISTANCE_OPTIONS = ["kilometers", "miles"]
+  static STATUS_OPTIONS = ["not_started", "active", "paused", "completed"];
+  static DISTANCE_OPTIONS = ["kilometers", "miles"];
 
   updateJournalForm = (key, value) => {
-    const payload = Object.assign({}, { [key]: value })
-    this.props.updateJournalForm(payload)
-  }
+    const payload = Object.assign({}, { [key]: value });
+    this.props.updateJournalForm(payload);
+  };
 
   saveJournal = () => {
-    this.props.persistJournal(this.navigateToJournal)
-  }
+    this.props.persistJournal(this.navigateToJournal);
+  };
 
   navigateToJournal = () => {
-    this.props.toggleJournalFormModal(false)
-  }
+    this.props.toggleJournalFormModal(false);
+  };
 
   handleGoBack = () => {
-    this.props.toggleJournalFormModal(false)
-    this.props.resetJournalForm()
-  }
+    this.props.toggleJournalFormModal(false);
+    this.props.resetJournalForm();
+  };
 
   toggleFormButton = (buttonType, currentOption) => {
-    const options = this.getOptionArray(buttonType)
-    const currentIndex = options.indexOf(currentOption)
-    const newOption = currentIndex === options.length - 1 ? options[0] : options[currentIndex + 1]
+    const options = this.getOptionArray(buttonType);
+    const currentIndex = options.indexOf(currentOption);
+    const newOption =
+      currentIndex === options.length - 1
+        ? options[0]
+        : options[currentIndex + 1];
 
-    this.updateJournalForm(buttonType, newOption)
-  }
+    this.updateJournalForm(buttonType, newOption);
+  };
 
   navigateToCountriesEditor = () => {
-    this.props.toggleCountriesEditorModal(true)
-  }
+    this.props.toggleCountriesEditorModal(true);
+  };
 
   getOptionArray(buttonType) {
     switch (buttonType) {
       case "status":
-        return JournalForm.STATUS_OPTIONS
+        return JournalForm.STATUS_OPTIONS;
       case "distanceType":
-        return JournalForm.DISTANCE_OPTIONS
+        return JournalForm.DISTANCE_OPTIONS;
       default:
-        return []
+        return [];
     }
   }
 
   renderFormTitle() {
-    const formTitle = this.props.id ? "Edit Journal" : "New Journal"
+    const formTitle = this.props.id ? "Edit Journal" : "New Journal";
 
     return (
       <View style={styles.formTitle}>
         <Text style={styles.title}>{formTitle}</Text>
       </View>
-    )
+    );
   }
 
   renderTextFields() {
@@ -124,47 +135,55 @@ class JournalForm extends Component {
           />
         </View>
       </View>
-    )
+    );
   }
 
   renderDistanceType() {
-    const distanceType = this.props.distanceType.toUpperCase()
+    const distanceType = this.props.distanceType.toUpperCase();
 
     return (
       <View>
         <Text style={styles.distanceTypeLabel}>Distance Type</Text>
-        <TouchableWithoutFeedback onPress={() => this.toggleFormButton("distanceType", this.props.distanceType)}>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            this.toggleFormButton("distanceType", this.props.distanceType)
+          }
+        >
           <View
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
             shadowRadius={2}
-            style={styles.distanceTypeView}>
+            style={styles.distanceTypeView}
+          >
             <Text style={styles.distanceTypeText}>{distanceType}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderStatusCta() {
-    const status = this.props.status.replace("_", " ").toUpperCase()
+    const status = this.props.status.replace("_", " ").toUpperCase();
 
     return (
       <View>
         <Text style={styles.statusLabel}>Status</Text>
-        <TouchableWithoutFeedback onPress={() => this.toggleFormButton("status", this.props.status)}>
+        <TouchableWithoutFeedback
+          onPress={() => this.toggleFormButton("status", this.props.status)}
+        >
           <View
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
             shadowRadius={2}
-            style={styles.statusView}>
+            style={styles.statusView}
+          >
             <Text style={styles.status}>{status}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderIncludedCountry(includedCountry) {
@@ -172,7 +191,7 @@ class JournalForm extends Component {
       <View style={styles.includedCountry} key={includedCountry.id}>
         <Text style={styles.fontSize18}>{includedCountry.name}</Text>
       </View>
-    )
+    );
   }
 
   renderCountries() {
@@ -188,11 +207,11 @@ class JournalForm extends Component {
         </View>
         <View style={styles.includedCountriesView}>
           {this.props.includedCountries.map((includedCountry, index) => {
-            return this.renderIncludedCountry(includedCountry)
+            return this.renderIncludedCountry(includedCountry);
           })}
         </View>
       </View>
-    )
+    );
   }
 
   renderHeader() {
@@ -205,8 +224,8 @@ class JournalForm extends Component {
         handleConfirm: this.saveJournal,
         confirmCta: "Save"
       }
-    )
-    return <Header key="header" {...headerProps} />
+    );
+    return <Header key="header" {...headerProps} />;
   }
 
   renderFormComponents() {
@@ -220,15 +239,24 @@ class JournalForm extends Component {
         countries: this.renderCountries(),
         header: this.renderHeader()
       }
-    )
+    );
   }
 
   render() {
-    const { formTitle, textFields, status, header, distanceType, countries } = this.renderFormComponents()
+    const {
+      formTitle,
+      textFields,
+      status,
+      header,
+      distanceType,
+      countries
+    } = this.renderFormComponents();
     return (
       <FormModal visible={this.props.visible}>
         {header}
-        <ScrollView style={[styles.container, { minHeight: this.props.height }]}>
+        <ScrollView
+          style={[styles.container, { minHeight: this.props.height }]}
+        >
           {formTitle}
           {textFields}
           {status}
@@ -238,7 +266,7 @@ class JournalForm extends Component {
         </ScrollView>
         <CountriesEditor includedCountries={this.props.includedCountries} />
       </FormModal>
-    )
+    );
   }
 }
 
@@ -262,7 +290,12 @@ const styles = StyleSheet.create({
   fontSize16: {
     fontSize: 16
   },
-  countriesContainer: { display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  countriesContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
   journalDescriptionLabel: {
     fontFamily: "playfair",
     color: "#323941",
@@ -363,9 +396,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(JournalForm)
+)(JournalForm);

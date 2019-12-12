@@ -1,10 +1,13 @@
-import { POPULATE_ROUTE_VIEWER, DEFAULT_ROUTE_VIEWER } from "../actions/route_viewer"
+import {
+  POPULATE_ROUTE_VIEWER,
+  DEFAULT_ROUTE_VIEWER
+} from "../actions/route_viewer";
 
 const defaultRouteData = {
   id: null,
   polylines: [[]],
   initialRegion: {}
-}
+};
 
 export default (state = defaultRouteData, action) => {
   switch (action.type) {
@@ -14,12 +17,12 @@ export default (state = defaultRouteData, action) => {
         initialRegion: action.payload.initialRegion,
         polylines: action.payload.polylines,
         id: action.payload.id
-      }
+      };
 
     case DEFAULT_ROUTE_VIEWER:
-      return defaultRouteData
+      return defaultRouteData;
 
     default:
-      return state
+      return state;
   }
-}
+};

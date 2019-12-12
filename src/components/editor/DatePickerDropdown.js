@@ -1,28 +1,29 @@
-import React, { Component } from "react"
-import { StyleSheet, View, Text, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
-import { connect } from "react-redux"
-
-const mapStateToProps = state => ({})
-
-const mapDispatchToProps = dispatch => ({})
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  DatePickerIOS,
+  TouchableWithoutFeedback
+} from "react-native";
 
 class DatePickerDropdown extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       date: props.date
-    }
+    };
   }
 
   handleDateChange = date => {
-    this.setState({ date: date })
-  }
+    this.setState({ date: date });
+  };
 
   persistMetadata = () => {
-    this.props.persistMetadata(this.state.date)
-    this.props.toggleDatePicker()
-  }
+    this.props.persistMetadata(this.state.date);
+    this.props.toggleDatePicker();
+  };
 
   renderConfirmOptions() {
     return (
@@ -38,22 +39,27 @@ class DatePickerDropdown extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   render() {
-    let { date } = this.state
+    let { date } = this.state;
 
     if (typeof date === "number") {
-      date = new Date(this.state.date)
+      date = new Date(this.state.date);
     }
 
     return (
       <View style={styles.container}>
-        <DatePickerIOS style={styles.datePicker} mode={"date"} date={date} onDateChange={this.handleDateChange} />
+        <DatePickerIOS
+          style={styles.datePicker}
+          mode={"date"}
+          date={date}
+          onDateChange={this.handleDateChange}
+        />
         {this.renderConfirmOptions()}
       </View>
-    )
+    );
   }
 }
 
@@ -95,9 +101,6 @@ const styles = StyleSheet.create({
   colorWhite: {
     color: "white"
   }
-})
+});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatePickerDropdown)
+export default DatePickerDropdown;

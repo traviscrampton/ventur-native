@@ -1,30 +1,37 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { Text, TouchableWithoutFeedback, StyleSheet, View, Dimensions, SafeAreaView } from "react-native"
-import { updateCurrentBottomTab } from "../../actions/common"
-import { MaterialIcons, Feather, Entypo } from "@expo/vector-icons"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  Text,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  View,
+  Dimensions,
+  SafeAreaView
+} from "react-native";
+import { updateCurrentBottomTab } from "../../actions/common";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
 
 const mapStateToProps = state => ({
   hideToolbar: state.common.hideToolbar
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateCurrentBottomTab: payload => dispatch(updateCurrentBottomTab(payload))
-})
+});
 
 class BottomTabBar extends Component {
   constructor(props) {
-    super(props)
-    this.navigateToRoute = this.navigateToRoute.bind(this)
+    super(props);
+    this.navigateToRoute = this.navigateToRoute.bind(this);
   }
 
   renderIcon(route, idx) {
-    const color = idx === this.props.navigation.state.index ? "black" : "gray"
+    const color = idx === this.props.navigation.state.index ? "black" : "gray";
     switch (route.key) {
       case "Explore":
-        return <MaterialIcons name="explore" color={color} size={30} />
+        return <MaterialIcons name="explore" color={color} size={30} />;
       case "Profile":
-        return <Feather name="user" color={color} size={30} />
+        return <Feather name="user" color={color} size={30} />;
     }
   }
 
@@ -33,27 +40,30 @@ class BottomTabBar extends Component {
       <View>
         <Text style={styles.iconText}>{`${route.key}`.toUpperCase()}</Text>
       </View>
-    )
+    );
   }
 
   navigateToRoute(route) {
-    this.props.updateCurrentBottomTab(route.key)
-    this.props.navigation.navigate(route.key)
+    this.props.updateCurrentBottomTab(route.key);
+    this.props.navigation.navigate(route.key);
   }
 
   renderStandardTab(route, idx) {
     return (
-      <TouchableWithoutFeedback key={idx} onPress={() => this.navigateToRoute(route)}>
+      <TouchableWithoutFeedback
+        key={idx}
+        onPress={() => this.navigateToRoute(route)}
+      >
         <View style={styles.standardTab}>
           {this.renderIcon(route, idx)}
           {this.renderText(route)}
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   dontRenderToolbar() {
-    return this.props.hideToolbar
+    return this.props.hideToolbar;
   }
 
   renderToolbar() {
@@ -62,16 +72,16 @@ class BottomTabBar extends Component {
         <View style={styles.outerContainer}>
           <View style={styles.innerContainer}>
             {this.props.navigation.state.routes.map((route, idx) => {
-              return this.renderStandardTab(route, idx)
+              return this.renderStandardTab(route, idx);
             })}
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 
   render() {
-    return this.renderToolbar()
+    return this.renderToolbar();
   }
 }
 
@@ -129,9 +139,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(BottomTabBar)
+)(BottomTabBar);

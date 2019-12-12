@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -9,9 +9,9 @@ import {
   Image,
   TouchableHighlight,
   TouchableWithoutFeedback
-} from "react-native"
-import ChapterList from "../chapters/ChapterList"
-import ChapterMetaDataForm from "../editor/ChapterMetaDataForm"
+} from "react-native";
+import ChapterList from "../chapters/ChapterList";
+import ChapterMetaDataForm from "../editor/ChapterMetaDataForm";
 import {
   loadSingleJournal,
   requestForChapter,
@@ -19,26 +19,35 @@ import {
   uploadBannerImage,
   imageUploading,
   updateTabIndex
-} from "../../actions/journals"
-import { Feather } from "@expo/vector-icons"
-import { populateGearItemReview } from "../../actions/gear_item_review"
-import { toggleCameraRollModal, updateActiveView } from "../../actions/camera_roll"
-import { MaterialIndicator } from "react-native-indicators"
-import { updateJournalForm, toggleJournalFormModal } from "../../actions/journal_form"
-import { resetChapter } from "../../actions/chapter"
-import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form"
-import { loadJournalMap } from "../../actions/journal_route"
-import { TabView, SceneMap, TabBar } from "react-native-tab-view"
-import { SimpleLineIcons, Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
-import ThreeDotDropdown from "../shared/ThreeDotDropdown"
-import LoadingScreen from "../shared/LoadingScreen"
-import ProgressiveImage from "../shared/ProgressiveImage"
-import GearListItem from "../GearItem/GearListItem"
-import { FloatingAction } from "react-native-floating-action"
-import ImagePickerContainer from "../shared/ImagePickerContainer"
-import JournalForm from "../JournalForm/JournalForm"
-import GearReviewForm from "../GearReviewForm/GearReviewForm"
+} from "../../actions/journals";
+import { Feather } from "@expo/vector-icons";
+import { populateGearItemReview } from "../../actions/gear_item_review";
+import {
+  toggleCameraRollModal,
+  updateActiveView
+} from "../../actions/camera_roll";
+import { MaterialIndicator } from "react-native-indicators";
+import {
+  updateJournalForm,
+  toggleJournalFormModal
+} from "../../actions/journal_form";
+import { resetChapter } from "../../actions/chapter";
+import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form";
+import { loadJournalMap } from "../../actions/journal_route";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { SimpleLineIcons, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  updateChapterForm,
+  toggleChapterModal
+} from "../../actions/chapter_form";
+import ThreeDotDropdown from "../shared/ThreeDotDropdown";
+import LoadingScreen from "../shared/LoadingScreen";
+import ProgressiveImage from "../shared/ProgressiveImage";
+import GearListItem from "../GearItem/GearListItem";
+import { FloatingAction } from "react-native-floating-action";
+import ImagePickerContainer from "../shared/ImagePickerContainer";
+import JournalForm from "../JournalForm/JournalForm";
+import GearReviewForm from "../GearReviewForm/GearReviewForm";
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -54,7 +63,7 @@ const mapStateToProps = state => ({
   index: state.journal.tabIndex,
   routes: state.journal.routes,
   activeView: state.cameraRoll.activeView
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
@@ -63,21 +72,23 @@ const mapDispatchToProps = dispatch => ({
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
   requestForChapter: payload => dispatch(requestForChapter(payload)),
   loadSingleJournal: payload => dispatch(loadSingleJournal(payload)),
-  triggerGearReviewFormFromJournal: payload => dispatch(triggerGearReviewFormFromJournal(payload)),
+  triggerGearReviewFormFromJournal: payload =>
+    dispatch(triggerGearReviewFormFromJournal(payload)),
   resetChapter: () => dispatch(resetChapter()),
   updateImageUploading: bool => dispatch(imageUploading(bool)),
   loadJournalMap: id => dispatch(loadJournalMap(id)),
   resetJournalShow: () => dispatch(resetJournalShow()),
-  uploadBannerImage: (journalId, img) => dispatch(uploadBannerImage(journalId, img)),
+  uploadBannerImage: (journalId, img) =>
+    dispatch(uploadBannerImage(journalId, img)),
   updateTabIndex: payload => dispatch(updateTabIndex(payload)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   updateActiveView: payload => dispatch(updateActiveView(payload)),
   populateGearItemReview: payload => dispatch(populateGearItemReview(payload))
-})
+});
 
 class Journal extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   static actions = [
@@ -95,34 +106,34 @@ class Journal extends Component {
       position: 1,
       color: "#3F88C5"
     }
-  ]
+  ];
 
   componentWillMount() {
-    this.requestForJournal()
+    this.requestForJournal();
   }
 
   requestForJournal() {
-    let journalId = this.props.navigation.getParam("journalId", "NO-ID")
+    let journalId = this.props.navigation.getParam("journalId", "NO-ID");
 
-    if (journalId === "NO-ID") return
-    this.props.loadSingleJournal(journalId)
+    if (journalId === "NO-ID") return;
+    this.props.loadSingleJournal(journalId);
   }
 
   requestForChapter = chapterId => {
-    this.props.resetChapter()
-    this.props.navigation.navigate("Chapter")
-    this.props.requestForChapter(chapterId)
-  }
+    this.props.resetChapter();
+    this.props.navigation.navigate("Chapter");
+    this.props.requestForChapter(chapterId);
+  };
 
   navigateBack = () => {
-    this.props.navigation.goBack()
-    setTimeout(this.props.resetJournalShow, 300)
-  }
+    this.props.navigation.goBack();
+    setTimeout(this.props.resetJournalShow, 300);
+  };
 
   navigateToMap = () => {
-    this.props.navigation.navigate("JournalRoute")
-    this.props.loadJournalMap(this.props.journal.id)
-  }
+    this.props.navigation.navigate("JournalRoute");
+    this.props.loadJournalMap(this.props.journal.id);
+  };
 
   getJournalOptions() {
     let optionsProps = [
@@ -134,13 +145,13 @@ class Journal extends Component {
         title: "Upload Image",
         callback: this.updateBannerImage
       }
-    ]
+    ];
 
-    return optionsProps
+    return optionsProps;
   }
 
   uploadImage = img => {
-    this.props.updateImageUploading(true)
+    this.props.updateImageUploading(true);
     let imgPost = Object.assign(
       {},
       {
@@ -148,27 +159,32 @@ class Journal extends Component {
         name: img.filename,
         type: "multipart/form-data"
       }
-    )
+    );
 
-    this.props.uploadBannerImage(this.props.journal.id, imgPost)
-  }
+    this.props.uploadBannerImage(this.props.journal.id, imgPost);
+  };
 
   updateBannerImage = () => {
-    this.props.updateActiveView("journal")
-    this.props.toggleCameraRollModal(true)
-  }
+    this.props.updateActiveView("journal");
+    this.props.toggleCameraRollModal(true);
+  };
 
   returnDistanceString(distance) {
-    const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+    const {
+      distanceType,
+      kilometerAmount,
+      mileAmount,
+      readableDistanceType
+    } = distance;
     switch (distanceType) {
       case "kilometer":
-        return `${kilometerAmount} ${readableDistanceType}`
+        return `${kilometerAmount} ${readableDistanceType}`;
 
       case "mile":
-        return `${mileAmount} ${readableDistanceType}`
+        return `${mileAmount} ${readableDistanceType}`;
 
       default:
-        return ""
+        return "";
     }
   }
 
@@ -180,7 +196,7 @@ class Journal extends Component {
       status,
       countries,
       distance: { distanceType }
-    } = this.props.journal
+    } = this.props.journal;
 
     const payload = Object.assign(
       {},
@@ -192,31 +208,34 @@ class Journal extends Component {
         distanceType,
         includedCountries: countries
       }
-    )
+    );
 
-    this.props.updateJournalForm(payload)
-    this.props.toggleJournalFormModal(true)
-  }
+    this.props.updateJournalForm(payload);
+    this.props.toggleJournalFormModal(true);
+  };
 
   renderCountries() {
-    let name
-    const { countries } = this.props.journal
+    let name;
+    const { countries } = this.props.journal;
     return countries.map((country, index) => {
-      name = index === countries.length - 1 ? country.name : `${country.name}, `
+      name =
+        index === countries.length - 1 ? country.name : `${country.name}, `;
       return (
         <Text key={country.name} style={styles.journalDescription}>
           {name}
         </Text>
-      )
-    })
+      );
+    });
   }
 
   renderThreeDotMenu(user) {
     if (user.id == this.props.currentUser.id) {
-      const options = this.getJournalOptions()
-      return <ThreeDotDropdown options={options} />
+      const options = this.getJournalOptions();
+      return <ThreeDotDropdown options={options} />;
     } else {
-      return <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+      return (
+        <Image style={styles.userImage} source={{ uri: user.avatarImageUrl }} />
+      );
     }
   }
 
@@ -226,22 +245,28 @@ class Journal extends Component {
         <TouchableHighlight
           underlayColor="rgba(111, 111, 111, 0.5)"
           style={styles.backButton}
-          onPress={this.navigateBack}>
-          <Ionicons style={styles.backIconPosition} name="ios-arrow-back" size={28} color="white" />
+          onPress={this.navigateBack}
+        >
+          <Ionicons
+            style={styles.backIconPosition}
+            name="ios-arrow-back"
+            size={28}
+            color="white"
+          />
         </TouchableHighlight>
         {this.renderThreeDotMenu(user)}
       </View>
-    )
+    );
   }
 
   renderImageUploadingScreen() {
-    if (!this.props.imageUploading) return
+    if (!this.props.imageUploading) return;
 
     return (
       <View style={[styles.imageUploadingScreen, { width: this.props.width }]}>
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
-    )
+    );
   }
 
   renderBannerAndUserImages(journal, user) {
@@ -258,22 +283,27 @@ class Journal extends Component {
           {this.renderJournalMetadata(journal)}
         </View>
       </View>
-    )
+    );
   }
 
   renderLocation() {
-    if (this.props.journal.countries.length === 0) return
+    if (this.props.journal.countries.length === 0) return;
 
     return (
       <View style={styles.locationContainer}>
-        <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="white" />
+        <SimpleLineIcons
+          name="location-pin"
+          style={styles.iconPosition}
+          size={14}
+          color="white"
+        />
         <Text numberOfLines={1}>{this.renderCountries()}</Text>
       </View>
-    )
+    );
   }
 
   renderJournalMetadata(journal) {
-    const distance = this.returnDistanceString(journal.distance)
+    const distance = this.returnDistanceString(journal.distance);
     return (
       <View style={styles.metaDataContainer}>
         <View style={styles.titleSubTitleContainer}>
@@ -283,10 +313,14 @@ class Journal extends Component {
         <View style={styles.statsAndMapContainer}>
           <View>
             <View>
-              <Text style={styles.stats}>{`${journal.status} \u2022 ${distance}`.toUpperCase()}</Text>
+              <Text style={styles.stats}>
+                {`${journal.status} \u2022 ${distance}`.toUpperCase()}
+              </Text>
             </View>
             <View>
-              <Text style={styles.stats}>FOLLOWERS: {this.props.journal.journalFollowsCount}</Text>
+              <Text style={styles.stats}>
+                FOLLOWERS: {this.props.journal.journalFollowsCount}
+              </Text>
             </View>
           </View>
           <View>
@@ -298,23 +332,26 @@ class Journal extends Component {
           </View>
         </View>
       </View>
-    )
+    );
   }
 
   renderHeader() {
-    const { journal, user } = this.props
-    return <View>{this.renderBannerAndUserImages(journal, user)}</View>
+    const { journal, user } = this.props;
+    return <View>{this.renderBannerAndUserImages(journal, user)}</View>;
   }
 
   renderJournalEmptyState(isChapter = false) {
-    const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet"
-    const { width, height } = this.props
-    const halfHeight = height / 2
-    const thirdWidth = width / 3
-    const fifthWidth = width / 5
+    const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet";
+    const { width, height } = this.props;
+    const halfHeight = height / 2;
+    const thirdWidth = width / 3;
+    const fifthWidth = width / 5;
 
     return (
-      <View key={"chapterEmptyState"} style={[styles.childEmptyState, { width: width, height: halfHeight }]}>
+      <View
+        key={"chapterEmptyState"}
+        style={[styles.childEmptyState, { width: width, height: halfHeight }]}
+      >
         <View style={styles.flexAndDirection}>
           <View>
             <View style={styles.emptyStateCtaContainer}>
@@ -327,20 +364,30 @@ class Journal extends Component {
           <View style={styles.emptyImage} />
         </View>
       </View>
-    )
+    );
   }
 
   renderSubContentLoading = () => {
-    return <MaterialIndicator key={"chapterLoading"} style={styles.marginTop50} size={40} color="#FF5423" />
-  }
+    return (
+      <MaterialIndicator
+        key={"chapterLoading"}
+        style={styles.marginTop50}
+        size={40}
+        color="#FF5423"
+      />
+    );
+  };
 
   renderChapters() {
     if (this.props.chapters.length === 0) {
-      return this.renderJournalEmptyState(true)
+      return this.renderJournalEmptyState(true);
     }
 
     return (
-      <View key={"chapterList"} style={[styles.marginBottom100, { width: this.props.width }]}>
+      <View
+        key={"chapterList"}
+        style={[styles.marginBottom100, { width: this.props.width }]}
+      >
         <ChapterList
           chapters={this.props.chapters}
           user={this.props.journal.user}
@@ -348,34 +395,34 @@ class Journal extends Component {
           handleSelectChapter={this.requestForChapter}
         />
       </View>
-    )
+    );
   }
 
   isCurrentUsersJournal() {
-    return this.props.user.id == this.props.currentUser.id
+    return this.props.user.id == this.props.currentUser.id;
   }
 
   handleGearItemPress = id => {
-    const payload = Object.assign({}, { id, loading: true })
+    const payload = Object.assign({}, { id, loading: true });
 
-    this.props.populateGearItemReview(payload)
-    this.props.navigation.navigate("GearItemReview")
-  }
+    this.props.populateGearItemReview(payload);
+    this.props.navigation.navigate("GearItemReview");
+  };
 
   navigateToGearReviewForm = () => {
-    this.props.triggerGearReviewFormFromJournal(this.props.journal.id)
-  }
+    this.props.triggerGearReviewFormFromJournal(this.props.journal.id);
+  };
 
   navigateToForm = name => {
     switch (name) {
       case "create_chapter":
-        return this.navigateToChapterForm()
+        return this.navigateToChapterForm();
       case "create_gear_item":
-        return this.navigateToGearReviewForm()
+        return this.navigateToGearReviewForm();
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   navigateToChapterForm = () => {
     let chapterForm = Object.assign(
@@ -389,43 +436,48 @@ class Journal extends Component {
         journalId: this.props.journal.id,
         bannerImage: { uri: "" }
       }
-    )
+    );
 
-    this.props.updateChapterForm(chapterForm)
-    this.props.toggleChapterModal(true)
-  }
+    this.props.updateChapterForm(chapterForm);
+    this.props.toggleChapterModal(true);
+  };
 
   renderFloatingButton() {
-    if (!this.isCurrentUsersJournal()) return
+    if (!this.isCurrentUsersJournal()) return;
 
     return (
       <FloatingAction
         color={"#3F88C5"}
         actions={Journal.actions}
         onPressItem={name => {
-          this.navigateToForm(name)
+          this.navigateToForm(name);
         }}
       />
-    )
+    );
   }
 
   renderGear() {
     if (this.props.journal.gear.length === 0) {
-      return this.renderJournalEmptyState()
+      return this.renderJournalEmptyState();
     }
 
     return (
       <View style={{ height: this.props.height }}>
         {this.props.journal.gear.map((gearItem, index) => {
-          return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
+          return (
+            <GearListItem
+              gearItem={gearItem}
+              gearItemPress={() => this.handleGearItemPress(gearItem.id)}
+            />
+          );
         })}
       </View>
-    )
+    );
   }
 
   updateTabIndex = index => {
-    this.props.updateTabIndex(index)
-  }
+    this.props.updateTabIndex(index);
+  };
 
   getTabProps = () => {
     return Object.assign(
@@ -443,17 +495,17 @@ class Journal extends Component {
           view: this.renderGear()
         })
       ]
-    )
-  }
+    );
+  };
 
   getNavigationState() {
-    const { index, routes } = this.props
-    return Object.assign({}, { index, routes })
+    const { index, routes } = this.props;
+    return Object.assign({}, { index, routes });
   }
 
   renderTabView() {
     if (this.props.subContentLoading) {
-      return this.renderSubContentLoading()
+      return this.renderSubContentLoading();
     }
 
     return (
@@ -462,11 +514,11 @@ class Journal extends Component {
         renderScene={({ route }) => {
           switch (route.key) {
             case "chapters":
-              return this.renderChapters()
+              return this.renderChapters();
             case "gear":
-              return this.renderGear()
+              return this.renderGear();
             default:
-              return null
+              return null;
           }
         }}
         onIndexChange={this.updateTabIndex}
@@ -482,24 +534,29 @@ class Journal extends Component {
           />
         )}
       />
-    )
+    );
   }
 
   renderImagePickerContainer() {
-    if (this.props.activeView !== "journal") return
+    if (this.props.activeView !== "journal") return;
 
-    return <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
+    return (
+      <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
+    );
   }
 
   render() {
     if (!this.props.loaded) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
     return (
       <React.Fragment>
         <View style={styles.containerContainer}>
-          <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.container}
+            showsVerticalScrollIndicator={false}
+          >
             {this.renderHeader()}
             {this.renderTabView()}
           </ScrollView>
@@ -511,7 +568,7 @@ class Journal extends Component {
         </View>
         <SafeAreaView style={styles.backgroundWhite} />
       </React.Fragment>
-    )
+    );
   }
 }
 
@@ -646,9 +703,9 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   iconPosition: { marginRight: 5 }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Journal)
+)(Journal);

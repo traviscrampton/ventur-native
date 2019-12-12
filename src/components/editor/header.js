@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native"
+import React from "react";
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
 
 export const Header = props => {
   return (
@@ -22,8 +22,8 @@ export const Header = props => {
         </TouchableWithoutFeedback>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   }
-})
+});

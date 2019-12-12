@@ -1,16 +1,16 @@
-import React, { Component } from "react"
-import { View, TouchableHighlight, Text, StyleSheet, Dimensions } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import ThreeDotDropdown from "../shared/ThreeDotDropdown"
+import React from "react";
+import { View, TouchableHighlight, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import ThreeDotDropdown from "../shared/ThreeDotDropdown";
 
 const Dropdown = props => {
-  if (!props.isCurrentUser) return
+  if (!props.isCurrentUser) return;
 
-  return <ThreeDotDropdown options={props.options} />
-}
+  return <ThreeDotDropdown options={props.options} />;
+};
 
 export const JournalChildHeader = props => {
-  let buttonsWidth = 160
+  let buttonsWidth = 160;
 
   return (
     <View style={styles.container}>
@@ -18,12 +18,24 @@ export const JournalChildHeader = props => {
         <TouchableHighlight
           underlayColor="rgba(111, 111, 111, 0.5)"
           style={styles.backButton}
-          onPress={props.navigateBack}>
-          <Ionicons style={styles.backIcon} name="ios-arrow-back" size={28} color="#323941" />
+          onPress={props.navigateBack}
+        >
+          <Ionicons
+            style={styles.backIcon}
+            name="ios-arrow-back"
+            size={28}
+            color="#323941"
+          />
         </TouchableHighlight>
         <View style={styles.journalAndUserContainer}>
           <View>
-            <Text numberOfLines={1} style={[styles.journalTitle, { maxWidth: props.width - buttonsWidth }]}>
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.journalTitle,
+                { maxWidth: props.width - buttonsWidth }
+              ]}
+            >
               {props.title}
             </Text>
           </View>
@@ -31,8 +43,8 @@ export const JournalChildHeader = props => {
       </View>
       {Dropdown(props.dropdownProps)}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -71,4 +83,4 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-semi",
     fontSize: 16
   }
-})
+});

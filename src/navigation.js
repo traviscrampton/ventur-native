@@ -1,24 +1,28 @@
-import React, { Component } from "react"
-import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from "react-navigation"
-import JournalFeed from "./components/journals/JournalFeed"
-import Journal from "./components/journals/journal"
-import StravaLogin from "./components/users/StravaLogin"
-import HomeLoggedOut from "./components/users/HomeLoggedOut"
-import BottomTabBar from "./components/shared/BottomTabBar"
-import ImageCaptionForm from "./components/editor/ImageCaptionForm"
-import ChapterDispatch from "./components/chapters/ChapterDispatch"
-import ManageContent from "./components/editor/ManageContent"
-import Profile from "./components/users/Profile"
-import CommentForm from "./components/Comments/CommentForm"
-import JournalForm from "./components/JournalForm/JournalForm"
-import CountriesEditor from "./components/JournalForm/CountriesEditor"
-import RouteEditor from "./components/Maps/RouteEditor"
-import StravaRouteSelector from "./components/Maps/StravaRouteSelector"
-import RouteViewer from "./components/Maps/RouteViewer"
-import JournalRoute from "./components/Maps/JournalRoute"
-import ChapterMetaDataForm from "./components/editor/ChapterMetaDataForm"
-import ChapterEditor from "./components/chapters/ChapterEditor"
-import GearItemReview from "./components/GearItemReview/GearItemReview"
+import React, { Component } from "react";
+import {
+  createStackNavigator,
+  createSwitchNavigator,
+  createBottomTabNavigator
+} from "react-navigation";
+import JournalFeed from "./components/journals/JournalFeed";
+import Journal from "./components/journals/journal";
+import StravaLogin from "./components/users/StravaLogin";
+import HomeLoggedOut from "./components/users/HomeLoggedOut";
+import BottomTabBar from "./components/shared/BottomTabBar";
+import ImageCaptionForm from "./components/editor/ImageCaptionForm";
+import ChapterDispatch from "./components/chapters/ChapterDispatch";
+import ManageContent from "./components/editor/ManageContent";
+import Profile from "./components/users/Profile";
+import CommentForm from "./components/Comments/CommentForm";
+import JournalForm from "./components/JournalForm/JournalForm";
+import CountriesEditor from "./components/JournalForm/CountriesEditor";
+import RouteEditor from "./components/Maps/RouteEditor";
+import StravaRouteSelector from "./components/Maps/StravaRouteSelector";
+import RouteViewer from "./components/Maps/RouteViewer";
+import JournalRoute from "./components/Maps/JournalRoute";
+import ChapterMetaDataForm from "./components/editor/ChapterMetaDataForm";
+import ChapterEditor from "./components/chapters/ChapterEditor";
+import GearItemReview from "./components/GearItemReview/GearItemReview";
 
 const NO_FOOTER_SCREENS = [
   "Chapter",
@@ -32,7 +36,7 @@ const NO_FOOTER_SCREENS = [
   "ChapterEditor",
   "ChapterMetaDataForm",
   "StravaRouteSelector"
-]
+];
 
 const JournalFeedNavigator = createStackNavigator(
   {
@@ -62,7 +66,7 @@ const JournalFeedNavigator = createStackNavigator(
       }
     }
   }
-)
+);
 
 const ProfileNavigator = createStackNavigator(
   {
@@ -93,7 +97,7 @@ const ProfileNavigator = createStackNavigator(
       borderBottomWidth: 0
     }
   }
-)
+);
 
 const AuthFlow = createStackNavigator(
   {
@@ -107,34 +111,34 @@ const AuthFlow = createStackNavigator(
       borderBottomWidth: 0
     }
   }
-)
+);
 
 JournalFeedNavigator.navigationOptions = ({ navigation }) => {
-  let { routeName } = navigation.state.routes[navigation.state.index]
-  let navigationOptions = {}
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {};
   if (NO_FOOTER_SCREENS.includes(routeName)) {
-    navigationOptions.tabBarVisible = false
+    navigationOptions.tabBarVisible = false;
   }
-  return navigationOptions
-}
+  return navigationOptions;
+};
 
 AuthFlow.navigationOptions = ({ navigation }) => {
-  let { routeName } = navigation.state.routes[navigation.state.index]
-  let navigationOptions = {}
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {};
   if (NO_FOOTER_SCREENS.includes(routeName)) {
-    navigationOptions.tabBarVisible = false
+    navigationOptions.tabBarVisible = false;
   }
-  return navigationOptions
-}
+  return navigationOptions;
+};
 
 ProfileNavigator.navigationOptions = ({ navigation }) => {
-  let { routeName } = navigation.state.routes[navigation.state.index]
-  let navigationOptions = {}
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {};
   if (NO_FOOTER_SCREENS.includes(routeName)) {
-    navigationOptions.tabBarVisible = false
+    navigationOptions.tabBarVisible = false;
   }
-  return navigationOptions
-}
+  return navigationOptions;
+};
 
 export const RootNavigator = (signedIn = false) =>
   createSwitchNavigator(
@@ -149,7 +153,7 @@ export const RootNavigator = (signedIn = false) =>
       initialRouteName: signedIn ? "BottomNavigator" : "AuthFlow",
       path: "ventur"
     }
-  )
+  );
 
 const BottomNavigator = createBottomTabNavigator(
   {
@@ -163,4 +167,4 @@ const BottomNavigator = createBottomTabNavigator(
     initialRouteName: "Profile",
     tabBarComponent: BottomTabBar
   }
-)
+);

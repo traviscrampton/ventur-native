@@ -1,47 +1,52 @@
-import React from "react"
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native"
-import { SimpleLineIcons } from "@expo/vector-icons"
-import ProgressiveImage from "../shared/ProgressiveImage"
+import React from "react";
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import ProgressiveImage from "../shared/ProgressiveImage";
 
 const countriesString = names => {
   return names.map((name, index) => {
     if (index !== names.length - 1) {
-      name += ", "
+      name += ", ";
     }
 
-    return <Text style={styles.countryName}>{name}</Text>
-  })
-}
+    return <Text style={styles.countryName}>{name}</Text>;
+  });
+};
 
 const distanceString = distance => {
-  const { distanceType, kilometerAmount, mileAmount } = distance
+  const { distanceType, kilometerAmount, mileAmount } = distance;
   switch (distanceType) {
     case "kilometer":
-      return `${kilometerAmount} KM`
+      return `${kilometerAmount} KM`;
 
     case "mile":
-      return `${mileAmount} MI`
+      return `${mileAmount} MI`;
 
     default:
-      return ""
+      return "";
   }
-}
+};
 
 const renderCountries = countries => {
-  if (countries.length === 0) return
+  if (countries.length === 0) return;
 
   return (
     <View style={styles.iconTextContainer}>
-      <SimpleLineIcons name="location-pin" style={styles.iconPosition} size={14} color="#323941" />
+      <SimpleLineIcons
+        name="location-pin"
+        style={styles.iconPosition}
+        size={14}
+        color="#323941"
+      />
       <View style={styles.countries}>
         <Text numberOfLines={1}>{countriesString(countries)}</Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const tripMetaData = props => {
-  const distance = distanceString(props.distance)
+  const distance = distanceString(props.distance);
 
   return (
     <View style={styles.metadataContainer}>
@@ -53,33 +58,47 @@ const tripMetaData = props => {
       </View>
       <View style={styles.metadataStyles}>
         <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${props.journalFollowsCount} followers`.toUpperCase()}
+          {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${
+            props.journalFollowsCount
+          } followers`.toUpperCase()}
         </Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const JournalCard = props => {
-  const imageWidth = props.width - 40
-  const imageHeight = Math.round(imageWidth * (240 / 350))
+  const imageWidth = props.width - 40;
+  const imageHeight = Math.round(imageWidth * (240 / 350));
   const imageStyles = Object.assign({}, styles.journalImage, {
     width: imageWidth,
     height: imageHeight,
     borderRadius: 10
-  })
+  });
 
   return (
-    <TouchableWithoutFeedback key={props.id} onPress={() => props.handlePress(props.id)}>
-      <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
+    <TouchableWithoutFeedback
+      key={props.id}
+      onPress={() => props.handlePress(props.id)}
+    >
+      <View
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+      >
         <View style={[styles.card, { width: imageWidth }]}>
-          <ProgressiveImage thumbnailSource={props.thumbnailImageUrl} source={props.cardImageUrl} style={imageStyles} />
+          <ProgressiveImage
+            thumbnailSource={props.thumbnailImageUrl}
+            source={props.cardImageUrl}
+            style={imageStyles}
+          />
           <View>{tripMetaData(props)}</View>
         </View>
       </View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   card: {
@@ -137,6 +156,6 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-regular",
     marginRight: 5
   }
-})
+});
 
-export default JournalCard
+export default JournalCard;

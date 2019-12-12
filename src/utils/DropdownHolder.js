@@ -1,14 +1,14 @@
 export default class DropDownHolder {
-  static dropDown
+  static dropDown;
 
   static setDropDown(dropDown) {
-    this.dropDown = dropDown
+    this.dropDown = dropDown;
   }
   static getDropDown() {
-    return this.dropDown
+    return this.dropDown;
   }
 
   static alert(type: AlertType, title: string, message: string) {
-    this.dropDown.alertWithType(type, title, message)
+    this.dropDown.alertWithType(type, title, message);
   }
 }

@@ -1,83 +1,100 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TextInput } from "react-native"
-import { get } from "../../agent"
-import { Header } from "../editor/header"
-import { updateJournalForm, toggleCountriesEditorModal } from "../../actions/journal_form"
-import { Feather } from "@expo/vector-icons"
-import FormModal from "../shared/FormModal"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  TextInput
+} from "react-native";
+import { get } from "../../agent";
+import { Header } from "../editor/header";
+import {
+  updateJournalForm,
+  toggleCountriesEditorModal
+} from "../../actions/journal_form";
+import { Feather } from "@expo/vector-icons";
+import FormModal from "../shared/FormModal";
 
 const mapStateToProps = state => ({
   visible: state.journalForm.countriesEditorVisible
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
-  toggleCountriesEditorModal: payload => dispatch(toggleCountriesEditorModal(payload))
-})
+  toggleCountriesEditorModal: payload =>
+    dispatch(toggleCountriesEditorModal(payload))
+});
 
 class CountriesEditor extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       searchText: "",
       searchResultCountries: [],
       includedCountries: props.includedCountries
-    }
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevProps.visible && this.props.visible) {
-      this.setState({ includedCountries: this.props.includedCountries })
+      this.setState({ includedCountries: this.props.includedCountries });
     }
   }
 
   handleTextChange = text => {
-    this.setState({ searchText: text }, this.searchForCountries)
-  }
+    this.setState({ searchText: text }, this.searchForCountries);
+  };
 
   searchForCountries() {
-    get("/countries/search_countries", { name: this.state.searchText }).then(res => {
-      this.setState({ searchResultCountries: res.countries })
-    })
+    get("/countries/search_countries", { name: this.state.searchText }).then(
+      res => {
+        this.setState({ searchResultCountries: res.countries });
+      }
+    );
   }
 
   countryAlreadyIncluded = searchCountry => {
-    const includedCountryIds = this.state.includedCountries.map(includedCountry => {
-      return includedCountry.id
-    })
+    const includedCountryIds = this.state.includedCountries.map(
+      includedCountry => {
+        return includedCountry.id;
+      }
+    );
 
-    return includedCountryIds.includes(searchCountry.id)
-  }
+    return includedCountryIds.includes(searchCountry.id);
+  };
 
   addCountries = () => {
-    const { includedCountries } = this.state
-    const payload = Object.assign({}, { includedCountries })
-    this.props.updateJournalForm(payload)
-    this.handleGoBack()
-  }
+    const { includedCountries } = this.state;
+    const payload = Object.assign({}, { includedCountries });
+    this.props.updateJournalForm(payload);
+    this.handleGoBack();
+  };
 
   handleGoBack = () => {
-    const { includedCountries } = this.props
-    this.setState({ includedCountries })
-    this.props.toggleCountriesEditorModal(false)
-  }
+    const { includedCountries } = this.props;
+    this.setState({ includedCountries });
+    this.props.toggleCountriesEditorModal(false);
+  };
 
   includeCountry = searchCountry => {
-    if (this.countryAlreadyIncluded(searchCountry)) return
+    if (this.countryAlreadyIncluded(searchCountry)) return;
 
-    const newIncludedCountries = [...this.state.includedCountries, searchCountry]
-    this.setState({ includedCountries: newIncludedCountries, searchText: "" })
-  }
+    const newIncludedCountries = [
+      ...this.state.includedCountries,
+      searchCountry
+    ];
+    this.setState({ includedCountries: newIncludedCountries, searchText: "" });
+  };
 
   removeCountry = countryToRemove => {
     const newCountries = this.state.includedCountries.filter(
       includedCountry => includedCountry.id !== countryToRemove.id
-    )
+    );
 
-    this.setState({ includedCountries: newCountries })
-  }
+    this.setState({ includedCountries: newCountries });
+  };
 
   renderSearchBar() {
     return (
@@ -96,21 +113,27 @@ class CountriesEditor extends Component {
           onChangeText={text => this.handleTextChange(text)}
         />
       </View>
-    )
+    );
   }
 
   renderSearchResult(searchCountry) {
     return (
-      <TouchableWithoutFeedback onPress={() => this.includeCountry(searchCountry)}>
+      <TouchableWithoutFeedback
+        onPress={() => this.includeCountry(searchCountry)}
+      >
         <View style={styles.searchResult} key={searchCountry.id}>
           <Text style={styles.countryName}>{searchCountry.name}</Text>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderSearchResults() {
-    if (this.state.searchText.length < 1 || this.state.searchResultCountries.lengty < 1) return
+    if (
+      this.state.searchText.length < 1 ||
+      this.state.searchResultCountries.lengty < 1
+    )
+      return;
 
     return (
       <View
@@ -118,14 +141,15 @@ class CountriesEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={styles.searchResultsContainer}>
+        style={styles.searchResultsContainer}
+      >
         <View style={styles.searchResultView}>
           {this.state.searchResultCountries.map((searchCountry, index) => {
-            return this.renderSearchResult(searchCountry)
+            return this.renderSearchResult(searchCountry);
           })}
         </View>
       </View>
-    )
+    );
   }
 
   renderIncludedCountryTab(includedCountry, index) {
@@ -136,13 +160,16 @@ class CountriesEditor extends Component {
         shadowOpacity={0.5}
         shadowRadius={2}
         style={styles.includedCountriesTab}
-        key={includedCountry.id}>
+        key={includedCountry.id}
+      >
         <Text style={styles.fontSize18}>{includedCountry.name}</Text>
-        <TouchableWithoutFeedback onPress={() => this.removeCountry(includedCountry)}>
+        <TouchableWithoutFeedback
+          onPress={() => this.removeCountry(includedCountry)}
+        >
           <Feather style={styles.marginLeft15} name="x" size={18} />
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderHeader() {
@@ -155,18 +182,18 @@ class CountriesEditor extends Component {
         handleConfirm: this.addCountries,
         confirmCta: "Done"
       }
-    )
-    return <Header key="header" {...headerProps} />
+    );
+    return <Header key="header" {...headerProps} />;
   }
 
   renderIncludedCountries() {
     return (
       <View style={styles.alreadyIncludedCountries}>
         {this.state.includedCountries.map((includedCountry, index) => {
-          return this.renderIncludedCountryTab(includedCountry, index)
+          return this.renderIncludedCountryTab(includedCountry, index);
         })}
       </View>
-    )
+    );
   }
 
   renderComponents() {
@@ -178,11 +205,16 @@ class CountriesEditor extends Component {
         includedCountries: this.renderIncludedCountries(),
         header: this.renderHeader()
       }
-    )
+    );
   }
 
   render() {
-    const { searchBar, searchResults, includedCountries, header } = this.renderComponents()
+    const {
+      searchBar,
+      searchResults,
+      includedCountries,
+      header
+    } = this.renderComponents();
 
     return (
       <FormModal visible={this.props.visible}>
@@ -195,7 +227,7 @@ class CountriesEditor extends Component {
           {includedCountries}
         </View>
       </FormModal>
-    )
+    );
   }
 }
 
@@ -268,9 +300,9 @@ const styles = StyleSheet.create({
   },
   formTitle: {},
   title: {}
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CountriesEditor)
+)(CountriesEditor);

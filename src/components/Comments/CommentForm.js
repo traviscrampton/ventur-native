@@ -1,42 +1,49 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback
+} from "react-native";
 import {
   resetCommentForm,
   updateCommentContent,
   createComment,
   toggleCommentFormModal
-} from "../../actions/comment_form"
-import FormModal from "../shared/FormModal"
+} from "../../actions/comment_form";
+import FormModal from "../shared/FormModal";
 
 const mapStateToProps = state => ({
   content: state.commentForm.content,
   commentable: state.commentForm.commentable,
   visible: state.commentForm.visible
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   resetCommentForm: () => dispatch(resetCommentForm()),
   updateCommentContent: payload => dispatch(updateCommentContent(payload)),
   toggleCommentFormModal: payload => dispatch(toggleCommentFormModal(payload)),
   createComment: () => dispatch(createComment())
-})
+});
 
 class CommentForm extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   handleCancelAndNavigate = () => {
-    this.props.resetCommentForm()
-    this.props.toggleCommentFormModal(false)
-  }
+    this.props.resetCommentForm();
+    this.props.toggleCommentFormModal(false);
+  };
 
   handleCommentPersistance = () => {
-    this.props.createComment()
-    this.props.resetCommentForm()
-    this.props.toggleCommentFormModal(false)
-  }
+    this.props.createComment();
+    this.props.resetCommentForm();
+    this.props.toggleCommentFormModal(false);
+  };
 
   renderHeader() {
     return (
@@ -52,7 +59,7 @@ class CommentForm extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderCommentablePreview() {
@@ -61,11 +68,16 @@ class CommentForm extends Component {
         shadowColor="#d3d3d3"
         shadowOffset={{ width: 1, height: 1 }}
         shadowOpacity={0.7}
-        style={styles.commentablePreviewContainer}>
-        <Text style={styles.commentableTitle}>{this.props.commentable.commentableTitle}</Text>
-        <Text style={styles.openSansRegular}>By: {this.props.commentable.commentableUser.fullName}</Text>
+        style={styles.commentablePreviewContainer}
+      >
+        <Text style={styles.commentableTitle}>
+          {this.props.commentable.commentableTitle}
+        </Text>
+        <Text style={styles.openSansRegular}>
+          By: {this.props.commentable.commentableUser.fullName}
+        </Text>
       </View>
-    )
+    );
   }
 
   renderTextBox() {
@@ -80,7 +92,7 @@ class CommentForm extends Component {
           value={this.props.content}
         />
       </View>
-    )
+    );
   }
 
   render() {
@@ -92,7 +104,7 @@ class CommentForm extends Component {
           {this.renderTextBox()}
         </ScrollView>
       </FormModal>
-    )
+    );
   }
 }
 
@@ -138,9 +150,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentForm)
+)(CommentForm);

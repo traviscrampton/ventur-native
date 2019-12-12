@@ -1,26 +1,26 @@
-import React, { Component } from "react"
-import { View, Text, TextInput, StyleSheet } from "react-native"
-import { connect } from "react-redux"
-import { updateGearReviewFormReview } from "../../actions/gear_review_form"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import React, { Component } from "react";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import { updateGearReviewFormReview } from "../../actions/gear_review_form";
 
 const mapStateToProps = state => ({
   width: state.common.width,
   review: state.gearReviewForm.review
-})
+});
 
 const mapDispatchToProps = dispatch => ({
-  updateGearReviewFormReview: payload => dispatch(updateGearReviewFormReview(payload))
-})
+  updateGearReviewFormReview: payload =>
+    dispatch(updateGearReviewFormReview(payload))
+});
 
 class GearReviewFormReview extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   updateGearReviewFormReview = text => {
-    this.props.updateGearReviewFormReview(text)
-  }
+    this.props.updateGearReviewFormReview(text);
+  };
 
   render() {
     return (
@@ -40,7 +40,7 @@ class GearReviewFormReview extends Component {
           value={this.props.review}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -66,9 +66,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "#d3d3d3"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GearReviewFormReview)
+)(GearReviewFormReview);

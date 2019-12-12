@@ -1,11 +1,21 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
-import { updateUserForm, resetUserForm, submitForm } from "../../actions/user_form"
-import { LinearGradient } from "expo-linear-gradient"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import InputScrollView from "react-native-input-scroll-view"
-import FormModal from "../shared/FormModal"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback
+} from "react-native";
+import {
+  updateUserForm,
+  resetUserForm,
+  submitForm
+} from "../../actions/user_form";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import InputScrollView from "react-native-input-scroll-view";
+import FormModal from "../shared/FormModal";
 
 const mapStateToProps = state => ({
   email: state.userForm.email,
@@ -13,49 +23,50 @@ const mapStateToProps = state => ({
   width: state.common.width,
   height: state.common.height,
   visible: state.userForm.visible
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateUserForm: payload => dispatch(updateUserForm(payload)),
   submitForm: () => dispatch(submitForm()),
   resetUserForm: payload => dispatch(resetUserForm(payload))
-})
+});
 
 class UserForm extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       hidePassword: true
-    }
+    };
   }
 
   navigateBack = () => {
-    this.props.resetUserForm()
-  }
+    this.props.resetUserForm();
+  };
 
   submitForm = async () => {
-    this.props.submitForm()
-  }
+    this.props.submitForm();
+  };
 
   handleEntry = (key, text) => {
-    this.props.updateUserForm({ key, text })
-  }
+    this.props.updateUserForm({ key, text });
+  };
 
   toggleHidePassword = () => {
-    let { hidePassword } = this.state
-    this.setState({ hidePassword: !hidePassword })
-  }
+    let { hidePassword } = this.state;
+    this.setState({ hidePassword: !hidePassword });
+  };
 
   renderBackButton() {
     return (
       <TouchableWithoutFeedback
         underlayColor="rgba(111, 111, 111, 0.5)"
         style={styles.positionRelative}
-        onPress={this.navigateBack}>
+        onPress={this.navigateBack}
+      >
         <Ionicons name="ios-arrow-back" size={35} color="white" />
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderFormTitle() {
@@ -63,7 +74,7 @@ class UserForm extends Component {
       <View>
         <Text style={styles.venturFormTitle}>Welcome to Ventur</Text>
       </View>
-    )
+    );
   }
 
   renderEmailField() {
@@ -79,7 +90,7 @@ class UserForm extends Component {
           onChangeText={text => this.handleEntry("email", text)}
         />
       </React.Fragment>
-    )
+    );
   }
 
   renderPasswordField() {
@@ -97,12 +108,16 @@ class UserForm extends Component {
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
+              <MaterialCommunityIcons
+                name={this.state.hidePassword ? "eye" : "eye-off"}
+                size={30}
+                color="white"
+              />
             </View>
           </TouchableWithoutFeedback>
         </View>
       </React.Fragment>
-    )
+    );
   }
 
   renderFirstNameField() {
@@ -118,7 +133,7 @@ class UserForm extends Component {
           onChangeText={text => this.handleEntry("firstName", text)}
         />
       </React.Fragment>
-    )
+    );
   }
 
   renderLastNameField() {
@@ -134,7 +149,7 @@ class UserForm extends Component {
           onChangeText={text => this.handleEntry("lastName", text)}
         />
       </React.Fragment>
-    )
+    );
   }
 
   renderSubmitField() {
@@ -144,7 +159,7 @@ class UserForm extends Component {
           <Text style={{ color: "#FF5423", fontSize: 16 }}>CONTINUE</Text>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderForm() {
@@ -156,15 +171,20 @@ class UserForm extends Component {
         {this.renderLastNameField()}
         {this.renderSubmitField()}
       </View>
-    )
+    );
   }
 
   render() {
     return (
       <FormModal visible={this.props.visible} backgroundColor={"#FF5423"}>
         <LinearGradient
-          style={{ height: this.props.height, width: this.props.width, padding: 25 }}
-          colors={["#FF5423", "#E46545"]}>
+          style={{
+            height: this.props.height,
+            width: this.props.width,
+            padding: 25
+          }}
+          colors={["#FF5423", "#E46545"]}
+        >
           <InputScrollView>
             {this.renderBackButton()}
             {this.renderFormTitle()}
@@ -172,7 +192,7 @@ class UserForm extends Component {
           </InputScrollView>
         </LinearGradient>
       </FormModal>
-    )
+    );
   }
 }
 
@@ -222,9 +242,9 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 20
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserForm)
+)(UserForm);

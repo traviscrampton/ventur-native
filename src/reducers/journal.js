@@ -6,11 +6,11 @@ import {
   POPULATE_JOURNAL_GEAR,
   UPDATE_TAB_INDEX,
   SUB_CONTENT_LOADING
-} from "../actions/journals"
-import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter"
-import { PUSH_CHAPTER_TO_JOURNAL, UPDATE_FEED_DISTANCE } from "../actions/chapter_form"
-import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review"
-import { ADD_CREATED_GEAR_REVIEW } from "../actions/gear_review_form"
+} from "../actions/journals";
+import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter";
+import { PUSH_CHAPTER_TO_JOURNAL } from "../actions/chapter_form";
+import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review";
+import { ADD_CREATED_GEAR_REVIEW } from "../actions/gear_review_form";
 
 const defaultJournalData = {
   journal: {
@@ -25,8 +25,11 @@ const defaultJournalData = {
   imageUploading: false,
   subContentLoading: true,
   tabIndex: 0,
-  routes: [{ key: "chapters", title: "Chapters" }, { key: "gear", title: "Gear" }]
-}
+  routes: [
+    { key: "chapters", title: "Chapters" },
+    { key: "gear", title: "Gear" }
+  ]
+};
 
 export default (state = defaultJournalData, action) => {
   switch (action.type) {
@@ -35,59 +38,61 @@ export default (state = defaultJournalData, action) => {
         ...state,
         journal: Object.assign({}, state.journal, action.payload),
         loaded: true
-      }
+      };
     case SUB_CONTENT_LOADING:
       return {
         ...state,
         subContentLoading: action.payload
-      }
+      };
     case POPULATE_JOURNAL_CHAPTERS:
       return {
         ...state,
         journal: Object.assign({}, state.journal, { chapters: action.payload })
-      }
+      };
 
     case POPULATE_JOURNAL_GEAR:
       return {
         ...state,
         journal: Object.assign({}, state.journal, { gear: action.payload })
-      }
+      };
     case RESET_JOURNAL_TAB:
-      return defaultJournalData
+      return defaultJournalData;
     case REMOVE_CHAPTER_FROM_STATE:
       let chapters = state.journal.chapters.filter(chapter => {
-        return chapter.id != action.payload.id
-      })
+        return chapter.id != action.payload.id;
+      });
 
       return {
         ...state,
         journal: Object.assign({}, state.journal, { chapters: chapters })
-      }
+      };
     case IMAGE_UPLOADING:
       return {
         ...state,
         imageUploading: action.payload
-      }
+      };
 
     case UPDATE_TAB_INDEX:
       return {
         ...state,
         tabIndex: action.payload
-      }
+      };
     case ADD_CREATED_GEAR_REVIEW:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { gear: [...state.journal.gear, action.payload] })
-      }
+        journal: Object.assign({}, state.journal, {
+          gear: [...state.journal.gear, action.payload]
+        })
+      };
     case REMOVE_GEAR_REVIEW:
       return {
         ...state,
         journal: Object.assign({}, state.journal, {
           gear: state.journal.gear.filter(gear => {
-            return gear.id !== action.payload
+            return gear.id !== action.payload;
           })
         })
-      }
+      };
     case PUSH_CHAPTER_TO_JOURNAL:
       return {
         ...state,
@@ -95,8 +100,8 @@ export default (state = defaultJournalData, action) => {
           chapters: action.payload.chapters,
           distance: action.payload.distance
         })
-      }
+      };
     default:
-      return state
+      return state;
   }
-}
+};

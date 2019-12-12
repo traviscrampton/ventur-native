@@ -1,37 +1,49 @@
-import React from "react"
-import { StyleSheet, View, Text, TouchableWithoutFeedback, Dimensions } from "react-native"
-import ProgressiveImage from "../shared/ProgressiveImage"
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Dimensions
+} from "react-native";
+import ProgressiveImage from "../shared/ProgressiveImage";
 
-const pad = Dimensions.get("window").width * 0.04
-const imageGaps = Dimensions.get("window").width * 0.11
-const imageWidth = (Dimensions.get("window").width - imageGaps) / 2
+const pad = Dimensions.get("window").width * 0.04;
+const imageGaps = Dimensions.get("window").width * 0.11;
+const imageWidth = (Dimensions.get("window").width - imageGaps) / 2;
 
 const getDistanceString = distance => {
-  const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+  const {
+    distanceType,
+    kilometerAmount,
+    mileAmount,
+    readableDistanceType
+  } = distance;
   switch (distanceType) {
     case "kilometer":
-      return `${kilometerAmount} ${readableDistanceType}`
+      return `${kilometerAmount} ${readableDistanceType}`;
 
     case "mile":
-      return `${mileAmount} ${readableDistanceType}`
+      return `${mileAmount} ${readableDistanceType}`;
 
     default:
-      return ""
+      return "";
   }
-}
+};
 
 const getStatusText = props => {
-  let distanceString = getDistanceString(props.distance)
+  let distanceString = getDistanceString(props.distance);
 
   return (
     <Text style={styles.metadata}>
-      {`${props.status}`.replace("_", " ").toUpperCase()} {`\u2022`} {`${distanceString}`.toUpperCase()}
+      {`${props.status}`.replace("_", " ").toUpperCase()} {`\u2022`}{" "}
+      {`${distanceString}`.toUpperCase()}
     </Text>
-  )
-}
+  );
+};
 
 const JournalMini = props => {
-  const statusText = getStatusText(props)
+  const statusText = getStatusText(props);
 
   return (
     <View
@@ -41,13 +53,17 @@ const JournalMini = props => {
         marginBottom: pad,
         backgroundColor: "lightgray",
         borderRadius: 10
-      }}>
+      }}
+    >
       <ProgressiveImage
         style={styles.imageBackground}
         thumbnailSource={props.thumbnailSource}
         source={props.cardBannerImageUrl}
       />
-      <TouchableWithoutFeedback style={styles.zIndexHunnit} onPress={() => props.handlePress(props.id)}>
+      <TouchableWithoutFeedback
+        style={styles.zIndexHunnit}
+        onPress={() => props.handlePress(props.id)}
+      >
         <View style={styles.metadataContainer}>
           <Text numberOfLines={2} style={styles.title}>
             {props.title}
@@ -56,8 +72,8 @@ const JournalMini = props => {
         </View>
       </TouchableWithoutFeedback>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   imageBackground: {
@@ -87,6 +103,6 @@ const styles = StyleSheet.create({
     fontFamily: "overpass",
     fontSize: 8
   }
-})
+});
 
-export default JournalMini
+export default JournalMini;

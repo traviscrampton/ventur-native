@@ -1,11 +1,22 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Text, TextInput, TouchableWithoutFeedback } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
-import { updateLoginForm, submitForm, toggleLoginModal, resetLoginForm } from "../../actions/login"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import FormModal from "../shared/FormModal"
-TextInput.defaultProps.selectionColor = "white"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  updateLoginForm,
+  submitForm,
+  toggleLoginModal,
+  resetLoginForm
+} from "../../actions/login";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import FormModal from "../shared/FormModal";
+TextInput.defaultProps.selectionColor = "white";
 
 const mapStateToProps = state => ({
   email: state.login.email,
@@ -13,51 +24,52 @@ const mapStateToProps = state => ({
   visible: state.login.visible,
   width: state.common.width,
   height: state.common.height
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateLoginForm: payload => dispatch(updateLoginForm(payload)),
   submitForm: () => dispatch(submitForm()),
   toggleLoginModal: payload => dispatch(toggleLoginModal(payload)),
   resetLoginForm: () => dispatch(resetLoginForm())
-})
+});
 
 class Login extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       hidePassword: true
-    }
+    };
   }
 
   toggleLoginModal = () => {
-    this.props.resetLoginForm()
-  }
+    this.props.resetLoginForm();
+  };
 
   updateLoginForm = (value, key) => {
-    const payload = Object.assign({}, { value, key })
-    this.props.updateLoginForm(payload)
-  }
+    const payload = Object.assign({}, { value, key });
+    this.props.updateLoginForm(payload);
+  };
 
   submitForm = () => {
-    this.props.submitForm()
-  }
+    this.props.submitForm();
+  };
 
   toggleHidePassword = () => {
-    let { hidePassword } = this.state
-    this.setState({ hidePassword: !hidePassword })
-  }
+    let { hidePassword } = this.state;
+    this.setState({ hidePassword: !hidePassword });
+  };
 
   renderBackButton() {
     return (
       <TouchableWithoutFeedback
         underlayColor="rgba(111, 111, 111, 0.5)"
         style={styles.positionRelative}
-        onPress={this.toggleLoginModal}>
+        onPress={this.toggleLoginModal}
+      >
         <Ionicons name="ios-arrow-back" size={35} color="white" />
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderFormTitle() {
@@ -65,7 +77,7 @@ class Login extends Component {
       <View>
         <Text style={styles.formTitle}>Login</Text>
       </View>
-    )
+    );
   }
 
   renderForm() {
@@ -92,7 +104,11 @@ class Login extends Component {
           />
           <TouchableWithoutFeedback onPress={this.toggleHidePassword}>
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name={this.state.hidePassword ? "eye" : "eye-off"} size={30} color="white" />
+              <MaterialCommunityIcons
+                name={this.state.hidePassword ? "eye" : "eye-off"}
+                size={30}
+                color="white"
+              />
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -102,21 +118,26 @@ class Login extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   render() {
     return (
       <FormModal visible={this.props.visible} backgroundColor={"#FF5423"}>
         <LinearGradient
-          style={{ height: this.props.height, width: this.props.width, padding: 25 }}
-          colors={["#FF5423", "#E46545"]}>
+          style={{
+            height: this.props.height,
+            width: this.props.width,
+            padding: 25
+          }}
+          colors={["#FF5423", "#E46545"]}
+        >
           {this.renderBackButton()}
           {this.renderFormTitle()}
           {this.renderForm()}
         </LinearGradient>
       </FormModal>
-    )
+    );
   }
 }
 
@@ -167,9 +188,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login)
+)(Login);

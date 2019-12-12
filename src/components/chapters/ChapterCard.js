@@ -1,60 +1,82 @@
-import React from "react"
-import { StyleSheet, View, Dimensions, Text, TouchableWithoutFeedback } from "react-native"
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
-import ProgressiveImage from "../shared/ProgressiveImage"
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  TouchableWithoutFeedback
+} from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import ProgressiveImage from "../shared/ProgressiveImage";
 
 const distanceString = distance => {
-  const { distanceType, kilometerAmount, mileAmount, readableDistanceType } = distance
+  const {
+    distanceType,
+    kilometerAmount,
+    mileAmount,
+    readableDistanceType
+  } = distance;
   switch (distanceType) {
     case "kilometer":
-      return `${kilometerAmount} ${readableDistanceType}`
+      return `${kilometerAmount} ${readableDistanceType}`;
 
     case "mile":
-      return `${mileAmount} ${readableDistanceType}`
+      return `${mileAmount} ${readableDistanceType}`;
 
     default:
-      return ""
+      return "";
   }
-}
+};
 
 const ChapterImage = props => {
   if (props.imageUrl) {
     return (
       <View style={{ width: 80 }}>
-        <ProgressiveImage style={styles.chapterImage} source={props.imageUrl} thumbnailSource={props.thumbnailSource} />
+        <ProgressiveImage
+          style={styles.chapterImage}
+          source={props.imageUrl}
+          thumbnailSource={props.thumbnailSource}
+        />
       </View>
-    )
+    );
   } else {
-    return <View />
+    return <View />;
   }
-}
+};
 
 const PublishedStatus = props => {
-  const icon = props.published ? "done" : "publish"
-  const color = props.published ? "#3F88C5" : "#FF5423"
-  const text = props.published ? "PUBLISHED" : "UNPUBLISHED"
+  const icon = props.published ? "done" : "publish";
+  const color = props.published ? "#3F88C5" : "#FF5423";
+  const text = props.published ? "PUBLISHED" : "UNPUBLISHED";
 
   if (props.isCurrentUser) {
     return (
       <View style={styles.publishedStatusContainer}>
         <MaterialIcons name={icon} color={color} size={12} />
-        <Text style={[styles.publishedStatusText, { color: color }]}>{text}</Text>
+        <Text style={[styles.publishedStatusText, { color: color }]}>
+          {text}
+        </Text>
       </View>
-    )
+    );
   } else {
-    return <View />
+    return <View />;
   }
-}
+};
 
 const ChapterCard = props => {
-  let publishedStatus
-  let { imageUrl, title, distance, readableDate, thumbnailSource } = props
+  let publishedStatus;
+  let { imageUrl, title, distance, readableDate, thumbnailSource } = props;
 
-  distance = distanceString(distance)
-  const isCurrentUser = props.currentUser && props.user.id == props.currentUser.id
+  distance = distanceString(distance);
+  const isCurrentUser =
+    props.currentUser && props.user.id == props.currentUser.id;
 
   return (
-    <TouchableWithoutFeedback key={props.id} style={{ flex: 1 }} onPress={() => props.handleSelectChapter(props.id)}>
+    <TouchableWithoutFeedback
+      key={props.id}
+      style={{ flex: 1 }}
+      onPress={() => props.handleSelectChapter(props.id)}
+    >
       <View style={styles.chapterCardContainer}>
         <View
           style={[
@@ -62,29 +84,45 @@ const ChapterCard = props => {
             {
               maxWidth: Dimensions.get("window").width - 140
             }
-          ]}>
+          ]}
+        >
           <View>
             <Text numberOfLines={1} style={styles.chapterTitle}>
               {title}
             </Text>
-            <PublishedStatus isCurrentUser={isCurrentUser} published={props.published} />
+            <PublishedStatus
+              isCurrentUser={isCurrentUser}
+              published={props.published}
+            />
           </View>
           <View style={styles.allIcons}>
             <View style={styles.individualIconTextContainer}>
-              <MaterialCommunityIcons name="calendar" size={18} style={styles.iconMargin} />
-              <Text style={styles.textStats}>{`${readableDate}`.toUpperCase()}</Text>
+              <MaterialCommunityIcons
+                name="calendar"
+                size={18}
+                style={styles.iconMargin}
+              />
+              <Text style={styles.textStats}>
+                {`${readableDate}`.toUpperCase()}
+              </Text>
             </View>
             <View style={styles.individualIconTextContainer}>
-              <MaterialIcons style={styles.iconMargin} name="directions-bike" size={16} />
-              <Text style={styles.textStats}>{`${distance}`.toUpperCase()}</Text>
+              <MaterialIcons
+                style={styles.iconMargin}
+                name="directions-bike"
+                size={16}
+              />
+              <Text style={styles.textStats}>
+                {`${distance}`.toUpperCase()}
+              </Text>
             </View>
           </View>
         </View>
         <ChapterImage imageUrl={imageUrl} thumbnailSource={thumbnailSource} />
       </View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   chapterCardContainer: {
@@ -140,6 +178,6 @@ const styles = StyleSheet.create({
   iconMargin: {
     marginRight: 5
   }
-})
+});
 
-export default ChapterCard
+export default ChapterCard;

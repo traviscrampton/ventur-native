@@ -1,25 +1,26 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native"
-import MapView from "react-native-maps"
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { MaterialIndicator } from "react-native-indicators"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native";
+import MapView from "react-native-maps";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIndicator } from "react-native-indicators";
 import {
   updateRegionCoordinates,
   togglePositionMode,
   persistCoordinates,
   defaultRouteEditor
-} from "../../actions/route_editor"
-import { defaultJournalRoute } from "../../actions/journal_route"
-import LoadingScreen from "../shared/LoadingScreen"
+} from "../../actions/route_editor";
+import { defaultJournalRoute } from "../../actions/journal_route";
+import LoadingScreen from "../shared/LoadingScreen";
 
 const mapDispatchToProps = dispatch => ({
   defaultJournalRoute: () => dispatch(defaultJournalRoute()),
-  updateRegionCoordinates: payload => dispatch(updateRegionCoordinates(payload)),
+  updateRegionCoordinates: payload =>
+    dispatch(updateRegionCoordinates(payload)),
   togglePositionMode: () => dispatch(togglePositionMode()),
   persistCoordinates: () => dispatch(persistCoordinates()),
   defaultRouteEditor: () => dispatch(defaultRouteEditor())
-})
+});
 
 const mapStateToProps = state => ({
   polylines: state.journalRoute.polylines,
@@ -33,21 +34,21 @@ const mapStateToProps = state => ({
   journalUser: state.journal.journal.user,
   height: state.common.height,
   width: state.common.width
-})
+});
 
 class JournalRoute extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   navigateBack = () => {
-    this.props.defaultJournalRoute()
-    this.props.defaultRouteEditor()
-    this.props.navigation.goBack()
-  }
+    this.props.defaultJournalRoute();
+    this.props.defaultRouteEditor();
+    this.props.navigation.goBack();
+  };
 
   isCurrentUser() {
-    return this.props.currentUser.id == this.props.journalUser.id
+    return this.props.currentUser.id == this.props.journalUser.id;
   }
 
   renderFloatingBackButton() {
@@ -57,22 +58,23 @@ class JournalRoute extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={styles.floatingBackButton}>
+        style={styles.floatingBackButton}
+      >
         <TouchableWithoutFeedback onPress={this.navigateBack}>
           <View style={styles.iconPositionBackButton}>
             <Ionicons name="ios-arrow-back" color={"#323941"} size={30} />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderCropButton() {
-    if (!this.isCurrentUser()) return
+    if (!this.isCurrentUser()) return;
 
-    const { positionMode } = this.props
-    const backgroundColor = positionMode ? "#3F88C5" : "white"
-    const iconColor = positionMode ? "white" : "#3F88C5"
+    const { positionMode } = this.props;
+    const backgroundColor = positionMode ? "#3F88C5" : "white";
+    const iconColor = positionMode ? "white" : "#3F88C5";
 
     return (
       <View style={styles.cropButtonContainer}>
@@ -82,63 +84,85 @@ class JournalRoute extends Component {
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
             shadowRadius={2}
-            style={[styles.cropButtonPosition, { backgroundColor: backgroundColor }]}>
+            style={[
+              styles.cropButtonPosition,
+              { backgroundColor: backgroundColor }
+            ]}
+          >
             <MaterialIcons name="crop-free" size={25} color={iconColor} />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   async handleRegionChange(coordinates) {
-    if (!this.props.positionMode || !this.isCurrentUser()) return
+    if (!this.props.positionMode || !this.isCurrentUser()) return;
 
-    this.props.updateRegionCoordinates(coordinates)
+    this.props.updateRegionCoordinates(coordinates);
   }
 
   isChangedRegionDifferent() {
-    return JSON.stringify(this.props.editorInitialRegion) === JSON.stringify(this.props.changedRegion)
+    return (
+      JSON.stringify(this.props.editorInitialRegion) ===
+      JSON.stringify(this.props.changedRegion)
+    );
   }
 
   renderSavingButton() {
-    if (!this.props.positionMode || !this.isCurrentUser()) return
-    let buttonContent
+    if (!this.props.positionMode || !this.isCurrentUser()) return;
+    let buttonContent;
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color="#FF5423" />
+      buttonContent = <MaterialIndicator size={20} color="#FF5423" />;
     } else if (this.isChangedRegionDifferent()) {
-      buttonContent = <Text style={styles.savedColor}>SAVED</Text>
+      buttonContent = <Text style={styles.savedColor}>SAVED</Text>;
     } else {
-      buttonContent = <Text style={styles.savedColor}>SAVE POSITION</Text>
+      buttonContent = <Text style={styles.savedColor}>SAVE POSITION</Text>;
     }
 
     return (
       <View style={[styles.savingButtonContainer, { width: this.props.width }]}>
         <TouchableWithoutFeedback onPress={this.props.persistCoordinates}>
-          <View style={[styles.savingButtonContent, { width: this.props.width / 2 }]}>{buttonContent}</View>
+          <View
+            style={[
+              styles.savingButtonContent,
+              { width: this.props.width / 2 }
+            ]}
+          >
+            {buttonContent}
+          </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderPolylines() {
-    let coordinates
+    let coordinates;
     return this.props.polylines.map((polylines, index) => {
       return polylines.map((coordinateArrays, index) => {
         coordinates = coordinateArrays.map(coordinate => {
-          return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
-        })
+          return Object.assign(
+            {},
+            { latitude: coordinate[0], longitude: coordinate[1] }
+          );
+        });
 
         return (
-          <MapView.Polyline style={styles.zIndex10} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
-        )
-      })
-    })
+          <MapView.Polyline
+            style={styles.zIndex10}
+            coordinates={coordinates}
+            strokeWidth={2}
+            strokeColor="#FF5423"
+          />
+        );
+      });
+    });
   }
 
   render() {
     if (this.props.isLoading) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
     return (
@@ -147,7 +171,8 @@ class JournalRoute extends Component {
           <MapView
             style={styles.flexAndZ}
             onRegionChangeComplete={e => this.handleRegionChange(e)}
-            initialRegion={this.props.initialRegion}>
+            initialRegion={this.props.initialRegion}
+          >
             {this.renderPolylines()}
           </MapView>
         </View>
@@ -155,7 +180,7 @@ class JournalRoute extends Component {
         {this.renderCropButton()}
         {this.renderSavingButton()}
       </View>
-    )
+    );
   }
 }
 
@@ -226,9 +251,9 @@ const styles = StyleSheet.create({
     top: 60,
     right: 30
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(JournalRoute)
+)(JournalRoute);

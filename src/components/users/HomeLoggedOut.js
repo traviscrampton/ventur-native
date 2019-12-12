@@ -1,35 +1,42 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, SafeAreaView, TouchableWithoutFeedback, View, Text, ImageBackground } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
-import { toggleLoginModal } from "../../actions/login"
-import { toggleUserFormModal } from "../../actions/user_form"
-import Login from "./Login"
-import UserForm from "./UserForm"
-const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg")
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  ImageBackground
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { toggleLoginModal } from "../../actions/login";
+import { toggleUserFormModal } from "../../actions/user_form";
+import Login from "./Login";
+import UserForm from "./UserForm";
+const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg");
 
 const mapStateToProps = state => ({
   width: state.common.width,
   height: state.common.height
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   toggleLoginModal: payload => dispatch(toggleLoginModal(payload)),
   toggleUserFormModal: payload => dispatch(toggleUserFormModal(payload))
-})
+});
 
 class HomeLoggedOut extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   toggleLoginModal = () => {
-    this.props.toggleLoginModal(true)
-  }
+    this.props.toggleLoginModal(true);
+  };
 
   navigateToSignUp = () => {
-    this.props.toggleUserFormModal(true)
-  }
+    this.props.toggleUserFormModal(true);
+  };
 
   renderTitleAndSubTitle() {
     return (
@@ -41,17 +48,18 @@ class HomeLoggedOut extends Component {
           <Text style={styles.subHeaderText}>Bike touring built for you</Text>
         </View>
       </View>
-    )
+    );
   }
 
   renderAgreementText() {
     return (
       <View>
         <Text style={styles.agreementText}>
-          *By tapping get started, you agree to our privacy policy and service agreement.
+          *By tapping get started, you agree to our privacy policy and service
+          agreement.
         </Text>
       </View>
-    )
+    );
   }
 
   renderSignIn() {
@@ -61,17 +69,20 @@ class HomeLoggedOut extends Component {
           <Text style={styles.signInButton}>Sign in</Text>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderSignUp() {
     return (
       <TouchableWithoutFeedback onPress={this.navigateToSignUp}>
-        <LinearGradient style={[styles.signUp, { width: this.props.width - 40 }]} colors={["#FF5423", "#E46545"]}>
+        <LinearGradient
+          style={[styles.signUp, { width: this.props.width - 40 }]}
+          colors={["#FF5423", "#E46545"]}
+        >
           <Text style={styles.signUpText}>Get Started</Text>
         </LinearGradient>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderSignUpAndSignIn() {
@@ -81,11 +92,11 @@ class HomeLoggedOut extends Component {
         {this.renderSignUp()}
         {this.renderAgreementText()}
       </View>
-    )
+    );
   }
 
   render() {
-    const { width, height } = this.props
+    const { width, height } = this.props;
     return (
       <ImageBackground style={{ height: null, width }} source={GabeBolivia}>
         <View style={{ backgroundColor: "rgba(0, 0, 0, 0.4)", height, width }}>
@@ -99,7 +110,7 @@ class HomeLoggedOut extends Component {
         <Login />
         <UserForm />
       </ImageBackground>
-    )
+    );
   }
 }
 
@@ -155,9 +166,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 70
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeLoggedOut)
+)(HomeLoggedOut);

@@ -1,21 +1,25 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, TouchableWithoutFeedback, Text, Alert } from "react-native"
-import MapView from "react-native-maps"
-import { FloatingAction } from "react-native-floating-action"
-import RouteEditorButtons from "../Maps/RouteEditorButtons"
-import { authenticateStravaUser } from "../../actions/strava"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+  Text,
+  Alert
+} from "react-native";
+import MapView from "react-native-maps";
+import { FloatingAction } from "react-native-floating-action";
+import RouteEditorButtons from "../Maps/RouteEditorButtons";
+import { authenticateStravaUser } from "../../actions/strava";
 import {
   toggleDrawMode,
   togglePositionMode,
   persistRoute,
   eraseRoute,
   cancelAllModes
-} from "../../actions/route_editor"
-import * as WebBrowser from "expo-web-browser"
-import { encodeQueryString } from "../../agent"
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { MaterialIndicator } from "react-native-indicators"
+} from "../../actions/route_editor";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIndicator } from "react-native-indicators";
 import {
   setIsDrawing,
   drawLine,
@@ -23,9 +27,12 @@ import {
   persistCoordinates,
   updateRegionCoordinates,
   defaultRouteEditor
-} from "../../actions/route_editor"
-import { checkForExpiredToken, setStravaLoadingTrue } from "../../actions/strava_activity_import"
-import LoadingScreen from "../shared/LoadingScreen"
+} from "../../actions/route_editor";
+import {
+  checkForExpiredToken,
+  setStravaLoadingTrue
+} from "../../actions/strava_activity_import";
+import LoadingScreen from "../shared/LoadingScreen";
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
@@ -41,8 +48,9 @@ const mapDispatchToProps = dispatch => ({
   persistCoordinates: () => dispatch(persistCoordinates()),
   cancelAllModes: () => dispatch(cancelAllModes()),
   defaultRouteEditor: () => dispatch(defaultRouteEditor()),
-  updateRegionCoordinates: coordinates => dispatch(updateRegionCoordinates(coordinates))
-})
+  updateRegionCoordinates: coordinates =>
+    dispatch(updateRegionCoordinates(coordinates))
+});
 
 const mapStateToProps = state => ({
   polylineEditor: state.routeEditor.polylineEditor,
@@ -62,11 +70,11 @@ const mapStateToProps = state => ({
   canDraw: state.routeEditor.canDraw,
   currentUser: state.common.currentUser,
   stravaClientId: state.common.stravaClientId
-})
+});
 
 class RouteEditor extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   static actions = [
@@ -98,72 +106,81 @@ class RouteEditor extends Component {
       position: 3,
       color: "#FF5423"
     }
-  ]
+  ];
 
   onPanDrag = e => {
-    const { drawMode, canDraw, isDrawing } = this.props
+    const { drawMode, canDraw, isDrawing } = this.props;
 
-    if (!drawMode || !canDraw) return
-    let coordinates = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
-    this.props.drawLine(coordinates)
-  }
+    if (!drawMode || !canDraw) return;
+    let coordinates = [
+      e.nativeEvent.coordinate.latitude,
+      e.nativeEvent.coordinate.longitude
+    ];
+    this.props.drawLine(coordinates);
+  };
 
   checkForSaveAndNavigateBack = () => {
     if (this.isSaved()) {
-      this.navigateBack()
+      this.navigateBack();
     } else {
       Alert.alert(
         "Are you sure?",
         "You have unsaved changes",
-        [{ text: "Continue Unsaved", onPress: () => this.navigateBack() }, { text: "Cancel", style: "cancel" }],
+        [
+          { text: "Continue Unsaved", onPress: () => this.navigateBack() },
+          { text: "Cancel", style: "cancel" }
+        ],
         { cancelable: true }
-      )
+      );
     }
-  }
+  };
 
   navigateBack = () => {
-    this.props.defaultRouteEditor()
-    this.props.navigation.goBack()
-  }
+    this.props.defaultRouteEditor();
+    this.props.navigation.goBack();
+  };
 
   handleOnMoveResponder = () => {
-    if (!this.props.canDraw) return
+    if (!this.props.canDraw) return;
 
     if (!this.props.isDrawing) {
-      this.props.setIsDrawing(true)
+      this.props.setIsDrawing(true);
     }
 
-    return true
-  }
+    return true;
+  };
 
   isSaved() {
-    let { polylines, startingPolylines } = this.props
+    let { polylines, startingPolylines } = this.props;
 
-    return JSON.stringify(polylines) === JSON.stringify(startingPolylines)
+    return JSON.stringify(polylines) === JSON.stringify(startingPolylines);
   }
 
   routeNeedsSaving() {
-    const { polylines, startingPolylines } = this.props
+    const { polylines, startingPolylines } = this.props;
 
     if (polylines.length !== startingPolylines.length) {
-      return true
+      return true;
     }
 
-    return !this.isSaved()
+    return !this.isSaved();
   }
 
   handleOnReleaseResponder = () => {
-    if (!this.props.canDraw) return
+    if (!this.props.canDraw) return;
 
-    this.props.setupNextDraw()
-  }
+    this.props.setupNextDraw();
+  };
 
   async handleRegionChange(coordinates) {
-    this.props.updateRegionCoordinates(coordinates)
+    this.props.updateRegionCoordinates(coordinates);
   }
 
   isChangedRegionDifferent() {
-    return JSON.stringify(this.props.initialRegion) !== JSON.stringify(this.props.changedRegion)
+    return (
+      JSON.stringify(this.props.initialRegion) !==
+      JSON.stringify(this.props.changedRegion)
+    );
   }
 
   alertAboutStrava() {
@@ -179,35 +196,35 @@ class RouteEditor extends Component {
         { text: "OK", onPress: () => console.log("OK Pressed") }
       ],
       { cancelable: false }
-    )
+    );
   }
 
   loadStravaAndNavigate = () => {
-    this.props.setStravaLoadingTrue()
-    this.props.navigation.navigate("StravaRouteSelector")
-    this.props.checkForExpiredToken()
-  }
+    this.props.setStravaLoadingTrue();
+    this.props.navigation.navigate("StravaRouteSelector");
+    this.props.checkForExpiredToken();
+  };
 
   async handleStravaPress() {
     if (!this.props.stravaAccessToken) {
-      this.alertAboutStrava()
+      this.alertAboutStrava();
     } else {
-      this.loadStravaAndNavigate()
+      this.loadStravaAndNavigate();
     }
   }
 
   async handlePressItem(name) {
     switch (name) {
       case "draw_route":
-        return this.props.toggleDrawMode()
+        return this.props.toggleDrawMode();
       case "position_map":
-        return this.props.togglePositionMode()
+        return this.props.togglePositionMode();
       case "erase_route":
-        return this.props.eraseRoute()
+        return this.props.eraseRoute();
       case "upload_strava":
-        return await this.handleStravaPress()
+        return await this.handleStravaPress();
       default:
-        console.log("wat in tarnation")
+        console.log("wat in tarnation");
     }
   }
 
@@ -215,46 +232,59 @@ class RouteEditor extends Component {
     if (drawMode) {
       return Object.assign(
         {},
-        { onPress: this.props.persistRoute, saved: "SAVED", needsSaving: "SAVE ROUTE", color: "#FF5423" }
-      )
+        {
+          onPress: this.props.persistRoute,
+          saved: "SAVED",
+          needsSaving: "SAVE ROUTE",
+          color: "#FF5423"
+        }
+      );
     } else if (positionMode) {
       return Object.assign(
         {},
-        { onPress: this.props.persistCoordinates, saved: "SAVED", needsSaving: "SAVE POSITION", color: "#3F88C5" }
-      )
+        {
+          onPress: this.props.persistCoordinates,
+          saved: "SAVED",
+          needsSaving: "SAVE POSITION",
+          color: "#3F88C5"
+        }
+      );
     } else {
-      return Object.assign({}, {})
+      return Object.assign({}, {});
     }
   }
 
   needsSaving(drawMode, positionMode) {
-    if (!drawMode && !positionMode) return
+    if (!drawMode && !positionMode) return;
 
     if (positionMode) {
-      return this.isChangedRegionDifferent()
+      return this.isChangedRegionDifferent();
     } else if (drawMode) {
-      return this.routeNeedsSaving()
+      return this.routeNeedsSaving();
     }
 
-    return false
+    return false;
   }
 
   cancelAllModes = () => {
-    this.props.cancelAllModes()
-  }
+    this.props.cancelAllModes();
+  };
 
   renderSavingButton() {
-    const { drawMode, positionMode } = this.props
-    if (!drawMode && !positionMode) return
-    const { onPress, saved, needsSaving, color } = this.getSaveButtonProps(drawMode, positionMode)
-    let buttonContent
+    const { drawMode, positionMode } = this.props;
+    if (!drawMode && !positionMode) return;
+    const { onPress, saved, needsSaving, color } = this.getSaveButtonProps(
+      drawMode,
+      positionMode
+    );
+    let buttonContent;
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color={color} />
+      buttonContent = <MaterialIndicator size={20} color={color} />;
     } else if (this.needsSaving(drawMode, positionMode)) {
-      buttonContent = <Text style={{ color }}>{needsSaving}</Text>
+      buttonContent = <Text style={{ color }}>{needsSaving}</Text>;
     } else {
-      buttonContent = <Text style={{ color }}>{saved}</Text>
+      buttonContent = <Text style={{ color }}>{saved}</Text>;
     }
     return (
       <View
@@ -262,12 +292,20 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.7}
         shadowRadius={2}
-        style={styles.savingButton}>
+        style={styles.savingButton}
+      >
         <TouchableWithoutFeedback onPress={onPress}>
-          <View style={[styles.savingButtonContainer, { width: this.props.width / 2 }]}>{buttonContent}</View>
+          <View
+            style={[
+              styles.savingButtonContainer,
+              { width: this.props.width / 2 }
+            ]}
+          >
+            {buttonContent}
+          </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderFloatingBackButton() {
@@ -277,18 +315,19 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={styles.floatingButtonContainer}>
+        style={styles.floatingButtonContainer}
+      >
         <TouchableWithoutFeedback onPress={this.checkForSaveAndNavigateBack}>
           <View style={styles.floatingInner}>
             <Ionicons name="ios-arrow-back" size={30} />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderExitButton() {
-    if (!this.props.drawMode && !this.props.positionMode) return
+    if (!this.props.drawMode && !this.props.positionMode) return;
 
     return (
       <View
@@ -296,41 +335,62 @@ class RouteEditor extends Component {
         shadowOffset={{ width: 0, height: 0 }}
         shadowOpacity={0.5}
         shadowRadius={2}
-        style={styles.exitButtonContainer}>
+        style={styles.exitButtonContainer}
+      >
         <TouchableWithoutFeedback onPress={this.cancelAllModes}>
           <View style={styles.exitButtonInner}>
             <MaterialIcons name="close" size={30} color={"white"} />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderPolylines() {
-    let coordinates
+    let coordinates;
     return this.props.polylines.map((coordinateArrays, index) => {
-      if (index > this.props.shownIndex) return
+      if (index > this.props.shownIndex) return;
 
       coordinates = coordinateArrays.map(coordinate => {
-        return Object.assign({}, { latitude: coordinate[0], longitude: coordinate[1] })
-      })
+        return Object.assign(
+          {},
+          { latitude: coordinate[0], longitude: coordinate[1] }
+        );
+      });
 
       return (
-        <MapView.Polyline style={styles.zIndex10} coordinates={coordinates} strokeWidth={2} strokeColor="#FF5423" />
-      )
-    })
+        <MapView.Polyline
+          style={styles.zIndex10}
+          coordinates={coordinates}
+          strokeWidth={2}
+          strokeColor="#FF5423"
+        />
+      );
+    });
   }
 
   renderPreviousPolylines() {
     return this.props.previousPolylines.map((coordinates, index) => {
-      return <MapView.Polyline style={styles.zIndex9} coordinates={coordinates} strokeWidth={2} strokeColor="#3F88C5" />
-    })
+      return (
+        <MapView.Polyline
+          style={styles.zIndex9}
+          coordinates={coordinates}
+          strokeWidth={2}
+          strokeColor="#3F88C5"
+        />
+      );
+    });
   }
 
   renderPositionCoordinates() {
-    if (!this.props.positionMode) return
+    if (!this.props.positionMode) return;
 
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = this.props.changedRegion
+    const {
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta
+    } = this.props.changedRegion;
     return (
       <View style={styles.positionCoordinates}>
         <View>
@@ -346,12 +406,12 @@ class RouteEditor extends Component {
           <Text style={styles.colorBlack}>Long Delta: {longitudeDelta}</Text>
         </View>
       </View>
-    )
+    );
   }
 
   render() {
     if (this.props.isLoading) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
     return (
@@ -362,7 +422,8 @@ class RouteEditor extends Component {
           scrollEnabled={!this.props.canDraw}
           onPanDrag={e => this.onPanDrag(e)}
           onTouchStart={this.handleOnReleaseResponder}
-          initialRegion={this.props.initialRegion}>
+          initialRegion={this.props.initialRegion}
+        >
           {this.renderPreviousPolylines()}
           {this.renderPolylines()}
         </MapView>
@@ -372,7 +433,7 @@ class RouteEditor extends Component {
           distanceToEdge={{ vertical: 60, horizontal: 30 }}
           actions={RouteEditor.actions}
           onPressItem={name => {
-            this.handlePressItem(name)
+            this.handlePressItem(name);
           }}
         />
         {this.renderExitButton()}
@@ -380,7 +441,7 @@ class RouteEditor extends Component {
         {this.renderPositionCoordinates()}
         <RouteEditorButtons navigation={this.props.navigation} />
       </View>
-    )
+    );
   }
 }
 
@@ -468,9 +529,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RouteEditor)
+)(RouteEditor);

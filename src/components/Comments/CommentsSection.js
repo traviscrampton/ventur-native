@@ -1,29 +1,35 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from "react-native"
-import CommentForm from "./CommentForm"
-import { toggleCommentFormModal } from "../../actions/comment_form"
-import Comment from "./Comment"
-const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableWithoutFeedback
+} from "react-native";
+import CommentForm from "./CommentForm";
+import { toggleCommentFormModal } from "../../actions/comment_form";
+import Comment from "./Comment";
+const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png");
 
 const mapStateToProps = state => ({
   comments: state.comments.comments,
   currentUserAvatarImageUrl: state.common.currentUser.avatarImageUrl
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   toggleCommentFormModal: payload => dispatch(toggleCommentFormModal(payload))
-})
+});
 
 class CommentsSection extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   navigateToCommentForm = () => {
-    this.props.navigateAndPopulateCommentForm()
-    this.props.toggleCommentFormModal(true)
-  }
+    this.props.navigateAndPopulateCommentForm();
+    this.props.toggleCommentFormModal(true);
+  };
 
   replyToComment = comment => {
     const params = {
@@ -34,22 +40,22 @@ class CommentsSection extends Component {
         fullName: comment.user.fullName
       },
       commentableTitle: comment.content
-    }
+    };
 
-    this.props.navigateAndPopulateCommentForm(params)
-    this.props.toggleCommentFormModal(true)
-  }
+    this.props.navigateAndPopulateCommentForm(params);
+    this.props.toggleCommentFormModal(true);
+  };
 
   getAvatarUrl() {
     if (this.props.currentUserAvatarImageUrl.length > 0) {
-      return { uri: this.props.currentUserAvatarImageUrl }
+      return { uri: this.props.currentUserAvatarImageUrl };
     } else {
-      return CycleTouringLogo
+      return CycleTouringLogo;
     }
   }
 
   renderCommentCta = () => {
-    const avatarUrl = this.getAvatarUrl()
+    const avatarUrl = this.getAvatarUrl();
 
     return (
       <View style={styles.ctaContainer}>
@@ -60,13 +66,19 @@ class CommentsSection extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
-  }
+    );
+  };
 
   renderComments() {
     return this.props.comments.map((comment, index) => {
-      return <Comment {...comment} commentableUser={this.props.commentableUser} replyToComment={this.replyToComment} />
-    })
+      return (
+        <Comment
+          {...comment}
+          commentableUser={this.props.commentableUser}
+          replyToComment={this.replyToComment}
+        />
+      );
+    });
   }
 
   render() {
@@ -80,7 +92,7 @@ class CommentsSection extends Component {
         {this.renderComments()}
         <CommentForm />
       </View>
-    )
+    );
   }
 }
 
@@ -128,9 +140,9 @@ const styles = StyleSheet.create({
   labelColor: {
     color: "#d3d3d3"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentsSection)
+)(CommentsSection);

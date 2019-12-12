@@ -1,6 +1,6 @@
-import React, { Component } from "react"
-import { View, TouchableWithoutFeedback, Text, StyleSheet } from "react-native"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import React from "react";
+import { View, TouchableWithoutFeedback, Text, StyleSheet } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const RetryRequesetScreen = props => {
   return (
@@ -12,8 +12,8 @@ const RetryRequesetScreen = props => {
         </View>
       </TouchableWithoutFeedback>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center"
   }
-})
+});
 
-export default RetryRequesetScreen
+export default RetryRequesetScreen;

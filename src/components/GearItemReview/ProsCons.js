@@ -1,11 +1,11 @@
-import React, { Component } from "react"
-import { View, Text, StyleSheet } from "react-native"
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const renderItems = items => {
-  return items.map((item, index) => {
-    return <ProCon {...item} />
-  })
-}
+  return items.map(item => {
+    return <ProCon {...item} />;
+  });
+};
 
 const ProCon = item => {
   return (
@@ -13,11 +13,11 @@ const ProCon = item => {
       <Text style={styles.marginRight5}>{`${"\u2022"}`}</Text>
       <Text>{item.text}</Text>
     </View>
-  )
-}
+  );
+};
 
 export const ProsCons = props => {
-  const { pros, cons } = props
+  const { pros, cons } = props;
 
   return (
     <View style={styles.marginTop10}>
@@ -30,8 +30,8 @@ export const ProsCons = props => {
         {renderItems(cons)}
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   proConContainer: {
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
   marginTop10: {
     marginTop: 10
   }
-})
+});

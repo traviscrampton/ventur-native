@@ -1,92 +1,114 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Image, Text, TouchableWithoutFeedback, Alert } from "react-native"
-import { deleteComment } from "../../actions/comments"
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"
-const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png")
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableWithoutFeedback,
+  Alert
+} from "react-native";
+import { deleteComment } from "../../actions/comments";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png");
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   deleteComment: payload => dispatch(deleteComment(payload))
-})
+});
 
 class Comment extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       showSubComments: false
-    }
+    };
   }
 
   toggleSubComments = () => {
-    const { showSubComments } = this.state
+    const { showSubComments } = this.state;
     this.setState({
       showSubComments: !showSubComments
-    })
-  }
+    });
+  };
 
   handleDeleteComment = id => {
     Alert.alert(
       "Are you sure?",
       "This comment will be deleted",
-      [{ text: "Delete Comment", onPress: () => this.props.deleteComment(id) }, { text: "Cancel", style: "cancel" }],
+      [
+        { text: "Delete Comment", onPress: () => this.props.deleteComment(id) },
+        { text: "Cancel", style: "cancel" }
+      ],
       { cancelable: true }
-    )
-  }
+    );
+  };
 
   isCurrentUsersComment() {
-    return this.props.currentUser.id == this.props.user.id
+    return this.props.currentUser.id == this.props.user.id;
   }
 
   currentUserOwnsCommentable() {
-    return this.props.currentUser.id == this.props.commentableUser.id
+    return this.props.currentUser.id == this.props.commentableUser.id;
   }
 
   renderRepliesCta() {
-    const subCommentCount = this.props.subComments.length
+    const subCommentCount = this.props.subComments.length;
     if (subCommentCount === 0) {
-      return <View />
+      return <View />;
     }
 
-    const chevron = this.state.showSubComments ? "chevron-up" : "chevron-down"
+    const chevron = this.state.showSubComments ? "chevron-up" : "chevron-down";
 
     return (
       <View>
         <TouchableWithoutFeedback onPress={this.toggleSubComments}>
           <View style={styles.flexRow}>
-            <Text style={styles.repliesCtaText}>Replies ({subCommentCount})</Text>
-            <MaterialCommunityIcons style={styles.paddingTop2} name={chevron} size={18} color={"rgba(0,0,0,.65)"} />
+            <Text style={styles.repliesCtaText}>
+              Replies ({subCommentCount})
+            </Text>
+            <MaterialCommunityIcons
+              style={styles.paddingTop2}
+              name={chevron}
+              size={18}
+              color={"rgba(0,0,0,.65)"}
+            />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderDeleteButton() {
-    if (!this.isCurrentUsersComment() && !this.currentUserOwnsCommentable()) return
+    if (!this.isCurrentUsersComment() && !this.currentUserOwnsCommentable())
+      return;
 
     return (
       <View style={styles.marginLeft5}>
-        <TouchableWithoutFeedback onPress={() => this.handleDeleteComment(this.props.id)}>
+        <TouchableWithoutFeedback
+          onPress={() => this.handleDeleteComment(this.props.id)}
+        >
           <View>
             <MaterialIcons name="delete" size={16} color="rgba(0,0,0,.65)" />
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderDeleteEditButtons() {
-    return <View style={styles.flexRow}>{this.renderDeleteButton()}</View>
+    return <View style={styles.flexRow}>{this.renderDeleteButton()}</View>;
   }
 
   renderUserSection() {
     const avatarImageUrl =
-      this.props.user.avatarImageUrl.length > 0 ? { uri: this.props.user.avatarImageUrl } : CycleTouringLogo
+      this.props.user.avatarImageUrl.length > 0
+        ? { uri: this.props.user.avatarImageUrl }
+        : CycleTouringLogo;
 
     return (
       <View style={styles.userSectionContainer}>
@@ -99,7 +121,7 @@ class Comment extends Component {
         </View>
         {this.renderDeleteEditButtons()}
       </View>
-    )
+    );
   }
 
   renderCommentContent() {
@@ -107,7 +129,7 @@ class Comment extends Component {
       <View style={styles.marginTop20}>
         <Text style={styles.commentContent}>{this.props.content}</Text>
       </View>
-    )
+    );
   }
 
   renderCommentInterractions() {
@@ -115,7 +137,9 @@ class Comment extends Component {
       <View style={styles.commentInteractionContainer}>
         {this.renderRepliesCta()}
         <View>
-          <TouchableWithoutFeedback onPress={() => this.props.replyToComment(this.props)}>
+          <TouchableWithoutFeedback
+            onPress={() => this.props.replyToComment(this.props)}
+          >
             <View style={styles.flexRow}>
               <MaterialIcons name="reply" size={14} color={"rgba(0,0,0,.65)"} />
               <Text style={styles.replyCta}>Reply</Text>
@@ -123,16 +147,24 @@ class Comment extends Component {
           </TouchableWithoutFeedback>
         </View>
       </View>
-    )
+    );
   }
 
   renderSubComments() {
-    if (!this.state.showSubComments) return
-    let canDelete
+    if (!this.state.showSubComments) return;
+    let canDelete;
     return this.props.subComments.map((subComment, index) => {
-      canDelete = this.currentUserOwnsCommentable() || this.props.currentUser.id == subComment.user.id
-      return <SubComment {...subComment} canDelete={canDelete} handleDeleteComment={this.handleDeleteComment} />
-    })
+      canDelete =
+        this.currentUserOwnsCommentable() ||
+        this.props.currentUser.id == subComment.user.id;
+      return (
+        <SubComment
+          {...subComment}
+          canDelete={canDelete}
+          handleDeleteComment={this.handleDeleteComment}
+        />
+      );
+    });
   }
 
   render() {
@@ -143,28 +175,31 @@ class Comment extends Component {
         {this.renderCommentInterractions()}
         {this.renderSubComments()}
       </View>
-    )
+    );
   }
 }
 
 const SubComment = props => {
-  const imgDimensions = 35
-
-  deleteCta = (
+  const deleteCta = (
     <View>
-      <TouchableWithoutFeedback onPress={() => props.handleDeleteComment(props.id)}>
+      <TouchableWithoutFeedback
+        onPress={() => props.handleDeleteComment(props.id)}
+      >
         <View>
           <MaterialIcons name="delete" size={16} color="rgba(0,0,0,.65)" />
         </View>
       </TouchableWithoutFeedback>
     </View>
-  )
+  );
 
   return (
     <View style={styles.subCommentContainer}>
       <View style={styles.userContentAndCta}>
         <View style={styles.imageAndUser}>
-          <Image style={styles.image} source={{ uri: props.user.avatarImageUrl }} />
+          <Image
+            style={styles.image}
+            source={{ uri: props.user.avatarImageUrl }}
+          />
           <View style={styles.userAndDate}>
             <Text style={styles.userFullName}>{props.user.fullName}</Text>
             <Text style={styles.commentDate}>{props.readableDate}</Text>
@@ -176,8 +211,8 @@ const SubComment = props => {
         <Text>{props.content}</Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -274,9 +309,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Comment)
+)(Comment);

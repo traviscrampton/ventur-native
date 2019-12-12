@@ -1,53 +1,68 @@
-import React, { Component } from "react"
-import { View, Image, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
-import { connect } from "react-redux"
-import { getUserJournals, handleJournalPress } from "../../actions/gear_review_form"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import React, { Component } from "react";
+import {
+  View,
+  Image,
+  Text,
+  TouchableWithoutFeedback,
+  StyleSheet
+} from "react-native";
+import { connect } from "react-redux";
+import {
+  getUserJournals,
+  handleJournalPress
+} from "../../actions/gear_review_form";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const mapStateToProps = state => ({
   width: state.common.width,
   journals: state.gearReviewForm.userJournals,
   journalIds: state.gearReviewForm.journalIds
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   getUserJournals: payload => dispatch(getUserJournals(payload)),
   handleJournalPress: payload => dispatch(handleJournalPress(payload))
-})
+});
 
 class GearReviewFormJournals extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       menuOpen: false
-    }
+    };
   }
 
   componentWillMount() {
-    this.props.getUserJournals()
+    this.props.getUserJournals();
   }
 
   toggleMenu = () => {
-    const { menuOpen } = this.state
+    const { menuOpen } = this.state;
 
     this.setState({
       menuOpen: !menuOpen
-    })
-  }
+    });
+  };
 
   handleJournalPress = id => {
-    this.props.handleJournalPress(id)
-  }
+    this.props.handleJournalPress(id);
+  };
 
   renderJournalOption = (journal, index) => {
-    const isIncluded = this.props.journalIds.includes(journal.id)
+    const isIncluded = this.props.journalIds.includes(journal.id);
 
     return (
-      <TouchableWithoutFeedback key={journal.id} onPress={() => this.handleJournalPress(journal.id)}>
+      <TouchableWithoutFeedback
+        key={journal.id}
+        onPress={() => this.handleJournalPress(journal.id)}
+      >
         <View key={journal.id} style={styles.journalOptionContainer}>
           <View style={styles.flexRowCenter}>
-            <Image source={{ uri: journal.cardBannerImageUrl }} style={styles.journalImage} />
+            <Image
+              source={{ uri: journal.cardBannerImageUrl }}
+              style={styles.journalImage}
+            />
             <Text style={styles.journalTitle}>{journal.title}</Text>
           </View>
           <MaterialCommunityIcons
@@ -57,40 +72,47 @@ class GearReviewFormJournals extends Component {
           />
         </View>
       </TouchableWithoutFeedback>
-    )
-  }
+    );
+  };
 
   renderJournalOptions() {
     return this.props.journals.map((journal, index) => {
-      return this.renderJournalOption(journal, index)
-    })
+      return this.renderJournalOption(journal, index);
+    });
   }
 
   renderDropdown = () => {
-    if (!this.state.menuOpen) return
+    if (!this.state.menuOpen) return;
 
     return (
-      <View shadowColor="gray" shadowOffset={{ width: 0, height: 0 }} shadowOpacity={0.5} shadowRadius={2}>
-        <View style={styles.journalsContainer}>{this.renderJournalOptions()}</View>
+      <View
+        shadowColor="gray"
+        shadowOffset={{ width: 0, height: 0 }}
+        shadowOpacity={0.5}
+        shadowRadius={2}
+      >
+        <View style={styles.journalsContainer}>
+          {this.renderJournalOptions()}
+        </View>
       </View>
-    )
-  }
+    );
+  };
 
   getJournalLabelText() {
-    const { journalIds } = this.props
-    let journal = "Journal"
+    const { journalIds } = this.props;
+    let journal = "Journal";
 
     if (journalIds.length === 0 || journalIds.length > 1) {
-      journal = "Journals"
+      journal = "Journals";
     }
 
-    return `${journalIds.length} ${journal} selected`
+    return `${journalIds.length} ${journal} selected`;
   }
 
   renderDropdownIcon() {
-    const icon = this.state.menuOpen ? "chevron-up" : "chevron-down"
+    const icon = this.state.menuOpen ? "chevron-up" : "chevron-down";
 
-    return <MaterialCommunityIcons name={icon} size={20} />
+    return <MaterialCommunityIcons name={icon} size={20} />;
   }
 
   render() {
@@ -102,14 +124,15 @@ class GearReviewFormJournals extends Component {
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
             shadowOpacity={0.5}
-            shadowRadius={2}>
+            shadowRadius={2}
+          >
             <Text>{this.getJournalLabelText()}</Text>
             {this.renderDropdownIcon()}
           </View>
         </TouchableWithoutFeedback>
         {this.renderDropdown()}
       </View>
-    )
+    );
   }
 }
 
@@ -154,9 +177,9 @@ const styles = StyleSheet.create({
     fontFamily: "playfair",
     color: "#323941"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GearReviewFormJournals)
+)(GearReviewFormJournals);

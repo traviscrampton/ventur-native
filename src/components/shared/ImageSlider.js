@@ -1,9 +1,20 @@
-import React, { Component } from "react"
-import { StyleSheet, View, Modal, SafeAreaView, Image, Text, TouchableWithoutFeedback } from "react-native"
-import { toggleImageSliderModal, resetImages } from "../../actions/image_slider"
-import Swiper from "react-native-swiper"
-import { Feather } from "@expo/vector-icons"
-import { connect } from "react-redux"
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  SafeAreaView,
+  Image,
+  Text,
+  TouchableWithoutFeedback
+} from "react-native";
+import {
+  toggleImageSliderModal,
+  resetImages
+} from "../../actions/image_slider";
+import Swiper from "react-native-swiper";
+import { Feather } from "@expo/vector-icons";
+import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   height: state.common.height,
@@ -11,22 +22,22 @@ const mapStateToProps = state => ({
   images: state.imageSlider.images,
   width: state.common.width,
   activeIndex: state.imageSlider.activeIndex
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   toggleImageSliderModal: payload => dispatch(toggleImageSliderModal(payload)),
   resetImages: () => dispatch(resetImages())
-})
+});
 
 class ImageSlider extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   exitImageSlider = () => {
-    this.props.toggleImageSliderModal(false)
-    this.props.resetImages()
-  }
+    this.props.toggleImageSliderModal(false);
+    this.props.resetImages();
+  };
 
   renderExit() {
     return (
@@ -35,20 +46,23 @@ class ImageSlider extends Component {
           <Feather name="x" color="white" size={32} />
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderImages() {
     return this.props.images.map(image => {
       return (
         <View>
-          <Image style={{ width: this.props.width, height: image.height }} source={{ uri: image.uri }} />
+          <Image
+            style={{ width: this.props.width, height: image.height }}
+            source={{ uri: image.uri }}
+          />
           <View style={styles.padding20}>
             <Text style={styles.imageCaption}>{image.caption}</Text>
           </View>
         </View>
-      )
-    })
+      );
+    });
   }
 
   render() {
@@ -63,7 +77,7 @@ class ImageSlider extends Component {
           </View>
         </SafeAreaView>
       </Modal>
-    )
+    );
   }
 }
 
@@ -87,9 +101,9 @@ const styles = StyleSheet.create({
   padding20: {
     padding: 20
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ImageSlider)
+)(ImageSlider);

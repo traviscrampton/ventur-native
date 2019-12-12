@@ -1,41 +1,49 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { Header } from "./header"
-import { updateActiveImageCaption, updateImageCaption, updateActiveIndex } from "../../actions/editor"
-import { Text, TextInput, StyleSheet, View, Image } from "react-native"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Header } from "./header";
+import {
+  updateActiveImageCaption,
+  updateImageCaption,
+  updateActiveIndex
+} from "../../actions/editor";
+import { Text, TextInput, StyleSheet, View, Image } from "react-native";
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
   activeCaption: state.editor.activeCaption,
   width: state.common.width,
   height: state.common.height
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateImageCaption: payload => dispatch(updateImageCaption(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
-  updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload))
-})
+  updateActiveImageCaption: payload =>
+    dispatch(updateActiveImageCaption(payload))
+});
 
 class ImageCaptionForm extends Component {
   constructor(props) {
-    super(props)
-    this.index = this.props.navigation.getParam("index", "NO-ID")
-    this.handleGoBack = this.handleGoBack.bind(this)
-    this.saveCaption = this.saveCaption.bind(this)
+    super(props);
+    this.index = this.props.navigation.getParam("index", "NO-ID");
+    this.handleGoBack = this.handleGoBack.bind(this);
+    this.saveCaption = this.saveCaption.bind(this);
   }
 
   saveCaption() {
-    const entry = { ...this.props.entries[this.index], caption: this.props.activeCaption }
-    const payload = { entry: entry, index: this.index }
-    this.props.updateImageCaption(payload)
-    this.props.navigation.goBack()
+    const entry = {
+      ...this.props.entries[this.index],
+      caption: this.props.activeCaption
+    };
+    const payload = { entry: entry, index: this.index };
+    this.props.updateImageCaption(payload);
+    this.props.navigation.goBack();
   }
 
   handleGoBack() {
-    this.props.updateActiveImageCaption("")
-    this.props.updateActiveIndex(null)
-    this.props.navigation.goBack()
+    this.props.updateActiveImageCaption("");
+    this.props.updateActiveIndex(null);
+    this.props.navigation.goBack();
   }
 
   renderHeader() {
@@ -45,24 +53,32 @@ class ImageCaptionForm extends Component {
       centerCta: "Add Caption",
       handleConfirm: this.saveCaption,
       confirmCta: "Add"
-    }
-    return <Header key="header" {...headerProps} />
+    };
+    return <Header key="header" {...headerProps} />;
   }
 
   renderImage() {
-    const image = this.props.entries[this.index]
-    return <Image key="image" style={[styles.image, { width: this.props.width }]} source={{ uri: image.uri }} />
+    const image = this.props.entries[this.index];
+    return (
+      <Image
+        key="image"
+        style={[styles.image, { width: this.props.width }]}
+        source={{ uri: image.uri }}
+      />
+    );
   }
 
   updateActiveImageCaption(text) {
-    this.props.updateActiveImageCaption(text)
+    this.props.updateActiveImageCaption(text);
   }
 
   renderForm() {
     return (
       <View key="captionForm">
         <View style={styles.padding20}>
-          <Text style={styles.fontWeightBold}>{this.props.activeCaption.length} / 200</Text>
+          <Text style={styles.fontWeightBold}>
+            {this.props.activeCaption.length} / 200
+          </Text>
         </View>
         <TextInput
           autoFocus
@@ -74,7 +90,7 @@ class ImageCaptionForm extends Component {
           onChangeText={text => this.updateActiveImageCaption(text)}
         />
       </View>
-    )
+    );
   }
 
   render() {
@@ -84,7 +100,7 @@ class ImageCaptionForm extends Component {
         {this.renderImage()}
         {this.renderForm()}
       </View>
-    )
+    );
   }
 }
 
@@ -105,9 +121,9 @@ const styles = StyleSheet.create({
     padding: 20,
     textAlign: "center"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ImageCaptionForm)
+)(ImageCaptionForm);

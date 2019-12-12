@@ -1,20 +1,19 @@
-import React from "react"
-import _ from "lodash"
-import { StyleSheet, View, Dimensions, Text, Image, Button, TouchableWithoutFeedback } from "react-native"
-import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons"
-import ProgressiveImage from "../shared/ProgressiveImage"
-import StarRating from "../shared/StarRating"
-
-const renderRatingStars = props => {
-  return [...Array(props.rating)].map((e, i) => {
-    return <MaterialIcons name="star" color="gold" size={props.size} key={i} />
-  })
-}
+import React from "react";
+import _ from "lodash";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  TouchableWithoutFeedback
+} from "react-native";
+import ProgressiveImage from "../shared/ProgressiveImage";
+import StarRating from "../shared/StarRating";
 
 const GearListItem = props => {
-  const { id, gearItemId, name, imageUrl, rating } = props.gearItem
-  const width = Dimensions.get("window").width - 40
-  const textWidth = width - 135
+  const { id, name, imageUrl, rating } = props.gearItem;
+  const width = Dimensions.get("window").width - 40;
+  const textWidth = width - 135;
 
   return (
     <View
@@ -23,14 +22,24 @@ const GearListItem = props => {
       shadowOffset={{ width: 0, height: 0 }}
       shadowOpacity={0.5}
       shadowRadius={2}
-      style={[styles.container, { width: width }]}>
-      <TouchableWithoutFeedback style={styles.flex1} onPress={() => props.gearItemPress(id)}>
+      style={[styles.container, { width: width }]}
+    >
+      <TouchableWithoutFeedback
+        style={styles.flex1}
+        onPress={() => props.gearItemPress(id)}
+      >
         <View style={styles.gearItemBox}>
           <View style={styles.imageContainer}>
-            <ProgressiveImage style={styles.progressiveImageStyles} source={imageUrl} />
+            <ProgressiveImage
+              style={styles.progressiveImageStyles}
+              source={imageUrl}
+            />
           </View>
           <View style={styles.nameContainer}>
-            <Text style={[styles.textStyles, { width: textWidth }]} numberOfLines={2}>
+            <Text
+              style={[styles.textStyles, { width: textWidth }]}
+              numberOfLines={2}
+            >
               {name}
             </Text>
             <StarRating rating={rating} size={20} />
@@ -38,8 +47,8 @@ const GearListItem = props => {
         </View>
       </TouchableWithoutFeedback>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -81,6 +90,6 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: "lightgray"
   }
-})
+});
 
-export default GearListItem
+export default GearListItem;

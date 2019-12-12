@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -9,30 +9,34 @@ import {
   FlatList,
   SafeAreaView,
   TouchableWithoutFeedback
-} from "react-native"
-import { Linking } from "expo"
-import GearListItem from "../GearItem/GearListItem"
-import { MaterialIcons } from "@expo/vector-icons"
-import { getProfilePageData, uploadProfilePhoto, setDefaultAppState } from "../../actions/user"
-import JournalMini from "../journals/JournalMini"
-import JournalForm from "../JournalForm/JournalForm"
-import { MaterialIndicator } from "react-native-indicators"
-import { toggleGearReviewFormModal } from "../../actions/gear_review_form"
-import { toggleJournalFormModal } from "../../actions/journal_form"
-import { resetJournalShow } from "../../actions/journals"
-import { toggleCameraRollModal } from "../../actions/camera_roll"
-import { setCurrentUser } from "../../actions/common"
-import { authenticateStravaUser } from "../../actions/strava"
-import ThreeDotDropdown from "../shared/ThreeDotDropdown"
-import { populateGearItemReview } from "../../actions/gear_item_review"
-import { logOut } from "../../auth"
-import { encodeQueryString } from "../../agent"
-import { TabView, SceneMap, TabBar } from "react-native-tab-view"
-import LoadingScreen from "../shared/LoadingScreen"
-import * as WebBrowser from "expo-web-browser"
-import { FloatingAction } from "react-native-floating-action"
-import GearReviewForm from "../GearReviewForm/GearReviewForm"
-import ImagePickerContainer from "../shared/ImagePickerContainer"
+} from "react-native";
+import { Linking } from "expo";
+import GearListItem from "../GearItem/GearListItem";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  getProfilePageData,
+  uploadProfilePhoto,
+  setDefaultAppState
+} from "../../actions/user";
+import JournalMini from "../journals/JournalMini";
+import JournalForm from "../JournalForm/JournalForm";
+import { MaterialIndicator } from "react-native-indicators";
+import { toggleGearReviewFormModal } from "../../actions/gear_review_form";
+import { toggleJournalFormModal } from "../../actions/journal_form";
+import { resetJournalShow } from "../../actions/journals";
+import { toggleCameraRollModal } from "../../actions/camera_roll";
+import { setCurrentUser } from "../../actions/common";
+import { authenticateStravaUser } from "../../actions/strava";
+import ThreeDotDropdown from "../shared/ThreeDotDropdown";
+import { populateGearItemReview } from "../../actions/gear_item_review";
+import { logOut } from "../../auth";
+import { encodeQueryString } from "../../agent";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import LoadingScreen from "../shared/LoadingScreen";
+import * as WebBrowser from "expo-web-browser";
+import { FloatingAction } from "react-native-floating-action";
+import GearReviewForm from "../GearReviewForm/GearReviewForm";
+import ImagePickerContainer from "../shared/ImagePickerContainer";
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -45,7 +49,7 @@ const mapStateToProps = state => ({
   width: state.common.width,
   height: state.common.height,
   isLoading: state.user.isLoading
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: payload => dispatch(setCurrentUser(payload)),
@@ -53,20 +57,21 @@ const mapDispatchToProps = dispatch => ({
   resetJournalShow: () => dispatch(resetJournalShow()),
   authenticateStravaUser: payload => dispatch(authenticateStravaUser(payload)),
   getProfilePageData: () => dispatch(getProfilePageData()),
-  toggleGearReviewFormModal: payload => dispatch(toggleGearReviewFormModal(payload)),
+  toggleGearReviewFormModal: payload =>
+    dispatch(toggleGearReviewFormModal(payload)),
   populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload)),
   setDefaultAppState: () => dispatch(setDefaultAppState())
-})
+});
 
 class Profile extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       activeIndex: 0
-    }
+    };
   }
 
   static actions = [
@@ -84,25 +89,25 @@ class Profile extends Component {
       position: 1,
       color: "#FF5423"
     }
-  ]
+  ];
 
   componentWillMount() {
-    this.props.getProfilePageData()
+    this.props.getProfilePageData();
   }
 
   handleLogout = async () => {
-    await logOut()
-    this.props.setCurrentUser(null)
-    this.props.setDefaultAppState()
-  }
+    await logOut();
+    this.props.setCurrentUser(null);
+    this.props.setDefaultAppState();
+  };
 
   handleJournalPress = journalId => {
-    this.props.navigation.navigate("Journal", { journalId })
-  }
+    this.props.navigation.navigate("Journal", { journalId });
+  };
 
   connectToStrava = async () => {
-    if (this.props.stravaAccessToken) return
-    const redirect = "ventur://ventur"
+    if (this.props.stravaAccessToken) return;
+    const redirect = "ventur://ventur";
     const params = Object.assign(
       {},
       {
@@ -112,26 +117,33 @@ class Profile extends Component {
         scope: "activity:read_all",
         approval_prompt: "force"
       }
-    )
+    );
 
-    let url = "https://www.strava.com/oauth/authorize" + encodeQueryString(params)
-    const result = await WebBrowser.openAuthSessionAsync(url)
-    await this.props.authenticateStravaUser(result)
-  }
+    let url =
+      "https://www.strava.com/oauth/authorize" + encodeQueryString(params);
+    const result = await WebBrowser.openAuthSessionAsync(url);
+    await this.props.authenticateStravaUser(result);
+  };
 
   stravaCtaText() {
-    return this.props.stravaAccessToken ? "Connected to Strava" : "Connect To Strava"
+    return this.props.stravaAccessToken
+      ? "Connected to Strava"
+      : "Connect To Strava";
   }
 
   launchImagePicker = () => {
-    this.props.toggleCameraRollModal(true)
-  }
+    this.props.toggleCameraRollModal(true);
+  };
 
   renderUserName() {
     return (
-      <View style={[styles.userNameContainer, { height: this.props.width / 4 }]}>
+      <View
+        style={[styles.userNameContainer, { height: this.props.width / 4 }]}
+      >
         <View>
-          <Text style={styles.userNameText}>Hi {this.props.user.firstName}!</Text>
+          <Text style={styles.userNameText}>
+            Hi {this.props.user.firstName}!
+          </Text>
         </View>
         <View>
           <Text style={{ width: this.props.width * 0.68 - 40 }}>
@@ -139,7 +151,7 @@ class Profile extends Component {
           </Text>
         </View>
       </View>
-    )
+    );
   }
 
   renderLogOut() {
@@ -149,11 +161,11 @@ class Profile extends Component {
           <Text>Log Out</Text>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   renderProfileLoadingScreen(imgDimensions) {
-    if (!this.props.profilePhotoLoading) return
+    if (!this.props.profilePhotoLoading) return;
 
     return (
       <View
@@ -163,15 +175,16 @@ class Profile extends Component {
           height: imgDimensions,
           borderRadius: imgDimensions / 2,
           backgroundColor: "azure"
-        }}>
+        }}
+      >
         <MaterialIndicator size={25} color="#FF5423" />
       </View>
-    )
+    );
   }
 
   renderProfilePhoto() {
-    let imgDimensions = this.props.width / 4
-    const options = this.getOptions()
+    let imgDimensions = this.props.width / 4;
+    const options = this.getOptions();
 
     return (
       <View
@@ -180,7 +193,8 @@ class Profile extends Component {
           {
             width: this.props.width - 30
           }
-        ]}>
+        ]}
+      >
         <TouchableWithoutFeedback onPress={this.launchImagePicker}>
           <View
             shadowColor="gray"
@@ -194,7 +208,8 @@ class Profile extends Component {
               borderRadius: imgDimensions / 2,
               backgroundColor: "azure",
               marginRight: 10
-            }}>
+            }}
+          >
             <Image
               style={{
                 width: imgDimensions,
@@ -212,7 +227,7 @@ class Profile extends Component {
         <View>{this.renderUserName()}</View>
         <ThreeDotDropdown options={options} />
       </View>
-    )
+    );
   }
 
   getOptions() {
@@ -220,35 +235,35 @@ class Profile extends Component {
       { title: "Upload Profile Photo", callback: this.uploadProfilePhoto },
       { title: this.stravaCtaText(), callback: this.connectToStrava },
       { title: "Log Out", callback: this.handleLogout }
-    ]
+    ];
 
-    return options
+    return options;
   }
 
   navigateToGearReviewForm() {
-    this.props.toggleGearReviewFormModal(true)
+    this.props.toggleGearReviewFormModal(true);
   }
 
   navigateToForm = name => {
     switch (name) {
       case "create_journal":
-        return this.navigateToJournalForm()
+        return this.navigateToJournalForm();
       case "create_gear_item":
-        return this.navigateToGearReviewForm()
+        return this.navigateToGearReviewForm();
       default:
-        console.log("what in tarnation")
+        console.log("what in tarnation");
     }
-  }
+  };
 
   renderEmptyState(isJournal = true) {
-    const content = isJournal ? "Journals" : "Gear Items"
-    const message = `No ${content} yet, press the action button to get started`
+    const content = isJournal ? "Journals" : "Gear Items";
+    const message = `No ${content} yet, press the action button to get started`;
 
     return (
       <View style={{ height: this.props.height, padding: 20 }}>
         <Text style={styles.fontSize20}>{message}</Text>
       </View>
-    )
+    );
   }
 
   renderProfilePhotoAndMetadata() {
@@ -259,39 +274,45 @@ class Profile extends Component {
           {
             width: this.props.width - 30
           }
-        ]}>
+        ]}
+      >
         <View style={styles.profileView}>{this.renderProfilePhoto()}</View>
       </View>
-    )
+    );
   }
 
   uploadProfilePhoto = img => {
-    this.props.uploadProfilePhoto(img)
-  }
+    this.props.uploadProfilePhoto(img);
+  };
 
   handleGearItemPress = id => {
-    const payload = Object.assign({}, { id, loading: true })
+    const payload = Object.assign({}, { id, loading: true });
 
-    this.props.populateGearItemReview(payload)
-    this.props.navigation.navigate("GearItemReview")
-  }
+    this.props.populateGearItemReview(payload);
+    this.props.navigation.navigate("GearItemReview");
+  };
 
   renderGear() {
     if (this.props.gear.length === 0) {
-      return this.renderEmptyState(false)
+      return this.renderEmptyState(false);
     }
 
     return this.props.gear.map((gearItem, index) => {
-      return <GearListItem gearItem={gearItem} gearItemPress={() => this.handleGearItemPress(gearItem.id)} />
-    })
+      return (
+        <GearListItem
+          gearItem={gearItem}
+          gearItemPress={() => this.handleGearItemPress(gearItem.id)}
+        />
+      );
+    });
   }
 
   renderProfileJournals() {
     if (this.props.journals.length === 0) {
-      return this.renderEmptyState()
+      return this.renderEmptyState();
     }
 
-    const pad = this.props.width * 0.035
+    const pad = this.props.width * 0.035;
 
     return (
       <View style={styles.relativeWhite}>
@@ -300,16 +321,18 @@ class Profile extends Component {
           contentContainerStyle={styles.contentContainerStyle}
           data={this.props.journals}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <JournalMini {...item} handlePress={this.handleJournalPress} />}
+          renderItem={({ item }) => (
+            <JournalMini {...item} handlePress={this.handleJournalPress} />
+          )}
         />
       </View>
-    )
+    );
   }
 
   navigateToJournalForm = () => {
-    this.props.resetJournalShow()
-    this.props.toggleJournalFormModal(true)
-  }
+    this.props.resetJournalShow();
+    this.props.toggleJournalFormModal(true);
+  };
 
   renderFloatingCreateButton() {
     return (
@@ -317,25 +340,28 @@ class Profile extends Component {
         color={"#FF5423"}
         actions={Profile.actions}
         onPressItem={name => {
-          this.navigateToForm(name)
+          this.navigateToForm(name);
         }}
       />
-    )
+    );
   }
 
   handleIndexChange = activeIndex => {
-    this.setState({ activeIndex })
-  }
+    this.setState({ activeIndex });
+  };
 
   getNavigationState = () => {
     return Object.assign(
       {},
       {
         index: this.state.activeIndex,
-        routes: [{ key: "journals", title: "Journals" }, { key: "gear", title: "Gear" }]
+        routes: [
+          { key: "journals", title: "Journals" },
+          { key: "gear", title: "Gear" }
+        ]
       }
-    )
-  }
+    );
+  };
 
   renderSlidingTabs() {
     return (
@@ -344,15 +370,18 @@ class Profile extends Component {
         renderScene={({ route }) => {
           switch (route.key) {
             case "journals":
-              return this.renderProfileJournals()
+              return this.renderProfileJournals();
             case "gear":
-              return this.renderGear()
+              return this.renderGear();
             default:
-              return null
+              return null;
           }
         }}
         onIndexChange={this.handleIndexChange}
-        initialLayout={{ width: this.props.width, minHeight: this.props.height }}
+        initialLayout={{
+          width: this.props.width,
+          minHeight: this.props.height
+        }}
         renderTabBar={props => (
           <TabBar
             {...props}
@@ -364,12 +393,12 @@ class Profile extends Component {
           />
         )}
       />
-    )
+    );
   }
 
   render() {
     if (this.props.isLoading) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
     return (
@@ -383,10 +412,13 @@ class Profile extends Component {
           {this.renderFloatingCreateButton()}
           <JournalForm />
           <GearReviewForm />
-          <ImagePickerContainer imageCallback={this.uploadProfilePhoto} selectSingleItem />
+          <ImagePickerContainer
+            imageCallback={this.uploadProfilePhoto}
+            selectSingleItem
+          />
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -456,9 +488,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between"
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile)
+)(Profile);

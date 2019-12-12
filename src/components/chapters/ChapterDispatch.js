@@ -1,17 +1,32 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, SafeAreaView, Text, TouchableWithoutFeedback, Alert } from "react-native"
-import { resetChapter, editChapterPublished, deleteChapter, uploadBannerPhoto } from "../../actions/chapter"
-import { populateEntries } from "../../actions/editor"
-import { updateChapterForm, toggleChapterModal } from "../../actions/chapter_form"
-import { toggleCameraRollModal } from "../../actions/camera_roll"
-import ChapterEditor from "./ChapterEditor"
-import ChapterShow from "./ChapterShow"
-import { MaterialIcons } from "@expo/vector-icons"
-import LoadingScreen from "../shared/LoadingScreen"
-import { JournalChildHeader } from "../shared/JournalChildHeader"
-import { sendEmails } from "../../actions/chapter"
-import ImagePickerContainer from "../shared/ImagePickerContainer"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Text,
+  TouchableWithoutFeedback,
+  Alert
+} from "react-native";
+import {
+  resetChapter,
+  editChapterPublished,
+  deleteChapter,
+  uploadBannerPhoto
+} from "../../actions/chapter";
+import { populateEntries } from "../../actions/editor";
+import {
+  updateChapterForm,
+  toggleChapterModal
+} from "../../actions/chapter_form";
+import { toggleCameraRollModal } from "../../actions/camera_roll";
+import ChapterEditor from "./ChapterEditor";
+import ChapterShow from "./ChapterShow";
+import { MaterialIcons } from "@expo/vector-icons";
+import LoadingScreen from "../shared/LoadingScreen";
+import { JournalChildHeader } from "../shared/JournalChildHeader";
+import { sendEmails } from "../../actions/chapter";
+import ImagePickerContainer from "../shared/ImagePickerContainer";
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -19,80 +34,85 @@ const mapStateToProps = state => ({
   user: state.chapter.chapter.user,
   currentUser: state.common.currentUser,
   width: state.common.width
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
   populateEntries: payload => dispatch(populateEntries(payload)),
   sendEmails: payload => dispatch(sendEmails(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
-  editChapterPublished: (chapter, published) => dispatch(editChapterPublished(chapter, published, dispatch)),
+  editChapterPublished: (chapter, published) =>
+    dispatch(editChapterPublished(chapter, published, dispatch)),
   toggleChapterModal: payload => dispatch(toggleChapterModal(payload)),
   uploadBannerPhoto: payload => dispatch(uploadBannerPhoto(payload)),
   resetChapter: () => dispatch(resetChapter()),
-  deleteChapter: (chapterId, callback) => dispatch(deleteChapter(chapterId, callback, dispatch))
-})
+  deleteChapter: (chapterId, callback) =>
+    dispatch(deleteChapter(chapterId, callback, dispatch))
+});
 
 class ChapterDispatch extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   populateEditorAndSwitch = content => {
-    let entries = content
+    let entries = content;
     if (entries === null) {
-      entries = []
+      entries = [];
     }
     if (!Array.isArray(content)) {
-      entries = Array.from(entries)
+      entries = Array.from(entries);
     }
 
-    this.props.populateEntries(entries)
-  }
+    this.props.populateEntries(entries);
+  };
 
   navigateBack = () => {
-    this.props.resetChapter()
-    this.props.navigation.goBack()
-  }
+    this.props.resetChapter();
+    this.props.navigation.goBack();
+  };
 
   navigateToEditor = () => {
-    const { content } = this.props.chapter.editorBlob
-    this.populateEditorAndSwitch(content)
-    this.props.navigation.navigate("ChapterEditor")
-  }
+    const { content } = this.props.chapter.editorBlob;
+    this.populateEditorAndSwitch(content);
+    this.props.navigation.navigate("ChapterEditor");
+  };
 
   openDeleteAlert = () => {
     Alert.alert(
       "Are you sure?",
       "Deleting this chapter will erase all images and content",
-      [{ text: "Delete Chapter", onPress: this.handleDelete }, { text: "Cancel", style: "cancel" }],
+      [
+        { text: "Delete Chapter", onPress: this.handleDelete },
+        { text: "Cancel", style: "cancel" }
+      ],
       { cancelable: true }
-    )
-  }
+    );
+  };
 
   updatePublishedStatus = async () => {
     const {
       chapter: { id, published }
-    } = this.props
+    } = this.props;
 
-    this.props.editChapterPublished(id, !published)
-  }
+    this.props.editChapterPublished(id, !published);
+  };
 
   handleDelete = async () => {
-    this.props.deleteChapter(this.props.chapter.id, this.navigateBack)
-  }
+    this.props.deleteChapter(this.props.chapter.id, this.navigateBack);
+  };
 
   triggerImagePicker = () => {
-    this.props.toggleCameraRollModal(true)
-  }
+    this.props.toggleCameraRollModal(true);
+  };
 
   uploadBannerPhoto = img => {
-    this.props.uploadBannerPhoto(img)
-  }
+    this.props.uploadBannerPhoto(img);
+  };
 
   getOptions() {
-    let published = this.props.chapter.published ? "Unpublish" : "Publish"
-    let emailSent = this.props.chapter.emailSent ? "Email Sent" : "Send Email"
+    let published = this.props.chapter.published ? "Unpublish" : "Publish";
+    let emailSent = this.props.chapter.emailSent ? "Email Sent" : "Send Email";
 
     let optionsProps = [
       {
@@ -111,32 +131,43 @@ class ChapterDispatch extends Component {
         title: published,
         callback: this.updatePublishedStatus
       }
-    ]
+    ];
 
     if (this.props.chapter.published) {
       const emailOption = {
         title: emailSent,
         callback: this.sendEmails
-      }
-      optionsProps.push(emailOption)
+      };
+      optionsProps.push(emailOption);
     }
 
-    return optionsProps
+    return optionsProps;
   }
 
   isCurrentUser() {
-    return this.props.user.id == this.props.currentUser.id
+    return this.props.user.id == this.props.currentUser.id;
   }
 
   sendEmails = async () => {
-    if (this.props.chapter.emailSent) return
+    if (this.props.chapter.emailSent) return;
 
-    this.props.sendEmails(this.props.chapter.id)
-  }
+    this.props.sendEmails(this.props.chapter.id);
+  };
 
   navigateToChapterForm = () => {
-    let { id, title, distance, description, journal, imageUrl, date } = this.props.chapter
-    let distanceAmount = distance.distanceType === "kilometer" ? distance.kilometerAmount : distance.mileAmount
+    let {
+      id,
+      title,
+      distance,
+      description,
+      journal,
+      imageUrl,
+      date
+    } = this.props.chapter;
+    let distanceAmount =
+      distance.distanceType === "kilometer"
+        ? distance.kilometerAmount
+        : distance.mileAmount;
 
     let obj = Object.assign(
       {},
@@ -149,15 +180,15 @@ class ChapterDispatch extends Component {
         date: new Date(date),
         journalId: journal.id
       }
-    )
+    );
 
-    this.props.updateChapterForm(obj)
-    this.props.toggleChapterModal(true)
-  }
+    this.props.updateChapterForm(obj);
+    this.props.toggleChapterModal(true);
+  };
 
   getDropdownProps = () => {
-    const isCurrentUser = this.isCurrentUser()
-    const options = this.getOptions(isCurrentUser)
+    const isCurrentUser = this.isCurrentUser();
+    const options = this.getOptions(isCurrentUser);
 
     return Object.assign(
       {},
@@ -165,11 +196,11 @@ class ChapterDispatch extends Component {
         isCurrentUser,
         options
       }
-    )
-  }
+    );
+  };
 
   renderHeader = () => {
-    const dropdownProps = this.getDropdownProps()
+    const dropdownProps = this.getDropdownProps();
 
     return (
       <JournalChildHeader
@@ -178,11 +209,11 @@ class ChapterDispatch extends Component {
         navigateBack={this.navigateBack}
         dropdownProps={dropdownProps}
       />
-    )
-  }
+    );
+  };
 
   renderEditorFloatingButton() {
-    if (this.props.currentUser.id != this.props.user.id) return
+    if (this.props.currentUser.id != this.props.user.id) return;
 
     return (
       <TouchableWithoutFeedback onPress={this.navigateToEditor}>
@@ -191,16 +222,17 @@ class ChapterDispatch extends Component {
           shadowOffset={{ width: 1, height: 1 }}
           shadowOpacity={0.5}
           shadowRadius={2}
-          style={styles.editorFloatingButton}>
+          style={styles.editorFloatingButton}
+        >
           <MaterialIcons name="edit" size={32} color="white" />
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   render() {
     if (!this.props.chapter.id) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
     }
 
     return (
@@ -209,10 +241,13 @@ class ChapterDispatch extends Component {
           {this.renderHeader()}
           <ChapterShow navigation={this.props.navigation} />
           {this.renderEditorFloatingButton()}
-          <ImagePickerContainer imageCallback={this.uploadBannerPhoto} selectSingleItem />
+          <ImagePickerContainer
+            imageCallback={this.uploadBannerPhoto}
+            selectSingleItem
+          />
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -283,9 +318,9 @@ const styles = StyleSheet.create({
   userCtaPosition: {
     paddingRight: 20
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChapterDispatch)
+)(ChapterDispatch);

@@ -1,7 +1,15 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { StyleSheet, View, Text, TextInput, Keyboard, SafeAreaView, TouchableWithoutFeedback } from "react-native"
-import { MaterialIndicator } from "react-native-indicators"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Keyboard,
+  SafeAreaView,
+  TouchableWithoutFeedback
+} from "react-native";
+import { MaterialIndicator } from "react-native-indicators";
 import {
   editEntry,
   updateFormatBar,
@@ -17,20 +25,21 @@ import {
   doneEditingAndPersist,
   loseChangesAndUpdate,
   addImagesToEntries
-} from "../../actions/editor"
-import { Header } from "../editor/header"
-import InputScrollView from "react-native-input-scroll-view"
-import _ from "lodash"
-import EditorToolbar from "../editor/EditorToolbar"
-import ContentCreator from "../editor/ContentCreator"
-import { FontAwesome } from "@expo/vector-icons"
-import LazyImage from "../shared/LazyImage"
-import ImagePickerContainer from "../shared/ImagePickerContainer"
+} from "../../actions/editor";
+import { Header } from "../editor/header";
+import InputScrollView from "react-native-input-scroll-view";
+import _ from "lodash";
+import EditorToolbar from "../editor/EditorToolbar";
+import ContentCreator from "../editor/ContentCreator";
+import { FontAwesome } from "@expo/vector-icons";
+import LazyImage from "../shared/LazyImage";
+import ImagePickerContainer from "../shared/ImagePickerContainer";
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
   setInitialEditorState: () => dispatch(setInitialEditorState()),
-  updateActiveImageCaption: payload => dispatch(updateActiveImageCaption(payload)),
+  updateActiveImageCaption: payload =>
+    dispatch(updateActiveImageCaption(payload)),
   editEntry: payload => dispatch(editEntry(payload)),
   updateActiveIndex: payload => dispatch(updateActiveIndex(payload)),
   updateKeyboardState: payload => dispatch(updateKeyboardState(payload)),
@@ -42,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
   doneEditingAndPersist: () => dispatch(doneEditingAndPersist()),
   addImagesToEntries: payload => dispatch(addImagesToEntries(payload)),
   addToDeletedUrls: payload => dispatch(addToDeletedUrls(payload))
-})
+});
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -61,11 +70,11 @@ const mapStateToProps = state => ({
   activeContentCreator: state.editor.activeContentCreator,
   width: state.common.width,
   height: state.common.height
-})
+});
 
 class ChapterEditor extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       containerHeight: props.height - 80,
@@ -73,199 +82,243 @@ class ChapterEditor extends Component {
       imagesNeededOffline: [],
       scrollPosition: 0,
       imageYPositions: []
-    }
+    };
   }
 
   componentWillMount() {
-    this.keyboardWillShowListener = Keyboard.addListener("keyboardDidShow", this.keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", this.keyboardWillHide.bind(this))
+    this.keyboardWillShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this.keyboardWillShow.bind(this)
+    );
+    this.keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      this.keyboardWillHide.bind(this)
+    );
   }
 
   componentWillUnmount() {
-    this.props.setInitialEditorState()
+    this.props.setInitialEditorState();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let nextIndex = this.refs[`textInput${this.props.newIndex}`]
+    let nextIndex = this.refs[`textInput${this.props.newIndex}`];
     if (nextIndex) {
-      nextIndex.focus()
-      this.props.setNextIndexNull()
+      nextIndex.focus();
+      this.props.setNextIndexNull();
     }
   }
 
   handleScroll = event => {
-    this.setState({ scrollPosition: event.nativeEvent.contentOffset.y })
-  }
+    this.setState({ scrollPosition: event.nativeEvent.contentOffset.y });
+  };
 
   populateEditor = () => {
-    let entries = this.props.chapter.content ? this.props.chapter.content : []
+    let entries = this.props.chapter.content ? this.props.chapter.content : [];
 
-    this.props.populateEntries(entries)
-  }
+    this.props.populateEntries(entries);
+  };
 
   keyboardWillShow(e) {
     this.setState({
       containerHeight: this.props.height - e.endCoordinates.height - 87
-    })
+    });
   }
 
   keyboardWillHide(e) {
-    this.props.updateKeyboardState(false)
+    this.props.updateKeyboardState(false);
   }
 
   handleTextChange(content, index) {
-    let payload
-    let editableEntry = this.props.entries[index]
-    const entry = { ...editableEntry, content: content }
+    let payload;
+    let editableEntry = this.props.entries[index];
+    const entry = { ...editableEntry, content: content };
 
-    payload = Object.assign({}, { entry, index })
-    this.props.editEntry(payload)
+    payload = Object.assign({}, { entry, index });
+    this.props.editEntry(payload);
   }
 
   getInputStyling(entry) {
     switch (entry.styles) {
       case "H1":
-        return styles.headerText
+        return styles.headerText;
       case "QUOTE":
-        return styles.quoteText
+        return styles.quoteText;
       default:
-        return {}
+        return {};
     }
   }
 
   handleLayout(e, index) {
-    const { y } = e.nativeEvent.layout
-    this.setState({ imageYPositions: Object.assign({}, this.state.imageYPositions, { [index]: y }) })
+    const { y } = e.nativeEvent.layout;
+    this.setState({
+      imageYPositions: Object.assign({}, this.state.imageYPositions, {
+        [index]: y
+      })
+    });
   }
 
   getYPosition(index) {
     if (index === 0) {
-      return 0
+      return 0;
     }
 
-    return this.state.imageYPositions[index] ? this.state.imageYPositions[index] : false
+    return this.state.imageYPositions[index]
+      ? this.state.imageYPositions[index]
+      : false;
   }
 
   updateActiveIndex(e, index) {
-    this.props.updateActiveIndex(index)
+    this.props.updateActiveIndex(index);
   }
 
   deleteIfEmpty(index) {
-    const entry = this.props.entries[index]
+    const entry = this.props.entries[index];
     if (entry.content.length === 0) {
-      this.props.removeEntryAndFocus(index)
+      this.props.removeEntryAndFocus(index);
     }
   }
 
   uploadImages = selectedImages => {
-    this.props.addImagesToEntries({ images: selectedImages, index: this.props.activeContentCreator })
-  }
+    this.props.addImagesToEntries({
+      images: selectedImages,
+      index: this.props.activeContentCreator
+    });
+  };
 
   handleImageDelete = index => {
     Alert.alert(
       "Are you sure?",
       "Deleting this image will erase it from this chapter",
-      [{ text: "Delete Image", onPress: () => this.deleteImage(index) }, { text: "Cancel", style: "cancel" }],
+      [
+        { text: "Delete Image", onPress: () => this.deleteImage(index) },
+        { text: "Cancel", style: "cancel" }
+      ],
       { cancelable: true }
-    )
-  }
+    );
+  };
 
   deleteImage = index => {
-    let uri = this.props.entries[index].originalUri
+    let uri = this.props.entries[index].originalUri;
 
-    this.props.addToDeletedUrls(uri)
-    this.props.removeEntryAndFocus(index)
-  }
+    this.props.addToDeletedUrls(uri);
+    this.props.removeEntryAndFocus(index);
+  };
 
   renderEntry(entry, index) {
     switch (entry.type) {
       case "text":
-        return this.renderAsTextInput(entry, index)
+        return this.renderAsTextInput(entry, index);
       case "image":
-        return this.renderAsImage(entry, index)
+        return this.renderAsImage(entry, index);
       default:
-        return null
+        return null;
     }
   }
 
   renderImageLoadingCover(index, imageHeight) {
     return (
-      <View style={[styles.opacCover, styles.loadingOpacCover, { height: imageHeight, width: this.props.width }]}>
+      <View
+        style={[
+          styles.opacCover,
+          styles.loadingOpacCover,
+          { height: imageHeight, width: this.props.width }
+        ]}
+      >
         <MaterialIndicator size={40} color="#FF5423" />
       </View>
-    )
+    );
   }
 
   renderOpacCover(index, imageHeight, image) {
     if (this.props.uploadIsImage && !image.uri) {
-      return this.renderImageLoadingCover(index, imageHeight)
+      return this.renderImageLoadingCover(index, imageHeight);
     }
 
-    if (index !== this.props.activeIndex) return
+    if (index !== this.props.activeIndex) return;
 
     return (
-      <TouchableWithoutFeedback style={{ height: imageHeight }} onPress={e => this.updateActiveIndex(e, null)}>
-        <View style={[styles.opacCover, { height: imageHeight, width: this.props.width }]}>
-          <TouchableWithoutFeedback onPress={() => this.handleImageDelete(index)}>
+      <TouchableWithoutFeedback
+        style={{ height: imageHeight }}
+        onPress={e => this.updateActiveIndex(e, null)}
+      >
+        <View
+          style={[
+            styles.opacCover,
+            { height: imageHeight, width: this.props.width }
+          ]}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => this.handleImageDelete(index)}
+          >
             <View>
               <FontAwesome name={"trash-o"} size={28} color={"white"} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={e => this.openImageCaptionForm(e, index)}>
+          <TouchableWithoutFeedback
+            onPress={e => this.openImageCaptionForm(e, index)}
+          >
             <View>
               <FontAwesome name={"quote-right"} color={"white"} size={28} />
             </View>
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
 
   getImageHeight(aspectRatio) {
-    return aspectRatio * this.props.width
+    return aspectRatio * this.props.width;
   }
 
   getAllImageIds = () => {
     let entries = this.props.entries
       .filter(entry => entry.type === "image")
       .map(entry => {
-        return entry.id
-      })
-    return entries
-  }
+        return entry.id;
+      });
+    return entries;
+  };
 
   getImagesToDelete() {
-    const allImageIds = this.getAllImageIds()
-    const { initialImageIds } = this.props
+    const allImageIds = this.getAllImageIds();
+    const { initialImageIds } = this.props;
 
-    const diff = _.xor(initialImageIds, allImageIds)
-    return diff
+    const diff = _.xor(initialImageIds, allImageIds);
+    return diff;
   }
 
   returnLowResImageUri(entry) {
-    const { uri, lowResUri, localUri } = entry
+    const { uri, lowResUri, localUri } = entry;
 
     if (!uri) {
-      return localUri
+      return localUri;
     }
 
-    return lowResUri ? lowResUri : uri
+    return lowResUri ? lowResUri : uri;
   }
 
   renderAsImage(entry, index) {
-    const imageHeight = this.getImageHeight(entry.aspectRatio)
-    const uri = entry.uri ? entry.uri : entry.localUri
+    const imageHeight = this.getImageHeight(entry.aspectRatio);
+    const uri = entry.uri ? entry.uri : entry.localUri;
 
     return (
       <View
         onLayout={e => this.handleLayout(e, index)}
         key={`image${index}`}
-        style={[{ height: imageHeight }, styles.positionRelative]}>
-        <TouchableWithoutFeedback style={styles.positionRelative} onPress={e => this.updateActiveIndex(e, index)}>
+        style={[{ height: imageHeight }, styles.positionRelative]}
+      >
+        <TouchableWithoutFeedback
+          style={styles.positionRelative}
+          onPress={e => this.updateActiveIndex(e, index)}
+        >
           <View>
             {this.renderOpacCover(index, imageHeight, entry)}
             <LazyImage
-              style={{ width: this.props.width, height: imageHeight, position: "relative" }}
+              style={{
+                width: this.props.width,
+                height: imageHeight,
+                position: "relative"
+              }}
               yPosition={this.getYPosition(index)}
               scrollPosition={this.state.scrollPosition}
               uri={uri}
@@ -274,29 +327,29 @@ class ChapterEditor extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   renderImageCaption(entry) {
-    if (entry.caption.length === 0) return
+    if (entry.caption.length === 0) return;
 
     return (
       <View style={styles.captionPadding}>
         <Text style={styles.textAlignCenter}>{entry.caption}</Text>
       </View>
-    )
+    );
   }
 
   handleOnFocus(index) {
-    const styles = this.props.entries[index].styles
-    this.props.updateKeyboardState(true)
-    this.props.updateActiveIndex(index)
-    this.props.updateFormatBar(styles)
+    const styles = this.props.entries[index].styles;
+    this.props.updateKeyboardState(true);
+    this.props.updateActiveIndex(index);
+    this.props.updateFormatBar(styles);
   }
 
   navigateBack = () => {
-    this.props.navigation.goBack()
-  }
+    this.props.navigation.goBack();
+  };
 
   renderHeader() {
     const headerProps = Object.assign(
@@ -308,8 +361,8 @@ class ChapterEditor extends Component {
         handleConfirm: this.handleDoneButtonPress,
         confirmCta: "Save"
       }
-    )
-    return <Header key="header" {...headerProps} />
+    );
+    return <Header key="header" {...headerProps} />;
   }
 
   renderAsTextInput(entry, index) {
@@ -328,74 +381,90 @@ class ChapterEditor extends Component {
         onFocus={() => this.handleOnFocus(index)}
         blurOnSubmit={false}
       />
-    )
+    );
   }
 
   handleDoneButtonPress = () => {
-    if (this.props.isUpdating || this.props.uploadIsImage) return
-    this.props.doneEditingAndPersist()
-    this.navigateBack()
-  }
+    if (this.props.isUpdating || this.props.uploadIsImage) return;
+    this.props.doneEditingAndPersist();
+    this.navigateBack();
+  };
 
   loseChangesAndUpdate = () => {
-    const { id } = this.props.chapter.editorBlob
-    const payload = Object.assign({}, { id })
-    this.props.loseChangesAndUpdate(payload)
-    this.navigateBack()
-  }
+    const { id } = this.props.chapter.editorBlob;
+    const payload = Object.assign({}, { id });
+    this.props.loseChangesAndUpdate(payload);
+    this.navigateBack();
+  };
 
   editorIsSaved() {
-    return JSON.stringify(this.props.entries) === JSON.stringify(this.props.initialEntries)
+    return (
+      JSON.stringify(this.props.entries) ===
+      JSON.stringify(this.props.initialEntries)
+    );
   }
 
   handleCancelButtonPress = () => {
     if (this.editorIsSaved()) {
-      this.loseChangesAndUpdate()
+      this.loseChangesAndUpdate();
     } else {
       Alert.alert(
         "Are you sure?",
         "You will lose all your blog changes",
-        [{ text: "Lose blog changes", onPress: this.loseChangesAndUpdate }, { text: "Cancel", style: "cancel" }],
+        [
+          { text: "Lose blog changes", onPress: this.loseChangesAndUpdate },
+          { text: "Cancel", style: "cancel" }
+        ],
         { cancelable: true }
-      )
+      );
     }
-  }
+  };
 
   openImageCaptionForm(e, index) {
-    const entryCaption = this.props.entries[index].caption
-    this.props.updateActiveImageCaption(entryCaption)
-    this.props.navigation.navigate("ImageCaptionForm", { index: index })
+    const entryCaption = this.props.entries[index].caption;
+    this.props.updateActiveImageCaption(entryCaption);
+    this.props.navigation.navigate("ImageCaptionForm", { index: index });
   }
 
   openManageContent = () => {
-    this.props.prepManageContent()
-    this.props.navigation.navigate("ManageContent")
-  }
+    this.props.prepManageContent();
+    this.props.navigation.navigate("ManageContent");
+  };
 
   getToolbarPositioning() {
     if (this.props.showEditorToolbar) {
-      return { width: this.props.width, position: "absolute", top: this.state.containerHeight }
+      return {
+        width: this.props.width,
+        position: "absolute",
+        top: this.state.containerHeight
+      };
     } else {
-      return { width: this.props.width }
+      return { width: this.props.width };
     }
   }
 
   renderEditorToolbar() {
-    if (!this.props.showEditorToolbar) return
+    if (!this.props.showEditorToolbar) return;
 
     return (
       <View style={this.getToolbarPositioning()}>
         <EditorToolbar openManageContent={this.openManageContent} />
       </View>
-    )
+    );
   }
 
   renderCreateCta(index) {
-    return <ContentCreator index={index} key={`contentCreator${index}`} navigation={this.props.navigation} />
+    return (
+      <ContentCreator
+        index={index}
+        key={`contentCreator${index}`}
+        navigation={this.props.navigation}
+      />
+    );
   }
 
   renderEditor() {
-    if (!this.props.chapter.id) return
+    if (!this.props.chapter.id) return;
 
     return this.props.entries.map((entry, index) => {
       return (
@@ -403,20 +472,25 @@ class ChapterEditor extends Component {
           {this.renderCreateCta(index)}
           {this.renderEntry(entry, index)}
         </View>
-      )
-    })
+      );
+    });
   }
 
   getContainerSize() {
     if (this.props.showEditorToolbar) {
-      return { height: this.props.height - 40 }
+      return { height: this.props.height - 40 };
     } else {
-      return { height: this.props.height }
+      return { height: this.props.height };
     }
   }
 
   renderImagePickerContainer() {
-    return <ImagePickerContainer imageCallback={this.uploadImages} selectSingleItem={false} />
+    return (
+      <ImagePickerContainer
+        imageCallback={this.uploadImages}
+        selectSingleItem={false}
+      />
+    );
   }
 
   render() {
@@ -432,7 +506,8 @@ class ChapterEditor extends Component {
             keyboardOffset={90}
             onScroll={event => this.handleScroll(event)}
             scrollEventThrottle={100}
-            multilineInputStyle={{ lineHeight: 30 }}>
+            multilineInputStyle={{ lineHeight: 30 }}
+          >
             {this.renderEditor()}
             {this.renderCreateCta(this.props.entries.length)}
             <View style={{ marginBottom: 200 }} />
@@ -441,7 +516,7 @@ class ChapterEditor extends Component {
         </View>
         {this.renderImagePickerContainer()}
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -517,9 +592,9 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     minHeight: 30
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChapterEditor)
+)(ChapterEditor);
