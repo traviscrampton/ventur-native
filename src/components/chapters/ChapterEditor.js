@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   Keyboard,
+  Alert,
   SafeAreaView,
   TouchableWithoutFeedback
 } from "react-native";
@@ -302,31 +303,33 @@ class ChapterEditor extends Component {
     const uri = entry.uri ? entry.uri : entry.localUri;
 
     return (
-      <View
-        onLayout={e => this.handleLayout(e, index)}
-        key={`image${index}`}
-        style={[{ height: imageHeight }, styles.positionRelative]}
-      >
-        <TouchableWithoutFeedback
-          style={styles.positionRelative}
-          onPress={e => this.updateActiveIndex(e, index)}
+      <React.Fragment>
+        <View
+          onLayout={e => this.handleLayout(e, index)}
+          key={`image${index}`}
+          style={[{ height: imageHeight }, styles.positionRelative]}
         >
-          <View>
-            {this.renderOpacCover(index, imageHeight, entry)}
-            <LazyImage
-              style={{
-                width: this.props.width,
-                height: imageHeight,
-                position: "relative"
-              }}
-              yPosition={this.getYPosition(index)}
-              scrollPosition={this.state.scrollPosition}
-              uri={uri}
-            />
-            {this.renderImageCaption(entry)}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+          <TouchableWithoutFeedback
+            style={styles.positionRelative}
+            onPress={e => this.updateActiveIndex(e, index)}
+          >
+            <View>
+              {this.renderOpacCover(index, imageHeight, entry)}
+              <LazyImage
+                style={{
+                  width: this.props.width,
+                  height: imageHeight,
+                  position: "relative"
+                }}
+                yPosition={this.getYPosition(index)}
+                scrollPosition={this.state.scrollPosition}
+                uri={uri}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        {this.renderImageCaption(entry)}
+      </React.Fragment>
     );
   }
 
@@ -444,7 +447,7 @@ class ChapterEditor extends Component {
   }
 
   renderEditorToolbar() {
-    if (!this.props.showEditorToolbar) return;
+    return; // letrs test and see how neccessary this actually is
 
     return (
       <View style={this.getToolbarPositioning()}>
@@ -576,6 +579,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   captionPadding: {
+    paddingTop: 5,
     paddingLeft: 20,
     paddingRight: 20
   },

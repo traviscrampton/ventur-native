@@ -228,6 +228,7 @@ export const addImagesToEntries = payload => {
       {},
       { uri: image.uri, name: filename, type: "image/jpg" }
     );
+    dispatch(updateActiveIndex(null));
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }));
     const uri = await awsUpload(file, awsKeys);
 

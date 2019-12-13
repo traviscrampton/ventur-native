@@ -1,7 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const renderItems = items => {
+const renderItems = (items, type) => {
+  if (items.length === 0) {
+    return <Text>There are no {type} yet!</Text>;
+  }
+
   return items.map(item => {
     return <ProCon {...item} />;
   });
@@ -22,12 +26,12 @@ export const ProsCons = props => {
   return (
     <View style={styles.marginTop10}>
       <View style={styles.topAndBottomMargin5}>
-        <Text style={styles.labels}>Pros</Text>
-        {renderItems(pros)}
+        <Text style={styles.labels}>Pros:</Text>
+        {renderItems(pros, "pros")}
       </View>
       <View style={styles.topAndBottomMargin5}>
-        <Text style={styles.labels}>Cons</Text>
-        {renderItems(cons)}
+        <Text style={styles.labels}>Cons:</Text>
+        {renderItems(cons, "cons")}
       </View>
     </View>
   );

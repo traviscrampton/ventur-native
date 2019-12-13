@@ -33,6 +33,7 @@ class GearReviewForm extends Component {
 
   persistGearReview = () => {
     this.props.persistGearReview();
+    this.props.defaultGearReviewForm();
   };
 
   handleCancel = () => {

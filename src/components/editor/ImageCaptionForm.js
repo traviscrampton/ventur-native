@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import {
+  Text,
+  TextInput,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Image
+} from "react-native";
 import { Header } from "./header";
 import {
   updateActiveImageCaption,
   updateImageCaption,
   updateActiveIndex
 } from "../../actions/editor";
-import { Text, TextInput, StyleSheet, View, Image } from "react-native";
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -95,11 +102,13 @@ class ImageCaptionForm extends Component {
 
   render() {
     return (
-      <View style={[styles.backgroundWhite, { height: this.props.height }]}>
-        {this.renderHeader()}
-        {this.renderImage()}
-        {this.renderForm()}
-      </View>
+      <SafeAreaView style={styles.backgroundWhite}>
+        <View style={[styles.backgroundWhite, { height: this.props.height }]}>
+          {this.renderHeader()}
+          {this.renderImage()}
+          {this.renderForm()}
+        </View>
+      </SafeAreaView>
     );
   }
 }

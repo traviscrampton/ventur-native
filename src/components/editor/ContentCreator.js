@@ -23,10 +23,6 @@ const mapDispatchToProps = dispatch => ({
 class ContentCreator extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      initialState: true
-    };
   }
 
   createNewTextEntry() {
@@ -52,18 +48,6 @@ class ContentCreator extends Component {
     this.props.updateActiveCreator(this.props.index);
   };
 
-  renderOptionState() {
-    return (
-      <View style={styles.optionState}>
-        <TouchableWithoutFeedback onPress={() => this.createNewTextEntry()}>
-          <View style={styles.optionContainer}>
-            <Text style={styles.grayText}>+ ADD CONTENT</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
-
   renderInitialState() {
     return (
       <TouchableWithoutFeedback
@@ -88,6 +72,7 @@ class ContentCreator extends Component {
       styles.flexRowCenter,
       { width: this.props.width / 2 }
     ];
+
     return (
       <View style={[styles.initialStateTextOrImage]}>
         <TouchableWithoutFeedback onPress={() => this.createNewTextEntry()}>
@@ -117,7 +102,9 @@ class ContentCreator extends Component {
   }
 
   render() {
-    if (this.props.activeContentCreator === this.props.index) {
+    const { activeContentCreator, index } = this.props;
+
+    if (activeContentCreator === index) {
       return this.renderTextOrImage();
     } else {
       return this.renderInitialState();

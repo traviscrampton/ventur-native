@@ -92,7 +92,8 @@ class GearItemReview extends Component {
           }
         })
         .filter(image => {
-          return image;
+          console.log("image", image);
+          return image && image.largeUri.length > 0;
         })
     ];
   }
@@ -212,6 +213,7 @@ class GearItemReview extends Component {
 
   renderItem(item, index) {
     let { thumbnailUri, largeUri } = item;
+
     return (
       <TouchableWithoutFeedback onPress={() => this.renderImageSlider(index)}>
         <View style={styles.imageContainer}>
