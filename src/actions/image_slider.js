@@ -1,21 +1,21 @@
-export const POPULATE_IMAGES = "POPULATE_IMAGES"
+export const POPULATE_IMAGES = 'POPULATE_IMAGES';
 export function populateImages(payload) {
   return {
     type: POPULATE_IMAGES,
-    payload: payload
-  }
+    payload
+  };
 }
 
-export const TOGGLE_IMAGE_SLIDER_MODAL = "TOGGLE_IMAGE_SLIDER_MODAL"
+export const TOGGLE_IMAGE_SLIDER_MODAL = 'TOGGLE_IMAGE_SLIDER_MODAL';
 export function toggleImageSliderModal(payload) {
   return {
     type: TOGGLE_IMAGE_SLIDER_MODAL,
-    payload: payload
-  }
+    payload
+  };
 }
-export const RESET_IMAGES = "RESET_IMAGES"
+export const RESET_IMAGES = 'RESET_IMAGES';
 export function resetImages() {
   return {
     type: RESET_IMAGES
-  }
+  };
 }
