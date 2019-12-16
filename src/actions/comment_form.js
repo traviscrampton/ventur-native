@@ -1,53 +1,52 @@
-import { post } from "../agent";
-import _ from "lodash";
-import { populateComments } from "./comments";
+import _ from 'lodash';
+import { post } from '../agent';
+import { populateComments } from './comments';
 
-export const POPULATE_COMMENT_FORM = "POPULATE_COMMENT_FORM";
+export const POPULATE_COMMENT_FORM = 'POPULATE_COMMENT_FORM';
 export function populateCommentForm(payload) {
   return {
     type: POPULATE_COMMENT_FORM,
-    payload: payload
+    payload
   };
 }
 
-export const TOGGLE_COMMENT_FORM_MODAL = "TOGGLE_COMMENT_FORM_MODAL";
+export const TOGGLE_COMMENT_FORM_MODAL = 'TOGGLE_COMMENT_FORM_MODAL';
 export function toggleCommentFormModal(payload) {
-  console.log("are we getting here atleast", payload);
   return {
     type: TOGGLE_COMMENT_FORM_MODAL,
-    payload: payload
+    payload
   };
 }
 
-export const RESET_COMMENT_FORM = "RESET_COMMENT_FORM";
+export const RESET_COMMENT_FORM = 'RESET_COMMENT_FORM';
 export function resetCommentForm(payload) {
   return {
     type: RESET_COMMENT_FORM,
-    payload: payload
+    payload
   };
 }
 
-export const UPDATE_COMMENT_CONTENT = "UPDATE_COMMENT_CONTENT";
+export const UPDATE_COMMENT_CONTENT = 'UPDATE_COMMENT_CONTENT';
 export function updateCommentContent(payload) {
   return {
     type: UPDATE_COMMENT_CONTENT,
-    payload: payload
+    payload
   };
 }
 
-export const ADD_TOP_LEVEL_COMMENT = "ADD_TOP_LEVEL_COMMENT";
+export const ADD_TOP_LEVEL_COMMENT = 'ADD_TOP_LEVEL_COMMENT';
 export function addTopLevelComment(payload) {
   return {
     type: ADD_TOP_LEVEL_COMMENT,
-    payload: payload
+    payload
   };
 }
 
 export function addNestedComment(commentable, comments, newComment) {
-  let parsedComment = _.omit(newComment, "subComments");
-  return comments.map((comment, index) => {
+  const parsedComment = _.omit(newComment, 'subComments');
+  return comments.map(comment => {
     if (comment.id === commentable.commentableId) {
-      let subComments = [...comment.subComments, parsedComment];
+      const subComments = [...comment.subComments, parsedComment];
       comment.subComments = subComments;
     }
 
@@ -65,14 +64,14 @@ export function createComment() {
     const params = {
       commentableType: commentable.commentableType,
       commentableId: commentable.commentableId,
-      content: content
+      content
     };
 
-    post(`/comments`, params).then(data => {
-      if (commentable.commentableType !== "comment") {
+    post('/comments', params).then(data => {
+      if (commentable.commentableType !== 'comment') {
         dispatch(addTopLevelComment(data.comment));
       } else {
-        let newCommentSet = addNestedComment(
+        const newCommentSet = addNestedComment(
           commentable,
           comments,
           data.comment
