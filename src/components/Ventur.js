@@ -48,9 +48,8 @@ class Ventur extends Component {
   }
 
   async getAWSCredentials() {
-    getCredentials().then(response => {
-      this.props.addApiCredentials(response);
-    });
+    const response = await getCredentials();
+    this.props.addApiCredentials(response);
   }
 
   handleConnectionChange = connectionInfo => {
@@ -100,7 +99,4 @@ class Ventur extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Ventur);
+export default connect(mapStateToProps, mapDispatchToProps)(Ventur);

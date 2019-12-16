@@ -18,7 +18,8 @@ import {
   resetJournalShow,
   uploadBannerImage,
   imageUploading,
-  updateTabIndex
+  updateTabIndex,
+  toggleJournalFollow
 } from "../../actions/journals";
 import { Feather } from "@expo/vector-icons";
 import { populateGearItemReview } from "../../actions/gear_item_review";
@@ -67,6 +68,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateChapterForm: payload => dispatch(updateChapterForm(payload)),
+  toggleJournalFollow: () => dispatch(toggleJournalFollow()),
   updateJournalForm: payload => dispatch(updateJournalForm(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   toggleJournalFormModal: payload => dispatch(toggleJournalFormModal(payload)),
@@ -163,6 +165,25 @@ class Journal extends Component {
 
     this.props.uploadBannerImage(this.props.journal.id, imgPost);
   };
+
+  handleFollowCtaPress = () => {
+    this.props.toggleJournalFollow()
+  };
+
+  renderFollowingCta(isFollowing) {
+    if (this.isCurrentUsersJournal()) {
+      return <Text />;
+    }
+    const cta = isFollowing ? "UNFOLLOW" : "FOLLOW";
+
+    return (
+      <TouchableWithoutFeedback onPress={this.handleFollowCtaPress}>
+        <View>
+          <Text style={{ color: "white", fontFamily: "overpass"}}> {`\u2022`} {cta}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
 
   updateBannerImage = () => {
     this.props.updateActiveView("journal");
@@ -304,6 +325,8 @@ class Journal extends Component {
 
   renderJournalMetadata(journal) {
     const distance = this.returnDistanceString(journal.distance);
+    const followingCta = this.renderFollowingCta(journal.isFollowing);
+
     return (
       <View style={styles.metaDataContainer}>
         <View style={styles.titleSubTitleContainer}>
@@ -320,10 +343,11 @@ class Journal extends Component {
                 )} \u2022 ${distance}`.toUpperCase()}
               </Text>
             </View>
-            <View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
               <Text style={styles.stats}>
                 FOLLOWERS: {this.props.journal.journalFollowsCount}
               </Text>
+              {followingCta}
             </View>
           </View>
           <View>
@@ -708,7 +732,4 @@ const styles = StyleSheet.create({
   iconPosition: { marginRight: 5 }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Journal);
+export default connect(mapStateToProps, mapDispatchToProps)(Journal);

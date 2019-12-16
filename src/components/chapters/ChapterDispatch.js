@@ -20,7 +20,6 @@ import {
   toggleChapterModal
 } from "../../actions/chapter_form";
 import { toggleCameraRollModal } from "../../actions/camera_roll";
-import ChapterEditor from "./ChapterEditor";
 import ChapterShow from "./ChapterShow";
 import { MaterialIcons } from "@expo/vector-icons";
 import LoadingScreen from "../shared/LoadingScreen";

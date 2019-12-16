@@ -56,6 +56,8 @@ class ChapterShow extends Component {
   renderPublishedText() {
     if (this.props.currentUser.id != this.props.chapter.user.id) return;
 
+    console.log("hasher", hasher);
+
     if (this.props.chapter.published) {
       return (
         <View style={styles.flexRowCenter}>
