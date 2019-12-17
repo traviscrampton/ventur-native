@@ -106,7 +106,7 @@ class JournalForm extends Component {
     return (
       <View style={styles.marginBottom15}>
         <View style={styles.marginBottom15}>
-          <Text style={styles.journalTitleLabel}>Title</Text>
+          <Text style={styles.journalTitleLabel}>Title:</Text>
           <TextInput
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
@@ -119,7 +119,7 @@ class JournalForm extends Component {
           />
         </View>
         <View>
-          <Text style={styles.journalDescriptionLabel}>Description</Text>
+          <Text style={styles.journalDescriptionLabel}>Description: </Text>
           <TextInput
             shadowColor="gray"
             shadowOffset={{ width: 0, height: 0 }}
@@ -143,7 +143,7 @@ class JournalForm extends Component {
 
     return (
       <View>
-        <Text style={styles.distanceTypeLabel}>Distance Type</Text>
+        <Text style={styles.distanceTypeLabel}>Distance Type: </Text>
         <TouchableWithoutFeedback
           onPress={() =>
             this.toggleFormButton('distanceType', this.props.distanceType)
@@ -168,7 +168,7 @@ class JournalForm extends Component {
 
     return (
       <View>
-        <Text style={styles.statusLabel}>Status</Text>
+        <Text style={styles.statusLabel}>Status:</Text>
         <TouchableWithoutFeedback
           onPress={() => this.toggleFormButton('status', this.props.status)}
         >
@@ -201,7 +201,7 @@ class JournalForm extends Component {
           <Text style={styles.countriesLabel}>Country Tags</Text>
           <TouchableWithoutFeedback onPress={this.navigateToCountriesEditor}>
             <View>
-              <Text style={styles.fontSize16}>Edit</Text>
+              <Text style={styles.editCta}>EDIT</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -287,8 +287,10 @@ const styles = StyleSheet.create({
   marginBottom15: {
     marginBottom: 15
   },
-  fontSize16: {
-    fontSize: 16
+  editCta: {
+    fontSize: 16,
+    fontFamily: 'overpass',
+    textDecorationLine: 'underline'
   },
   countriesContainer: {
     display: 'flex',

@@ -12,6 +12,7 @@ import {
   handleJournalPress
 } from '../../actions/gear_review_form';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { journalBackground } from '../../assets/images/stockPhotos.js';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -51,6 +52,9 @@ class GearReviewFormJournals extends Component {
 
   renderJournalOption = (journal, index) => {
     const isIncluded = this.props.journalIds.includes(journal.id);
+    let { cardBannerImageUrl } = journal;
+    cardBannerImageUrl =
+      cardBannerImageUrl.length > 0 ? cardBannerImageUrl : journalBackground;
 
     return (
       <TouchableWithoutFeedback
@@ -60,7 +64,7 @@ class GearReviewFormJournals extends Component {
         <View key={journal.id} style={styles.journalOptionContainer}>
           <View style={styles.flexRowCenter}>
             <Image
-              source={{ uri: journal.cardBannerImageUrl }}
+              source={{ uri: cardBannerImageUrl }}
               style={styles.journalImage}
             />
             <Text style={styles.journalTitle}>{journal.title}</Text>
@@ -100,13 +104,13 @@ class GearReviewFormJournals extends Component {
 
   getJournalLabelText() {
     const { journalIds } = this.props;
-    let journal = 'Journal';
+    let journal = 'JOURNAL';
 
     if (journalIds.length === 0 || journalIds.length > 1) {
-      journal = 'Journals';
+      journal = 'JOURNALS';
     }
 
-    return `${journalIds.length} ${journal} selected`;
+    return `${journalIds.length} ${journal} SELECTED`;
   }
 
   renderDropdownIcon() {
@@ -126,7 +130,9 @@ class GearReviewFormJournals extends Component {
             shadowOpacity={0.5}
             shadowRadius={2}
           >
-            <Text>{this.getJournalLabelText()}</Text>
+            <Text style={styles.journalLabelText}>
+              {this.getJournalLabelText()}
+            </Text>
             {this.renderDropdownIcon()}
           </View>
         </TouchableWithoutFeedback>
@@ -176,6 +182,9 @@ const styles = StyleSheet.create({
   journalTitle: {
     fontFamily: 'playfair',
     color: '#323941'
+  },
+  journalLabelText: {
+    fontFamily: 'overpass'
   }
 });
 

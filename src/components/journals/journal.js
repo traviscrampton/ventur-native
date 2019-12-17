@@ -180,7 +180,7 @@ class Journal extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.handleFollowCtaPress}>
         <View>
-          <Text style={{ color: 'white', fontFamily: 'overpass' }}>
+          <Text style={styles.followCta}>
             {' '}
             {`\u2022`} {cta}
           </Text>
@@ -737,6 +737,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5
+  },
+  followCta: {
+    color: 'white',
+    fontFamily: 'overpass'
   },
   iconPosition: { marginRight: 5 }
 });

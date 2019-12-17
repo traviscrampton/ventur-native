@@ -21,6 +21,7 @@ import { ProsCons } from './ProsCons';
 import StarRating from '../shared/StarRating';
 import ImageSlider from '../shared/ImageSlider';
 import ProgressiveImage from '../shared/ProgressiveImage';
+import LoadingScreen from '../shared/LoadingScreen';
 import {
   toggleImageSliderModal,
   populateImages
@@ -64,15 +65,15 @@ class GearItemReview extends Component {
   getStarText() {
     switch (this.props.rating) {
       case 1:
-        return 'Bad';
+        return 'BAD';
       case 2:
-        return 'Meh';
+        return 'MEH';
       case 3:
-        return 'Decent';
+        return 'DECENT';
       case 4:
-        return 'Pretty Good';
+        return 'PRETTY GOOD';
       case 5:
-        return 'Excellent';
+        return 'EXCELLENT';
       default:
         return '';
     }
@@ -243,27 +244,29 @@ class GearItemReview extends Component {
     );
   }
 
-  render() {
+  renderGearContent() {
     if (this.props.loading) {
-      return (
-        <View style={[styles.loadingSpinner, { width: this.props.width }]}>
-          <MaterialIndicator size={40} color="#FF5423" />
-        </View>
-      );
+      return <LoadingScreen />;
     }
 
+    return (
+      <ScrollView style={styles.scrollViewContainer}>
+        {this.renderName()}
+        {this.renderImageCarousel()}
+        {this.renderReview()}
+        {this.renderRating()}
+        {this.renderProsCons()}
+        <View style={styles.marginBottom200} />
+      </ScrollView>
+    );
+  }
+
+  render() {
     return (
       <SafeAreaView style={styles.backgroundColorWhite}>
         <View style={styles.headerContainer}>
           {this.renderHeader()}
-          <ScrollView style={styles.scrollViewContainer}>
-            {this.renderName()}
-            {this.renderImageCarousel()}
-            {this.renderReview()}
-            {this.renderRating()}
-            {this.renderProsCons()}
-            <View style={styles.marginBottom200} />
-          </ScrollView>
+          {this.renderGearContent()}
           <ImageSlider />
         </View>
       </SafeAreaView>
@@ -295,7 +298,6 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   loadingSpinner: {
-    position: 'absolute',
     height: '100%',
     backgroundColor: 'white'
   },
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
   },
   starText: {
     color: '#323941',
-    fontFamily: 'open-sans-regular'
+    fontFamily: 'overpass'
   },
   imageContainer: {
     marginRight: 2,

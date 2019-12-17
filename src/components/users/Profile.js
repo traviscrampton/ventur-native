@@ -292,7 +292,7 @@ class Profile extends Component {
     this.props.navigation.navigate('GearItemReview');
   };
 
-  renderGear() {
+  renderGearItems() {
     if (this.props.gear.length === 0) {
       return this.renderEmptyState(false);
     }
@@ -306,6 +306,14 @@ class Profile extends Component {
         />
       );
     });
+  }
+
+  renderGear() {
+    return (
+      <View style={{ minHeight: this.props.height }}>
+        {this.renderGearItems()}
+      </View>
+    );
   }
 
   renderProfileJournals() {

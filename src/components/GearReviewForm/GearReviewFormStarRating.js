@@ -24,15 +24,15 @@ class GearReviewFormStarRating extends Component {
   getStarText() {
     switch (this.props.rating) {
       case 1:
-        return 'Bad';
+        return 'BAD';
       case 2:
-        return 'Meh';
+        return 'MEH';
       case 3:
-        return 'Decent';
+        return 'DECENT';
       case 4:
-        return 'Pretty Good';
+        return 'PRETTY GOOD';
       case 5:
-        return 'Excellent';
+        return 'EXCELLENT';
       default:
         return '';
     }
@@ -51,7 +51,7 @@ class GearReviewFormStarRating extends Component {
 
     return (
       <View style={styles.marginLeft10}>
-        <Text style={styles.openSansRegular}>{text}</Text>
+        <Text style={styles.overpass}>{text}</Text>
       </View>
     );
   }
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   marginBottom5: {
     marginBottom: 5
   },
-  openSansRegular: {
-    fontFamily: 'open-sans-regular'
+  overpass: {
+    fontFamily: 'overpass'
   }
 });
 

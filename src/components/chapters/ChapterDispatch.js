@@ -228,17 +228,25 @@ class ChapterDispatch extends Component {
     );
   }
 
-  render() {
+  renderChapterContent() {
     if (!this.props.chapter.id) {
       return <LoadingScreen />;
     }
 
     return (
+      <React.Fragment>
+        <ChapterShow navigation={this.props.navigation} />
+        {this.renderEditorFloatingButton()}
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    return (
       <SafeAreaView style={styles.safeContainer}>
         <View style={styles.chapterDispatchContainer}>
           {this.renderHeader()}
-          <ChapterShow navigation={this.props.navigation} />
-          {this.renderEditorFloatingButton()}
+          {this.renderChapterContent()}
           <ImagePickerContainer
             imageCallback={this.uploadBannerPhoto}
             selectSingleItem

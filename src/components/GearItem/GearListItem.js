@@ -9,12 +9,16 @@ import {
 } from 'react-native';
 import ProgressiveImage from '../shared/ProgressiveImage';
 import StarRating from '../shared/StarRating';
+import { gearDefault } from '../../assets/images/stockPhotos.js';
 
 const GearListItem = props => {
-  const { id, name, imageUrl, rating } = props.gearItem;
+  const { id, name, rating } = props.gearItem;
+  let { imageUrl } = props.gearItem;
   const width = Dimensions.get('window').width - 40;
   const textWidth = width - 135;
-  console.log('ID', id);
+
+  imageUrl = imageUrl.length > 0 ? imageUrl : gearDefault;
+
   return (
     <View
       key={id}

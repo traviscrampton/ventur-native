@@ -51,7 +51,7 @@ class GearReviewFormProsCons extends Component {
 
   getTitleAndCta = isPro => {
     const title = isPro ? 'Pros' : 'Cons';
-    const addCta = `+ Add ${title.substring(0, 3)}`.toUpperCase();
+    const addCta = `+ ADD ${title.substring(0, 3)}`.toUpperCase();
     return Object.assign({}, { title, addCta });
   };
 
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   addCta: {
-    fontFamily: 'open-sans-regular',
-    color: '#323941'
+    color: '#323941',
+    fontFamily: 'overpass'
   },
   marginTop5: {
     marginTop: 5
