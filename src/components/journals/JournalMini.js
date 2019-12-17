@@ -3,10 +3,12 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
   TouchableWithoutFeedback,
   Dimensions
 } from 'react-native';
 import ProgressiveImage from '../shared/ProgressiveImage';
+import { journalBackground } from '../../assets/images/stockPhotos.js';
 
 const pad = Dimensions.get('window').width * 0.04;
 const imageGaps = Dimensions.get('window').width * 0.11;
@@ -44,9 +46,14 @@ const getStatusText = props => {
 
 const JournalMini = props => {
   const statusText = getStatusText(props);
+  const cardBannerImageUrl =
+    props.cardBannerImageUrl.length > 0
+      ? props.cardBannerImageUrl
+      : journalBackground;
 
   return (
     <View
+      key={props.id}
       style={{
         height: imageWidth,
         width: imageWidth,
@@ -58,7 +65,7 @@ const JournalMini = props => {
       <ProgressiveImage
         style={styles.imageBackground}
         thumbnailSource={props.thumbnailSource}
-        source={props.cardBannerImageUrl}
+        source={cardBannerImageUrl}
       />
       <TouchableWithoutFeedback
         style={styles.zIndexHunnit}

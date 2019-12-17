@@ -14,7 +14,7 @@ const GearListItem = props => {
   const { id, name, imageUrl, rating } = props.gearItem;
   const width = Dimensions.get('window').width - 40;
   const textWidth = width - 135;
-
+  console.log('ID', id);
   return (
     <View
       key={id}

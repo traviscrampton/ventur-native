@@ -49,6 +49,7 @@ import { FloatingAction } from 'react-native-floating-action';
 import ImagePickerContainer from '../shared/ImagePickerContainer';
 import JournalForm from '../JournalForm/JournalForm';
 import GearReviewForm from '../GearReviewForm/GearReviewForm';
+import { journalBackground } from '../../assets/images/stockPhotos.js';
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -294,10 +295,15 @@ class Journal extends Component {
   }
 
   renderBannerAndUserImages(journal, user) {
+    const cardBannerImageUrl =
+      journal.cardBannerImageUrl.length > 0
+        ? journal.cardBannerImageUrl
+        : journalBackground;
+
     return (
       <View style={[styles.bannerUserImage]}>
         <ProgressiveImage
-          source={journal.cardBannerImageUrl}
+          source={cardBannerImageUrl}
           thumbnailSource={journal.thumbnailSource}
           style={[styles.bannerAndUser, { width: this.props.width }]}
         />

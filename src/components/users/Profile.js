@@ -300,6 +300,7 @@ class Profile extends Component {
     return this.props.gear.map((gearItem, index) => {
       return (
         <GearListItem
+          key={gearItem.id}
           gearItem={gearItem}
           gearItemPress={() => this.handleGearItemPress(gearItem.id)}
         />

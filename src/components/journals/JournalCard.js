@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import ProgressiveImage from '../shared/ProgressiveImage';
+import { journalBackground } from '../../assets/images/stockPhotos.js';
 
 const countriesString = names => {
   return names.map((name, index) => {
@@ -76,6 +77,9 @@ const JournalCard = props => {
     borderRadius: 10
   });
 
+  const cardImageUrl =
+    props.cardImageUrl.length > 0 ? props.cardImageUrl : journalBackground;
+
   return (
     <TouchableWithoutFeedback
       key={props.id}
@@ -90,7 +94,7 @@ const JournalCard = props => {
         <View style={[styles.card, { width: imageWidth }]}>
           <ProgressiveImage
             thumbnailSource={props.thumbnailImageUrl}
-            source={props.cardImageUrl}
+            source={cardImageUrl}
             style={imageStyles}
           />
           <View>{tripMetaData(props)}</View>
