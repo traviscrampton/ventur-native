@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Header } from "../editor/header";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Header } from '../editor/header';
 import {
   StyleSheet,
   ScrollView,
@@ -8,16 +8,16 @@ import {
   Text,
   TouchableWithoutFeedback,
   TextInput
-} from "react-native";
+} from 'react-native';
 import {
   updateJournalForm,
   resetJournalForm,
   persistJournal,
   toggleJournalFormModal,
   toggleCountriesEditorModal
-} from "../../actions/journal_form";
-import CountriesEditor from "./CountriesEditor";
-import FormModal from "../shared/FormModal";
+} from '../../actions/journal_form';
+import CountriesEditor from './CountriesEditor';
+import FormModal from '../shared/FormModal';
 
 const mapStateToProps = state => ({
   id: state.journalForm.id,
@@ -45,8 +45,8 @@ class JournalForm extends Component {
     super(props);
   }
 
-  static STATUS_OPTIONS = ["not_started", "active", "paused", "completed"];
-  static DISTANCE_OPTIONS = ["kilometers", "miles"];
+  static STATUS_OPTIONS = ['not_started', 'active', 'paused', 'completed'];
+  static DISTANCE_OPTIONS = ['kilometers', 'miles'];
 
   updateJournalForm = (key, value) => {
     const payload = Object.assign({}, { [key]: value });
@@ -83,9 +83,9 @@ class JournalForm extends Component {
 
   getOptionArray(buttonType) {
     switch (buttonType) {
-      case "status":
+      case 'status':
         return JournalForm.STATUS_OPTIONS;
-      case "distanceType":
+      case 'distanceType':
         return JournalForm.DISTANCE_OPTIONS;
       default:
         return [];
@@ -93,7 +93,7 @@ class JournalForm extends Component {
   }
 
   renderFormTitle() {
-    const formTitle = this.props.id ? "Edit Journal" : "New Journal";
+    const formTitle = this.props.id ? 'Edit Journal' : 'New Journal';
 
     return (
       <View style={styles.formTitle}>
@@ -114,7 +114,7 @@ class JournalForm extends Component {
             shadowRadius={2}
             style={styles.journalTitleTextInput}
             selectionColor="#FF5423"
-            onChangeText={text => this.updateJournalForm("title", text)}
+            onChangeText={text => this.updateJournalForm('title', text)}
             value={this.props.title}
           />
         </View>
@@ -131,7 +131,7 @@ class JournalForm extends Component {
             value={this.props.description}
             selectionColor="#FF5423"
             style={styles.journalDescriptionTextInput}
-            onChangeText={text => this.updateJournalForm("description", text)}
+            onChangeText={text => this.updateJournalForm('description', text)}
           />
         </View>
       </View>
@@ -146,7 +146,7 @@ class JournalForm extends Component {
         <Text style={styles.distanceTypeLabel}>Distance Type</Text>
         <TouchableWithoutFeedback
           onPress={() =>
-            this.toggleFormButton("distanceType", this.props.distanceType)
+            this.toggleFormButton('distanceType', this.props.distanceType)
           }
         >
           <View
@@ -164,13 +164,13 @@ class JournalForm extends Component {
   }
 
   renderStatusCta() {
-    const status = this.props.status.replace("_", " ").toUpperCase();
+    const status = this.props.status.replace('_', ' ').toUpperCase();
 
     return (
       <View>
         <Text style={styles.statusLabel}>Status</Text>
         <TouchableWithoutFeedback
-          onPress={() => this.toggleFormButton("status", this.props.status)}
+          onPress={() => this.toggleFormButton('status', this.props.status)}
         >
           <View
             shadowColor="gray"
@@ -218,11 +218,11 @@ class JournalForm extends Component {
     const headerProps = Object.assign(
       {},
       {
-        goBackCta: "Cancel",
+        goBackCta: 'Cancel',
         handleGoBack: this.handleGoBack,
-        centerCta: "",
+        centerCta: '',
         handleConfirm: this.saveJournal,
-        confirmCta: "Save"
+        confirmCta: 'Save'
       }
     );
     return <Header key="header" {...headerProps} />;
@@ -279,8 +279,8 @@ const styles = StyleSheet.create({
     marginBottom: 200
   },
   journalTitleLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
@@ -291,91 +291,91 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   countriesContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   journalDescriptionLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
   journalTitleTextInput: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     fontSize: 18,
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   formTitle: {
     marginBottom: 25
   },
   includedCountry: {
     borderWidth: 1,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderRadius: 5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 5,
     marginRight: 10,
     marginBottom: 10
   },
   distanceTypeView: {
-    display: "flex",
+    display: 'flex',
     borderWidth: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 7,
     borderRadius: 5,
-    borderColor: "#d3d3d3",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: '#d3d3d3',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 15
   },
   statusView: {
-    display: "flex",
+    display: 'flex',
     borderWidth: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 7,
     borderRadius: 5,
-    borderColor: "#d3d3d3",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: '#d3d3d3',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 15
   },
   includedCountriesView: {
     marginTop: 10,
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap"
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   distanceTypeText: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   distanceTypeLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
   journalDescriptionTextInput: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     fontSize: 18,
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   countriesLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
@@ -384,21 +384,18 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   statusLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(JournalForm);
+export default connect(mapStateToProps, mapDispatchToProps)(JournalForm);

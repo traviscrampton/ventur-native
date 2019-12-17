@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   DatePickerIOS,
   TouchableWithoutFeedback
-} from "react-native";
+} from 'react-native';
 
 class DatePickerDropdown extends Component {
   constructor(props) {
@@ -45,7 +45,7 @@ class DatePickerDropdown extends Component {
   render() {
     let { date } = this.state;
 
-    if (typeof date === "number") {
+    if (typeof date === 'number') {
       date = new Date(this.state.date);
     }
 
@@ -53,7 +53,7 @@ class DatePickerDropdown extends Component {
       <View style={styles.container}>
         <DatePickerIOS
           style={styles.datePicker}
-          mode={"date"}
+          mode={'date'}
           date={date}
           onDateChange={this.handleDateChange}
         />
@@ -67,22 +67,22 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: "gray",
-    justifyContent: "center"
+    borderColor: 'gray',
+    justifyContent: 'center'
   },
   datePicker: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     marginBottom: 5,
-    overflow: "hidden",
+    overflow: 'hidden',
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4
   },
   confirmOptionsContainer: {
     paddingBottom: 10,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   marginRight10: {
     marginRight: 10
@@ -92,14 +92,14 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingRight: 5,
     paddingLeft: 5,
-    backgroundColor: "#3F88C5",
+    backgroundColor: '#3F88C5',
     marginRight: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#3F88C5"
+    borderColor: '#3F88C5'
   },
   colorWhite: {
-    color: "white"
+    color: 'white'
   }
 });
 

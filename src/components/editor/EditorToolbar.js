@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { updateFormatBar, editEntry } from "../../actions/editor";
-import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { updateFormatBar, editEntry } from '../../actions/editor';
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from 'react-native';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
 
 const mapStateToProps = state => ({
   toolbarOptions: state.editor.toolbarOptions,
@@ -30,7 +30,7 @@ class EditorToolbar extends Component {
 
   getProperStyling(option) {
     if (this.props.entries[this.props.activeIndex].styles === option) {
-      return "";
+      return '';
     } else {
       return option;
     }
@@ -47,7 +47,7 @@ class EditorToolbar extends Component {
   }
 
   getIcon(option) {
-    if (option === "H1") {
+    if (option === 'H1') {
       return (
         <MaterialIcons
           color={this.isSelectedStyle(option)}
@@ -55,18 +55,18 @@ class EditorToolbar extends Component {
           size={24}
         />
       );
-    } else if (option === "QUOTE") {
+    } else if (option === 'QUOTE') {
       return (
-        <Entypo name={"quote"} size={24} color={this.isSelectedStyle(option)} />
+        <Entypo name={'quote'} size={24} color={this.isSelectedStyle(option)} />
       );
     }
   }
 
   isSelectedStyle(option) {
     if (this.props.activeAttribute === option) {
-      return "#CF5300";
+      return '#CF5300';
     } else {
-      return "black";
+      return 'black';
     }
   }
 
@@ -108,39 +108,36 @@ class EditorToolbar extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditorToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(EditorToolbar);
 
 const styles = StyleSheet.create({
   toolbarContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     height: 45
   },
   textEditButtons: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   textAlignCenter: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   labelText: {
     fontSize: 18
   },
   option: {
     fontSize: 20,
-    fontWeight: "500",
+    fontWeight: '500',
     minWidth: 50,
-    textAlign: "left"
+    textAlign: 'left'
   }
 });

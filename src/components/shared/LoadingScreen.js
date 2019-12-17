@@ -1,6 +1,6 @@
-import { MaterialIndicator } from "react-native-indicators";
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import { MaterialIndicator } from 'react-native-indicators';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 
 const LoadingScreen = () => {
   return (
@@ -13,11 +13,11 @@ const LoadingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 

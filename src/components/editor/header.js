@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
+import React from 'react';
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from 'react-native';
 
 export const Header = props => {
   return (
@@ -28,26 +28,26 @@ export const Header = props => {
 const styles = StyleSheet.create({
   container: {
     height: 45,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingRight: 20,
     paddingLeft: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   text: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 14,
-    color: "#323941"
+    color: '#323941'
   },
   options: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });

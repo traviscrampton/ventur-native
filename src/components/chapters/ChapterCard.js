@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   View,
   Dimensions,
   Text,
   TouchableWithoutFeedback
-} from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import ProgressiveImage from "../shared/ProgressiveImage";
+} from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import ProgressiveImage from '../shared/ProgressiveImage';
 
 const distanceString = distance => {
   const {
@@ -17,14 +17,14 @@ const distanceString = distance => {
     readableDistanceType
   } = distance;
   switch (distanceType) {
-    case "kilometer":
+    case 'kilometer':
       return `${kilometerAmount} ${readableDistanceType}`;
 
-    case "mile":
+    case 'mile':
       return `${mileAmount} ${readableDistanceType}`;
 
     default:
-      return "";
+      return '';
   }
 };
 
@@ -45,9 +45,9 @@ const ChapterImage = props => {
 };
 
 const PublishedStatus = props => {
-  const icon = props.published ? "done" : "publish";
-  const color = props.published ? "#3F88C5" : "#FF5423";
-  const text = props.published ? "PUBLISHED" : "UNPUBLISHED";
+  const icon = props.published ? 'done' : 'publish';
+  const color = props.published ? '#3F88C5' : '#FF5423';
+  const text = props.published ? 'PUBLISHED' : 'UNPUBLISHED';
 
   if (props.isCurrentUser) {
     return (
@@ -82,7 +82,7 @@ const ChapterCard = props => {
           style={[
             styles.flexColumn,
             {
-              maxWidth: Dimensions.get("window").width - 140
+              maxWidth: Dimensions.get('window').width - 140
             }
           ]}
         >
@@ -126,48 +126,48 @@ const ChapterCard = props => {
 
 const styles = StyleSheet.create({
   chapterCardContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
+    borderBottomColor: '#d3d3d3',
     minHeight: 120
   },
   publishedStatusContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   chapterTitle: {
-    maxWidth: Dimensions.get("window").width - 140,
-    fontFamily: "open-sans-regular",
-    color: "#323941",
+    maxWidth: Dimensions.get('window').width - 140,
+    fontFamily: 'open-sans-regular',
+    color: '#323941',
     fontSize: 20
   },
   allIcons: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   publishedStatusText: {
     fontSize: 10,
     marginLeft: 5
   },
   individualIconTextContainer: {
-    display: "flex",
-    flexDirection: "row"
+    display: 'flex',
+    flexDirection: 'row'
   },
   flexColumn: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   textStats: {
-    fontFamily: "overpass",
+    fontFamily: 'overpass',
     fontSize: 14
   },
   chapterImage: {

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import ProgressiveImage from "./ProgressiveImage";
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import ProgressiveImage from './ProgressiveImage';
 
 class LazyImage extends Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class LazyImage extends Component {
         />
       );
     } else {
-      return <View style={[{ backgroundColor: "#e1e4e8" }, style]} />;
+      return <View style={[{ backgroundColor: '#e1e4e8' }, style]} />;
     }
   }
 }

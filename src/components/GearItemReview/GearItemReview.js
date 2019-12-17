@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   ScrollView,
@@ -9,22 +9,22 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Alert
-} from "react-native";
+} from 'react-native';
 import {
   fetchGearItem,
   deleteGearReview
-} from "../../actions/gear_item_review";
-import { editGearItemReview } from "../../actions/gear_review_form";
-import { JournalChildHeader } from "../shared/JournalChildHeader";
-import { MaterialIndicator } from "react-native-indicators";
-import { ProsCons } from "./ProsCons";
-import StarRating from "../shared/StarRating";
-import ImageSlider from "../shared/ImageSlider";
-import ProgressiveImage from "../shared/ProgressiveImage";
+} from '../../actions/gear_item_review';
+import { editGearItemReview } from '../../actions/gear_review_form';
+import { JournalChildHeader } from '../shared/JournalChildHeader';
+import { MaterialIndicator } from 'react-native-indicators';
+import { ProsCons } from './ProsCons';
+import StarRating from '../shared/StarRating';
+import ImageSlider from '../shared/ImageSlider';
+import ProgressiveImage from '../shared/ProgressiveImage';
 import {
   toggleImageSliderModal,
   populateImages
-} from "../../actions/image_slider";
+} from '../../actions/image_slider';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -64,17 +64,17 @@ class GearItemReview extends Component {
   getStarText() {
     switch (this.props.rating) {
       case 1:
-        return "Bad";
+        return 'Bad';
       case 2:
-        return "Meh";
+        return 'Meh';
       case 3:
-        return "Decent";
+        return 'Decent';
       case 4:
-        return "Pretty Good";
+        return 'Pretty Good';
       case 5:
-        return "Excellent";
+        return 'Excellent';
       default:
-        return "";
+        return '';
     }
   }
 
@@ -92,7 +92,7 @@ class GearItemReview extends Component {
           }
         })
         .filter(image => {
-          console.log("image", image);
+          console.log('image', image);
           return image && image.largeUri.length > 0;
         })
     ];
@@ -113,11 +113,11 @@ class GearItemReview extends Component {
 
   deleteGearReview = () => {
     Alert.alert(
-      "Are you sure?",
-      "Deleting this gear review will erase all images and content",
+      'Are you sure?',
+      'Deleting this gear review will erase all images and content',
       [
-        { text: "Delete Gear Review", onPress: this.handleDelete },
-        { text: "Cancel", style: "cancel" }
+        { text: 'Delete Gear Review', onPress: this.handleDelete },
+        { text: 'Cancel', style: 'cancel' }
       ],
       { cancelable: true }
     );
@@ -127,8 +127,8 @@ class GearItemReview extends Component {
     if (!isCurrentUser) return;
 
     return [
-      { title: "Edit Gear Review", callback: this.editGearReview },
-      { title: "Delete Gear Review", callback: this.deleteGearReview }
+      { title: 'Edit Gear Review', callback: this.editGearReview },
+      { title: 'Delete Gear Review', callback: this.deleteGearReview }
     ];
   };
 
@@ -197,7 +197,7 @@ class GearItemReview extends Component {
     const images = this.getCarouselImages().map(image => {
       return Object.assign(
         {},
-        { uri: image.largeUri, caption: "", height: this.props.width }
+        { uri: image.largeUri, caption: '', height: this.props.width }
       );
     });
 
@@ -280,29 +280,29 @@ const styles = StyleSheet.create({
     marginBottom: 200
   },
   scrollViewContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flex: 1,
     padding: 20
   },
   headerContainer: {
-    height: "100%",
-    backgroundColor: "white"
+    height: '100%',
+    backgroundColor: 'white'
   },
   backgroundColorWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   marginTop20: {
     marginTop: 20
   },
   loadingSpinner: {
-    position: "absolute",
-    height: "100%",
-    backgroundColor: "white"
+    position: 'absolute',
+    height: '100%',
+    backgroundColor: 'white'
   },
   name: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 28,
-    color: "#323941"
+    color: '#323941'
   },
   marginBottom5: {
     marginBottom: 5
@@ -314,15 +314,15 @@ const styles = StyleSheet.create({
   },
   reviewLabel: {
     fontSize: 18,
-    color: "#323941",
-    fontFamily: "playfair"
+    color: '#323941',
+    fontFamily: 'playfair'
   },
   marginLeft10: {
     marginLeft: 10
   },
   starText: {
-    color: "#323941",
-    fontFamily: "open-sans-regular"
+    color: '#323941',
+    fontFamily: 'open-sans-regular'
   },
   imageContainer: {
     marginRight: 2,
@@ -331,18 +331,15 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     marginTop: 20,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   review: {
     fontSize: 16,
-    color: "#323941",
-    fontFamily: "open-sans-regular"
+    color: '#323941',
+    fontFamily: 'open-sans-regular'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GearItemReview);
+export default connect(mapStateToProps, mapDispatchToProps)(GearItemReview);

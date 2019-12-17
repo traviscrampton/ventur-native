@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableWithoutFeedback,
   Dimensions
-} from "react-native";
-import ProgressiveImage from "../shared/ProgressiveImage";
+} from 'react-native';
+import ProgressiveImage from '../shared/ProgressiveImage';
 
-const pad = Dimensions.get("window").width * 0.04;
-const imageGaps = Dimensions.get("window").width * 0.11;
-const imageWidth = (Dimensions.get("window").width - imageGaps) / 2;
+const pad = Dimensions.get('window').width * 0.04;
+const imageGaps = Dimensions.get('window').width * 0.11;
+const imageWidth = (Dimensions.get('window').width - imageGaps) / 2;
 
 const getDistanceString = distance => {
   const {
@@ -20,14 +20,14 @@ const getDistanceString = distance => {
     readableDistanceType
   } = distance;
   switch (distanceType) {
-    case "kilometer":
+    case 'kilometer':
       return `${kilometerAmount} ${readableDistanceType}`;
 
-    case "mile":
+    case 'mile':
       return `${mileAmount} ${readableDistanceType}`;
 
     default:
-      return "";
+      return '';
   }
 };
 
@@ -36,7 +36,7 @@ const getStatusText = props => {
 
   return (
     <Text style={styles.metadata}>
-      {`${props.status}`.replace("_", " ").toUpperCase()} {`\u2022`}{" "}
+      {`${props.status}`.replace('_', ' ').toUpperCase()} {`\u2022`}{' '}
       {`${distanceString}`.toUpperCase()}
     </Text>
   );
@@ -51,7 +51,7 @@ const JournalMini = props => {
         height: imageWidth,
         width: imageWidth,
         marginBottom: pad,
-        backgroundColor: "lightgray",
+        backgroundColor: 'lightgray',
         borderRadius: 10
       }}
     >
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     height: imageWidth,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   zIndexHunnit: { zIndex: 100 },
   borderRadius: {
@@ -89,18 +89,18 @@ const styles = StyleSheet.create({
   },
   metadataContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 100
   },
   title: {
-    color: "white",
-    fontFamily: "playfair",
+    color: 'white',
+    fontFamily: 'playfair',
     marginBottom: 5
   },
   metadata: {
-    color: "white",
-    fontFamily: "overpass",
+    color: 'white',
+    fontFamily: 'overpass',
     fontSize: 8
   }
 });

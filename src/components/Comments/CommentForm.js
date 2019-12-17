@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   ScrollView,
@@ -7,14 +7,14 @@ import {
   Text,
   TextInput,
   TouchableWithoutFeedback
-} from "react-native";
+} from 'react-native';
 import {
   resetCommentForm,
   updateCommentContent,
   createComment,
   toggleCommentFormModal
-} from "../../actions/comment_form";
-import FormModal from "../shared/FormModal";
+} from '../../actions/comment_form';
+import FormModal from '../shared/FormModal';
 
 const mapStateToProps = state => ({
   content: state.commentForm.content,
@@ -87,7 +87,7 @@ class CommentForm extends Component {
           multiline
           autoFocus
           style={styles.textBox}
-          selectionColor={"#FF5423"}
+          selectionColor={'#FF5423'}
           onChangeText={text => this.props.updateCommentContent(text)}
           value={this.props.content}
         />
@@ -111,48 +111,45 @@ class CommentForm extends Component {
 const styles = StyleSheet.create({
   header: {
     height: 45,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingRight: 20,
     paddingLeft: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   padding20: {
     padding: 20
   },
   textBox: {
     fontSize: 16,
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   headerOptions: {
-    fontFamily: "open-sans-bold",
-    fontWeight: "600",
+    fontFamily: 'open-sans-bold',
+    fontWeight: '600',
     fontSize: 14,
-    color: "#323941"
+    color: '#323941'
   },
   commentableTitle: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 5,
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   openSansRegular: {
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   commentablePreviewContainer: {
     margin: 20,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderWidth: 1,
     borderRadius: 3,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 10
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);

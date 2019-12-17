@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { View, Text, TouchableWithoutFeedback, Linking } from "react-native";
-import { WebBrowser } from "expo";
-import { AuthSession } from "expo";
-import { encodeQueryString } from "../../agent";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { View, Text, TouchableWithoutFeedback, Linking } from 'react-native';
+import { WebBrowser } from 'expo';
+import { AuthSession } from 'expo';
+import { encodeQueryString } from '../../agent';
 
 const mapStateToProps = state => ({
   stravaClientId: state.common.stravaClientId,
@@ -18,47 +18,47 @@ class StravaLogin extends Component {
   }
 
   handleAsyncCall = async () => {
-    const redirect = await Linking.getInitialURL("/");
-    const clientId = "37236";
+    const redirect = await Linking.getInitialURL('/');
+    const clientId = '37236';
     const params = Object.assign(
       {},
       {
         client_id: clientId,
-        response_type: "code",
+        response_type: 'code',
         redirect_uri: redirect,
-        scope: "activity:read_all",
-        approval_prompt: "force"
+        scope: 'activity:read_all',
+        approval_prompt: 'force'
       }
     );
     let url =
-      "https://www.strava.com/oauth/authorize" + encodeQueryString(params);
+      'https://www.strava.com/oauth/authorize' + encodeQueryString(params);
 
     const result = await WebBrowser.openAuthSessionAsync(url);
     //Now if the user authorized the app result will store the code you can perform the handshake with to get an access token for that user
     // I have a simple check to see if the user already exists in my backend and then send info to the store with a helper function
     const code = this.getCodeFromUrl(result);
-    console.log("is this hitting at all, an investigation");
+    console.log('is this hitting at all, an investigation');
     this.validateUser(code);
     // this._getCodeFromUrl(result)
   };
 
   getCodeFromUrl = result => {
-    console.log("is this hitting at all, an investigation");
+    console.log('is this hitting at all, an investigation');
     const url =
-      "exp://127.0.0.1:19000?state=&code=94af141e4bd98e02ceaf14df977f14257b37f9ce&scope=read,activity:read_all";
+      'exp://127.0.0.1:19000?state=&code=94af141e4bd98e02ceaf14df977f14257b37f9ce&scope=read,activity:read_all';
     const params = this.getUrlParams(url);
     this.validateUser(params.code);
   };
 
   validateUser = code => {
-    let url = "https://www.strava.com/oauth/token";
+    let url = 'https://www.strava.com/oauth/token';
 
     const params = Object.assign(
       {},
       {
         client_id: this.props.stravaClientId,
         client_secret: this.props.stravaClientSecret,
-        grant_type: "authorization_code",
+        grant_type: 'authorization_code',
         code: code
       }
     );
@@ -66,29 +66,29 @@ class StravaLogin extends Component {
     url = url + encodeQueryString(params);
 
     fetch(url, {
-      method: "POST"
+      method: 'POST'
     })
       .then(response => {
         return response.json();
       })
       .then(data => {
-        console.log("data", data);
+        console.log('data', data);
         return data;
       })
       .catch(err => {
-        console.log("error!", err);
+        console.log('error!', err);
         if (err.status === 401) {
-          console.log("error 401");
+          console.log('error 401');
           // return logout()
         }
       });
   };
 
   getUrlParams(url) {
-    let hashes = url.slice(url.indexOf("?") + 1).split("&");
+    let hashes = url.slice(url.indexOf('?') + 1).split('&');
     let params = {};
     hashes.map(hash => {
-      let [key, val] = hash.split("=");
+      let [key, val] = hash.split('=');
       params[key] = decodeURIComponent(val);
     });
 
@@ -96,11 +96,11 @@ class StravaLogin extends Component {
   }
 
   getActivities = () => {
-    const url = "https://www.strava.com/api/v3/athlete/activities?per_page=60";
-    const accessToken = "caeaf06fd8bfffd3d6d3a245ce9519ca0de889b7";
+    const url = 'https://www.strava.com/api/v3/athlete/activities?per_page=60';
+    const accessToken = 'caeaf06fd8bfffd3d6d3a245ce9519ca0de889b7';
 
     fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -109,13 +109,13 @@ class StravaLogin extends Component {
         return response.json();
       })
       .then(data => {
-        console.log("DADA", data);
+        console.log('DADA', data);
         return data;
       })
       .catch(err => {
-        console.log("error!", err);
+        console.log('error!', err);
         if (err.status === 401) {
-          console.log("error 401");
+          console.log('error 401');
           // return logout()
         }
       });
@@ -132,7 +132,4 @@ class StravaLogin extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StravaLogin);
+export default connect(mapStateToProps, mapDispatchToProps)(StravaLogin);

@@ -1,12 +1,12 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
-import ProgressiveImage from "../shared/ProgressiveImage";
+import React from 'react';
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
+import { SimpleLineIcons } from '@expo/vector-icons';
+import ProgressiveImage from '../shared/ProgressiveImage';
 
 const countriesString = names => {
   return names.map((name, index) => {
     if (index !== names.length - 1) {
-      name += ", ";
+      name += ', ';
     }
 
     return <Text style={styles.countryName}>{name}</Text>;
@@ -16,14 +16,14 @@ const countriesString = names => {
 const distanceString = distance => {
   const { distanceType, kilometerAmount, mileAmount } = distance;
   switch (distanceType) {
-    case "kilometer":
+    case 'kilometer':
       return `${kilometerAmount} KM`;
 
-    case "mile":
+    case 'mile':
       return `${mileAmount} MI`;
 
     default:
-      return "";
+      return '';
   }
 };
 
@@ -57,8 +57,8 @@ const tripMetaData = props => {
         </Text>
       </View>
       <View style={styles.metadataStyles}>
-        <Text style={{ fontFamily: "overpass" }}>
-          {`${props.status} ${"\u2022"} ${distance} ${"\u2022"} ${
+        <Text style={{ fontFamily: 'overpass' }}>
+          {`${props.status} ${'\u2022'} ${distance} ${'\u2022'} ${
             props.journalFollowsCount
           } followers`.toUpperCase()}
         </Text>
@@ -102,41 +102,41 @@ const JournalCard = props => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginTop: 20,
-    marginLeft: "auto",
-    marginRight: "auto",
-    position: "relative",
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    position: 'relative',
     borderRadius: 10,
-    overflow: "hidden"
+    overflow: 'hidden'
   },
   journalImage: {
-    position: "relative"
+    position: 'relative'
   },
   metadataContainer: {
     padding: 10,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderWidth: 1,
     borderTopWidth: 0,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "white"
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 26,
     marginBottom: 10,
-    fontFamily: "playfair",
-    color: "#323941"
+    fontFamily: 'playfair',
+    color: '#323941'
   },
   marginBottomAuto: {
-    marginBottom: "auto"
+    marginBottom: 'auto'
   },
   iconTextContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   iconPosition: {
     marginRight: 5,
@@ -144,16 +144,16 @@ const styles = StyleSheet.create({
   },
   metadataStyles: {
     marginTop: 20,
-    display: "flex"
+    display: 'flex'
   },
   countries: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 5
   },
   countryName: {
-    fontFamily: "open-sans-regular",
+    fontFamily: 'open-sans-regular',
     marginRight: 5
   }
 });

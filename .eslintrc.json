@@ -3,7 +3,8 @@
     "browser": true,
     "es6": true,
     "node": true,
-    "jest": true
+    "jest": true,
+    "react-native/react-native": true
   },
   "extends": "airbnb-base",
   "globals": {
@@ -17,7 +18,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "react-native"],
   "rules": {
     "arrow-parens": 0,
     "arrow-body-style": 0,

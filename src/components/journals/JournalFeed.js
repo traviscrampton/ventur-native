@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { StyleSheet, SafeAreaView, View, FlatList } from "react-native";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { StyleSheet, SafeAreaView, View, FlatList } from 'react-native';
+import { connect } from 'react-redux';
 import {
   loadJournalFeed,
   resetJournalShow,
   toggleRefreshAndRefresh
-} from "../../actions/journals";
-import JournalCard from "./JournalCard";
-import LoadingScreen from "../shared/LoadingScreen";
-import RetryRequestScreen from "../shared/RetryRequestScreen";
+} from '../../actions/journals';
+import JournalCard from './JournalCard';
+import LoadingScreen from '../shared/LoadingScreen';
+import RetryRequestScreen from '../shared/RetryRequestScreen';
 
 const mapDispatchToProps = dispatch => ({
   loadJournalFeed: () => dispatch(loadJournalFeed()),
@@ -39,7 +39,7 @@ class JournalFeed extends Component {
 
   handlePress = journalId => {
     this.props.resetJournalShow();
-    this.props.navigation.navigate("Journal", { journalId });
+    this.props.navigation.navigate('Journal', { journalId });
   };
 
   handleRefresh = () => {
@@ -98,18 +98,15 @@ class JournalFeed extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    backgroundColor: "white",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
     paddingBottom: 50
   },
   backgroundWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(JournalFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(JournalFeed);

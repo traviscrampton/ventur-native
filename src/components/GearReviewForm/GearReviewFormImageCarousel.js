@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View,
   Alert,
@@ -7,20 +7,20 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   StyleSheet
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import ProgressiveImage from "../shared/ProgressiveImage";
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import ProgressiveImage from '../shared/ProgressiveImage';
 import {
   uploadImageToCarousel,
   updateActiveImageIndex,
   removeImage
-} from "../../actions/gear_review_form";
-import { MaterialIndicator } from "react-native-indicators";
-import ImagePickerContainer from "../shared/ImagePickerContainer";
+} from '../../actions/gear_review_form';
+import { MaterialIndicator } from 'react-native-indicators';
+import ImagePickerContainer from '../shared/ImagePickerContainer';
 import {
   toggleCameraRollModal,
   updateActiveView
-} from "../../actions/camera_roll";
+} from '../../actions/camera_roll';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -44,7 +44,7 @@ class GearReviewFormImageCarousel extends Component {
   }
 
   componentWillMount() {
-    this.props.updateActiveView("gear_review_form");
+    this.props.updateActiveView('gear_review_form');
   }
 
   uploadImage = selectedImage => {
@@ -62,11 +62,11 @@ class GearReviewFormImageCarousel extends Component {
 
   handleImageRemove = () => {
     Alert.alert(
-      "Are you sure?",
-      "Deleting this image will remove it from this gear review",
+      'Are you sure?',
+      'Deleting this image will remove it from this gear review',
       [
-        { text: "Delete Image", onPress: () => this.removeImage() },
-        { text: "Cancel", style: "cancel" }
+        { text: 'Delete Image', onPress: () => this.removeImage() },
+        { text: 'Cancel', style: 'cancel' }
       ],
       { cancelable: true }
     );
@@ -175,7 +175,7 @@ class GearReviewFormImageCarousel extends Component {
           style={styles.uploadButtonContainer}
         >
           <View style={styles.uploadIcon}>
-            <MaterialIcons name={"file-upload"} size={32} />
+            <MaterialIcons name={'file-upload'} size={32} />
             <View>
               <Text style={styles.uploadLabel}>Upload</Text>
             </View>
@@ -206,24 +206,24 @@ class GearReviewFormImageCarousel extends Component {
 
 const styles = StyleSheet.create({
   photoLabel: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 18,
-    color: "#323941"
+    color: '#323941'
   },
   deleteCover: {
     width: 120,
     padding: 20,
-    position: "absolute",
+    position: 'absolute',
     zIndex: 11,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     height: 120,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   marginTop20: {
     marginTop: 20
@@ -234,33 +234,33 @@ const styles = StyleSheet.create({
   loadingCover: {
     width: 120,
     padding: 20,
-    position: "absolute",
+    position: 'absolute',
     zIndex: 11,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     height: 120,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  colorWhite: { color: "white" },
+  colorWhite: { color: 'white' },
   deleteIconContainer: {
-    display: "flex",
+    display: 'flex',
     height: 60,
-    flexDirection: "row",
-    alignItems: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   imageContainer: {
     width: 120,
     height: 120,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginRight: 10,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   progressiveImageStyles: {
     width: 120,
@@ -272,21 +272,21 @@ const styles = StyleSheet.create({
   uploadButtonContainer: {
     width: 120,
     height: 120,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginRight: 10,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#d3d3d3",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around"
+    borderColor: '#d3d3d3',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around'
   },
   uploadIcon: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    overflow: "hidden"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    overflow: 'hidden'
   },
   marginRight2: {
     marginRight: 2

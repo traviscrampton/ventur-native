@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
@@ -9,9 +9,9 @@ import {
   Image,
   TouchableHighlight,
   TouchableWithoutFeedback
-} from "react-native";
-import ChapterList from "../chapters/ChapterList";
-import ChapterMetaDataForm from "../editor/ChapterMetaDataForm";
+} from 'react-native';
+import ChapterList from '../chapters/ChapterList';
+import ChapterMetaDataForm from '../editor/ChapterMetaDataForm';
 import {
   loadSingleJournal,
   requestForChapter,
@@ -20,35 +20,35 @@ import {
   imageUploading,
   updateTabIndex,
   toggleJournalFollow
-} from "../../actions/journals";
-import { Feather } from "@expo/vector-icons";
-import { populateGearItemReview } from "../../actions/gear_item_review";
+} from '../../actions/journals';
+import { Feather } from '@expo/vector-icons';
+import { populateGearItemReview } from '../../actions/gear_item_review';
 import {
   toggleCameraRollModal,
   updateActiveView
-} from "../../actions/camera_roll";
-import { MaterialIndicator } from "react-native-indicators";
+} from '../../actions/camera_roll';
+import { MaterialIndicator } from 'react-native-indicators';
 import {
   updateJournalForm,
   toggleJournalFormModal
-} from "../../actions/journal_form";
-import { resetChapter } from "../../actions/chapter";
-import { triggerGearReviewFormFromJournal } from "../../actions/gear_review_form";
-import { loadJournalMap } from "../../actions/journal_route";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { SimpleLineIcons, Ionicons, MaterialIcons } from "@expo/vector-icons";
+} from '../../actions/journal_form';
+import { resetChapter } from '../../actions/chapter';
+import { triggerGearReviewFormFromJournal } from '../../actions/gear_review_form';
+import { loadJournalMap } from '../../actions/journal_route';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { SimpleLineIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import {
   updateChapterForm,
   toggleChapterModal
-} from "../../actions/chapter_form";
-import ThreeDotDropdown from "../shared/ThreeDotDropdown";
-import LoadingScreen from "../shared/LoadingScreen";
-import ProgressiveImage from "../shared/ProgressiveImage";
-import GearListItem from "../GearItem/GearListItem";
-import { FloatingAction } from "react-native-floating-action";
-import ImagePickerContainer from "../shared/ImagePickerContainer";
-import JournalForm from "../JournalForm/JournalForm";
-import GearReviewForm from "../GearReviewForm/GearReviewForm";
+} from '../../actions/chapter_form';
+import ThreeDotDropdown from '../shared/ThreeDotDropdown';
+import LoadingScreen from '../shared/LoadingScreen';
+import ProgressiveImage from '../shared/ProgressiveImage';
+import GearListItem from '../GearItem/GearListItem';
+import { FloatingAction } from 'react-native-floating-action';
+import ImagePickerContainer from '../shared/ImagePickerContainer';
+import JournalForm from '../JournalForm/JournalForm';
+import GearReviewForm from '../GearReviewForm/GearReviewForm';
 
 const mapStateToProps = state => ({
   journal: state.journal.journal,
@@ -95,18 +95,18 @@ class Journal extends Component {
 
   static actions = [
     {
-      text: "New Chapter",
-      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
-      name: "create_chapter",
+      text: 'New Chapter',
+      icon: <MaterialIcons name={'edit'} color="white" size={20} />,
+      name: 'create_chapter',
       position: 0,
-      color: "#3F88C5"
+      color: '#3F88C5'
     },
     {
-      text: "New Gear Item",
-      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
-      name: "create_gear_item",
+      text: 'New Gear Item',
+      icon: <MaterialIcons name={'directions-bike'} color="white" size={20} />,
+      name: 'create_gear_item',
       position: 1,
-      color: "#3F88C5"
+      color: '#3F88C5'
     }
   ];
 
@@ -115,15 +115,15 @@ class Journal extends Component {
   }
 
   requestForJournal() {
-    let journalId = this.props.navigation.getParam("journalId", "NO-ID");
+    let journalId = this.props.navigation.getParam('journalId', 'NO-ID');
 
-    if (journalId === "NO-ID") return;
+    if (journalId === 'NO-ID') return;
     this.props.loadSingleJournal(journalId);
   }
 
   requestForChapter = chapterId => {
     this.props.resetChapter();
-    this.props.navigation.navigate("Chapter");
+    this.props.navigation.navigate('Chapter');
     this.props.requestForChapter(chapterId);
   };
 
@@ -133,18 +133,18 @@ class Journal extends Component {
   };
 
   navigateToMap = () => {
-    this.props.navigation.navigate("JournalRoute");
+    this.props.navigation.navigate('JournalRoute');
     this.props.loadJournalMap(this.props.journal.id);
   };
 
   getJournalOptions() {
     let optionsProps = [
       {
-        title: "Edit Journal",
+        title: 'Edit Journal',
         callback: this.renderJournalEditForm
       },
       {
-        title: "Upload Image",
+        title: 'Upload Image',
         callback: this.updateBannerImage
       }
     ];
@@ -159,7 +159,7 @@ class Journal extends Component {
       {
         uri: img.uri,
         name: img.filename,
-        type: "multipart/form-data"
+        type: 'multipart/form-data'
       }
     );
 
@@ -167,26 +167,29 @@ class Journal extends Component {
   };
 
   handleFollowCtaPress = () => {
-    this.props.toggleJournalFollow()
+    this.props.toggleJournalFollow();
   };
 
   renderFollowingCta(isFollowing) {
     if (this.isCurrentUsersJournal()) {
       return <Text />;
     }
-    const cta = isFollowing ? "UNFOLLOW" : "FOLLOW";
+    const cta = isFollowing ? 'UNFOLLOW' : 'FOLLOW';
 
     return (
       <TouchableWithoutFeedback onPress={this.handleFollowCtaPress}>
         <View>
-          <Text style={{ color: "white", fontFamily: "overpass"}}> {`\u2022`} {cta}</Text>
+          <Text style={{ color: 'white', fontFamily: 'overpass' }}>
+            {' '}
+            {`\u2022`} {cta}
+          </Text>
         </View>
       </TouchableWithoutFeedback>
     );
   }
 
   updateBannerImage = () => {
-    this.props.updateActiveView("journal");
+    this.props.updateActiveView('journal');
     this.props.toggleCameraRollModal(true);
   };
 
@@ -198,14 +201,14 @@ class Journal extends Component {
       readableDistanceType
     } = distance;
     switch (distanceType) {
-      case "kilometer":
+      case 'kilometer':
         return `${kilometerAmount} ${readableDistanceType}`;
 
-      case "mile":
+      case 'mile':
         return `${mileAmount} ${readableDistanceType}`;
 
       default:
-        return "";
+        return '';
     }
   }
 
@@ -338,12 +341,12 @@ class Journal extends Component {
             <View>
               <Text style={styles.stats}>
                 {`${journal.status.replace(
-                  "_",
-                  " "
+                  '_',
+                  ' '
                 )} \u2022 ${distance}`.toUpperCase()}
               </Text>
             </View>
-            <View style={{ display: "flex", flexDirection: "row" }}>
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
               <Text style={styles.stats}>
                 FOLLOWERS: {this.props.journal.journalFollowsCount}
               </Text>
@@ -368,7 +371,7 @@ class Journal extends Component {
   }
 
   renderJournalEmptyState(isChapter = false) {
-    const ctaText = isChapter ? "No chapters yet" : "No gear reviews yet";
+    const ctaText = isChapter ? 'No chapters yet' : 'No gear reviews yet';
     const { width, height } = this.props;
     const halfHeight = height / 2;
     const thirdWidth = width / 3;
@@ -376,7 +379,7 @@ class Journal extends Component {
 
     return (
       <View
-        key={"chapterEmptyState"}
+        key={'chapterEmptyState'}
         style={[styles.childEmptyState, { width: width, height: halfHeight }]}
       >
         <View style={styles.flexAndDirection}>
@@ -397,7 +400,7 @@ class Journal extends Component {
   renderSubContentLoading = () => {
     return (
       <MaterialIndicator
-        key={"chapterLoading"}
+        key={'chapterLoading'}
         style={styles.marginTop50}
         size={40}
         color="#FF5423"
@@ -412,7 +415,7 @@ class Journal extends Component {
 
     return (
       <View
-        key={"chapterList"}
+        key={'chapterList'}
         style={[styles.marginBottom100, { width: this.props.width }]}
       >
         <ChapterList
@@ -433,7 +436,7 @@ class Journal extends Component {
     const payload = Object.assign({}, { id, loading: true });
 
     this.props.populateGearItemReview(payload);
-    this.props.navigation.navigate("GearItemReview");
+    this.props.navigation.navigate('GearItemReview');
   };
 
   navigateToGearReviewForm = () => {
@@ -442,9 +445,9 @@ class Journal extends Component {
 
   navigateToForm = name => {
     switch (name) {
-      case "create_chapter":
+      case 'create_chapter':
         return this.navigateToChapterForm();
-      case "create_gear_item":
+      case 'create_gear_item':
         return this.navigateToGearReviewForm();
       default:
         return null;
@@ -456,12 +459,12 @@ class Journal extends Component {
       {},
       {
         id: null,
-        title: "",
+        title: '',
         date: new Date(),
         distance: 0,
         readableDistanceType: this.props.journal.distance.readableDistanceType,
         journalId: this.props.journal.id,
-        bannerImage: { uri: "" }
+        bannerImage: { uri: '' }
       }
     );
 
@@ -474,7 +477,7 @@ class Journal extends Component {
 
     return (
       <FloatingAction
-        color={"#3F88C5"}
+        color={'#3F88C5'}
         actions={Journal.actions}
         onPressItem={name => {
           this.navigateToForm(name);
@@ -513,12 +516,12 @@ class Journal extends Component {
         Object.assign(
           {},
           {
-            label: "CHAPTERS",
+            label: 'CHAPTERS',
             view: this.renderChapters()
           }
         ),
         Object.assign({
-          label: "GEAR",
+          label: 'GEAR',
           view: this.renderGear()
         })
       ]
@@ -540,9 +543,9 @@ class Journal extends Component {
         navigationState={this.getNavigationState()}
         renderScene={({ route }) => {
           switch (route.key) {
-            case "chapters":
+            case 'chapters':
               return this.renderChapters();
-            case "gear":
+            case 'gear':
               return this.renderGear();
             default:
               return null;
@@ -553,11 +556,11 @@ class Journal extends Component {
         renderTabBar={props => (
           <TabBar
             {...props}
-            tabStyle={{ color: "#3F88C5" }}
+            tabStyle={{ color: '#3F88C5' }}
             activeColor="#3F88C5"
             inactiveColor="#3F88C5"
-            indicatorStyle={{ backgroundColor: "#3F88C5" }}
-            style={{ backgroundColor: "white" }}
+            indicatorStyle={{ backgroundColor: '#3F88C5' }}
+            style={{ backgroundColor: 'white' }}
           />
         )}
       />
@@ -565,7 +568,7 @@ class Journal extends Component {
   }
 
   renderImagePickerContainer() {
-    if (this.props.activeView !== "journal") return;
+    if (this.props.activeView !== 'journal') return;
 
     return (
       <ImagePickerContainer imageCallback={this.uploadImage} selectSingleItem />
@@ -601,14 +604,14 @@ class Journal extends Component {
 
 const styles = StyleSheet.create({
   containerContainer: {
-    height: "100%",
-    position: "relative"
+    height: '100%',
+    position: 'relative'
   },
   backgroundWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   container: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   bannerAndUser: {
     height: 220,
@@ -620,8 +623,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   imageUploadingScreen: {
-    position: "absolute",
-    height: "100%"
+    position: 'absolute',
+    height: '100%'
   },
   mapPadding: {
     paddingTop: 10,
@@ -631,14 +634,14 @@ const styles = StyleSheet.create({
   emptyBar: {
     marginBottom: 5,
     height: 15,
-    backgroundColor: "lightgray"
+    backgroundColor: 'lightgray'
   },
   navigationContainer: {
     marginTop: 30,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
     zIndex: 10
   },
@@ -647,7 +650,7 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontSize: 20,
-    color: "gray"
+    color: 'gray'
   },
   backButton: {
     padding: 20,
@@ -655,36 +658,36 @@ const styles = StyleSheet.create({
     width: 50,
     marginLeft: 10,
     borderRadius: 25,
-    position: "relative"
+    position: 'relative'
   },
   emptyImage: {
     width: 80,
     height: 100,
-    backgroundColor: "lightgray",
+    backgroundColor: 'lightgray',
     borderRadius: 4
   },
   metaDataContainer: {
     padding: 16,
     paddingTop: 0,
     paddingBottom: 10,
-    marginTop: "auto"
+    marginTop: 'auto'
   },
   statsAndMapContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 10
   },
   journalHeader: {
     fontSize: 26,
-    fontFamily: "playfair",
-    color: "white"
+    fontFamily: 'playfair',
+    color: 'white'
   },
   journalDescription: {
     fontSize: 14,
-    fontFamily: "open-sans-regular",
-    color: "white",
+    fontFamily: 'open-sans-regular',
+    color: 'white',
     marginRight: 5
   },
   userImage: {
@@ -693,29 +696,29 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 20,
     borderWidth: 2,
-    borderColor: "white"
+    borderColor: 'white'
   },
   stats: {
-    fontFamily: "overpass",
-    color: "white"
+    fontFamily: 'overpass',
+    color: 'white'
   },
   backIconPosition: {
-    position: "absolute",
+    position: 'absolute',
     top: 11,
     left: 18
   },
   banner: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   flexAndDirection: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   bannerUserImage: {
-    overflow: "hidden",
-    position: "relative",
-    backgroundColor: "white"
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'white'
   },
   marginTop50: {
     marginTop: 50
@@ -724,9 +727,9 @@ const styles = StyleSheet.create({
     marginBottom: 100
   },
   locationContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 5
   },
   iconPosition: { marginRight: 5 }

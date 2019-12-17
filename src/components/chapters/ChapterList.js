@@ -1,6 +1,6 @@
-import React from "react";
-import { View } from "react-native";
-import ChapterCard from "./ChapterCard";
+import React from 'react';
+import { View } from 'react-native';
+import ChapterCard from './ChapterCard';
 
 const ChapterList = props => {
   return (

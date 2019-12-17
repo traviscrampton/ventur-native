@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native";
-import { connect } from "react-redux";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableWithoutFeedback, Text } from 'react-native';
+import { connect } from 'react-redux';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import {
   togglePositionMode,
   setShownIndex,
   persistRoute,
   eraseRoute,
   setCanDraw
-} from "../../actions/route_editor";
+} from '../../actions/route_editor';
 import {
   checkForExpiredToken,
   setStravaLoadingTrue
-} from "../../actions/strava_activity_import";
+} from '../../actions/strava_activity_import';
 
 const mapDispatchToProps = dispatch => ({
   togglePositionMode: () => dispatch(togglePositionMode()),
@@ -94,7 +94,7 @@ class RouteEditorButtons extends Component {
 
   loadStravaAndNavigate = () => {
     this.props.setStravaLoadingTrue();
-    this.props.navigation.navigate("StravaRouteSelector");
+    this.props.navigation.navigate('StravaRouteSelector');
     this.props.checkForExpiredToken();
   };
 
@@ -110,7 +110,7 @@ class RouteEditorButtons extends Component {
       >
         <TouchableWithoutFeedback onPress={this.handleUndoPress}>
           <View style={styles.undoButton}>
-            <Ionicons name="ios-undo" size={25} color={"#323941"} />
+            <Ionicons name="ios-undo" size={25} color={'#323941'} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -129,7 +129,7 @@ class RouteEditorButtons extends Component {
       >
         <TouchableWithoutFeedback onPress={this.handleRedoPress}>
           <View style={styles.redoButton}>
-            <Ionicons name="ios-redo" size={25} color={"#323941"} />
+            <Ionicons name="ios-redo" size={25} color={'#323941'} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -153,8 +153,8 @@ class RouteEditorButtons extends Component {
     if (!this.props.drawMode) return;
 
     const { canDraw } = this.props;
-    const buttonBackground = canDraw ? { backgroundColor: "#FF5423" } : {};
-    const pencilColor = canDraw ? "white" : "#FF5423";
+    const buttonBackground = canDraw ? { backgroundColor: '#FF5423' } : {};
+    const pencilColor = canDraw ? 'white' : '#FF5423';
 
     return (
       <View
@@ -176,8 +176,8 @@ class RouteEditorButtons extends Component {
     return;
     if (this.props.drawMode) return;
     const { positionMode } = this.props;
-    const backgroundColor = positionMode ? "#3F88C5" : "white";
-    const iconColor = positionMode ? "white" : "#3F88C5";
+    const backgroundColor = positionMode ? '#3F88C5' : 'white';
+    const iconColor = positionMode ? 'white' : '#3F88C5';
 
     return (
       <View
@@ -239,50 +239,50 @@ class RouteEditorButtons extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     top: 60,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   mainAim: {
-    position: "absolute",
+    position: 'absolute',
     right: 28,
     top: 120,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-end"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   undoButton: {
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 35,
     width: 35,
     borderRadius: 17.5
   },
   redoButton: {
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 35,
     width: 35,
     borderRadius: 17.5,
     marginLeft: 10
   },
   drawButton: {
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 50,
     width: 50,
     marginLeft: 10,
@@ -291,31 +291,28 @@ const styles = StyleSheet.create({
   stravaCtaInner: {
     height: 35,
     width: 35,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
     borderRadius: 17.5
   },
   cropButton: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 35,
     width: 35,
     borderRadius: 17.5,
     marginBottom: 10
   },
   stravaButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 100,
     right: 30
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RouteEditorButtons);
+export default connect(mapStateToProps, mapDispatchToProps)(RouteEditorButtons);

@@ -1,17 +1,17 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   initialAppLoaded,
   setCurrentUser,
   setWindowDimensions,
   updateConnectionType,
   addApiCredentials
-} from "../actions/common";
-import { addStravaToCurrentUser } from "../actions/strava";
-import { connect } from "react-redux";
-import * as Font from "expo-font";
-import { AsyncStorage, Dimensions, NetInfo } from "react-native";
-import { RootNavigator } from "../navigation";
-import { getCredentials } from "../agent";
+} from '../actions/common';
+import { addStravaToCurrentUser } from '../actions/strava';
+import { connect } from 'react-redux';
+import * as Font from 'expo-font';
+import { AsyncStorage, Dimensions, NetInfo } from 'react-native';
+import { RootNavigator } from '../navigation';
+import { getCredentials } from '../agent';
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -40,11 +40,11 @@ class Ventur extends Component {
   }
 
   setupDimensionsListener() {
-    Dimensions.addEventListener("change", this.handleDimensionChange);
+    Dimensions.addEventListener('change', this.handleDimensionChange);
   }
 
   setUpConnectionListener() {
-    NetInfo.addEventListener("connectionChange", this.handleConnectionChange);
+    NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
   }
 
   async getAWSCredentials() {
@@ -53,7 +53,7 @@ class Ventur extends Component {
   }
 
   handleConnectionChange = connectionInfo => {
-    let isOffline = connectionInfo.type === "none";
+    let isOffline = connectionInfo.type === 'none';
 
     this.props.updateConnectionType(isOffline);
   };
@@ -65,8 +65,8 @@ class Ventur extends Component {
 
   async setCurrentUser() {
     try {
-      let user = await AsyncStorage.getItem("currentUser");
-      let stravaCredentials = await AsyncStorage.getItem("stravaCredentials");
+      let user = await AsyncStorage.getItem('currentUser');
+      let stravaCredentials = await AsyncStorage.getItem('stravaCredentials');
       user = JSON.parse(user);
       stravaCredentials = JSON.parse(stravaCredentials);
       this.props.setCurrentUser(user);
@@ -79,11 +79,11 @@ class Ventur extends Component {
 
   async setUpFonts() {
     await Font.loadAsync({
-      "open-sans-regular": require("../assets/fonts/Lato/Lato-Regular.ttf"),
-      playfair: require("../assets/fonts/Lato/Lato-Bold.ttf"),
-      overpass: require("../assets/fonts/Overpass_Mono/OverpassMono-Light.ttf"),
-      "open-sans-bold": require("../assets/fonts/Lato/Lato-Black.ttf"),
-      "open-sans-semi": require("../assets/fonts/Lato/Lato-Light.ttf")
+      'open-sans-regular': require('../assets/fonts/Lato/Lato-Regular.ttf'),
+      playfair: require('../assets/fonts/Lato/Lato-Bold.ttf'),
+      overpass: require('../assets/fonts/Overpass_Mono/OverpassMono-Light.ttf'),
+      'open-sans-bold': require('../assets/fonts/Lato/Lato-Black.ttf'),
+      'open-sans-semi': require('../assets/fonts/Lato/Lato-Light.ttf')
     });
   }
 

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,13 +7,13 @@ import {
   View,
   Text,
   ImageBackground
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { toggleLoginModal } from "../../actions/login";
-import { toggleUserFormModal } from "../../actions/user_form";
-import Login from "./Login";
-import UserForm from "./UserForm";
-const GabeBolivia = require("../../assets/images/Gabe_in_Bolivia.jpg");
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { toggleLoginModal } from '../../actions/login';
+import { toggleUserFormModal } from '../../actions/user_form';
+import Login from './Login';
+import UserForm from './UserForm';
+const GabeBolivia = require('../../assets/images/Gabe_in_Bolivia.jpg');
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -77,7 +77,7 @@ class HomeLoggedOut extends Component {
       <TouchableWithoutFeedback onPress={this.navigateToSignUp}>
         <LinearGradient
           style={[styles.signUp, { width: this.props.width - 40 }]}
-          colors={["#FF5423", "#E46545"]}
+          colors={['#FF5423', '#E46545']}
         >
           <Text style={styles.signUpText}>Get Started</Text>
         </LinearGradient>
@@ -99,7 +99,7 @@ class HomeLoggedOut extends Component {
     const { width, height } = this.props;
     return (
       <ImageBackground style={{ height: null, width }} source={GabeBolivia}>
-        <View style={{ backgroundColor: "rgba(0, 0, 0, 0.4)", height, width }}>
+        <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)', height, width }}>
           <SafeAreaView>
             <View style={[styles.flexSpaceBetween, { height, width }]}>
               {this.renderTitleAndSubTitle()}
@@ -117,8 +117,8 @@ class HomeLoggedOut extends Component {
 const styles = StyleSheet.create({
   headerText: {
     fontSize: 60,
-    color: "white",
-    textAlign: "center"
+    color: 'white',
+    textAlign: 'center'
   },
   subHeaderContainer: {
     padding: 40,
@@ -126,49 +126,46 @@ const styles = StyleSheet.create({
   },
   subHeaderText: {
     fontSize: 22,
-    color: "white",
-    textAlign: "center"
+    color: 'white',
+    textAlign: 'center'
   },
   agreementText: {
-    color: "white",
-    textAlign: "center",
+    color: 'white',
+    textAlign: 'center',
     fontSize: 8
   },
   signInButton: {
     fontSize: 20,
-    color: "white",
-    fontWeight: "bold"
+    color: 'white',
+    fontWeight: 'bold'
   },
   signUp: {
     marginTop: 10,
     marginBottom: 20,
     height: 50,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 30
   },
   flexSpaceBetween: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   signUpText: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
     fontSize: 20
   },
   signInAndSignUpContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: 70
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HomeLoggedOut);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeLoggedOut);

@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 const renderItems = (items, type) => {
   if (items.length === 0) {
@@ -14,7 +14,7 @@ const renderItems = (items, type) => {
 const ProCon = item => {
   return (
     <View style={styles.proConContainer} key={item.id}>
-      <Text style={styles.marginRight5}>{`${"\u2022"}`}</Text>
+      <Text style={styles.marginRight5}>{`${'\u2022'}`}</Text>
       <Text>{item.text}</Text>
     </View>
   );
@@ -27,11 +27,11 @@ export const ProsCons = props => {
     <View style={styles.marginTop10}>
       <View style={styles.topAndBottomMargin5}>
         <Text style={styles.labels}>Pros:</Text>
-        {renderItems(pros, "pros")}
+        {renderItems(pros, 'pros')}
       </View>
       <View style={styles.topAndBottomMargin5}>
         <Text style={styles.labels}>Cons:</Text>
-        {renderItems(cons, "cons")}
+        {renderItems(cons, 'cons')}
       </View>
     </View>
   );
@@ -40,15 +40,15 @@ export const ProsCons = props => {
 const styles = StyleSheet.create({
   proConContainer: {
     paddingLeft: 5,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   labels: {
     fontSize: 18,
     marginBottom: 5,
-    color: "#323941",
-    fontFamily: "playfair"
+    color: '#323941',
+    fontFamily: 'playfair'
   },
   marginRight5: {
     marginRight: 5

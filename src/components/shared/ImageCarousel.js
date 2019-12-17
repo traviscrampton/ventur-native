@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, View, Image } from "react-native";
-import Carousel from "react-native-snap-carousel";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, View, Image } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 
 const mapStateToProps = state => ({
   width: state.common.width
@@ -28,8 +28,8 @@ class ImageCarousel extends Component {
           this._carousel = c;
         }}
         data={this.props.images}
-        layout={"default"}
-        activeSlideAlignment={"start"}
+        layout={'default'}
+        activeSlideAlignment={'start'}
         renderItem={this._renderItem}
         sliderWidth={250}
         sliderHeight={250}
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   dasImage: {
     width: 200,
     height: 200,
-    backgroundColor: "green"
+    backgroundColor: 'green'
   },
   container: {
     padding: 25,
@@ -55,7 +55,4 @@ const styles = StyleSheet.create({
   title: {}
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(ImageCarousel);
+export default connect(mapStateToProps, null)(ImageCarousel);

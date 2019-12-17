@@ -1,28 +1,28 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
   Text,
   ScrollView,
   TouchableWithoutFeedback
-} from "react-native";
+} from 'react-native';
 import {
   toggleImageSliderModal,
   populateImages
-} from "../../actions/image_slider";
-import { loadRouteEditor } from "../../actions/route_editor";
-import { loadRouteViewer } from "../../actions/route_viewer";
-import ChapterMetaDataForm from "../editor/ChapterMetaDataForm";
-import CommentsContainer from "../Comments/CommentsContainer";
+} from '../../actions/image_slider';
+import { loadRouteEditor } from '../../actions/route_editor';
+import { loadRouteViewer } from '../../actions/route_viewer';
+import ChapterMetaDataForm from '../editor/ChapterMetaDataForm';
+import CommentsContainer from '../Comments/CommentsContainer';
 import {
   MaterialCommunityIcons,
   MaterialIcons,
   Feather
-} from "@expo/vector-icons";
-import ProgressiveImage from "../shared/ProgressiveImage";
-import LazyImage from "../shared/LazyImage";
-import ImageSlider from "../shared/ImageSlider";
+} from '@expo/vector-icons';
+import ProgressiveImage from '../shared/ProgressiveImage';
+import LazyImage from '../shared/LazyImage';
+import ImageSlider from '../shared/ImageSlider';
 
 const mapStateToProps = state => ({
   chapter: state.chapter.chapter,
@@ -56,18 +56,16 @@ class ChapterShow extends Component {
   renderPublishedText() {
     if (this.props.currentUser.id != this.props.chapter.user.id) return;
 
-    console.log("hasher", hasher);
-
     if (this.props.chapter.published) {
       return (
         <View style={styles.flexRowCenter}>
           <MaterialIcons
             style={styles.iconPosition}
             size={16}
-            name={"done"}
-            color={"#3F88C5"}
+            name={'done'}
+            color={'#3F88C5'}
           />
-          <Text style={[styles.publishedStyle, { color: "#3F88C5" }]}>
+          <Text style={[styles.publishedStyle, { color: '#3F88C5' }]}>
             PUBLISHED
           </Text>
         </View>
@@ -78,10 +76,10 @@ class ChapterShow extends Component {
           <MaterialIcons
             style={styles.iconPosition}
             size={16}
-            name={"publish"}
-            color={"#FF5423"}
+            name={'publish'}
+            color={'#FF5423'}
           />
-          <Text style={[styles.publishedStyle, { color: "#FF5423" }]}>
+          <Text style={[styles.publishedStyle, { color: '#FF5423' }]}>
             UNPUBLISHED
           </Text>
         </View>
@@ -114,21 +112,21 @@ class ChapterShow extends Component {
       readableDistanceType
     } = distance;
     switch (distanceType) {
-      case "kilometer":
+      case 'kilometer':
         return `${kilometerAmount} ${readableDistanceType}`;
 
-      case "mile":
+      case 'mile':
         return `${mileAmount} ${readableDistanceType}`;
 
       default:
-        return "";
+        return '';
     }
   }
 
   prepareSliderImages() {
     return this.props.chapter.editorBlob.content
       .filter((entry, index) => {
-        return entry.type === "image";
+        return entry.type === 'image';
       })
       .map((entry, index) => {
         return Object.assign(
@@ -158,10 +156,10 @@ class ChapterShow extends Component {
 
     if (this.props.currentUser.id == this.props.chapter.user.id) {
       this.props.loadRouteEditor(cycleRouteId);
-      this.props.navigation.navigate("RouteEditor");
+      this.props.navigation.navigate('RouteEditor');
     } else {
       this.props.loadRouteViewer(cycleRouteId);
-      this.props.navigation.navigate("RouteViewer");
+      this.props.navigation.navigate('RouteViewer');
     }
   };
 
@@ -244,14 +242,14 @@ class ChapterShow extends Component {
 
   getInputStyling(entry) {
     switch (entry.styles) {
-      case "H1":
+      case 'H1':
         return {
-          fontFamily: "playfair",
+          fontFamily: 'playfair',
           fontSize: 22
         };
-      case "QUOTE":
+      case 'QUOTE':
         return {
-          fontStyle: "italic",
+          fontStyle: 'italic',
           borderLeftWidth: 5,
           paddingTop: 10,
           paddingBottom: 10
@@ -279,7 +277,7 @@ class ChapterShow extends Component {
     if (entry.thumbnailSource) {
       return entry.thumbnailSource;
     } else {
-      return "";
+      return '';
     }
   }
 
@@ -348,12 +346,12 @@ class ChapterShow extends Component {
 
   renderEntry = (entry, index) => {
     switch (entry.type) {
-      case "text":
+      case 'text':
         return this.renderTextEntry(entry, index);
-      case "image":
+      case 'image':
         return this.renderImageEntry(entry, index);
       default:
-        console.log("WHAT IS IT", entry);
+        console.log('WHAT IS IT', entry);
     }
   };
 
@@ -379,7 +377,7 @@ class ChapterShow extends Component {
       {},
       {
         commentableId: this.props.chapter.id,
-        commentableType: "chapter",
+        commentableType: 'chapter',
         commentableUser: this.props.chapter.user,
         commentableTitle: this.props.chapter.title,
         commentCount: this.props.chapter.commentCount,
@@ -417,23 +415,23 @@ class ChapterShow extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginBottom: 100
   },
   textEntryText: {
     fontSize: 20,
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   flexRowSpaceBetween: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   bodyContainer: {
     marginBottom: 100,
     minHeight: 200,
-    position: "relative",
+    position: 'relative',
     zIndex: 0
   },
   paddingRightLeft: {
@@ -445,25 +443,25 @@ const styles = StyleSheet.create({
   },
   dividerStyles: {
     borderBottomWidth: 3,
-    borderBottomColor: "#323941",
+    borderBottomColor: '#323941',
     width: 90,
     marginTop: 10,
     marginLeft: 20,
     marginBottom: 30
   },
   flexRowCenter: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   publishedStyle: {
     padding: 2,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     borderRadius: 5
   },
   flexColumn: {
-    display: "flex",
-    flexDirection: "column"
+    display: 'flex',
+    flexDirection: 'column'
   },
   titleDescriptionContainer: {
     padding: 20,
@@ -472,50 +470,47 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontFamily: "playfair",
-    color: "#323941"
+    fontFamily: 'playfair',
+    color: '#323941'
   },
   description: {
     fontSize: 18,
-    color: "#c3c3c3",
-    fontFamily: "open-sans-semi"
+    color: '#c3c3c3',
+    fontFamily: 'open-sans-semi'
   },
   imageEntryStyle: {
-    position: "relative",
+    position: 'relative',
     marginBottom: 20
   },
   statisticsContainer: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     paddingTop: 5
   },
   threeDotMenu: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingRight: 20,
     paddingLeft: 20,
     marginBottom: 5,
-    position: "relative",
+    position: 'relative',
     zIndex: 100
   },
   iconPosition: {
     marginRight: 5
   },
   textAlignCenter: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   statisticsPadding: {
     padding: 20,
     paddingTop: 0
   },
   statisticsText: {
-    fontFamily: "overpass",
+    fontFamily: 'overpass',
     fontSize: 14
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChapterShow);
+export default connect(mapStateToProps, mapDispatchToProps)(ChapterShow);

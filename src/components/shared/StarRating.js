@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const StarRating = props => {
   const { rating, size } = props;
@@ -15,8 +15,8 @@ const StarRating = props => {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "row"
+    display: 'flex',
+    flexDirection: 'row'
   }
 });
 

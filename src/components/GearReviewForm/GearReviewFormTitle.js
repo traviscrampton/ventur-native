@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,15 @@ import {
   Image,
   TouchableWithoutFeedback,
   StyleSheet
-} from "react-native";
+} from 'react-native';
 import {
   updateGearReviewFormTitle,
   searchForGearItems,
   populateFormWithGearItem,
   toggleDropdown
-} from "../../actions/gear_review_form";
-import { MaterialIcons } from "@expo/vector-icons";
-import { connect } from "react-redux";
+} from '../../actions/gear_review_form';
+import { MaterialIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -146,50 +146,50 @@ class GearReviewFormTitle extends Component {
 
 const styles = StyleSheet.create({
   nameText: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     fontSize: 18
   },
   nameAndIcon: {
     marginBottom: 5,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   textInput: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     fontSize: 18,
     borderWidth: 1,
-    fontFamily: "open-sans-regular",
+    fontFamily: 'open-sans-regular',
     padding: 5,
     borderRadius: 5,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   container: {
-    position: "relative",
+    position: 'relative',
     zIndex: 11
   },
   borderBottom: {
     borderWidth: 1,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   gearImageContainer: {
     padding: 10,
-    display: "flex",
-    backgroundColor: "white",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   gearItemSuggestions: {
-    overflow: "hidden",
+    overflow: 'hidden',
     borderRadius: 5
   },
   gearDropdownContainer: {
     top: 65,
-    position: "absolute",
-    backgroundColor: "white",
+    position: 'absolute',
+    backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderRadius: 5
   },
   marginLeft10: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   backgroundWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   }
 });
 

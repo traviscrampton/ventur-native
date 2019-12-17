@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
-import { loadComments } from "../../actions/comments";
-import { populateCommentForm } from "../../actions/comment_form";
-import CommentsSection from "./CommentsSection";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
+import { loadComments } from '../../actions/comments';
+import { populateCommentForm } from '../../actions/comment_form';
+import CommentsSection from './CommentsSection';
 
 const mapStateToProps = state => ({
   comments: state.comments.comments,
@@ -87,33 +87,30 @@ class CommentsContainer extends Component {
 
 const styles = StyleSheet.create({
   showCommentCta: {
-    backgroundColor: "#fafafa",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fafafa',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingRight: 5,
     paddingLeft: 5,
     paddingTop: 10,
     paddingBottom: 10,
-    borderColor: "#505050",
+    borderColor: '#505050',
     borderWidth: 1,
     borderRadius: 3
   },
   commentCtaContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center'
   },
   showCommentCtaText: {
     letterSpacing: 1.8,
-    color: "#505050",
-    textAlign: "center"
+    color: '#505050',
+    textAlign: 'center'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentsContainer);

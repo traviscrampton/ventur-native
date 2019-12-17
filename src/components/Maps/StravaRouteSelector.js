@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -6,16 +6,16 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Text
-} from "react-native";
-import { connect } from "react-redux";
+} from 'react-native';
+import { connect } from 'react-redux';
 import {
   addToSelectedIds,
   removeFromSelectedIds,
   importStravaActivites
-} from "../../actions/strava_activity_import";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Header } from "../editor/header";
-import LoadingScreen from "../shared/LoadingScreen";
+} from '../../actions/strava_activity_import';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Header } from '../editor/header';
+import LoadingScreen from '../shared/LoadingScreen';
 
 const mapDispatchToProps = dispatch => ({
   addToSelectedIds: payload => dispatch(addToSelectedIds(payload)),
@@ -55,22 +55,22 @@ class StravaRouteSelector extends Component {
     const headerProps = Object.assign(
       {},
       {
-        goBackCta: "Cancel",
+        goBackCta: 'Cancel',
         handleGoBack: this.handleCancelButtonPress,
-        centerCta: "",
+        centerCta: '',
         handleConfirm: this.handleDoneButtonPress,
-        confirmCta: "Save"
+        confirmCta: 'Save'
       }
     );
     return <Header key="header" {...headerProps} />;
   }
 
   checkMarkColor(isIncluded) {
-    return isIncluded ? "#82CA9C" : "lightgray";
+    return isIncluded ? '#82CA9C' : 'lightgray';
   }
 
   renderShadowColor(isIncluded) {
-    return isIncluded ? "black" : "gray";
+    return isIncluded ? 'black' : 'gray';
   }
 
   renderActivity(activity) {
@@ -121,7 +121,7 @@ class StravaRouteSelector extends Component {
           </View>
           <View>
             <MaterialCommunityIcons
-              name={"check-circle-outline"}
+              name={'check-circle-outline'}
               size={40}
               color={this.checkMarkColor(isIncluded)}
             />
@@ -161,38 +161,38 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   whitePadding: {
     padding: 20,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   activityContainer: {
     marginBottom: 20,
     padding: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   hunnit: {
-    backgroundColor: "white",
-    height: "100%"
+    backgroundColor: 'white',
+    height: '100%'
   },
   flexRow: {
-    display: "flex",
-    flexDirection: "row"
+    display: 'flex',
+    flexDirection: 'row'
   },
   activityInner: {
-    fontFamily: "open-sans-regular",
-    color: "#323941",
+    fontFamily: 'open-sans-regular',
+    color: '#323941',
     fontSize: 18,
     marginBottom: 10
   },
   textStats: {
-    fontFamily: "overpass",
+    fontFamily: 'overpass',
     fontSize: 14
   }
 });

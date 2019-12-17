@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { View, TouchableWithoutFeedback, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { connectActionSheet } from "@expo/react-native-action-sheet";
+import React, { Component } from 'react';
+import { View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 class ThreeDotDropdown extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class ThreeDotDropdown extends Component {
       return option.title;
     });
 
-    options.push("Cancel");
+    options.push('Cancel');
 
     const destructiveButtonIndex = options.length;
     const cancelButtonIndex = options.length - 1;
@@ -51,9 +51,9 @@ class ThreeDotDropdown extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: { position: "relative" },
+  container: { position: 'relative' },
   inner: { paddingTop: 2, width: 40, height: 40 },
-  textAlignCenter: { textAlign: "center" }
+  textAlignCenter: { textAlign: 'center' }
 });
 
 export default connectActionSheet(ThreeDotDropdown);

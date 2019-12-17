@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { startUpdating } from "../../actions/editor";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { startUpdating } from '../../actions/editor';
 import {
   StyleSheet,
   View,
@@ -8,18 +8,18 @@ import {
   Text,
   TextInput,
   TouchableWithoutFeedback
-} from "react-native";
+} from 'react-native';
 import {
   updateChapterForm,
   resetChapterForm,
   toggleChapterModal
-} from "../../actions/chapter_form";
-import { updateChapter, createChapter } from "../../actions/chapter_form";
-import { Header } from "./header";
-import DatePickerDropdown from "./DatePickerDropdown";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { generateReadableDate } from "../../utils/chapter_form_helper";
-import FormModal from "../shared/FormModal";
+} from '../../actions/chapter_form';
+import { updateChapter, createChapter } from '../../actions/chapter_form';
+import { Header } from './header';
+import DatePickerDropdown from './DatePickerDropdown';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { generateReadableDate } from '../../utils/chapter_form_helper';
+import FormModal from '../shared/FormModal';
 
 const mapStateToProps = state => ({
   chapterForm: state.chapterForm,
@@ -86,7 +86,7 @@ class ChapterMetaDataForm extends Component {
   };
 
   getTitleText() {
-    return this.props.chapterForm.id ? "Edit Chapter" : "New Chapter";
+    return this.props.chapterForm.id ? 'Edit Chapter' : 'New Chapter';
   }
 
   navigateToChapter = () => {
@@ -132,7 +132,7 @@ class ChapterMetaDataForm extends Component {
       <DatePickerDropdown
         date={this.props.chapterForm.date}
         toggleDatePicker={this.toggleDatePicker}
-        persistMetadata={date => this.persistMetadata(date, "date")}
+        persistMetadata={date => this.persistMetadata(date, 'date')}
       />
     );
   }
@@ -158,14 +158,14 @@ class ChapterMetaDataForm extends Component {
               size={18}
             />
             <TextInput
-              selectionColor={"#FF5423"}
+              selectionColor={'#FF5423'}
               ref={input => {
                 this.distanceTextInput = input;
               }}
-              keyboardType={"numeric"}
+              keyboardType={'numeric'}
               maxLength={6}
               value={distance.toString()}
-              onChangeText={text => this.persistMetadata(text, "distance")}
+              onChangeText={text => this.persistMetadata(text, 'distance')}
               style={styles.distanceTextInput}
             />
             <Text style={styles.iconText}>
@@ -196,7 +196,7 @@ class ChapterMetaDataForm extends Component {
         </View>
         <TextInput
           multiline
-          selectionColor={"#FF5423"}
+          selectionColor={'#FF5423'}
           shadowColor="gray"
           shadowOffset={{ width: 0, height: 0 }}
           shadowOpacity={0.5}
@@ -204,7 +204,7 @@ class ChapterMetaDataForm extends Component {
           selectionColor="#FF5423"
           style={styles.title}
           value={title}
-          onChangeText={text => this.persistMetadata(text, "title")}
+          onChangeText={text => this.persistMetadata(text, 'title')}
         />
       </View>
     );
@@ -214,11 +214,11 @@ class ChapterMetaDataForm extends Component {
     const headerProps = Object.assign(
       {},
       {
-        goBackCta: "Cancel",
+        goBackCta: 'Cancel',
         handleGoBack: this.handleGoBack,
-        centerCta: "",
+        centerCta: '',
         handleConfirm: this.persistUpdate,
-        confirmCta: "Save"
+        confirmCta: 'Save'
       }
     );
     return <Header key="header" {...headerProps} />;
@@ -248,8 +248,8 @@ class ChapterMetaDataForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    backgroundColor: "white"
+    height: '100%',
+    backgroundColor: 'white'
   },
   formTitleContainer: {
     padding: 20,
@@ -264,34 +264,34 @@ const styles = StyleSheet.create({
     paddingBottom: 2
   },
   title: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     fontSize: 18,
     borderWidth: 1,
-    fontFamily: "open-sans-regular",
+    fontFamily: 'open-sans-regular',
     padding: 10,
     borderRadius: 5,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   iconsAndText: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     padding: 5,
     borderWidth: 1,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderRadius: 5,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginBottom: 10,
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 3
   },
   titleTextForm: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     fontSize: 28
   },
   dateText: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
@@ -299,25 +299,25 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   distanceLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },
   iconText: {
-    fontFamily: "overpass",
+    fontFamily: 'overpass',
     fontSize: 20
   },
   distanceTextInput: {
-    textAlign: "right",
+    textAlign: 'right',
     fontSize: 20,
     marginRight: 5,
     paddingBottom: 6,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   titleText: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     marginBottom: 5,
     fontSize: 16
   },

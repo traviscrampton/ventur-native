@@ -1,25 +1,25 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
   TouchableWithoutFeedback,
   Text,
   Alert
-} from "react-native";
-import MapView from "react-native-maps";
-import { FloatingAction } from "react-native-floating-action";
-import RouteEditorButtons from "../Maps/RouteEditorButtons";
-import { authenticateStravaUser } from "../../actions/strava";
+} from 'react-native';
+import MapView from 'react-native-maps';
+import { FloatingAction } from 'react-native-floating-action';
+import RouteEditorButtons from '../Maps/RouteEditorButtons';
+import { authenticateStravaUser } from '../../actions/strava';
 import {
   toggleDrawMode,
   togglePositionMode,
   persistRoute,
   eraseRoute,
   cancelAllModes
-} from "../../actions/route_editor";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { MaterialIndicator } from "react-native-indicators";
+} from '../../actions/route_editor';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIndicator } from 'react-native-indicators';
 import {
   setIsDrawing,
   drawLine,
@@ -27,12 +27,12 @@ import {
   persistCoordinates,
   updateRegionCoordinates,
   defaultRouteEditor
-} from "../../actions/route_editor";
+} from '../../actions/route_editor';
 import {
   checkForExpiredToken,
   setStravaLoadingTrue
-} from "../../actions/strava_activity_import";
-import LoadingScreen from "../shared/LoadingScreen";
+} from '../../actions/strava_activity_import';
+import LoadingScreen from '../shared/LoadingScreen';
 
 const mapDispatchToProps = dispatch => ({
   setIsDrawing: payload => dispatch(setIsDrawing(payload)),
@@ -79,32 +79,32 @@ class RouteEditor extends Component {
 
   static actions = [
     {
-      text: "Draw Route",
-      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
-      name: "draw_route",
+      text: 'Draw Route',
+      icon: <MaterialIcons name={'edit'} color="white" size={20} />,
+      name: 'draw_route',
       position: 0,
-      color: "#FF5423"
+      color: '#FF5423'
     },
     {
-      text: "Position Map",
-      icon: <MaterialIcons name={"crop-free"} color="white" size={20} />,
-      name: "position_map",
+      text: 'Position Map',
+      icon: <MaterialIcons name={'crop-free'} color="white" size={20} />,
+      name: 'position_map',
       position: 1,
-      color: "#3F88C5"
+      color: '#3F88C5'
     },
     {
-      text: "Upload Strava Routes",
-      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
-      name: "upload_strava",
+      text: 'Upload Strava Routes',
+      icon: <MaterialIcons name={'directions-bike'} color="white" size={20} />,
+      name: 'upload_strava',
       position: 2,
-      color: "#FF5423"
+      color: '#FF5423'
     },
     {
-      text: "Clear Route",
+      text: 'Clear Route',
       icon: <MaterialIcons name="delete" color="white" size={20} />,
-      name: "erase_route",
+      name: 'erase_route',
       position: 3,
-      color: "#FF5423"
+      color: '#FF5423'
     }
   ];
 
@@ -124,11 +124,11 @@ class RouteEditor extends Component {
       this.navigateBack();
     } else {
       Alert.alert(
-        "Are you sure?",
-        "You have unsaved changes",
+        'Are you sure?',
+        'You have unsaved changes',
         [
-          { text: "Continue Unsaved", onPress: () => this.navigateBack() },
-          { text: "Cancel", style: "cancel" }
+          { text: 'Continue Unsaved', onPress: () => this.navigateBack() },
+          { text: 'Cancel', style: 'cancel' }
         ],
         { cancelable: true }
       );
@@ -185,15 +185,15 @@ class RouteEditor extends Component {
 
   alertAboutStrava() {
     Alert.alert(
-      "Strava Not Connected",
-      "To upload strava routes go to the profile page",
+      'Strava Not Connected',
+      'To upload strava routes go to the profile page',
       [
         {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
+        { text: 'OK', onPress: () => console.log('OK Pressed') }
       ],
       { cancelable: false }
     );
@@ -201,7 +201,7 @@ class RouteEditor extends Component {
 
   loadStravaAndNavigate = () => {
     this.props.setStravaLoadingTrue();
-    this.props.navigation.navigate("StravaRouteSelector");
+    this.props.navigation.navigate('StravaRouteSelector');
     this.props.checkForExpiredToken();
   };
 
@@ -215,16 +215,16 @@ class RouteEditor extends Component {
 
   async handlePressItem(name) {
     switch (name) {
-      case "draw_route":
+      case 'draw_route':
         return this.props.toggleDrawMode();
-      case "position_map":
+      case 'position_map':
         return this.props.togglePositionMode();
-      case "erase_route":
+      case 'erase_route':
         return this.props.eraseRoute();
-      case "upload_strava":
+      case 'upload_strava':
         return await this.handleStravaPress();
       default:
-        console.log("wat in tarnation");
+        console.log('wat in tarnation');
     }
   }
 
@@ -234,9 +234,9 @@ class RouteEditor extends Component {
         {},
         {
           onPress: this.props.persistRoute,
-          saved: "SAVED",
-          needsSaving: "SAVE ROUTE",
-          color: "#FF5423"
+          saved: 'SAVED',
+          needsSaving: 'SAVE ROUTE',
+          color: '#FF5423'
         }
       );
     } else if (positionMode) {
@@ -244,9 +244,9 @@ class RouteEditor extends Component {
         {},
         {
           onPress: this.props.persistCoordinates,
-          saved: "SAVED",
-          needsSaving: "SAVE POSITION",
-          color: "#3F88C5"
+          saved: 'SAVED',
+          needsSaving: 'SAVE POSITION',
+          color: '#3F88C5'
         }
       );
     } else {
@@ -339,7 +339,7 @@ class RouteEditor extends Component {
       >
         <TouchableWithoutFeedback onPress={this.cancelAllModes}>
           <View style={styles.exitButtonInner}>
-            <MaterialIcons name="close" size={30} color={"white"} />
+            <MaterialIcons name="close" size={30} color={'white'} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -429,7 +429,7 @@ class RouteEditor extends Component {
         </MapView>
         {this.renderFloatingBackButton()}
         <FloatingAction
-          color={"#FF5423"}
+          color={'#FF5423'}
           distanceToEdge={{ vertical: 60, horizontal: 30 }}
           actions={RouteEditor.actions}
           onPressItem={name => {
@@ -447,69 +447,69 @@ class RouteEditor extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    backgroundColor: "white",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
     paddingBottom: 50
   },
   savingButton: {
-    position: "absolute",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     bottom: 65,
     left: 60
   },
   savingButtonContainer: {
     borderRadius: 30,
     height: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   floatingInner: {
     height: 40,
     width: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingRight: 2,
     paddingTop: 1
   },
   exitButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 60,
     right: 30,
-    backgroundColor: "#FF5423",
+    backgroundColor: '#FF5423',
     borderRadius: 57 / 2,
-    overflow: "hidden"
+    overflow: 'hidden'
   },
   exitButtonInner: {
     height: 57,
     width: 57,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   zindex10: {
     zIndex: 10
   },
   positionCoordinates: {
-    position: "absolute",
-    backgroundColor: "rgba(111, 111, 111, 0.3)",
+    position: 'absolute',
+    backgroundColor: 'rgba(111, 111, 111, 0.3)',
     padding: 5,
     borderRadius: 5,
     top: 60,
     right: 30
   },
   relativeFlex: {
-    position: "relative",
+    position: 'relative',
     flex: 1
   },
   positiveFlex: {
@@ -517,21 +517,18 @@ const styles = StyleSheet.create({
     zIndex: -1
   },
   colorBlack: {
-    color: "black"
+    color: 'black'
   },
   zIndex9: {
     zIndex: 9
   },
   floatingButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 60,
     left: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RouteEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(RouteEditor);

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
@@ -9,8 +9,8 @@ import {
   Alert,
   SafeAreaView,
   TouchableWithoutFeedback
-} from "react-native";
-import { MaterialIndicator } from "react-native-indicators";
+} from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
 import {
   editEntry,
   updateFormatBar,
@@ -26,15 +26,15 @@ import {
   doneEditingAndPersist,
   loseChangesAndUpdate,
   addImagesToEntries
-} from "../../actions/editor";
-import { Header } from "../editor/header";
-import InputScrollView from "react-native-input-scroll-view";
-import _ from "lodash";
-import EditorToolbar from "../editor/EditorToolbar";
-import ContentCreator from "../editor/ContentCreator";
-import { FontAwesome } from "@expo/vector-icons";
-import LazyImage from "../shared/LazyImage";
-import ImagePickerContainer from "../shared/ImagePickerContainer";
+} from '../../actions/editor';
+import { Header } from '../editor/header';
+import InputScrollView from 'react-native-input-scroll-view';
+import _ from 'lodash';
+import EditorToolbar from '../editor/EditorToolbar';
+import ContentCreator from '../editor/ContentCreator';
+import { FontAwesome } from '@expo/vector-icons';
+import LazyImage from '../shared/LazyImage';
+import ImagePickerContainer from '../shared/ImagePickerContainer';
 
 const mapDispatchToProps = dispatch => ({
   updateFormatBar: payload => dispatch(updateFormatBar(payload)),
@@ -88,11 +88,11 @@ class ChapterEditor extends Component {
 
   componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener(
-      "keyboardDidShow",
+      'keyboardDidShow',
       this.keyboardWillShow.bind(this)
     );
     this.keyboardWillHideListener = Keyboard.addListener(
-      "keyboardWillHide",
+      'keyboardWillHide',
       this.keyboardWillHide.bind(this)
     );
   }
@@ -140,9 +140,9 @@ class ChapterEditor extends Component {
 
   getInputStyling(entry) {
     switch (entry.styles) {
-      case "H1":
+      case 'H1':
         return styles.headerText;
-      case "QUOTE":
+      case 'QUOTE':
         return styles.quoteText;
       default:
         return {};
@@ -188,11 +188,11 @@ class ChapterEditor extends Component {
 
   handleImageDelete = index => {
     Alert.alert(
-      "Are you sure?",
-      "Deleting this image will erase it from this chapter",
+      'Are you sure?',
+      'Deleting this image will erase it from this chapter',
       [
-        { text: "Delete Image", onPress: () => this.deleteImage(index) },
-        { text: "Cancel", style: "cancel" }
+        { text: 'Delete Image', onPress: () => this.deleteImage(index) },
+        { text: 'Cancel', style: 'cancel' }
       ],
       { cancelable: true }
     );
@@ -207,16 +207,16 @@ class ChapterEditor extends Component {
 
   renderEntry(entry, index) {
     switch (entry.type) {
-      case "text":
+      case 'text':
         return this.renderAsTextInput(entry, index);
-      case "image":
+      case 'image':
         return this.renderAsImage(entry, index);
       default:
         return null;
     }
   }
 
-  renderImageLoadingCover(index, imageHeight) {
+  renderImageLoadingCover(imageHeight) {
     return (
       <View
         style={[
@@ -232,7 +232,7 @@ class ChapterEditor extends Component {
 
   renderOpacCover(index, imageHeight, image) {
     if (this.props.uploadIsImage && !image.uri) {
-      return this.renderImageLoadingCover(index, imageHeight);
+      return this.renderImageLoadingCover(imageHeight);
     }
 
     if (index !== this.props.activeIndex) return;
@@ -252,14 +252,14 @@ class ChapterEditor extends Component {
             onPress={() => this.handleImageDelete(index)}
           >
             <View>
-              <FontAwesome name={"trash-o"} size={28} color={"white"} />
+              <FontAwesome name={'trash-o'} size={28} color={'white'} />
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={e => this.openImageCaptionForm(e, index)}
           >
             <View>
-              <FontAwesome name={"quote-right"} color={"white"} size={28} />
+              <FontAwesome name={'quote-right'} color={'white'} size={28} />
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -273,7 +273,7 @@ class ChapterEditor extends Component {
 
   getAllImageIds = () => {
     let entries = this.props.entries
-      .filter(entry => entry.type === "image")
+      .filter(entry => entry.type === 'image')
       .map(entry => {
         return entry.id;
       });
@@ -319,7 +319,7 @@ class ChapterEditor extends Component {
                 style={{
                   width: this.props.width,
                   height: imageHeight,
-                  position: "relative"
+                  position: 'relative'
                 }}
                 yPosition={this.getYPosition(index)}
                 scrollPosition={this.state.scrollPosition}
@@ -358,11 +358,11 @@ class ChapterEditor extends Component {
     const headerProps = Object.assign(
       {},
       {
-        goBackCta: "Cancel",
+        goBackCta: 'Cancel',
         handleGoBack: this.handleCancelButtonPress,
-        centerCta: "",
+        centerCta: '',
         handleConfirm: this.handleDoneButtonPress,
-        confirmCta: "Save"
+        confirmCta: 'Save'
       }
     );
     return <Header key="header" {...headerProps} />;
@@ -374,12 +374,12 @@ class ChapterEditor extends Component {
         multiline
         editable={!this.props.uploadIsImage}
         key={index}
-        selectionColor={"#FF5423"}
+        selectionColor={'#FF5423'}
         ref={`textInput${index}`}
         style={[styles.textInput, this.getInputStyling(entry)]}
         onChangeText={text => this.handleTextChange(text, index)}
         onBlur={() => this.deleteIfEmpty(index)}
-        placeholder={"Enter Entry..."}
+        placeholder={'Enter Entry...'}
         value={entry.content}
         onFocus={() => this.handleOnFocus(index)}
         blurOnSubmit={false}
@@ -412,11 +412,11 @@ class ChapterEditor extends Component {
       this.loseChangesAndUpdate();
     } else {
       Alert.alert(
-        "Are you sure?",
-        "You will lose all your blog changes",
+        'Are you sure?',
+        'You will lose all your blog changes',
         [
-          { text: "Lose blog changes", onPress: this.loseChangesAndUpdate },
-          { text: "Cancel", style: "cancel" }
+          { text: 'Lose blog changes', onPress: this.loseChangesAndUpdate },
+          { text: 'Cancel', style: 'cancel' }
         ],
         { cancelable: true }
       );
@@ -426,19 +426,19 @@ class ChapterEditor extends Component {
   openImageCaptionForm(e, index) {
     const entryCaption = this.props.entries[index].caption;
     this.props.updateActiveImageCaption(entryCaption);
-    this.props.navigation.navigate("ImageCaptionForm", { index: index });
+    this.props.navigation.navigate('ImageCaptionForm', { index: index });
   }
 
   openManageContent = () => {
     this.props.prepManageContent();
-    this.props.navigation.navigate("ManageContent");
+    this.props.navigation.navigate('ManageContent');
   };
 
   getToolbarPositioning() {
     if (this.props.showEditorToolbar) {
       return {
         width: this.props.width,
-        position: "absolute",
+        position: 'absolute',
         top: this.state.containerHeight
       };
     } else {
@@ -498,7 +498,7 @@ class ChapterEditor extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{ backgroundColor: "white" }}>
+      <SafeAreaView style={{ backgroundColor: 'white' }}>
         <View style={([styles.container], this.getContainerSize())}>
           {this.renderHeader()}
           <InputScrollView
@@ -525,9 +525,9 @@ class ChapterEditor extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginBottom: 0,
-    position: "relative"
+    position: 'relative'
   },
   titleAndDescriptionContainer: {
     padding: 20,
@@ -536,47 +536,47 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontFamily: "playfair",
-    color: "#323941",
-    backgroundColor: "#f8f8f8"
+    fontFamily: 'playfair',
+    color: '#323941',
+    backgroundColor: '#f8f8f8'
   },
   description: {
     fontSize: 18,
-    color: "#c3c3c3",
-    fontFamily: "open-sans-semi"
+    color: '#c3c3c3',
+    fontFamily: 'open-sans-semi'
   },
   statsContainer: {
     padding: 20,
     paddingTop: 0
   },
   headerText: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 22
   },
   quoteText: {
-    fontStyle: "italic",
+    fontStyle: 'italic',
     borderLeftWidth: 5,
     paddingTop: 10,
     paddingBottom: 10
   },
   opacCover: {
     padding: 20,
-    position: "absolute",
+    position: 'absolute',
     zIndex: 11,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   positionRelative: {
-    position: "relative",
-    backgroundColor: "white"
+    position: 'relative',
+    backgroundColor: 'white'
   },
   loadingOpacCover: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   captionPadding: {
     paddingTop: 5,
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     paddingRight: 20
   },
   textAlignCenter: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   textInput: {
     paddingLeft: 20,
@@ -592,13 +592,10 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
     fontSize: 20,
-    fontFamily: "open-sans-regular",
+    fontFamily: 'open-sans-regular',
     lineHeight: 24,
     minHeight: 30
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChapterEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ChapterEditor);

@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, View, TouchableWithoutFeedback, Text } from "react-native";
-import MapView from "react-native-maps";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { MaterialIndicator } from "react-native-indicators";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, View, TouchableWithoutFeedback, Text } from 'react-native';
+import MapView from 'react-native-maps';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIndicator } from 'react-native-indicators';
 import {
   updateRegionCoordinates,
   togglePositionMode,
   persistCoordinates,
   defaultRouteEditor
-} from "../../actions/route_editor";
-import { defaultJournalRoute } from "../../actions/journal_route";
-import LoadingScreen from "../shared/LoadingScreen";
+} from '../../actions/route_editor';
+import { defaultJournalRoute } from '../../actions/journal_route';
+import LoadingScreen from '../shared/LoadingScreen';
 
 const mapDispatchToProps = dispatch => ({
   defaultJournalRoute: () => dispatch(defaultJournalRoute()),
@@ -62,7 +62,7 @@ class JournalRoute extends Component {
       >
         <TouchableWithoutFeedback onPress={this.navigateBack}>
           <View style={styles.iconPositionBackButton}>
-            <Ionicons name="ios-arrow-back" color={"#323941"} size={30} />
+            <Ionicons name="ios-arrow-back" color={'#323941'} size={30} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -73,8 +73,8 @@ class JournalRoute extends Component {
     if (!this.isCurrentUser()) return;
 
     const { positionMode } = this.props;
-    const backgroundColor = positionMode ? "#3F88C5" : "white";
-    const iconColor = positionMode ? "white" : "#3F88C5";
+    const backgroundColor = positionMode ? '#3F88C5' : 'white';
+    const iconColor = positionMode ? 'white' : '#3F88C5';
 
     return (
       <View style={styles.cropButtonContainer}>
@@ -186,55 +186,55 @@ class JournalRoute extends Component {
 
 const styles = StyleSheet.create({
   floatingBackButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 60,
     left: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20
   },
   iconPositionBackButton: {
     height: 40,
     width: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingRight: 2,
     paddingTop: 1
   },
   cropButtonPosition: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 35,
     width: 35,
     borderRadius: 17.5,
     marginBottom: 10
   },
   savingButtonContainer: {
-    position: "absolute",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     bottom: 30
   },
   savedColor: {
-    color: "#FF5423"
+    color: '#FF5423'
   },
   relativeFlex: {
-    position: "relative",
+    position: 'relative',
     flex: 1
   },
   savingButtonContent: {
     borderRadius: 30,
     height: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   flex1: {
     flex: 1
@@ -247,13 +247,10 @@ const styles = StyleSheet.create({
     zIndex: 10
   },
   cropButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 60,
     right: 30
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(JournalRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(JournalRoute);

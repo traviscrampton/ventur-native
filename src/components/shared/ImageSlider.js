@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,14 +7,14 @@ import {
   Image,
   Text,
   TouchableWithoutFeedback
-} from "react-native";
+} from 'react-native';
 import {
   toggleImageSliderModal,
   resetImages
-} from "../../actions/image_slider";
-import Swiper from "react-native-swiper";
-import { Feather } from "@expo/vector-icons";
-import { connect } from "react-redux";
+} from '../../actions/image_slider';
+import Swiper from 'react-native-swiper';
+import { Feather } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
   height: state.common.height,
@@ -89,21 +89,18 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     flex: 1,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "black"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'black'
   },
   imageCaption: {
-    color: "white",
-    fontFamily: "open-sans-regular"
+    color: 'white',
+    fontFamily: 'open-sans-regular'
   },
   padding20: {
     padding: 20
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ImageSlider);
+export default connect(mapStateToProps, mapDispatchToProps)(ImageSlider);

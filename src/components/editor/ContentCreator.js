@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Text, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
-import { createNewTextEntry, updateActiveCreator } from "../../actions/editor";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Text, TouchableWithoutFeedback, StyleSheet, View } from 'react-native';
+import { createNewTextEntry, updateActiveCreator } from '../../actions/editor';
 import {
   toggleCameraRollModal,
   updateActiveView
-} from "../../actions/camera_roll";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
+} from '../../actions/camera_roll';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
 
 const mapStateToProps = state => ({
   activeContentCreator: state.editor.activeContentCreator,
@@ -27,9 +27,9 @@ class ContentCreator extends Component {
 
   createNewTextEntry() {
     let entry = {
-      content: "",
-      styles: "",
-      type: "text"
+      content: '',
+      styles: '',
+      type: 'text'
     };
 
     let payload = { newEntry: entry, newIndex: this.props.index };
@@ -38,7 +38,7 @@ class ContentCreator extends Component {
   }
 
   openCameraRoll = e => {
-    this.props.updateActiveView("editor");
+    this.props.updateActiveView('editor');
     this.props.toggleCameraRollModal(true);
   };
 
@@ -92,7 +92,7 @@ class ContentCreator extends Component {
               style={styles.marginRight4}
               name="image"
               size={20}
-              color={"darkgray"}
+              color={'darkgray'}
             />
             <Text style={styles.darkGray}>IMAGES</Text>
           </View>
@@ -118,61 +118,58 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     height: 50
   },
   darkGray: {
-    color: "darkgray"
+    color: 'darkgray'
   },
   marginRight4: {
     marginRight: 4
   },
   flexRowCenter: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 50
   },
   initialStateTextOrImage: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   marginRight7: {
     marginRight: 7
   },
   isInitial: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   optionState: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingLeft: 20,
     height: 50
   },
   addContentCta: {
-    color: "#d3d3d3",
-    fontFamily: "overpass",
+    color: '#d3d3d3',
+    fontFamily: 'overpass',
     paddingTop: 2
   },
   optionContainer: {
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   grayText: {
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: "white",
-    fontFamily: "overpass"
+    backgroundColor: 'white',
+    fontFamily: 'overpass'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ContentCreator);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentCreator);

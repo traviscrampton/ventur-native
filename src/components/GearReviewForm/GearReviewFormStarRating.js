@@ -1,69 +1,72 @@
-import React, { Component } from "react"
-import { View, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
-import { connect } from "react-redux"
-import { MaterialIcons } from "@expo/vector-icons"
-import { updateGearReviewFormStarRating } from "../../actions/gear_review_form"
+import React, { Component } from 'react';
+import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import { updateGearReviewFormStarRating } from '../../actions/gear_review_form';
 
 const mapStateToProps = state => ({
   width: state.common.width,
   rating: state.gearReviewForm.rating
-})
+});
 
 const mapDispatchToProps = dispatch => ({
-  updateGearReviewFormStarRating: payload => dispatch(updateGearReviewFormStarRating(payload))
-})
+  updateGearReviewFormStarRating: payload =>
+    dispatch(updateGearReviewFormStarRating(payload))
+});
 
 class GearReviewFormStarRating extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
-  static MAX_STARS = 5
+  static MAX_STARS = 5;
 
   getStarText() {
     switch (this.props.rating) {
       case 1:
-        return "Bad"
+        return 'Bad';
       case 2:
-        return "Meh"
+        return 'Meh';
       case 3:
-        return "Decent"
+        return 'Decent';
       case 4:
-        return "Pretty Good"
+        return 'Pretty Good';
       case 5:
-        return "Excellent"
+        return 'Excellent';
       default:
-        return ""
+        return '';
     }
   }
 
   renderStar(i) {
     if (this.props.rating >= i + 1) {
-      return <MaterialIcons name="star" color="gold" size={32} key={i} />
+      return <MaterialIcons name="star" color="gold" size={32} key={i} />;
     }
 
-    return <MaterialIcons name="star-border" color="gold" size={32} key={i} />
+    return <MaterialIcons name="star-border" color="gold" size={32} key={i} />;
   }
 
   renderText() {
-    const text = this.getStarText()
+    const text = this.getStarText();
 
     return (
       <View style={styles.marginLeft10}>
         <Text style={styles.openSansRegular}>{text}</Text>
       </View>
-    )
+    );
   }
 
   renderStars = () => {
     return [...Array(GearReviewFormStarRating.MAX_STARS)].map((e, i) => {
       return (
-        <TouchableWithoutFeedback onPress={() => this.props.updateGearReviewFormStarRating(i + 1)}>
+        <TouchableWithoutFeedback
+          onPress={() => this.props.updateGearReviewFormStarRating(i + 1)}
+        >
           {this.renderStar(i)}
         </TouchableWithoutFeedback>
-      )
-    })
-  }
+      );
+    });
+  };
 
   render() {
     return (
@@ -76,7 +79,7 @@ class GearReviewFormStarRating extends Component {
           {this.renderText()}
         </View>
       </View>
-    )
+    );
   }
 }
 
@@ -85,27 +88,27 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   flexRowCenter: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   marginTop20: {
     marginTop: 20
   },
   ratingLabel: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     fontSize: 18
   },
   marginBottom5: {
     marginBottom: 5
   },
   openSansRegular: {
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   }
-})
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GearReviewFormStarRating)
+)(GearReviewFormStarRating);

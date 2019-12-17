@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   TextInput,
   View,
   Text,
   TouchableWithoutFeedback,
   StyleSheet
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   updateGearReviewFormProCon,
   removeGearReviewFormProCon,
   addGearReviewFormProCon
-} from "../../actions/gear_review_form";
+} from '../../actions/gear_review_form';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -50,7 +50,7 @@ class GearReviewFormProsCons extends Component {
   };
 
   getTitleAndCta = isPro => {
-    const title = isPro ? "Pros" : "Cons";
+    const title = isPro ? 'Pros' : 'Cons';
     const addCta = `+ Add ${title.substring(0, 3)}`.toUpperCase();
     return Object.assign({}, { title, addCta });
   };
@@ -112,18 +112,18 @@ class GearReviewFormProsCons extends Component {
 
 const styles = StyleSheet.create({
   proConContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   marginTopBottom20: {
     marginTop: 20,
     marginBottom: 20
   },
   addCta: {
-    fontFamily: "open-sans-regular",
-    color: "#323941"
+    fontFamily: 'open-sans-regular',
+    color: '#323941'
   },
   marginTop5: {
     marginTop: 5
@@ -131,10 +131,10 @@ const styles = StyleSheet.create({
   marginBottom5: {
     marginBottom: 5
   },
-  label: { fontFamily: "playfair", color: "#323941", fontSize: 18 },
+  label: { fontFamily: 'playfair', color: '#323941', fontSize: 18 },
   icons: {
     width: 40,
-    textAlign: "right"
+    textAlign: 'right'
   },
   prosCons: {
     marginTop: 5,
@@ -142,11 +142,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexGrow: 1,
     borderWidth: 1,
-    fontFamily: "open-sans-regular",
+    fontFamily: 'open-sans-regular',
     padding: 5,
     borderRadius: 5,
-    backgroundColor: "white",
-    borderColor: "#d3d3d3"
+    backgroundColor: 'white',
+    borderColor: '#d3d3d3'
   }
 });
 

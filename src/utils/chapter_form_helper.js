@@ -1,15 +1,3 @@
-import _ from 'lodash';
-import { persistChapterToAsyncStorage } from './offline_helpers';
-
-export const offlineChapterCreate = async (chapter, reduxCallback) => {
-  const localId = `Created on ${Date.now()}`;
-  const localIdChapter = { ...chapter, id: localId };
-  const persistableChapter = _.omit(localIdChapter, 'journals');
-  await persistChapterToAsyncStorage(persistableChapter, reduxCallback);
-
-  return localIdChapter;
-};
-
 const MONTHS = [
   'January',
   'Feburary',

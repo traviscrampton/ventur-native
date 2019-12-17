@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
@@ -7,10 +7,10 @@ import {
   Text,
   TouchableWithoutFeedback,
   Alert
-} from "react-native";
-import { deleteComment } from "../../actions/comments";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png");
+} from 'react-native';
+import { deleteComment } from '../../actions/comments';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+const CycleTouringLogo = require('../../assets/images/cycletouringlogo.png');
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
@@ -38,11 +38,11 @@ class Comment extends Component {
 
   handleDeleteComment = id => {
     Alert.alert(
-      "Are you sure?",
-      "This comment will be deleted",
+      'Are you sure?',
+      'This comment will be deleted',
       [
-        { text: "Delete Comment", onPress: () => this.props.deleteComment(id) },
-        { text: "Cancel", style: "cancel" }
+        { text: 'Delete Comment', onPress: () => this.props.deleteComment(id) },
+        { text: 'Cancel', style: 'cancel' }
       ],
       { cancelable: true }
     );
@@ -62,7 +62,7 @@ class Comment extends Component {
       return <View />;
     }
 
-    const chevron = this.state.showSubComments ? "chevron-up" : "chevron-down";
+    const chevron = this.state.showSubComments ? 'chevron-up' : 'chevron-down';
 
     return (
       <View>
@@ -75,7 +75,7 @@ class Comment extends Component {
               style={styles.paddingTop2}
               name={chevron}
               size={18}
-              color={"rgba(0,0,0,.65)"}
+              color={'rgba(0,0,0,.65)'}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -141,7 +141,7 @@ class Comment extends Component {
             onPress={() => this.props.replyToComment(this.props)}
           >
             <View style={styles.flexRow}>
-              <MaterialIcons name="reply" size={14} color={"rgba(0,0,0,.65)"} />
+              <MaterialIcons name="reply" size={14} color={'rgba(0,0,0,.65)'} />
               <Text style={styles.replyCta}>Reply</Text>
             </View>
           </TouchableWithoutFeedback>
@@ -205,7 +205,7 @@ const SubComment = props => {
             <Text style={styles.commentDate}>{props.readableDate}</Text>
           </View>
         </View>
-        {props.canDelete ? deleteCta : ""}
+        {props.canDelete ? deleteCta : ''}
       </View>
       <View style={styles.marginTop20}>
         <Text>{props.content}</Text>
@@ -216,46 +216,46 @@ const SubComment = props => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 2,
     marginBottom: 20,
     padding: 20,
-    borderTopColor: "#d3d3d3",
-    borderBottomColor: "#d3d3d3",
+    borderTopColor: '#d3d3d3',
+    borderBottomColor: '#d3d3d3',
     borderTopWidth: 1,
     borderBottomWidth: 1
   },
   flexRow: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   paddingTop2: {
     paddingTop: 2
   },
   repliesCtaText: {
     fontSize: 14,
-    color: "rgba(0,0,0,.65)",
+    color: 'rgba(0,0,0,.65)',
     marginRight: 2,
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   userSectionContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   imageAndUser: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start'
   },
   image: {
     width: 35,
     height: 35,
     borderRadius: 17.5,
     borderWidth: 1,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   marginTop20: {
     marginTop: 20
@@ -264,54 +264,51 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   userAndDate: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     height: 35,
     padding: 5,
     paddingTop: 2
   },
   userFullName: {
     fontSize: 12,
-    color: "#323941",
-    fontFamily: "open-sans-bold"
+    color: '#323941',
+    fontFamily: 'open-sans-bold'
   },
   commentDate: {
     fontSize: 12,
-    fontFamily: "open-sans-regular",
-    color: "rgba(0,0,0,.65)"
+    fontFamily: 'open-sans-regular',
+    color: 'rgba(0,0,0,.65)'
   },
   commentContent: {
     fontSize: 16,
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   commentInteractionContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 20
   },
   replyCta: {
     marginLeft: 2,
-    color: "rgba(0,0,0,.65)",
-    fontFamily: "open-sans-regular"
+    color: 'rgba(0,0,0,.65)',
+    fontFamily: 'open-sans-regular'
   },
   subCommentContainer: {
     borderTopWidth: 1,
-    borderTopColor: "#d3d3d3",
+    borderTopColor: '#d3d3d3',
     marginTop: 15,
     paddingTop: 15,
     paddingLeft: 20
   },
   userContentAndCta: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Comment);
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

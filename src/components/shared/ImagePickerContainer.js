@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as Permissions from "expo-permissions";
-import * as ImagePicker from "expo-image-picker";
-import { addImagesToEntries, setSelectedImages } from "../../actions/editor";
-import { toggleCameraRollModal } from "../../actions/camera_roll";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import { addImagesToEntries, setSelectedImages } from '../../actions/editor';
+import { toggleCameraRollModal } from '../../actions/camera_roll';
 
 const mapStateToProps = state => ({
   selectedImages: state.editor.selectedImages,
@@ -33,7 +33,7 @@ class ImagePickerContainer extends Component {
   async checkCameraRollPermissions() {
     const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
 
-    if (status === "granted") {
+    if (status === 'granted') {
       await this.initialCameraRollPicker();
     } else {
       await this.askForCameraRollPermission();
@@ -48,7 +48,7 @@ class ImagePickerContainer extends Component {
 
   getFileName(result) {
     const { uri } = result;
-    const splitUri = uri.split("/");
+    const splitUri = uri.split('/');
 
     return splitUri[splitUri.length - 1];
   }
@@ -72,7 +72,7 @@ class ImagePickerContainer extends Component {
 
   async initialCameraRollPicker() {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "Images",
+      mediaTypes: 'Images',
       allowsEditing: true,
       aspect: this.props.aspect
     });

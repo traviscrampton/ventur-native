@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   updateManageContentEntries,
   updateEntriesOrder,
   removeEntryFromClone
-} from "../../actions/editor";
+} from '../../actions/editor';
 import {
   Text,
   TouchableWithoutFeedback,
@@ -12,9 +12,9 @@ import {
   Dimensions,
   StyleSheet,
   View
-} from "react-native";
-import { Header } from "./header";
-import SortableList from "react-native-sortable-list";
+} from 'react-native';
+import { Header } from './header';
+import SortableList from 'react-native-sortable-list';
 
 const mapStateToProps = state => ({
   entries: state.editor.entriesSortBase,
@@ -47,11 +47,11 @@ class ManageContent extends Component {
 
   renderHeader() {
     const headerProps = {
-      goBackCta: "Cancel",
+      goBackCta: 'Cancel',
       handleGoBack: this.handleGoBack,
       centerCta: `Manage Content`,
       handleConfirm: this.updateEntriesOrder,
-      confirmCta: "GO"
+      confirmCta: 'GO'
     };
     return <Header key="header" {...headerProps} />;
   }
@@ -93,9 +93,9 @@ class ManageContent extends Component {
 
   renderRow({ data, active }) {
     switch (data.type) {
-      case "text":
+      case 'text':
         return this.renderText(data, active);
-      case "image":
+      case 'image':
         return this.renderImage(data, active);
     }
   }
@@ -132,12 +132,9 @@ class ManageContent extends Component {
 
 const styles = StyleSheet.create({
   imageCard: {
-    width: Dimensions.get("window").width,
+    width: Dimensions.get('window').width,
     height: 100
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ManageContent);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageContent);

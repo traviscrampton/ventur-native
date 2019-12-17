@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
-import MapView from "react-native-maps";
-import { Ionicons } from "@expo/vector-icons";
-import { defaultRouteViewer } from "../../actions/route_viewer";
-import LoadingScreen from "../shared/LoadingScreen";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
+import MapView from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
+import { defaultRouteViewer } from '../../actions/route_viewer';
+import LoadingScreen from '../shared/LoadingScreen';
 
 const mapDispatchToProps = dispatch => ({
   defaultRouteViewer: () => dispatch(defaultRouteViewer())
@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
     zIndex: -1
   },
   container: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    backgroundColor: "white",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
     paddingBottom: 50
   },
   zIndex10: {
@@ -109,27 +109,24 @@ const styles = StyleSheet.create({
   floatingButtonInner: {
     height: 40,
     width: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingRight: 2,
     paddingTop: 1
   },
   relativeFlex: {
-    position: "relative",
+    position: 'relative',
     flex: 1
   },
   floatingButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 60,
     left: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RouteViewer);
+export default connect(mapStateToProps, mapDispatchToProps)(RouteViewer);

@@ -1,17 +1,17 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Image,
   Text,
   TouchableWithoutFeedback,
   StyleSheet
-} from "react-native";
-import { connect } from "react-redux";
+} from 'react-native';
+import { connect } from 'react-redux';
 import {
   getUserJournals,
   handleJournalPress
-} from "../../actions/gear_review_form";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+} from '../../actions/gear_review_form';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const mapStateToProps = state => ({
   width: state.common.width,
@@ -66,9 +66,9 @@ class GearReviewFormJournals extends Component {
             <Text style={styles.journalTitle}>{journal.title}</Text>
           </View>
           <MaterialCommunityIcons
-            name={"check-circle-outline"}
+            name={'check-circle-outline'}
             size={25}
-            color={isIncluded ? "#82CA9C" : "lightgray"}
+            color={isIncluded ? '#82CA9C' : 'lightgray'}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -100,17 +100,17 @@ class GearReviewFormJournals extends Component {
 
   getJournalLabelText() {
     const { journalIds } = this.props;
-    let journal = "Journal";
+    let journal = 'Journal';
 
     if (journalIds.length === 0 || journalIds.length > 1) {
-      journal = "Journals";
+      journal = 'Journals';
     }
 
     return `${journalIds.length} ${journal} selected`;
   }
 
   renderDropdownIcon() {
-    const icon = this.state.menuOpen ? "chevron-up" : "chevron-down";
+    const icon = this.state.menuOpen ? 'chevron-up' : 'chevron-down';
 
     return <MaterialCommunityIcons name={icon} size={20} />;
   }
@@ -139,29 +139,29 @@ class GearReviewFormJournals extends Component {
 const styles = StyleSheet.create({
   menu: {
     height: 50,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "white",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    alignItems: 'center',
     paddingRight: 15,
     paddingLeft: 15,
-    width: "100%",
+    width: '100%',
     borderRadius: 5
   },
   journalOptionContainer: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
     paddingRight: 10,
-    alignItems: "center",
-    justifyContent: "space-between"
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   journalsContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 5,
     marginTop: 10,
-    overflow: "hidden"
+    overflow: 'hidden'
   },
   journalImage: {
     width: 50,
@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
   flexRowCenter: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   journalTitle: {
-    fontFamily: "playfair",
-    color: "#323941"
+    fontFamily: 'playfair',
+    color: '#323941'
   }
 });
 

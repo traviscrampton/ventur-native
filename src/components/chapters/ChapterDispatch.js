@@ -1,31 +1,30 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
   SafeAreaView,
-  Text,
   TouchableWithoutFeedback,
   Alert
-} from "react-native";
+} from 'react-native';
 import {
   resetChapter,
   editChapterPublished,
   deleteChapter,
   uploadBannerPhoto
-} from "../../actions/chapter";
-import { populateEntries } from "../../actions/editor";
+} from '../../actions/chapter';
+import { populateEntries } from '../../actions/editor';
 import {
   updateChapterForm,
   toggleChapterModal
-} from "../../actions/chapter_form";
-import { toggleCameraRollModal } from "../../actions/camera_roll";
-import ChapterShow from "./ChapterShow";
-import { MaterialIcons } from "@expo/vector-icons";
-import LoadingScreen from "../shared/LoadingScreen";
-import { JournalChildHeader } from "../shared/JournalChildHeader";
-import { sendEmails } from "../../actions/chapter";
-import ImagePickerContainer from "../shared/ImagePickerContainer";
+} from '../../actions/chapter_form';
+import { toggleCameraRollModal } from '../../actions/camera_roll';
+import ChapterShow from './ChapterShow';
+import { MaterialIcons } from '@expo/vector-icons';
+import LoadingScreen from '../shared/LoadingScreen';
+import { JournalChildHeader } from '../shared/JournalChildHeader';
+import { sendEmails } from '../../actions/chapter';
+import ImagePickerContainer from '../shared/ImagePickerContainer';
 
 const mapStateToProps = state => ({
   journal: state.chapter.chapter.journal,
@@ -74,16 +73,16 @@ class ChapterDispatch extends Component {
   navigateToEditor = () => {
     const { content } = this.props.chapter.editorBlob;
     this.populateEditorAndSwitch(content);
-    this.props.navigation.navigate("ChapterEditor");
+    this.props.navigation.navigate('ChapterEditor');
   };
 
   openDeleteAlert = () => {
     Alert.alert(
-      "Are you sure?",
-      "Deleting this chapter will erase all images and content",
+      'Are you sure?',
+      'Deleting this chapter will erase all images and content',
       [
-        { text: "Delete Chapter", onPress: this.handleDelete },
-        { text: "Cancel", style: "cancel" }
+        { text: 'Delete Chapter', onPress: this.handleDelete },
+        { text: 'Cancel', style: 'cancel' }
       ],
       { cancelable: true }
     );
@@ -110,20 +109,20 @@ class ChapterDispatch extends Component {
   };
 
   getOptions() {
-    let published = this.props.chapter.published ? "Unpublish" : "Publish";
-    let emailSent = this.props.chapter.emailSent ? "Email Sent" : "Send Email";
+    let published = this.props.chapter.published ? 'Unpublish' : 'Publish';
+    let emailSent = this.props.chapter.emailSent ? 'Email Sent' : 'Send Email';
 
     let optionsProps = [
       {
-        title: "Edit Metadata",
+        title: 'Edit Metadata',
         callback: this.navigateToChapterForm
       },
       {
-        title: "Upload Banner Image",
+        title: 'Upload Banner Image',
         callback: this.triggerImagePicker
       },
       {
-        title: "Delete Chapter",
+        title: 'Delete Chapter',
         callback: this.openDeleteAlert
       },
       {
@@ -164,7 +163,7 @@ class ChapterDispatch extends Component {
       date
     } = this.props.chapter;
     let distanceAmount =
-      distance.distanceType === "kilometer"
+      distance.distanceType === 'kilometer'
         ? distance.kilometerAmount
         : distance.mileAmount;
 
@@ -252,28 +251,28 @@ class ChapterDispatch extends Component {
 
 const styles = StyleSheet.create({
   chapterDispatchContainer: {
-    backgroundColor: "white",
-    position: "relative",
-    height: "100%"
+    backgroundColor: 'white',
+    position: 'relative',
+    height: '100%'
   },
   safeContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flex: 1
   },
   chapterNavigationContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingRight: 20,
     height: 45,
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   journalAndUserContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   journalImage: {
     width: 40,
@@ -282,24 +281,24 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   editorFloatingButton: {
-    position: "absolute",
-    backgroundColor: "#FF5423",
+    position: 'absolute',
+    backgroundColor: '#FF5423',
     width: 60,
     height: 60,
     borderRadius: 30,
     bottom: 30,
     right: 20,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   journalTitle: {
-    fontFamily: "open-sans-semi",
+    fontFamily: 'open-sans-semi',
     fontSize: 16
   },
   backIconContainer: {
-    display: "flex",
-    flexDirection: "row"
+    display: 'flex',
+    flexDirection: 'row'
   },
   backButton: {
     padding: 20,
@@ -307,10 +306,10 @@ const styles = StyleSheet.create({
     width: 50,
     marginLeft: 2,
     borderRadius: 25,
-    position: "relative"
+    position: 'relative'
   },
   backIcon: {
-    position: "absolute",
+    position: 'absolute',
     top: 11,
     left: 18
   },
@@ -319,7 +318,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChapterDispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(ChapterDispatch);

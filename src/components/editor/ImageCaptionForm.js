@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   Text,
   TextInput,
@@ -7,13 +7,13 @@ import {
   StyleSheet,
   View,
   Image
-} from "react-native";
-import { Header } from "./header";
+} from 'react-native';
+import { Header } from './header';
 import {
   updateActiveImageCaption,
   updateImageCaption,
   updateActiveIndex
-} from "../../actions/editor";
+} from '../../actions/editor';
 
 const mapStateToProps = state => ({
   entries: state.editor.entries,
@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
 class ImageCaptionForm extends Component {
   constructor(props) {
     super(props);
-    this.index = this.props.navigation.getParam("index", "NO-ID");
+    this.index = this.props.navigation.getParam('index', 'NO-ID');
     this.handleGoBack = this.handleGoBack.bind(this);
     this.saveCaption = this.saveCaption.bind(this);
   }
@@ -48,18 +48,18 @@ class ImageCaptionForm extends Component {
   }
 
   handleGoBack() {
-    this.props.updateActiveImageCaption("");
+    this.props.updateActiveImageCaption('');
     this.props.updateActiveIndex(null);
     this.props.navigation.goBack();
   }
 
   renderHeader() {
     const headerProps = {
-      goBackCta: "Cancel",
+      goBackCta: 'Cancel',
       handleGoBack: this.handleGoBack,
-      centerCta: "Add Caption",
+      centerCta: 'Add Caption',
       handleConfirm: this.saveCaption,
-      confirmCta: "Add"
+      confirmCta: 'Add'
     };
     return <Header key="header" {...headerProps} />;
   }
@@ -90,7 +90,7 @@ class ImageCaptionForm extends Component {
         <TextInput
           autoFocus
           multiline
-          selectionColor={"#FF5423"}
+          selectionColor={'#FF5423'}
           style={styles.textAlignCenter}
           value={this.props.activeCaption}
           maxLength={200}
@@ -121,18 +121,15 @@ const styles = StyleSheet.create({
     padding: 20
   },
   backgroundWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   fontWeightBold: {
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   textAlignCenter: {
     padding: 20,
-    textAlign: "center"
+    textAlign: 'center'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ImageCaptionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ImageCaptionForm);

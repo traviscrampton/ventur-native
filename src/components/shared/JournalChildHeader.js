@@ -1,7 +1,7 @@
-import React from "react";
-import { View, TouchableHighlight, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import ThreeDotDropdown from "../shared/ThreeDotDropdown";
+import React from 'react';
+import { View, TouchableHighlight, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import ThreeDotDropdown from '../shared/ThreeDotDropdown';
 
 const Dropdown = props => {
   if (!props.isCurrentUser) return;
@@ -48,18 +48,18 @@ export const JournalChildHeader = props => {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingRight: 20,
     height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   backIconContainer: {
-    display: "flex",
-    flexDirection: "row"
+    display: 'flex',
+    flexDirection: 'row'
   },
   backButton: {
     padding: 20,
@@ -67,20 +67,20 @@ const styles = StyleSheet.create({
     width: 50,
     marginLeft: 2,
     borderRadius: 25,
-    position: "relative"
+    position: 'relative'
   },
   backIcon: {
-    position: "absolute",
+    position: 'absolute',
     top: 11,
     left: 18
   },
   journalAndUserContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   journalTitle: {
-    fontFamily: "open-sans-semi",
+    fontFamily: 'open-sans-semi',
     fontSize: 16
   }
 });

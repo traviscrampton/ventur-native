@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
@@ -9,34 +9,34 @@ import {
   FlatList,
   SafeAreaView,
   TouchableWithoutFeedback
-} from "react-native";
-import { Linking } from "expo";
-import GearListItem from "../GearItem/GearListItem";
-import { MaterialIcons } from "@expo/vector-icons";
+} from 'react-native';
+import { Linking } from 'expo';
+import GearListItem from '../GearItem/GearListItem';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   getProfilePageData,
   uploadProfilePhoto,
   setDefaultAppState
-} from "../../actions/user";
-import JournalMini from "../journals/JournalMini";
-import JournalForm from "../JournalForm/JournalForm";
-import { MaterialIndicator } from "react-native-indicators";
-import { toggleGearReviewFormModal } from "../../actions/gear_review_form";
-import { toggleJournalFormModal } from "../../actions/journal_form";
-import { resetJournalShow } from "../../actions/journals";
-import { toggleCameraRollModal } from "../../actions/camera_roll";
-import { setCurrentUser } from "../../actions/common";
-import { authenticateStravaUser } from "../../actions/strava";
-import ThreeDotDropdown from "../shared/ThreeDotDropdown";
-import { populateGearItemReview } from "../../actions/gear_item_review";
-import { logOut } from "../../auth";
-import { encodeQueryString } from "../../agent";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import LoadingScreen from "../shared/LoadingScreen";
-import * as WebBrowser from "expo-web-browser";
-import { FloatingAction } from "react-native-floating-action";
-import GearReviewForm from "../GearReviewForm/GearReviewForm";
-import ImagePickerContainer from "../shared/ImagePickerContainer";
+} from '../../actions/user';
+import JournalMini from '../journals/JournalMini';
+import JournalForm from '../JournalForm/JournalForm';
+import { MaterialIndicator } from 'react-native-indicators';
+import { toggleGearReviewFormModal } from '../../actions/gear_review_form';
+import { toggleJournalFormModal } from '../../actions/journal_form';
+import { resetJournalShow } from '../../actions/journals';
+import { toggleCameraRollModal } from '../../actions/camera_roll';
+import { setCurrentUser } from '../../actions/common';
+import { authenticateStravaUser } from '../../actions/strava';
+import ThreeDotDropdown from '../shared/ThreeDotDropdown';
+import { populateGearItemReview } from '../../actions/gear_item_review';
+import { logOut } from '../../auth';
+import { encodeQueryString } from '../../agent';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import LoadingScreen from '../shared/LoadingScreen';
+import * as WebBrowser from 'expo-web-browser';
+import { FloatingAction } from 'react-native-floating-action';
+import GearReviewForm from '../GearReviewForm/GearReviewForm';
+import ImagePickerContainer from '../shared/ImagePickerContainer';
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -76,18 +76,18 @@ class Profile extends Component {
 
   static actions = [
     {
-      text: "New Journal",
-      icon: <MaterialIcons name={"edit"} color="white" size={20} />,
-      name: "create_journal",
+      text: 'New Journal',
+      icon: <MaterialIcons name={'edit'} color="white" size={20} />,
+      name: 'create_journal',
       position: 0,
-      color: "#FF5423"
+      color: '#FF5423'
     },
     {
-      text: "New Gear Item",
-      icon: <MaterialIcons name={"directions-bike"} color="white" size={20} />,
-      name: "create_gear_item",
+      text: 'New Gear Item',
+      icon: <MaterialIcons name={'directions-bike'} color="white" size={20} />,
+      name: 'create_gear_item',
       position: 1,
-      color: "#FF5423"
+      color: '#FF5423'
     }
   ];
 
@@ -102,33 +102,33 @@ class Profile extends Component {
   };
 
   handleJournalPress = journalId => {
-    this.props.navigation.navigate("Journal", { journalId });
+    this.props.navigation.navigate('Journal', { journalId });
   };
 
   connectToStrava = async () => {
     if (this.props.stravaAccessToken) return;
-    const redirect = "ventur://ventur";
+    const redirect = 'ventur://ventur';
     const params = Object.assign(
       {},
       {
         client_id: this.props.stravaClientId,
-        response_type: "code",
+        response_type: 'code',
         redirect_uri: redirect,
-        scope: "activity:read_all",
-        approval_prompt: "force"
+        scope: 'activity:read_all',
+        approval_prompt: 'force'
       }
     );
 
     let url =
-      "https://www.strava.com/oauth/authorize" + encodeQueryString(params);
+      'https://www.strava.com/oauth/authorize' + encodeQueryString(params);
     const result = await WebBrowser.openAuthSessionAsync(url);
     await this.props.authenticateStravaUser(result);
   };
 
   stravaCtaText() {
     return this.props.stravaAccessToken
-      ? "Connected to Strava"
-      : "Connect To Strava";
+      ? 'Connected to Strava'
+      : 'Connect To Strava';
   }
 
   launchImagePicker = () => {
@@ -171,10 +171,10 @@ class Profile extends Component {
       <View
         style={{
           width: imgDimensions,
-          position: "absolute",
+          position: 'absolute',
           height: imgDimensions,
           borderRadius: imgDimensions / 2,
-          backgroundColor: "azure"
+          backgroundColor: 'azure'
         }}
       >
         <MaterialIndicator size={25} color="#FF5423" />
@@ -203,10 +203,10 @@ class Profile extends Component {
             shadowRadius={2}
             style={{
               width: imgDimensions,
-              position: "relative",
+              position: 'relative',
               height: imgDimensions,
               borderRadius: imgDimensions / 2,
-              backgroundColor: "azure",
+              backgroundColor: 'azure',
               marginRight: 10
             }}
           >
@@ -217,7 +217,7 @@ class Profile extends Component {
                 borderRadius: imgDimensions / 2,
                 marginRight: 10,
                 borderWidth: 1,
-                borderColor: "gray"
+                borderColor: 'gray'
               }}
               source={{ uri: this.props.user.avatarImageUrl }}
             />
@@ -232,9 +232,9 @@ class Profile extends Component {
 
   getOptions() {
     const options = [
-      { title: "Upload Profile Photo", callback: this.uploadProfilePhoto },
+      { title: 'Upload Profile Photo', callback: this.uploadProfilePhoto },
       { title: this.stravaCtaText(), callback: this.connectToStrava },
-      { title: "Log Out", callback: this.handleLogout }
+      { title: 'Log Out', callback: this.handleLogout }
     ];
 
     return options;
@@ -246,17 +246,17 @@ class Profile extends Component {
 
   navigateToForm = name => {
     switch (name) {
-      case "create_journal":
+      case 'create_journal':
         return this.navigateToJournalForm();
-      case "create_gear_item":
+      case 'create_gear_item':
         return this.navigateToGearReviewForm();
       default:
-        console.log("what in tarnation");
+        console.log('what in tarnation');
     }
   };
 
   renderEmptyState(isJournal = true) {
-    const content = isJournal ? "Journals" : "Gear Items";
+    const content = isJournal ? 'Journals' : 'Gear Items';
     const message = `No ${content} yet, press the action button to get started`;
 
     return (
@@ -289,7 +289,7 @@ class Profile extends Component {
     const payload = Object.assign({}, { id, loading: true });
 
     this.props.populateGearItemReview(payload);
-    this.props.navigation.navigate("GearItemReview");
+    this.props.navigation.navigate('GearItemReview');
   };
 
   renderGear() {
@@ -337,7 +337,7 @@ class Profile extends Component {
   renderFloatingCreateButton() {
     return (
       <FloatingAction
-        color={"#FF5423"}
+        color={'#FF5423'}
         actions={Profile.actions}
         onPressItem={name => {
           this.navigateToForm(name);
@@ -356,8 +356,8 @@ class Profile extends Component {
       {
         index: this.state.activeIndex,
         routes: [
-          { key: "journals", title: "Journals" },
-          { key: "gear", title: "Gear" }
+          { key: 'journals', title: 'Journals' },
+          { key: 'gear', title: 'Gear' }
         ]
       }
     );
@@ -369,9 +369,9 @@ class Profile extends Component {
         navigationState={this.getNavigationState()}
         renderScene={({ route }) => {
           switch (route.key) {
-            case "journals":
+            case 'journals':
               return this.renderProfileJournals();
-            case "gear":
+            case 'gear':
               return this.renderGear();
             default:
               return null;
@@ -385,11 +385,11 @@ class Profile extends Component {
         renderTabBar={props => (
           <TabBar
             {...props}
-            tabStyle={{ color: "#FF5423" }}
+            tabStyle={{ color: '#FF5423' }}
             activeColor="#FF5423"
             inactiveColor="#FF5423"
-            indicatorStyle={{ backgroundColor: "#FF5423" }}
-            style={{ backgroundColor: "white" }}
+            indicatorStyle={{ backgroundColor: '#FF5423' }}
+            style={{ backgroundColor: 'white' }}
           />
         )}
       />
@@ -424,73 +424,70 @@ class Profile extends Component {
 
 const styles = StyleSheet.create({
   white100: {
-    backgroundColor: "white",
-    height: "100%"
+    backgroundColor: 'white',
+    height: '100%'
   },
   borderBarrier: {
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   flexWhite: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   userNameContainer: {
-    display: "flex",
-    flexDirection: "column"
+    display: 'flex',
+    flexDirection: 'column'
   },
   userNameText: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 22,
     marginBottom: 5,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   logoutButton: {
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: "gray",
+    borderColor: 'gray',
     paddingTop: 2.5,
     paddingBottom: 2.5,
     paddingLeft: 10,
     paddingRight: 10
   },
   profileContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     paddingRight: 20
   },
   contentContainerStyle: {
-    display: "flex",
-    backgroundColor: "white",
+    display: 'flex',
+    backgroundColor: 'white',
     paddingLeft: 15,
     paddingRight: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 10,
-    flexWrap: "wrap"
+    flexWrap: 'wrap'
   },
   relativeWhite: {
-    position: "relative",
-    backgroundColor: "white"
+    position: 'relative',
+    backgroundColor: 'white'
   },
   metadataContainer: {
     padding: 15,
     marginTop: 20,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   fontSize20: {
     fontSize: 20
   },
   profileView: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   View,
   Text,
   Image,
   TouchableWithoutFeedback
-} from "react-native";
-import CommentForm from "./CommentForm";
-import { toggleCommentFormModal } from "../../actions/comment_form";
-import Comment from "./Comment";
-const CycleTouringLogo = require("../../assets/images/cycletouringlogo.png");
+} from 'react-native';
+import CommentForm from './CommentForm';
+import { toggleCommentFormModal } from '../../actions/comment_form';
+import Comment from './Comment';
+const CycleTouringLogo = require('../../assets/images/cycletouringlogo.png');
 
 const mapStateToProps = state => ({
   comments: state.comments.comments,
@@ -33,7 +33,7 @@ class CommentsSection extends Component {
 
   replyToComment = comment => {
     const params = {
-      commentableType: "comment",
+      commentableType: 'comment',
       commentableId: comment.id,
       commentableUser: {
         id: comment.user.id,
@@ -98,23 +98,23 @@ class CommentsSection extends Component {
 
 const styles = StyleSheet.create({
   ctaContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#d3d3d3"
+    borderColor: '#d3d3d3'
   },
   openSansRegular: {
-    fontFamily: "open-sans-regular"
+    fontFamily: 'open-sans-regular'
   },
   divider: {
-    borderBottomColor: "#d3d3d3",
+    borderBottomColor: '#d3d3d3',
     borderBottomWidth: 3,
     width: 70,
     marginBottom: 20,
     marginLeft: 20
   },
   container: {
-    backgroundColor: "#FAFAFA",
+    backgroundColor: '#FAFAFA',
     paddingTop: 20,
     paddingBottom: 20
   },
@@ -124,9 +124,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   ctaView: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 20
   },
   ctaImage: {
@@ -134,15 +134,12 @@ const styles = StyleSheet.create({
     height: 35,
     marginRight: 10,
     borderWidth: 1,
-    borderColor: "#d3d3d3",
+    borderColor: '#d3d3d3',
     borderRadius: 17.5
   },
   labelColor: {
-    color: "#d3d3d3"
+    color: '#d3d3d3'
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentsSection);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentsSection);
