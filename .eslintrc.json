@@ -29,6 +29,11 @@
     "no-console": 0,
     "import/no-cycle": 0,
     "no-param-reassign": 0,
-    "radix": 0
+    "radix": 0,
+    "indent": 0,
+    "operator-linebreak": 0,
+    "no-restricted-syntax": 0,
+    "no-await-in-loop": 0,
+    "no-continue": 0
   }
 }

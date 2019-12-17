@@ -12,23 +12,60 @@ export function resetJournalShow() {
   };
 }
 
+export const POPULATE_SINGLE_JOURNAL = 'POPULATE_SINGLE_JOURNAL';
+export function populateSingleJournal(payload) {
+  return {
+    type: POPULATE_SINGLE_JOURNAL,
+    payload
+  };
+}
+export const POPULATE_JOURNAL_GEAR = 'POPULATE_JOURNAL_GEAR';
+export const populateJournalGear = payload => {
+  return {
+    type: POPULATE_JOURNAL_GEAR,
+    payload
+  };
+};
+
+export const IMAGE_UPLOADING = 'IMAGE_UPLOADING';
+export function imageUploading(payload) {
+  return {
+    type: IMAGE_UPLOADING,
+    payload
+  };
+}
+
+export const POPULATE_JOURNAL_CHAPTERS = 'POPULATE_JOURNAL_CHAPTERS';
+export function populateJournalChapters(payload) {
+  return {
+    type: POPULATE_JOURNAL_CHAPTERS,
+    payload
+  };
+}
+
+export const fetchJournalChapters = journalId => {
+  return async function(dispatch) {
+    try {
+      const data = await get(`/journals/${journalId}/chapters`);
+      dispatch(populateJournalChapters(data.chapters));
+    } catch (err) {
+      console.log('we should populate something here');
+    }
+  };
+};
+
+export const fetchJournalGear = journalId => {
+  return async function(dispatch) {
+    const data = await get(`/journals/${journalId}/gear_item_reviews`);
+    dispatch(populateJournalGear(data.gearItemReviews));
+  };
+};
+
 export const SUB_CONTENT_LOADING = 'SUB_CONTENT_LOADING';
 export function subContentLoading(payload) {
   return {
     type: SUB_CONTENT_LOADING,
     payload
-  };
-}
-
-export function toggleJournalFollow() {
-  return async function(dispatch, getState) {
-    const { isFollowing, id } = getState().journal.journal;
-
-    if (isFollowing) {
-      dispatch(unfollowJournal(id));
-    } else {
-      dispatch(followJournal(id));
-    }
   };
 }
 
@@ -40,8 +77,8 @@ export function unfollowJournal(journalId) {
       const { isFollowing } = await destroy(`/journal_follows/${journalId}`, {
         journalId
       });
-      journalFollowsCount--;
-      const payload = Object.assign({}, { isFollowing, journalFollowsCount });
+      journalFollowsCount -= 1;
+      const payload = { isFollowing, journalFollowsCount };
       dispatch(populateSingleJournal(payload));
     } catch (err) {
       console.log('what in tarnation', err);
@@ -54,8 +91,8 @@ export function followJournal(journalId) {
     let { journalFollowsCount } = getState().journal.journal;
     try {
       const { isFollowing } = await post('/journal_follows', { journalId });
-      journalFollowsCount++;
-      const payload = Object.assign({}, { isFollowing, journalFollowsCount });
+      journalFollowsCount += 1;
+      const payload = { isFollowing, journalFollowsCount };
       dispatch(populateSingleJournal(payload));
     } catch (err) {
       console.log('what in tarnation', err);
@@ -63,8 +100,20 @@ export function followJournal(journalId) {
   };
 }
 
+export function toggleJournalFollow() {
+  return async function(dispatch, getState) {
+    const { id, isFollowing } = getState().journal.journal;
+
+    if (isFollowing) {
+      dispatch(unfollowJournal(id));
+    } else {
+      dispatch(followJournal(id));
+    }
+  };
+}
+
 export const updateBannerImage = async (journalId, img, dispatch) => {
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append('banner_image', img);
 
   const token = await setToken();
@@ -86,29 +135,13 @@ export const updateBannerImage = async (journalId, img, dispatch) => {
 };
 
 export function uploadBannerImage(journalId, img) {
-  return function(dispatch, getState) {
+  return function(dispatch) {
     updateBannerImage(journalId, img, dispatch);
   };
 }
 
-export const POPULATE_SINGLE_JOURNAL = 'POPULATE_SINGLE_JOURNAL';
-export function populateSingleJournal(payload) {
-  return {
-    type: POPULATE_SINGLE_JOURNAL,
-    payload
-  };
-}
-
-export const IMAGE_UPLOADING = 'IMAGE_UPLOADING';
-export function imageUploading(payload) {
-  return {
-    type: IMAGE_UPLOADING,
-    payload
-  };
-}
-
 export function loadSingleJournal(journalId) {
-  return async function(dispatch, getState) {
+  return async function(dispatch) {
     try {
       const data = await get(`/journals/${journalId}/journal_metadata`);
       dispatch(populateSingleJournal(data.journal));
@@ -129,56 +162,22 @@ export function populateJournalFeed(payload) {
   };
 }
 
-export const POPULATE_JOURNAL_CHAPTERS = 'POPULATE_JOURNAL_CHAPTERS';
-export function populateJournalChapters(payload) {
-  return {
-    type: POPULATE_JOURNAL_CHAPTERS,
-    payload
-  };
-}
-
-export const fetchJournalChapters = journalId => {
-  return async function(dispatch, getState) {
-    try {
-      const data = await get(`/journals/${journalId}/chapters`);
-      dispatch(populateJournalChapters(data.chapters));
-    } catch (err) {
-      console.log('we should populate something here');
-    }
-  };
-};
-
-export const fetchJournalGear = journalId => {
-  return async function(dispatch, getState) {
-    const data = await get(`/journals/${journalId}/gear_item_reviews`);
-    dispatch(populateJournalGear(data.gearItemReviews));
-  };
-};
-
-export const POPULATE_JOURNAL_GEAR = 'POPULATE_JOURNAL_GEAR';
-export const populateJournalGear = payload => {
-  return {
-    type: POPULATE_JOURNAL_GEAR,
-    payload: payload
-  };
-};
-
 export const TOGGLE_REFRESH = 'TOGGLE_REFRESH';
 export function toggleRefresh(payload) {
   return {
     type: TOGGLE_REFRESH,
-    payload: payload
+    payload
   };
 }
 
-export function toggleRefreshAndRefresh(payload) {
-  return async function(dispatch, getState) {
+export function toggleRefreshAndRefresh() {
+  return async function(dispatch) {
     dispatch(toggleRefresh(true));
 
     try {
       const data = await get('/journals');
       dispatch(populateJournalFeed(data.journals));
-    } catch {
+    } catch (err) {
       console.log("didn't work");
     }
 
@@ -187,7 +186,7 @@ export function toggleRefreshAndRefresh(payload) {
 }
 
 export function requestForChapter(chapterId) {
-  return function(dispatch, getState) {
+  return function(dispatch) {
     dispatch(setLoadingTrue());
     dispatch(resetChapter());
     get(`/chapters/${chapterId}`).then(res => {
@@ -198,13 +197,13 @@ export function requestForChapter(chapterId) {
 }
 
 export function loadJournalFeed() {
-  return async function(dispatch, getState) {
+  return async function(dispatch) {
     dispatch(setLoadingTrue());
 
     try {
       const data = await get('/journals');
       dispatch(populateJournalFeed(data.journals));
-    } catch {
+    } catch (err) {
       dispatch(populateJournalFeed([]));
     }
 
@@ -216,6 +215,6 @@ export const UPDATE_TAB_INDEX = 'UPDATE_TAB_INDEX';
 export function updateTabIndex(payload) {
   return {
     type: UPDATE_TAB_INDEX,
-    payload: payload
+    payload
   };
 }
