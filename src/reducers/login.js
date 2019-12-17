@@ -2,11 +2,11 @@ import {
   UPDATE_LOGIN_FORM,
   TOGGLE_LOGIN_MODAL,
   RESET_LOGIN_FORM
-} from "../actions/login";
+} from '../actions/login';
 
 const defaultLoginForm = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
   visible: false
 };
 

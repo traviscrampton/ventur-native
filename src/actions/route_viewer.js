@@ -11,7 +11,7 @@ function populateRouteViewer(payload) {
   };
 }
 
-const DEFAULT_ROUTE_VIEWER = 'DEFAULT_ROUTE_VIEWER';
+export const DEFAULT_ROUTE_VIEWER = 'DEFAULT_ROUTE_VIEWER';
 export function defaultRouteViewer() {
   return {
     type: DEFAULT_ROUTE_VIEWER

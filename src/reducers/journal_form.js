@@ -3,14 +3,14 @@ import {
   RESET_JOURNAL_FORM,
   TOGGLE_JOURNAL_FORM_MODAL,
   TOGGLE_COUNTRIES_EDITOR_MODAL
-} from "../actions/journal_form";
+} from '../actions/journal_form';
 
 const defaultJournalFormData = {
   id: null,
-  title: "",
-  description: "",
-  status: "not_started",
-  distanceType: "kilometers",
+  title: '',
+  description: '',
+  status: 'not_started',
+  distanceType: 'kilometers',
   includedCountries: [],
   visible: false,
   countriesEditorVisible: false
@@ -19,7 +19,7 @@ const defaultJournalFormData = {
 export default (state = defaultJournalFormData, action) => {
   switch (action.type) {
     case UPDATE_JOURNAL_FORM:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     case RESET_JOURNAL_FORM:
       return defaultJournalFormData;
     case TOGGLE_JOURNAL_FORM_MODAL:

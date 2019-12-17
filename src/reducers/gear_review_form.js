@@ -24,7 +24,7 @@ import {
   ADD_TO_JOURNAL_IDS,
   REMOVE_FROM_JOURNAL_IDS,
   DEFAULT_GEAR_REVIEW_FORM
-} from "../actions/gear_review_form";
+} from '../actions/gear_review_form';
 
 const defaultGearForm = {
   id: null,
@@ -32,17 +32,16 @@ const defaultGearForm = {
     id: null,
     name: null
   },
-  name: "",
+  name: '',
   images: [],
   rating: 1,
   pros: [],
   cons: [],
-  review: "",
+  review: '',
   journalIds: [],
   imageUploading: false,
   activeImageIndex: null,
   urisSetForDelete: [],
-  journalIds: [],
   newlyCreatedUris: [],
   gearItemSuggestions: [],
   dropdownOpen: false,
@@ -71,7 +70,7 @@ export default (state = defaultGearForm, action) => {
       };
 
     case POPULATE_GEAR_ITEM_REVIEW_FORM:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
 
     case UPDATE_GEAR_REVIEW_REVIEW:
       return {
@@ -165,7 +164,7 @@ export default (state = defaultGearForm, action) => {
     case POPULATE_FORM_WITH_GEAR_ITEM:
       return {
         ...state,
-        gearItem: Object.assign({}, action.payload),
+        gearItem: action.payload,
         name: action.payload.name
       };
 

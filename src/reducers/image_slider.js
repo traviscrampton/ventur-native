@@ -2,7 +2,7 @@ import {
   POPULATE_IMAGES,
   TOGGLE_IMAGE_SLIDER_MODAL,
   RESET_IMAGES
-} from "../actions/image_slider";
+} from '../actions/image_slider';
 
 const defaultImageSliderData = {
   images: [],
@@ -13,7 +13,7 @@ const defaultImageSliderData = {
 export default (state = defaultImageSliderData, action) => {
   switch (action.type) {
     case POPULATE_IMAGES:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     case TOGGLE_IMAGE_SLIDER_MODAL:
       return {
         ...state,

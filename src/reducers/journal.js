@@ -6,11 +6,11 @@ import {
   POPULATE_JOURNAL_GEAR,
   UPDATE_TAB_INDEX,
   SUB_CONTENT_LOADING
-} from "../actions/journals";
-import { REMOVE_CHAPTER_FROM_STATE } from "../actions/chapter";
-import { PUSH_CHAPTER_TO_JOURNAL } from "../actions/chapter_form";
-import { REMOVE_GEAR_REVIEW } from "../actions/gear_item_review";
-import { ADD_CREATED_GEAR_REVIEW } from "../actions/gear_review_form";
+} from '../actions/journals';
+import { REMOVE_CHAPTER_FROM_STATE } from '../actions/chapter';
+import { PUSH_CHAPTER_TO_JOURNAL } from '../actions/chapter_form';
+import { REMOVE_GEAR_REVIEW } from '../actions/gear_item_review';
+import { ADD_CREATED_GEAR_REVIEW } from '../actions/gear_review_form';
 
 const defaultJournalData = {
   journal: {
@@ -26,8 +26,8 @@ const defaultJournalData = {
   subContentLoading: true,
   tabIndex: 0,
   routes: [
-    { key: "chapters", title: "Chapters" },
-    { key: "gear", title: "Gear" }
+    { key: 'chapters', title: 'Chapters' },
+    { key: 'gear', title: 'Gear' }
   ]
 };
 
@@ -36,7 +36,7 @@ export default (state = defaultJournalData, action) => {
     case POPULATE_SINGLE_JOURNAL:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, action.payload),
+        journal: { ...state.journal, ...action.payload },
         loaded: true
       };
     case SUB_CONTENT_LOADING:
@@ -47,24 +47,25 @@ export default (state = defaultJournalData, action) => {
     case POPULATE_JOURNAL_CHAPTERS:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { chapters: action.payload })
+        journal: { ...state.journal, chapters: action.payload }
       };
 
     case POPULATE_JOURNAL_GEAR:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { gear: action.payload })
+        journal: { ...state.journal, gear: action.payload }
       };
     case RESET_JOURNAL_TAB:
       return defaultJournalData;
     case REMOVE_CHAPTER_FROM_STATE:
-      let chapters = state.journal.chapters.filter(chapter => {
-        return chapter.id != action.payload.id;
-      });
-
       return {
         ...state,
-        journal: Object.assign({}, state.journal, { chapters: chapters })
+        journal: {
+          ...state.journal,
+          chapters: state.journal.chapters.filter(chapter => {
+            return chapter.id !== action.payload.id;
+          })
+        }
       };
     case IMAGE_UPLOADING:
       return {
@@ -80,26 +81,29 @@ export default (state = defaultJournalData, action) => {
     case ADD_CREATED_GEAR_REVIEW:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, {
+        journal: {
+          ...state.journal,
           gear: [...state.journal.gear, action.payload]
-        })
+        }
       };
     case REMOVE_GEAR_REVIEW:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, {
+        journal: {
+          ...state.journal,
           gear: state.journal.gear.filter(gear => {
             return gear.id !== action.payload;
           })
-        })
+        }
       };
     case PUSH_CHAPTER_TO_JOURNAL:
       return {
         ...state,
-        journal: Object.assign({}, state.journal, {
+        journal: {
+          ...state.journal,
           chapters: action.payload.chapters,
           distance: action.payload.distance
-        })
+        }
       };
     default:
       return state;

@@ -6,8 +6,8 @@ import {
   ADD_ACTIVITY_TO_INCLUDED_ACTIVITIES,
   SET_STRAVA_LOADING_TRUE,
   SET_STRAVA_LOADING_FALSE
-} from "../actions/strava_activity_import";
-import { POPULATE_MAP, ERASE_TOTAL_ROUTE } from "../actions/route_editor";
+} from '../actions/strava_activity_import';
+import { POPULATE_MAP, ERASE_TOTAL_ROUTE } from '../actions/route_editor';
 
 const defaultData = {
   activities: [],

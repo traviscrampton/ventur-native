@@ -3,13 +3,14 @@ import {
   POPULATE_USER_FORM,
   RESET_USER_FORM,
   TOGGLE_USER_FORM_MODAL
-} from "../actions/user_form";
+} from '../actions/user_form';
+
 const defaultUserForm = {
   id: null,
-  email: "",
-  password: "",
-  firstName: "",
-  lastName: "",
+  email: '',
+  password: '',
+  firstName: '',
+  lastName: '',
   avatar: {},
   visible: false
 };
@@ -31,7 +32,7 @@ export default (state = defaultUserForm, action) => {
       return defaultUserForm;
 
     case POPULATE_USER_FORM:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     default:
       return state;
   }

@@ -15,8 +15,8 @@ import {
   UPDATE_STARTING_POLYLINES,
   CANCEL_ALL_MODES,
   DEFAULT_ROUTE_EDTIOR
-} from "../actions/route_editor";
-import { POPULATE_ID } from "../actions/journal_route";
+} from '../actions/route_editor';
+import { POPULATE_ID } from '../actions/journal_route';
 
 const defaultRouteData = {
   id: null,
