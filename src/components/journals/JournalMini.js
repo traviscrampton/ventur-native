@@ -62,6 +62,7 @@ const JournalMini = props => {
         borderRadius: 10
       }}
     >
+      <View style={styles.opacCover} />
       <ProgressiveImage
         style={styles.imageBackground}
         thumbnailSource={props.thumbnailSource}
@@ -89,6 +90,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#d3d3d3'
+  },
+  opacCover: {
+    width: imageWidth,
+    height: imageWidth,
+    borderRadius: 10,
+    position: 'absolute',
+    zIndex: 11,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)'
   },
   zIndexHunnit: { zIndex: 100 },
   borderRadius: {
