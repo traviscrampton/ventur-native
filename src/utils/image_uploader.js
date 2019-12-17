@@ -1,12 +1,12 @@
-import { RNS3 } from "react-native-aws3";
+import { RNS3 } from 'react-native-aws3';
 // const AWS = require("aws-sdk/dist/aws-sdk-react-native")
 
-const cloudFrontUrl = "d2965tkwq0s5g3.cloudfront.net";
+const cloudFrontUrl = 'd2965tkwq0s5g3.cloudfront.net';
 export const cloudFrontUrlLength = `https://${cloudFrontUrl}`.length;
 
 let options = {
-  bucket: "ventur-serverless",
-  region: "us-east-1",
+  bucket: 'ventur-serverless',
+  region: 'us-east-1',
   successActionStatus: 201
 };
 
@@ -31,10 +31,10 @@ export const deleteS3Objects = async (imageUrls, awsKeys) => {
 };
 
 export const awsUpload = async (file, awsKeys) => {
-  options = Object.assign({}, options, awsKeys);
+  options = { ...options, awsKeys };
   const response = await RNS3.put(file, options);
   let url = response.body.postResponse.location;
-  url = url.replace("ventur-serverless.s3.amazonaws.com", cloudFrontUrl);
+  url = url.replace('ventur-serverless.s3.amazonaws.com', cloudFrontUrl);
   return url;
   // RNS3.put(file, options).then(response => {
   //   console.log("does any of this fucking work")

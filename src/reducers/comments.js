@@ -1,5 +1,5 @@
-import { POPULATE_COMMENTS } from "../actions/comments";
-import { ADD_TOP_LEVEL_COMMENT } from "../actions/comment_form";
+import { POPULATE_COMMENTS } from '../actions/comments';
+import { ADD_TOP_LEVEL_COMMENT } from '../actions/comment_form';
 
 const defaultCommentsData = {
   comments: []

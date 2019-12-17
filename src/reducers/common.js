@@ -1,5 +1,5 @@
-import { TOGGLE_TAB_BAR } from "../actions/action_types";
-import { Dimensions } from "react-native";
+import { Dimensions } from 'react-native';
+import { TOGGLE_TAB_BAR } from '../actions/action_types';
 import {
   SET_CURRENT_USER,
   UPDATE_CURRENT_BOTTOM_TAB,
@@ -9,17 +9,17 @@ import {
   SET_LOADING_TRUE,
   SET_LOADING_FALSE,
   ADD_API_CREDENTIALS
-} from "../actions/common";
-import { ADD_STRAVA_TO_CURRENT_USER } from "../actions/strava";
+} from '../actions/common';
+import { ADD_STRAVA_TO_CURRENT_USER } from '../actions/strava';
 
 const defaultAppState = {
   currentUser: null,
   stravaAccessToken: null,
   hideTabBar: false,
   initialAppLoaded: false,
-  currentBottomTab: "Explore",
-  width: Dimensions.get("window").width,
-  height: Dimensions.get("window").height,
+  currentBottomTab: 'Explore',
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height,
   awsAccessKey: null,
   awsSecretKey: null,
   stravaClientId: null,
@@ -50,14 +50,14 @@ export default (state = defaultAppState, action) => {
         stravaClientSecret: action.payload.stravaClientSecret
       };
     case ADD_STRAVA_TO_CURRENT_USER:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     case UPDATE_CURRENT_BOTTOM_TAB:
       return {
         ...state,
         currentBottomTab: action.payload
       };
     case SET_WINDOW_DIMENSIONS:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     case INITIAL_APP_LOADED:
       return {
         ...state,

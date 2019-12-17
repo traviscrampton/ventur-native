@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 
 import {
   EDIT_ENTRY,
@@ -13,9 +13,8 @@ import {
   SET_NEXT_INDEX_NULL,
   PREP_MANAGE_CONTENT,
   UPDATE_MANAGE_CONTENT_ENTRIES,
-  UPDATE_ENTRIES_ORDER,
-  REMOVE_ENTRY_FROM_CLONE
-} from "../actions/action_types";
+  UPDATE_ENTRIES_ORDER
+} from '../actions/action_types';
 
 import {
   POPULATE_ENTRIES,
@@ -28,20 +27,21 @@ import {
   SET_INITAL_IMAGE_IDS,
   UPLOAD_IS_IMAGE,
   ADD_TO_NEWLY_ADDED_IMAGE_URLS
-} from "../actions/editor";
+} from '../actions/editor';
+import { getProfilePageData } from '../actions/user';
 
 const defaultTextData = {
-  activeAttribute: "",
+  activeAttribute: '',
   entries: [],
   initialEntries: [],
   deletedUrls: [],
   initialImageIds: [],
   activeIndex: null,
-  toolbarOptions: ["H1", "QUOTE"],
+  toolbarOptions: ['H1', 'QUOTE'],
   activeContentCreator: null,
   showEditorToolbar: false,
   selectedImages: [],
-  activeCaption: "",
+  activeCaption: '',
   newIndex: null,
   manageContentEntries: [],
   entriesSortBase: [],
@@ -73,17 +73,6 @@ export default (state = defaultTextData, action) => {
       return {
         ...state,
         manageContentEntries: action.payload
-      };
-
-    case REMOVE_ENTRY_FROM_CLONE:
-      const newArray = [
-        ...state.entriesSortBase.slice(0, action.payload),
-        ...state.entriesSortBase.slice(action.payload + 1)
-      ];
-      return {
-        ...state,
-        entriesSortBase: newArray,
-        manageContentEntries: newArray
       };
 
     case ADD_TO_DELETED_URLS:
@@ -176,10 +165,11 @@ export default (state = defaultTextData, action) => {
       };
 
     case EDIT_ENTRY:
-      let { index, entry } = action.payload;
       return {
         ...state,
-        entries: Object.assign([], state.entries, { [index]: entry })
+        entries: Object.assign([], state.entries, {
+          [action.payload.index]: action.payload.entry
+        })
       };
 
     case CREATE_NEW_ENTRY:

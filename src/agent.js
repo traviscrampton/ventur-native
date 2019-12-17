@@ -19,9 +19,13 @@ export const handleError = error => {
       case 401:
         return logout();
       case 422:
-        DropDownHolder.alert('warn', 'Error', responseJson.errors.join(', '));
+        return DropDownHolder.alert(
+          'warn',
+          'Error',
+          responseJson.errors.join(', ')
+        );
       default:
-        DropDownHolder.alert('error', 'Error', 'Something went wrong');
+        return DropDownHolder.alert('error', 'Error', 'Something went wrong');
     }
   });
 };
@@ -91,9 +95,8 @@ export const get = async (route, params = {}) => {
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw response;
       }
+      throw response;
     })
     .then(data => {
       return data;
@@ -120,9 +123,8 @@ export const put = async (route, params = {}) => {
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw response;
       }
+      throw response;
     })
     .then(data => {
       return data;
@@ -149,9 +151,9 @@ export const post = async (route, params = {}) => {
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw response;
       }
+
+      throw response;
     })
     .then(data => {
       return data;
@@ -178,9 +180,8 @@ export const destroy = async (route, params = {}) => {
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw response;
       }
+      throw response;
     })
     .then(data => {
       return data;
@@ -207,6 +208,6 @@ export const gql = async (queryString, queryVariables = {}) => {
         return logOut();
       }
 
-      DropDownHolder.alert('error', 'Error', err.message);
+      return DropDownHolder.alert('error', 'Error', err.message);
     });
 };

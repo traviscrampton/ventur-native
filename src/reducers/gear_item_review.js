@@ -1,20 +1,20 @@
 import {
   POPULATE_GEAR_ITEM_REVIEW,
   RESET_GEAR_ITEM_REVIEW
-} from "../actions/gear_item_review";
+} from '../actions/gear_item_review';
 
 const defaultGearItemReview = {
   id: null,
-  name: "",
+  name: '',
   userId: null,
   gearItem: {
     id: null,
     name: null,
-    imageUrl: ""
+    imageUrl: ''
   },
   images: [],
-  review: "",
-  rating: "",
+  review: '',
+  rating: '',
   pros: [],
   cons: [],
   journalIds: [],
@@ -24,7 +24,7 @@ const defaultGearItemReview = {
 export default (state = defaultGearItemReview, action) => {
   switch (action.type) {
     case POPULATE_GEAR_ITEM_REVIEW:
-      return Object.assign({}, state, action.payload);
+      return { ...state, ...action.payload };
     case RESET_GEAR_ITEM_REVIEW:
       return defaultGearItemReview;
     default:

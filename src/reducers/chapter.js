@@ -2,7 +2,7 @@ import {
   LOADED_CHAPTER,
   RESET_CHAPTER,
   SET_EDIT_MODE
-} from "../actions/chapter";
+} from '../actions/chapter';
 
 const defaultChapterData = {
   chapter: {
