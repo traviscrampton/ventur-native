@@ -222,17 +222,11 @@ class RouteEditorButtons extends Component {
     const cropPosition = this.props.positionMode ? { top: 60 } : {};
 
     return (
-      <React.Fragment>
-        <View style={styles.container}>
-          {this.renderUndoButton()}
-          {this.renderRedoButton()}
-          {this.renderDrawButton()}
-        </View>
-        <View style={[styles.mainAim, cropPosition]}>
-          {this.renderCropButton()}
-        </View>
-        {this.renderStravaCta()}
-      </React.Fragment>
+      <View style={styles.container}>
+        {this.renderUndoButton()}
+        {this.renderRedoButton()}
+        {this.renderDrawButton()}
+      </View>
     );
   }
 }

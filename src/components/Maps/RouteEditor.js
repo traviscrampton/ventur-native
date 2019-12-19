@@ -308,6 +308,20 @@ class RouteEditor extends Component {
     );
   }
 
+  renderFloatingActionButton() {
+    if (this.props.drawMode || this.props.positionMode) return;
+
+    return (
+      <FloatingAction
+        color={'#FF5423'}
+        actions={RouteEditor.actions}
+        onPressItem={name => {
+          this.handlePressItem(name);
+        }}
+      />
+    );
+  }
+
   renderFloatingBackButton() {
     return (
       <View
@@ -339,7 +353,7 @@ class RouteEditor extends Component {
       >
         <TouchableWithoutFeedback onPress={this.cancelAllModes}>
           <View style={styles.exitButtonInner}>
-            <MaterialIcons name="close" size={30} color={'white'} />
+            <MaterialIcons name="close" size={20} color={'white'} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -428,13 +442,7 @@ class RouteEditor extends Component {
           {this.renderPolylines()}
         </MapView>
         {this.renderFloatingBackButton()}
-        <FloatingAction
-          color={'#FF5423'}
-          actions={RouteEditor.actions}
-          onPressItem={name => {
-            this.handlePressItem(name);
-          }}
-        />
+        {this.renderFloatingActionButton()}
         {this.renderExitButton()}
         {this.renderSavingButton()}
         {this.renderPositionCoordinates()}
@@ -458,7 +466,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: 65,
+    bottom: 35,
     left: 60
   },
   savingButtonContainer: {
@@ -482,7 +490,7 @@ const styles = StyleSheet.create({
   },
   exitButtonContainer: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 30,
     right: 30,
     backgroundColor: '#FF5423',
     borderRadius: 57 / 2,
