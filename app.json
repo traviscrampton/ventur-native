@@ -1,10 +1,11 @@
 {
   "expo": {
     "name": "Ventur",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "scheme": "ventur",
     "icon": "./ventur.png",
     "sdkVersion": "34.0.0",
+    "orientation": "portrait",
     "slug": "ventur",
     "entryPoint": "./App.js",
     "ios": {

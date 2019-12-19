@@ -172,51 +172,6 @@ class RouteEditorButtons extends Component {
     );
   }
 
-  renderCropButton() {
-    return;
-    if (this.props.drawMode) return;
-    const { positionMode } = this.props;
-    const backgroundColor = positionMode ? '#3F88C5' : 'white';
-    const iconColor = positionMode ? 'white' : '#3F88C5';
-
-    return (
-      <View
-        shadowColor="#323941"
-        shadowOffset={{ width: 0, height: 0 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}
-      >
-        <TouchableWithoutFeedback onPress={this.props.togglePositionMode}>
-          <View
-            style={[styles.cropButton, { backgroundColor: backgroundColor }]}
-          >
-            <MaterialIcons name="crop-free" size={25} color={iconColor} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
-
-  renderStravaCta() {
-    return; // waiting to remove fully
-
-    return (
-      <View
-        shadowColor="#323941"
-        shadowOffset={{ width: 0, height: 0 }}
-        shadowOpacity={0.5}
-        shadowRadius={2}
-        style={styles.stravaButtonContainer}
-      >
-        <TouchableWithoutFeedback onPress={this.loadStravaAndNavigate}>
-          <View style={styles.stravaCtaInner}>
-            <Text>S</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
-
   render() {
     if (!this.props.polylineEditor) return;
     const cropPosition = this.props.positionMode ? { top: 60 } : {};
