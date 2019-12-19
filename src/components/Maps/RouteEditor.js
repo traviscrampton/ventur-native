@@ -430,7 +430,6 @@ class RouteEditor extends Component {
         {this.renderFloatingBackButton()}
         <FloatingAction
           color={'#FF5423'}
-          distanceToEdge={{ vertical: 60, horizontal: 30 }}
           actions={RouteEditor.actions}
           onPressItem={name => {
             this.handlePressItem(name);

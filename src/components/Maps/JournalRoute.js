@@ -114,7 +114,7 @@ class JournalRoute extends Component {
     let buttonContent;
 
     if (this.props.isSaving) {
-      buttonContent = <MaterialIndicator size={20} color="#FF5423" />;
+      buttonContent = <MaterialIndicator size={20} color="#3F88C5" />;
     } else if (this.isChangedRegionDifferent()) {
       buttonContent = <Text style={styles.savedColor}>SAVED</Text>;
     } else {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     bottom: 30
   },
   savedColor: {
-    color: '#FF5423'
+    color: '#3F88C5'
   },
   relativeFlex: {
     position: 'relative',
