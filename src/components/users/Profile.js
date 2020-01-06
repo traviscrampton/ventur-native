@@ -24,7 +24,10 @@ import { MaterialIndicator } from 'react-native-indicators';
 import { toggleGearReviewFormModal } from '../../actions/gear_review_form';
 import { toggleJournalFormModal } from '../../actions/journal_form';
 import { resetJournalShow } from '../../actions/journals';
-import { toggleCameraRollModal } from '../../actions/camera_roll';
+import {
+  toggleCameraRollModal,
+  updateActiveView
+} from '../../actions/camera_roll';
 import { setCurrentUser } from '../../actions/common';
 import { authenticateStravaUser } from '../../actions/strava';
 import ThreeDotDropdown from '../shared/ThreeDotDropdown';
@@ -48,7 +51,8 @@ const mapStateToProps = state => ({
   journals: state.user.user.journals,
   width: state.common.width,
   height: state.common.height,
-  isLoading: state.user.isLoading
+  isLoading: state.user.isLoading,
+  activeView: state.cameraRoll.activeView
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -62,7 +66,8 @@ const mapDispatchToProps = dispatch => ({
   populateGearItemReview: payload => dispatch(populateGearItemReview(payload)),
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload)),
-  setDefaultAppState: () => dispatch(setDefaultAppState())
+  setDefaultAppState: () => dispatch(setDefaultAppState()),
+  updateActiveView: payload => dispatch(updateActiveView(payload))
 });
 
 class Profile extends Component {
@@ -132,6 +137,7 @@ class Profile extends Component {
   }
 
   launchImagePicker = () => {
+    this.props.updateActiveView('profile');
     this.props.toggleCameraRollModal(true);
   };
 
@@ -321,8 +327,6 @@ class Profile extends Component {
       return this.renderEmptyState();
     }
 
-    const pad = this.props.width * 0.035;
-
     return (
       <View style={styles.relativeWhite}>
         <FlatList
@@ -405,6 +409,17 @@ class Profile extends Component {
     );
   }
 
+  renderImagePicker() {
+    if (this.props.activeView !== 'profile') return;
+
+    return (
+      <ImagePickerContainer
+        imageCallback={this.uploadProfilePhoto}
+        selectSingleItem
+      />
+    );
+  }
+
   render() {
     if (this.props.isLoading) {
       return <LoadingScreen />;
@@ -421,10 +436,7 @@ class Profile extends Component {
           {this.renderFloatingCreateButton()}
           <JournalForm />
           <GearReviewForm />
-          <ImagePickerContainer
-            imageCallback={this.uploadProfilePhoto}
-            selectSingleItem
-          />
+          {this.renderImagePicker()}
         </View>
       </SafeAreaView>
     );

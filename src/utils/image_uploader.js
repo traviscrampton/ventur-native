@@ -31,7 +31,8 @@ export const deleteS3Objects = async (imageUrls, awsKeys) => {
 };
 
 export const awsUpload = async (file, awsKeys) => {
-  options = { ...options, awsKeys };
+  options = { ...options, ...awsKeys };
+  console.log('WHAT ARE OUR OPTIONS HERE', options);
   const response = await RNS3.put(file, options);
   let url = response.body.postResponse.location;
   url = url.replace('ventur-serverless.s3.amazonaws.com', cloudFrontUrl);

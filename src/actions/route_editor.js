@@ -119,11 +119,12 @@ export function persistCoordinates() {
       longitudeDelta,
       latitudeDelta
     } = changedRegion;
+
     const params = {
       latitude,
       longitude,
-      longitudeDelta,
-      latitudeDelta
+      latitude_delta: latitudeDelta,
+      longitude_delta: longitudeDelta
     };
 
     put(`/cycle_routes/${id}`, params).then(() => {

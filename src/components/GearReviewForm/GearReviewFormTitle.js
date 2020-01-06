@@ -108,7 +108,13 @@ class GearReviewFormTitle extends Component {
   };
 
   renderVerifiedIcon() {
-    if (!this.props.gearItem.id) return;
+    console.log(
+      'this.props.gearItem.id',
+      this.props.gearItem.id,
+      'this.props.gearItem.verified',
+      this.props.gearItem.verfied
+    );
+    if (!this.props.gearItem.id || !this.props.gearItem.verified) return;
 
     return (
       <MaterialIcons

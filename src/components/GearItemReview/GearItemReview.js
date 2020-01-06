@@ -93,7 +93,6 @@ class GearItemReview extends Component {
           }
         })
         .filter(image => {
-          console.log('image', image);
           return image && image.largeUri.length > 0;
         })
     ];

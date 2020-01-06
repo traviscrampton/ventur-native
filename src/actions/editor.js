@@ -62,7 +62,7 @@ export const deleteDeletedUrls = async (
 ) => {
   if (deletedUrls.length === 0) return;
 
-  const awsKeys = { awsAccessKey, awsSecretKey };
+  const awsKeys = { accessKey: awsAccessKey, secretKey: awsSecretKey };
   await deleteS3Objects(deletedUrls, awsKeys);
 };
 
@@ -319,14 +319,14 @@ export const addImagesToEntries = payload => {
     };
 
     dispatch(toggleCameraRollModal(false));
-    const filename = `${image.filename.split('.')[0]} ${uuid.v1()}.jpeg`;
+    const filename = `${image.filename.split('.')[0]}${uuid.v1()}.jpeg`;
     const file = { uri: image.uri, name: filename, type: 'image/jpg' };
     dispatch(updateActiveIndex(null));
     dispatch(createNewEntry({ newEntry: entry, newIndex: payload.index }));
     const uri = await awsUpload(file, awsKeys);
 
     const allUriSizes = createUrisObject(uri, entry.aspectRatio);
-    entry = { ...entry, allUriSizes };
+    entry = { ...entry, ...allUriSizes };
     dispatch(updateEntryState({ entry, index: payload.index }));
     dispatch(addToNewlyAddedImageUrls(entry.originalUri));
     dispatchPersist(
@@ -524,16 +524,6 @@ export function updateTextInput(payload) {
     payload
   };
 }
-
-// export function deleteWithEdit(payload) {
-//   const { oldPayload, index, cursorPosition, instance } = payload;
-//   return function(dispatch, getState) {
-//     dispatch(editText(oldPayload));
-//     dispatch(deleteEntry(index));
-//     dispatch(updateActiveIndex(index));
-//     dispatch(updateCursorPosition(cursorPosition));
-//   };
-// }
 
 export function turnTextToTextInput(payload) {
   return function(dispatch, getState) {

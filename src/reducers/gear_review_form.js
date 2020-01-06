@@ -30,7 +30,8 @@ const defaultGearForm = {
   id: null,
   gearItem: {
     id: null,
-    name: null
+    name: null,
+    verified: false
   },
   name: '',
   images: [],

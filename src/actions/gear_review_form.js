@@ -360,7 +360,7 @@ export const createResizeImgUri = (originalUri, newWidth, newHeight) => {
   return `${originalUri.slice(
     0,
     cloudFrontUrlLength
-  )}/fit-in/${newWidth}x${newHeight}${originalUri.slice(cloudFrontUrlLength)}}`;
+  )}/fit-in/${newWidth}x${newHeight}${originalUri.slice(cloudFrontUrlLength)}`;
 };
 
 export const RESET_GEAR_ITEM = 'RESET_GEAR_ITEM';
