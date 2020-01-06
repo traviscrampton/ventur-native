@@ -40,6 +40,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { FloatingAction } from 'react-native-floating-action';
 import GearReviewForm from '../GearReviewForm/GearReviewForm';
 import ImagePickerContainer from '../shared/ImagePickerContainer';
+import { cycleTouringLogo } from '../../assets/images/stockPhotos';
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
@@ -110,6 +111,12 @@ class Profile extends Component {
     this.props.navigation.navigate('Journal', { journalId });
   };
 
+  getAvatarImageUrl() {
+    return this.props.user.avatarImageUrl
+      ? this.props.user.avatarImageUrl
+      : cycleTouringLogo;
+  }
+
   connectToStrava = async () => {
     if (this.props.stravaAccessToken) return;
     const redirect = 'ventur://ventur';
@@ -136,8 +143,8 @@ class Profile extends Component {
       : 'Connect To Strava';
   }
 
-  launchImagePicker = () => {
-    this.props.updateActiveView('profile');
+  launchImagePicker = async () => {
+    await this.props.updateActiveView('profile');
     this.props.toggleCameraRollModal(true);
   };
 
@@ -157,16 +164,6 @@ class Profile extends Component {
           </Text>
         </View>
       </View>
-    );
-  }
-
-  renderLogOut() {
-    return (
-      <TouchableWithoutFeedback onPress={this.handleLogout}>
-        <View style={styles.logoutButton}>
-          <Text>Log Out</Text>
-        </View>
-      </TouchableWithoutFeedback>
     );
   }
 
@@ -191,6 +188,7 @@ class Profile extends Component {
   renderProfilePhoto() {
     let imgDimensions = this.props.width / 4;
     const options = this.getOptions();
+    const avatarImageUrl = this.getAvatarImageUrl();
 
     return (
       <View
@@ -212,7 +210,6 @@ class Profile extends Component {
               position: 'relative',
               height: imgDimensions,
               borderRadius: imgDimensions / 2,
-              backgroundColor: 'azure',
               marginRight: 10
             }}
           >
@@ -225,7 +222,7 @@ class Profile extends Component {
                 borderWidth: 1,
                 borderColor: 'gray'
               }}
-              source={{ uri: this.props.user.avatarImageUrl }}
+              source={{ uri: avatarImageUrl }}
             />
             {this.renderProfileLoadingScreen(imgDimensions)}
           </View>
@@ -238,7 +235,7 @@ class Profile extends Component {
 
   getOptions() {
     const options = [
-      { title: 'Upload Profile Photo', callback: this.uploadProfilePhoto },
+      { title: 'Upload Profile Photo', callback: this.launchImagePicker },
       { title: this.stravaCtaText(), callback: this.connectToStrava },
       { title: 'Log Out', callback: this.handleLogout }
     ];
@@ -434,9 +431,9 @@ class Profile extends Component {
             {this.renderSlidingTabs()}
           </ScrollView>
           {this.renderFloatingCreateButton()}
+          {this.renderImagePicker()}
           <JournalForm />
           <GearReviewForm />
-          {this.renderImagePicker()}
         </View>
       </SafeAreaView>
     );

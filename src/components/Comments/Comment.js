@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { deleteComment } from '../../actions/comments';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-const CycleTouringLogo = require('../../assets/images/cycletouringlogo.png');
+import { cycleTouringLogo } from '../../assets/images/stockPhotos';
 
 const mapStateToProps = state => ({
   currentUser: state.common.currentUser
@@ -105,15 +105,14 @@ class Comment extends Component {
   }
 
   renderUserSection() {
-    const avatarImageUrl =
-      this.props.user.avatarImageUrl.length > 0
-        ? { uri: this.props.user.avatarImageUrl }
-        : CycleTouringLogo;
+    const uri = this.props.user.avatarImageUrl
+      ? this.props.user.avatarImageUrl
+      : cycleTouringLogo;
 
     return (
       <View style={styles.userSectionContainer}>
         <View style={styles.imageAndUser}>
-          <Image style={styles.image} source={avatarImageUrl} />
+          <Image style={styles.image} source={{ uri }} />
           <View style={styles.userAndDate}>
             <Text style={styles.userFullName}>{this.props.user.fullName}</Text>
             <Text style={styles.commentDate}>{this.props.readableDate}</Text>

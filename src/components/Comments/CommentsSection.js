@@ -10,7 +10,7 @@ import {
 import CommentForm from './CommentForm';
 import { toggleCommentFormModal } from '../../actions/comment_form';
 import Comment from './Comment';
-const CycleTouringLogo = require('../../assets/images/cycletouringlogo.png');
+import { cycleTouringLogo } from '../../assets/images/stockPhotos';
 
 const mapStateToProps = state => ({
   comments: state.comments.comments,
@@ -47,21 +47,19 @@ class CommentsSection extends Component {
   };
 
   getAvatarUrl() {
-    if (this.props.currentUserAvatarImageUrl.length > 0) {
-      return { uri: this.props.currentUserAvatarImageUrl };
-    } else {
-      return CycleTouringLogo;
-    }
+    return this.props.currentUserAvatarImageUrl
+      ? this.props.currentUserAvatarImageUrl
+      : cycleTouringLogo;
   }
 
   renderCommentCta = () => {
-    const avatarUrl = this.getAvatarUrl();
+    const uri = this.getAvatarUrl();
 
     return (
       <View style={styles.ctaContainer}>
         <TouchableWithoutFeedback onPress={this.navigateToCommentForm}>
           <View style={styles.ctaView}>
-            <Image style={styles.ctaImage} source={avatarUrl} />
+            <Image style={styles.ctaImage} source={{ uri }} />
             <Text style={styles.labelColor}>Write a comment</Text>
           </View>
         </TouchableWithoutFeedback>
