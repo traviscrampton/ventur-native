@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ventur",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "scheme": "ventur",
     "icon": "./ventur.png",
     "sdkVersion": "34.0.0",
@@ -11,6 +11,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ventur.documenter"
+    },
+    "splash": {
+      "image": "./ventur_splash.png",
+      "backgroundColor": "#000",
+      "resizeMode": "cover"
     }
   }
 }
