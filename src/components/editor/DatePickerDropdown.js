@@ -1,28 +1,29 @@
-import React, { Component } from "react"
-import { StyleSheet, View, Text, DatePickerIOS, TouchableWithoutFeedback } from "react-native"
-import { connect } from "react-redux"
-
-const mapStateToProps = state => ({})
-
-const mapDispatchToProps = dispatch => ({})
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  DatePickerIOS,
+  TouchableWithoutFeedback
+} from 'react-native';
 
 class DatePickerDropdown extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       date: props.date
-    }
+    };
   }
 
   handleDateChange = date => {
-    this.setState({ date: date })
-  }
+    this.setState({ date: date });
+  };
 
   persistMetadata = () => {
-    this.props.persistMetadata(this.state.date)
-    this.props.toggleDatePicker()
-  }
+    this.props.persistMetadata(this.state.date);
+    this.props.toggleDatePicker();
+  };
 
   renderConfirmOptions() {
     return (
@@ -38,22 +39,27 @@ class DatePickerDropdown extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   render() {
-    let { date } = this.state
+    let { date } = this.state;
 
-    if (typeof date === "number") {
-      date = new Date(this.state.date)
+    if (typeof date === 'number') {
+      date = new Date(this.state.date);
     }
 
     return (
       <View style={styles.container}>
-        <DatePickerIOS style={styles.datePicker} mode={"date"} date={date} onDateChange={this.handleDateChange} />
+        <DatePickerIOS
+          style={styles.datePicker}
+          mode={'date'}
+          date={date}
+          onDateChange={this.handleDateChange}
+        />
         {this.renderConfirmOptions()}
       </View>
-    )
+    );
   }
 }
 
@@ -61,22 +67,22 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: "gray",
-    justifyContent: "center"
+    borderColor: 'gray',
+    justifyContent: 'center'
   },
   datePicker: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     marginBottom: 5,
-    overflow: "hidden",
+    overflow: 'hidden',
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4
   },
   confirmOptionsContainer: {
     paddingBottom: 10,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   marginRight10: {
     marginRight: 10
@@ -86,18 +92,15 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingRight: 5,
     paddingLeft: 5,
-    backgroundColor: "#3F88C5",
+    backgroundColor: '#3F88C5',
     marginRight: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#3F88C5"
+    borderColor: '#3F88C5'
   },
   colorWhite: {
-    color: "white"
+    color: 'white'
   }
-})
+});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatePickerDropdown)
+export default DatePickerDropdown;

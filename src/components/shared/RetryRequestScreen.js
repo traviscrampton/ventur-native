@@ -1,6 +1,6 @@
-import React, { Component } from "react"
-import { View, TouchableWithoutFeedback, Text, StyleSheet } from "react-native"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import React from 'react';
+import { View, TouchableWithoutFeedback, Text, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RetryRequesetScreen = props => {
   return (
@@ -12,23 +12,23 @@ const RetryRequesetScreen = props => {
         </View>
       </TouchableWithoutFeedback>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   reload: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   }
-})
+});
 
-export default RetryRequesetScreen
+export default RetryRequesetScreen;

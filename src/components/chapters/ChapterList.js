@@ -1,6 +1,6 @@
-import React from "react"
-import { View } from "react-native"
-import ChapterCard from "./ChapterCard"
+import React from 'react';
+import { View } from 'react-native';
+import ChapterCard from './ChapterCard';
 
 const ChapterList = props => {
   return (
@@ -15,10 +15,10 @@ const ChapterList = props => {
             persistOfflineChapter={props.persistOfflineChapter}
             handleSelectChapter={props.handleSelectChapter}
           />
-        )
+        );
       })}
     </View>
-  )
-}
+  );
+};
 
-export default ChapterList
+export default ChapterList;

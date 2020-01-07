@@ -15,8 +15,8 @@ import {
   UPDATE_STARTING_POLYLINES,
   CANCEL_ALL_MODES,
   DEFAULT_ROUTE_EDTIOR
-} from "../actions/route_editor"
-import { POPULATE_ID } from "../actions/journal_route"
+} from '../actions/route_editor';
+import { POPULATE_ID } from '../actions/journal_route';
 
 const defaultRouteData = {
   id: null,
@@ -33,7 +33,7 @@ const defaultRouteData = {
   isDrawing: false,
   isSaving: false,
   canDraw: false
-}
+};
 
 export default (state = defaultRouteData, action) => {
   switch (action.type) {
@@ -48,7 +48,7 @@ export default (state = defaultRouteData, action) => {
         id: action.payload.id,
         shownIndex: action.payload.polylines.length - 1,
         initialPolylineLength: action.payload.polylines.length - 2
-      }
+      };
 
     case ERASE_TOTAL_ROUTE:
       return {
@@ -56,24 +56,24 @@ export default (state = defaultRouteData, action) => {
         polylines: defaultRouteData.polylines,
         initialPolylineLength: defaultRouteData.initialPolylineLength,
         shownIndex: defaultRouteData.shownIndex
-      }
+      };
     case SET_CAN_DRAW:
       return {
         ...state,
         canDraw: action.payload
-      }
+      };
 
     case SAVING_MAP_BEGIN:
       return {
         ...state,
         isSaving: true
-      }
+      };
 
     case SAVING_MAP_END:
       return {
         ...state,
         isSaving: false
-      }
+      };
 
     case CANCEL_ALL_MODES:
       return {
@@ -81,25 +81,25 @@ export default (state = defaultRouteData, action) => {
         drawMode: false,
         canDraw: false,
         positionMode: false
-      }
+      };
 
     case UPDATE_STARTING_POLYLINES:
       return {
         ...state,
         startingPolylines: [...state.polylines]
-      }
+      };
 
     case UPDATE_REGION_COORDINATES:
       return {
         ...state,
         changedRegion: action.payload
-      }
+      };
 
     case SET_SHOWN_INDEX:
       return {
         ...state,
         shownIndex: action.payload
-      }
+      };
 
     case SET_NEXT_DRAW:
       return {
@@ -107,38 +107,38 @@ export default (state = defaultRouteData, action) => {
         isDrawing: action.payload.isDrawing,
         polylines: action.payload.polylines,
         shownIndex: action.payload.shownIndex
-      }
+      };
 
     case DRAW_POLYLINE:
       return {
         ...state,
         polylines: action.payload.polylines,
         shownIndex: action.payload.shownIndex
-      }
+      };
 
     case SET_IS_DRAWING:
       return {
         ...state,
         isDrawing: action.payload
-      }
+      };
 
     case SET_DRAW_MODE:
       return {
         ...state,
         drawMode: action.payload,
         positionMode: false
-      }
+      };
 
     case UPDATE_INITIAL_REGION:
       return {
         ...state,
         initialRegion: { ...state.changedRegion }
-      }
+      };
     case POPULATE_ID:
       return {
         ...state,
         id: action.payload
-      }
+      };
 
     case SET_POSITION_MODE:
       return {
@@ -146,12 +146,12 @@ export default (state = defaultRouteData, action) => {
         positionMode: action.payload,
         drawMode: false,
         canDraw: false
-      }
+      };
 
     case DEFAULT_ROUTE_EDTIOR:
-      return defaultRouteData
+      return defaultRouteData;
 
     default:
-      return state
+      return state;
   }
-}
+};

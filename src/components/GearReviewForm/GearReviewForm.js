@@ -1,40 +1,44 @@
-import React, { Component } from "react"
-import { View, Text, TouchableWithoutFeedback, StyleSheet } from "react-native"
-import { connect } from "react-redux"
-import { persistGearReview, defaultGearReviewForm } from "../../actions/gear_review_form"
-import InputScrollView from "react-native-input-scroll-view"
-import GearReviewFormTitle from "./GearReviewFormTitle"
-import GearReviewFormStarRating from "./GearReviewFormStarRating"
-import GearReviewFormImageCarousel from "./GearReviewFormImageCarousel"
-import GearReviewFormProsCons from "./GearReviewFormProsCons"
-import GearReviewFormReview from "./GearReviewFormReview"
-import GearReviewFormJournals from "./GearReviewFormJournals"
-import FormModal from "../shared/FormModal"
+import React, { Component } from 'react';
+import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import {
+  persistGearReview,
+  defaultGearReviewForm
+} from '../../actions/gear_review_form';
+import InputScrollView from 'react-native-input-scroll-view';
+import GearReviewFormTitle from './GearReviewFormTitle';
+import GearReviewFormStarRating from './GearReviewFormStarRating';
+import GearReviewFormImageCarousel from './GearReviewFormImageCarousel';
+import GearReviewFormProsCons from './GearReviewFormProsCons';
+import GearReviewFormReview from './GearReviewFormReview';
+import GearReviewFormJournals from './GearReviewFormJournals';
+import FormModal from '../shared/FormModal';
 
 const mapStateToProps = state => ({
   visible: state.gearReviewForm.visible,
   width: state.common.width,
   height: state.common.height,
   id: state.gearReviewForm.id
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   persistGearReview: () => dispatch(persistGearReview()),
   defaultGearReviewForm: () => dispatch(defaultGearReviewForm())
-})
+});
 
 class GearReviewForm extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   persistGearReview = () => {
-    this.props.persistGearReview()
-  }
+    this.props.persistGearReview();
+    this.props.defaultGearReviewForm();
+  };
 
   handleCancel = () => {
-    this.props.defaultGearReviewForm()
-  }
+    this.props.defaultGearReviewForm();
+  };
 
   renderHeader() {
     return (
@@ -50,11 +54,11 @@ class GearReviewForm extends Component {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 
   getTitleText() {
-    return this.props.id ? "Edit Gear Review" : "New Gear Review"
+    return this.props.id ? 'Edit Gear Review' : 'New Gear Review';
   }
 
   renderFormTitle() {
@@ -62,22 +66,24 @@ class GearReviewForm extends Component {
       <View style={styles.marginBottom20}>
         <Text style={styles.titleText}>{this.getTitleText()}</Text>
       </View>
-    )
+    );
   }
 
   render() {
     return (
       <FormModal
         visible={this.props.visible}
-        animationType={"slide"}
-        style={[styles.backgroundColorWhite, { height: this.props.height }]}>
+        animationType={'slide'}
+        style={[styles.backgroundColorWhite, { height: this.props.height }]}
+      >
         {this.renderHeader()}
         <InputScrollView
           multilineInputStyle={{ lineHeight: 30 }}
           topOffset={50}
           keyboardOffset={90}
           style={styles.padding20}
-          keyboardShouldPersistTaps="always">
+          keyboardShouldPersistTaps="always"
+        >
           {this.renderFormTitle()}
           <GearReviewFormTitle />
           <GearReviewFormReview />
@@ -88,34 +94,34 @@ class GearReviewForm extends Component {
           <View style={styles.marginBottom300} />
         </InputScrollView>
       </FormModal>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   headerContainer: {
     height: 45,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingRight: 20,
     paddingLeft: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: "#f8f8f8"
+    borderBottomColor: '#f8f8f8'
   },
   headerOptions: {
-    fontFamily: "playfair",
+    fontFamily: 'playfair',
     fontSize: 14,
-    color: "#323941"
+    color: '#323941'
   },
   backgroundColorWhite: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   titleText: {
-    fontFamily: "playfair",
-    color: "#323941",
+    fontFamily: 'playfair',
+    color: '#323941',
     fontSize: 28
   },
   marginBottom20: {
@@ -127,9 +133,6 @@ const styles = StyleSheet.create({
   marginBottom300: {
     marginBottom: 300
   }
-})
+});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GearReviewForm)
+export default connect(mapStateToProps, mapDispatchToProps)(GearReviewForm);

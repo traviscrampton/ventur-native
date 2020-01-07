@@ -1,0 +1,40 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true,
+    "react-native/react-native": true
+  },
+  "extends": "airbnb-base",
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "react-native"],
+  "rules": {
+    "arrow-parens": 0,
+    "arrow-body-style": 0,
+    "comma-dangle": 0,
+    "func-names": 0,
+    "space-before-function-paren": 0,
+    "no-cycle": 0,
+    "object-curly-newline": 0,
+    "no-console": 0,
+    "import/no-cycle": 0,
+    "no-param-reassign": 0,
+    "radix": 0,
+    "indent": 0,
+    "operator-linebreak": 0,
+    "no-restricted-syntax": 0,
+    "no-await-in-loop": 0,
+    "no-continue": 0
+  }
+}
