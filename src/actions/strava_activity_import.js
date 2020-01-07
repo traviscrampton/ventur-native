@@ -154,9 +154,9 @@ export const loadInitialStravaData = () => {
       })
       .catch(err => {
         console.log('error!', err);
+        dispatch(setStravaLoadingFalse());
         if (err.status === 401) {
           console.log('error 401');
-          // return logout()
         }
       });
   };
@@ -189,6 +189,7 @@ export const refreshAccessToken = () => {
         dispatch(loadInitialStravaData());
       })
       .catch(err => {
+        dispatch(setStravaLoadingFalse());
         console.log('error!', err);
         if (err.status === 401) {
           console.log('error 401');
