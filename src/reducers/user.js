@@ -5,6 +5,7 @@ import {
   POPULATE_USER_GEAR,
   TOGGLE_PROFILE_PHOTO_LOADING,
   TOGGLE_IS_LOADING,
+  TOGGLE_IS_REFRESHING,
   SET_DEFAULT_APP_STATE
 } from '../actions/user';
 
@@ -18,7 +19,8 @@ const defaultAppState = {
   },
   offlineChapters: [],
   profilePhotoLoading: false,
-  isLoading: false
+  isLoading: false,
+  isRefreshing: false
 };
 
 export default (state = defaultAppState, action) => {
@@ -32,6 +34,11 @@ export default (state = defaultAppState, action) => {
       return {
         ...state,
         profilePhotoLoading: action.payload
+      };
+    case TOGGLE_IS_REFRESHING:
+      return {
+        ...state,
+        isRefreshing: action.payload
       };
 
     case ADD_CREATED_GEAR_REVIEW:

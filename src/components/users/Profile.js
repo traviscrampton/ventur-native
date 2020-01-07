@@ -8,15 +8,17 @@ import {
   Image,
   FlatList,
   SafeAreaView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  RefreshControl
 } from 'react-native';
 import { Linking } from 'expo';
 import GearListItem from '../GearItem/GearListItem';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import {
   getProfilePageData,
   uploadProfilePhoto,
-  setDefaultAppState
+  setDefaultAppState,
+  toggleIsRefreshing
 } from '../../actions/user';
 import JournalMini from '../journals/JournalMini';
 import JournalForm from '../JournalForm/JournalForm';
@@ -53,7 +55,8 @@ const mapStateToProps = state => ({
   width: state.common.width,
   height: state.common.height,
   isLoading: state.user.isLoading,
-  activeView: state.cameraRoll.activeView
+  activeView: state.cameraRoll.activeView,
+  isRefreshing: state.user.isRefreshing
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -68,7 +71,8 @@ const mapDispatchToProps = dispatch => ({
   toggleCameraRollModal: payload => dispatch(toggleCameraRollModal(payload)),
   uploadProfilePhoto: payload => dispatch(uploadProfilePhoto(payload)),
   setDefaultAppState: () => dispatch(setDefaultAppState()),
-  updateActiveView: payload => dispatch(updateActiveView(payload))
+  updateActiveView: payload => dispatch(updateActiveView(payload)),
+  toggleIsRefreshing: payload => dispatch(toggleIsRefreshing(payload))
 });
 
 class Profile extends Component {
@@ -116,6 +120,12 @@ class Profile extends Component {
       ? this.props.user.avatarImageUrl
       : cycleTouringLogo;
   }
+
+  handleRefresh = () => {
+    this.props.toggleIsRefreshing(true);
+    this.props.getProfilePageData();
+    this.props.toggleIsRefreshing(false);
+  };
 
   connectToStrava = async () => {
     if (this.props.stravaAccessToken) return;
@@ -258,13 +268,42 @@ class Profile extends Component {
     }
   };
 
+  chooseEmptyStateIcon(isJournal = true) {
+    const sizeAndColor = {
+      size: 35,
+      color: '#323941',
+      style: { marginRight: 10 }
+    };
+    return isJournal ? (
+      <Ionicons name={'ios-journal'} {...sizeAndColor} />
+    ) : (
+      <Entypo name={'tools'} {...sizeAndColor} />
+    );
+  }
+
   renderEmptyState(isJournal = true) {
     const content = isJournal ? 'Journals' : 'Gear Items';
+    const icon = this.chooseEmptyStateIcon(isJournal);
     const message = `No ${content} yet, press the action button to get started`;
 
     return (
-      <View style={{ height: this.props.height, padding: 20 }}>
-        <Text style={styles.fontSize20}>{message}</Text>
+      <View
+        style={{
+          height: this.props.height,
+          padding: 20
+        }}
+      >
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {icon}
+          <Text style={styles.fontSize20}>{message}</Text>
+        </View>
       </View>
     );
   }
@@ -426,6 +465,10 @@ class Profile extends Component {
       <SafeAreaView style={styles.flexWhite}>
         <View style={styles.white100}>
           <ScrollView>
+            <RefreshControl
+              refreshing={this.props.isRefreshing}
+              onRefresh={this.handleRefresh}
+            />
             {this.renderProfilePhotoAndMetadata()}
             <View style={[styles.borderBarrier, { width: this.props.width }]} />
             {this.renderSlidingTabs()}

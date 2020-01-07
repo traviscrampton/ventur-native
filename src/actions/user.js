@@ -8,6 +8,14 @@ export function toggleProfilePhotoLoading(payload) {
   };
 }
 
+export const TOGGLE_IS_REFRESHING = 'TOGGLE_IS_REFRESHING';
+export function toggleIsRefreshing(payload) {
+  return {
+    type: TOGGLE_IS_REFRESHING,
+    payload
+  };
+}
+
 export const POPULATE_OFFLINE_CHAPTERS = 'POPULATE_OFFLINE_CHAPTERS';
 export function populateOfflineChapters(payload) {
   return {

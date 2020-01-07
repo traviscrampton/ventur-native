@@ -131,7 +131,7 @@ class GearReviewFormImageCarousel extends Component {
   }
 
   selectSourceUri(imageIsLoading, item) {
-    return imageIsLoading ? item.localUri : item.thumbnailUri;
+    return imageIsLoading ? item.localUri : item.largeUri;
   }
 
   updateActiveImageIndex = index => {
@@ -141,6 +141,7 @@ class GearReviewFormImageCarousel extends Component {
   renderItem = (item, index) => {
     let imageIsLoading = this.imageIsLoading(item);
     let sourceUri = this.selectSourceUri(imageIsLoading, item);
+    let { thumbnailUri } = item;
     let isActiveImage = this.props.activeImageIndex === index;
 
     return (
@@ -157,6 +158,7 @@ class GearReviewFormImageCarousel extends Component {
           {this.renderImageCover(imageIsLoading, isActiveImage)}
           <ProgressiveImage
             source={sourceUri}
+            thumbnailSource={thumbnailUri}
             style={styles.progressiveImageStyles}
           />
         </View>
